@@ -1,0 +1,18 @@
+# Database — NoSQL hub
+
+MongoDB, Redis, ClickHouse и когда выбирать нереляционное хранилище. Теория — в файлах тем ниже.
+
+[← Back to database hub](./9_database.md)
+
+### Related docs
+
+[NoSQL — Core](./9_database_nosql_core.md) · [NoSQL — MongoDB](./9_database_mongodb.md) · [NoSQL — Redis](./9_database_redis.md) · [NoSQL — ClickHouse](./9_database_clickhouse.md)
+
+### Navigation
+
+| Topic                                            | Covers                                                 |
+| ------------------------------------------------ | ------------------------------------------------------ |
+| [NoSQL — Core](./9_database_nosql_core.md)       | NoSQL types, selection matrix, Elasticsearch overview. |
+| [NoSQL — MongoDB](./9_database_mongodb.md)       | Documents, aggregation, Mongoose.                      |
+| [NoSQL — Redis](./9_database_redis.md)           | Cache, sessions, data structures, TTL.                 |
+| [NoSQL — ClickHouse](./9_database_clickhouse.md) | Column-store OLAP, analytics, fast aggregates.         |
