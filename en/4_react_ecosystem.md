@@ -187,13 +187,14 @@ Data fetching
 
 Patterns for loading server data in React — framework loaders, client caches, Server Components, and Suspense.
 
-| Approach                     | When                                             |
-| ---------------------------- | ------------------------------------------------ |
-| **Server Component** `fetch` | Default in Next.js App Router — cached on server |
-| **TanStack Query**           | Client SPAs — cache, refetch, optimistic updates |
-| **RTK Query**                | Same idea inside Redux Toolkit (`createApi`)     |
-| `use()` **+ Suspense**       | Async in component tree with React 19            |
-| **Server Actions**           | Mutations from forms in Next.js                  |
+| Approach                     | When                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| **Server Component** `fetch` | Default in Next.js App Router — cached on server         |
+| **SWR**                      | Client hooks — stale-while-revalidate, `mutate`, polling |
+| **TanStack Query**           | Client SPAs — cache, refetch, optimistic updates         |
+| **RTK Query**                | Same idea inside Redux Toolkit (`createApi`)             |
+| `use()` **+ Suspense**       | Async in component tree with React 19                    |
+| **Server Actions**           | Mutations from forms in Next.js                          |
 
 **How it works:** Framework `fetch` / RSC cache on the **server**. Client libraries cache **JSON in memory** keyed by endpoint + args. That is **not** HTTP `Cache-Control` (browser/CDN). RTK Query: reference-counted subscriptions; unused data is removed after `keepUnusedDataFor` (default **60** seconds).
 
@@ -210,11 +211,86 @@ async function Page() {
 }
 ```
 
-**Thoughts:** Don't `useEffect` + `fetch` for initial page data if RSC or router loader can provide it. HTTP headers vs client cache → [6_web_api.md — HTTP caching](./6_web_api.md). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
+**Thoughts:** Don't `useEffect` + `fetch` for initial page data if RSC or router loader can provide it. HTTP/CDN vs client cache → [Web APIs — HTTP caching](./6_web_api_http.md#http-caching). Next.js server caches → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR → [SWR (stale-while-revalidate)](#swr-stale-while-revalidate). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
 
 **Sources:**
 
 [react.dev/reference/rsc/server-components](https://react.dev/reference/rsc/server-components) · [RTK Query cache behavior](https://redux-toolkit.js.org/rtk-query/usage/cache-behavior)
+
+SWR (stale-while-revalidate)
+
+</details>
+
+<details>
+  <summary>SWR (stale-while-revalidate)</summary>
+
+### SWR (stale-while-revalidate)
+
+**Definition:** **SWR** is a React hooks library for **client-side** data fetching. It implements the **stale-while-revalidate** UX pattern: render cached data immediately, refetch in the background, swap in fresh data when the fetch completes.
+
+**How it works:**
+
+- `useSWR(key, fetcher, options)` — `key` (string or array), `fetcher`, and options such as `refreshInterval`, `revalidateOnFocus`, `revalidateOnReconnect`.
+- **In-memory cache** keyed by `key`. **Deduping:** identical keys within `dedupingInterval` (default **2000** ms) share one network request.
+- **Automatic revalidation:** window focus and network reconnect (both on by default); optional polling via `refreshInterval`.
+- **Invalidation / updates:** `mutate(key, data?, { revalidate })` — patch cache and optionally refetch; `useSWRConfig().mutate` with a **filter** over keys to revalidate or clear many entries (e.g. on logout).
+
+**When to use:**
+
+- Client Components that must stay fresh without navigation (metrics, notifications, live lists).
+- Next.js apps where critical content is already server-rendered but widgets need post-hydration refresh — pair with [Client-side fetching](./4_nextjs_data.md#client-side-fetching).
+
+**Pluses and minuses:**
+
+| +                                            | −                                                            |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| Fast UI from cache; built-in focus/reconnect | Another client cache layer to debug                          |
+| Small API surface vs full query libraries    | Not a substitute for HTTP `Cache-Control` or Next Data Cache |
+
+**Examples:**
+
+```tsx
+"use client";
+
+import useSWR, { mutate } from "swr";
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+export function LiveMetrics() {
+  const { data, isLoading } = useSWR("/api/metrics", fetcher, {
+    refreshInterval: 5000,
+  });
+  if (isLoading && !data) return <p>Loading…</p>;
+  return <div>{data.value}</div>;
+}
+
+// After a mutation elsewhere — revalidate one key
+export async function afterCreateItem() {
+  await mutate("/api/items");
+}
+```
+
+```tsx
+import { useSWRConfig } from "swr";
+
+function LogoutButton() {
+  const { mutate } = useSWRConfig();
+  return (
+    <button
+      type="button"
+      onClick={() => mutate(() => true, undefined, { revalidate: false })}
+    >
+      Log out
+    </button>
+  );
+}
+```
+
+**Thoughts:** The HTTP `Cache-Control: stale-while-revalidate` directive and the **SWR npm package** share a name but operate at different layers — see [Revalidation and invalidation across the stack](./4_nextjs_data.md#revalidation-and-invalidation-across-the-stack). For query-key invalidation and mutations at scale, compare [Working with TanStack Query](./4_react_tanstack.md#working-with-tanstack-query).
+
+**Sources:**
+
+[swr.vercel.app](https://swr.vercel.app/) · [SWR — revalidation](https://swr.vercel.app/docs/revalidation) · [SWR — mutation](https://swr.vercel.app/docs/mutation)
 
 Forms
 

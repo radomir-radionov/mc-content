@@ -4,7 +4,7 @@ The study of what can be computed, plus how we *write* programs (paradigms). Log
 
 ### Related docs
 
-* [Computer science](./7_special_cs.md) · [JS Functions](./3_js_functions.md) · [OOP & SOLID](./7_special_engineering.md) · [Architecture patterns](./7_special_architecture.md) · [Algorithms](./7_special_algorithms.md) · [Data structures](./7_special_data_structures.md) · [Web security](./7_special_security.md)
+* [Computer science](./7_special_cs.md) · [JS Functions](./3_js_functions.md) · [OOP & SOLID](./7_special_engineering.md) · [Architecture patterns](./7_special_architecture.md) · [Algorithms](./7_special_algorithms.md) · [Data structures](./7_special_data_structures.md)
 
 ### Sections
 
@@ -31,7 +31,7 @@ The study of what can be computed, plus how we *write* programs (paradigms). Log
 **How it works:**
 
 - **Programming** is writing programs. **Computer science** asks what those programs *can* do, how costly they are, and which models of computation apply.
-- Core maps in this handbook (do not copy the essays here): [Algorithms & Big O](./7_special_algorithms_core.md) · [Data structures](./7_special_data_structures.md) · [Programming paradigm](#programming-paradigm) (how we *write*) · [Web security](./7_special_security.md) (applied threats, not theory of computation).
+- Core maps in this handbook (do not copy the essays here): [Algorithms & Big O](./7_special_algorithms_core.md) · [Data structures](./7_special_data_structures.md) · [Programming paradigm](#programming-paradigm) (how we *write*) (applied threats, not theory of computation).
 - Mathematical logic shows up as a *tool* for specification and inference — see [Logic programming](#logic-programming).
 
 **When to use:** Interview “what is CS vs coding?”; choosing whether a question is complexity, a language style, or an attack surface.

@@ -1,10 +1,10 @@
 # Other — hub
 
-Indexes leftover study notes. Programming styles live in [Computer science](./7_special_cs.md). MVC-family architecture, OOP/SOLID, DRY/KISS/YAGNI, and GoF patterns live under System design. SDLC, testing, and web security are sibling topics under Other. UX laws and UI principles live under [HTML](./1_html.md).
+Indexes leftover study notes. Programming styles live in [Computer science](./7_special_cs.md). MVC-family architecture, OOP/SOLID, DRY/KISS/YAGNI, and GoF patterns live under System design. SDLC and testing are sibling topics under Other. Web security lives under [Core](./0_core.md). UX laws and UI principles live under [HTML](./1_html.md).
 
 ### Related docs
 
-[Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [Interview leftovers](./7_special_interview.md) · [OOP & SOLID](./7_special_engineering.md) · [SDLC](./7_special_sdlc.md) · [Testing](./7_special_testing.md) · [Design patterns](./7_special_patterns.md) · [Web security](./7_special_security.md) · [Algorithms](./7_special_algorithms.md) · [Data structures](./7_special_data_structures.md)
+[Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [Interview leftovers](./7_special_interview.md) · [OOP & SOLID](./7_special_engineering.md) · [SDLC](./7_special_sdlc.md) · [Testing](./7_special_testing.md) · [Design patterns](./7_special_patterns.md) · [Algorithms](./7_special_algorithms.md) · [Data structures](./7_special_data_structures.md) · [Core — hub](./0_core.md)
 
 ### Navigation
 

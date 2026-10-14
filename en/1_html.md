@@ -1,10 +1,10 @@
 # HTML — hub
 
-Document structure, browser rendering, forms, media, accessibility, UX/UI principles, and SEO. Theory lives in the topic files below.
+Document structure, browser rendering, forms, media, UX/UI principles, and SEO. Accessibility lives under [Core](./0_core.md). Theory lives in the topic files below.
 
 ### Related docs
 
-[HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — Accessibility](./1_html_a11y.md) · [UX laws](./7_special_ux.md) · [UI principles](./7_special_ui.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
+[HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [UX laws](./7_special_ux.md) · [UI principles](./7_special_ui.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md) · [Core — hub](./0_core.md)
 
 ### Navigation
 
@@ -17,7 +17,6 @@ Document structure, browser rendering, forms, media, accessibility, UX/UI princi
 | [HTML — Media](./1_html_media.md)                                 | Images, picture, audio, video, canvas, and SVG.                       |
 | [HTML — Rendering](./1_html_rendering.md)                         | URL to pixels: parse, CSSOM, render tree, layout, paint, composite.   |
 | [HTML — Performance](./1_html_performance.md)                     | Script loading, resource hints, Core Web Vitals, and FOUC.            |
-| [HTML — Accessibility](./1_html_a11y.md)                          | POUR, names, landmarks, forms, and images.                            |
 | [UX laws](./7_special_ux.md)                                      | Jakob, Fitts, Hick, Miller, Postel, and related effects.              |
 | [UI principles](./7_special_ui.md)                                | Visual hierarchy, spacing, feedback, and a11y.                        |
 | [HTML — SEO](./1_html_seo.md)                                     | Crawlability, metadata, and structured data.                          |

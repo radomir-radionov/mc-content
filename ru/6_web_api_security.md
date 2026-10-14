@@ -2,11 +2,11 @@
 
 Безопасность браузера и сторонние интеграции.
 
-[ ← Вернуться в хаб](./6_web_api.md)
+[ ← Вернуться в хаб](./0_core.md)
 
 ### Related docs
 
-- [Веб-API — Core](./6_web_api_core.md) · [Веб-API — HTTP](./6_web_api_http.md) · [Веб-API — стили API](./6_web_api_rest.md) · [Веб-API — аутентификация и хранение](./6_web_api_auth.md) · [Веб-API — Приложения](./6_web_api_apps.md) · [Веб-API — Безопасность](./6_web_api_security.md) · [Веб-API — Performance](./6_web_api_performance.md) · [Веб-API — Интервью](./6_web_api_interview.md)
+- [Доступность](./1_html_a11y.md) · [Веб-безопасность](./7_special_security.md) · [Безопасность — интервью](./7_special_security_interview.md) · [Веб-API — HTTP](./6_web_api_http.md) · [Веб-API — аутентификация и хранение](./6_web_api_auth.md)
 
 ### Sections
 

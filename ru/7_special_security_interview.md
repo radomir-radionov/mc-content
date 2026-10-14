@@ -2,11 +2,11 @@
 
 Ответы заполнены для опубликованного набора вопросов.
 
-[ ← Вернуться в хаб](./7_special.md)
+[ ← Вернуться в хаб](./0_core.md)
 
 ### Related docs
 
-- [Веб-безопасность](./7_special_security.md) · [Веб-безопасность — Интервью](./7_special_security_interview.md)
+- [Доступность](./1_html_a11y.md) · [Веб-безопасность](./7_special_security.md) · [Безопасность браузера](./6_web_api_security.md)
 
 ### Sections
 
@@ -54,7 +54,7 @@ Transport Layer Security (TLS)
 
 - **X-Content-Type-Options**: не даёт угадывать тип содержимого.
 - **X-Frame-Options**: защищает от clickjacking.
-- **Content-Security-Policy**:  смягчает атаки межсайтового скриптинга и другие атаки внедрения кода.
+- **Content-Security-Policy**: смягчает атаки межсайтового скриптинга и другие атаки внедрения кода.
 - **X-XSS-Protection**: включает в браузерах фильтр Cross-site scripting (XSS).
 
 Достоверность и очистка данных
@@ -89,7 +89,7 @@ app = Flask(__name__)
 # Example: Setting Content-Security-Policy Header
 @app.after_request
 def add_security_headers(response):
-    response.headers.add('Content-Security-Policy', 
+    response.headers.add('Content-Security-Policy',
                           "default-src 'self'; script-src 'self' 'unsafe-inline';")
     return response
 
@@ -169,6 +169,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 httpd = HTTPServer(('localhost', 8000), SimpleHTTPRequestHandler)
 httpd.serve_forever()
 ```
+
 Командой `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365` создают самоподписанный SSL-сертификат.
 
 Пример кода: простой HTTPS-сервер
@@ -416,7 +417,6 @@ print(f"Original Text: {original_text.decode()}")
 Порождение ключа
 
 - **Случайность**: безопасность ключа сессии держится на его непредсказуемости. Подходящие криптографические алгоритмы и источники с высокой энтропией, например аппаратные RNG или по-настоящему случайный ввод пользователя, необходимы для случайности ключа. Согласованное хеширование может дать более прямолинейное распределение ключей.
-
   - **Размер ключа**: большая длина ключа укрепляет безопасность сессии. Ключи в 128 бит, например, обычно считают устойчивыми к обычным атакам.
 
 Установление ключа сессии:
@@ -429,11 +429,11 @@ print(f"Original Text: {original_text.decode()}")
 
 ```plaintext
   Here is the Key Exchange
-  
+
   User:
   Private Key: a
   Public Key: g^a mod p
-  
+
   Server:
   Private Key: b
   Public Key: g^b mod p
@@ -450,9 +450,9 @@ PFS особенно полезен для долгой безопасности
 
 Чтобы ещё усилить безопасность и уверенность в установлении сессии, часто добавляют ряд механизмов:
 
-  - **Сертификаты**: проверяют личность веб-сервера и устанавливают доверие.
+- **Сертификаты**: проверяют личность веб-сервера и устанавливают доверие.
 
-  - **Системы на токенах**: превращают временные токены в сессии, чтобы данные пользователя были защищены ещё сильнее.
+- **Системы на токенах**: превращают временные токены в сессии, чтобы данные пользователя были защищены ещё сильнее.
 
 **Sources:**
 
@@ -566,8 +566,8 @@ cursor.execute("SELECT * FROM users WHERE user='%s' AND password='%s'" % (userna
 
 ```html
 <form action="/comments" method="POST">
-    <textarea name="comment" placeholder="Enter your comment"></textarea>
-    <button type="submit">Post Comment</button>
+  <textarea name="comment" placeholder="Enter your comment"></textarea>
+  <button type="submit">Post Comment</button>
 </form>
 ```
 
@@ -577,9 +577,9 @@ cursor.execute("SELECT * FROM users WHERE user='%s' AND password='%s'" % (userna
 
 ```html
 <form action="/make-transfer" method="POST">
-    <input type="text" name="amount" />
-    <input type="text" name="toAccount" />
-    <button type="submit">Transfer</button>
+  <input type="text" name="amount" />
+  <input type="text" name="toAccount" />
+  <button type="submit">Transfer</button>
 </form>
 ```
 
@@ -728,7 +728,7 @@ example.com?greeting=<script>alert('Hello, world!')</script>
 
 Вот код на Python:
 
-  ```python
+```python
 import sqlite3
 
 conn = sqlite3.connect('example.db')
@@ -744,7 +744,7 @@ cursor.execute(query, (username, password))
 
 # Close
 conn.close()
-  ```
+```
 
 **Sources:**
 
@@ -890,7 +890,7 @@ HTTP-заголовок ответа **`X-Frame-Options`** смягчает clic
   Этот мета-тег следует поместить в секцию `<head>` HTML-страниц.
 
   ```html
-  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
   ```
 
 Content Security Policy (CSP)
@@ -919,7 +919,7 @@ Content Security Policy (CSP)
 
 - **Pointer Lock API**: более сложный вариант. Этот API можно использовать, чтобы ограничить движение мыши заданной областью веб-страницы.
 
-   Pointer Lock API может быть не общим решением; однако блокировка не даст iframe двигать связанные элементы во время попыток clickjacking.
+  Pointer Lock API может быть не общим решением; однако блокировка не даст iframe двигать связанные элементы во время попыток clickjacking.
 
   startPointerLock()
 
@@ -1041,17 +1041,19 @@ if __name__ == '__main__':
 Вот код на Node.js:
 
 ```javascript
-const https = require('https');
-const fs = require('fs');
+const https = require("https");
+const fs = require("fs");
 
 const options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
+  key: fs.readFileSync("key.pem"),
+  cert: fs.readFileSync("cert.pem"),
 };
 
-https.createServer(options, (req, res) => {
-  // Handle secure requests
-}).listen(443);
+https
+  .createServer(options, (req, res) => {
+    // Handle secure requests
+  })
+  .listen(443);
 ```
 
 **Sources:**
@@ -1124,7 +1126,6 @@ response.addCookie(sessionCookie);  // Add the cookie to the response
 - [Devinterview.io — Web Security](https://devinterview.io/questions/web-and-mobile-development/web-security-interview-questions/)
 
 </details>
-
 
 ### Authentication and Authorization
 
@@ -1439,7 +1440,6 @@ Set-Cookie: id=; Expires=Friday, 17-May-03 18:45:00 GMT
 - [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 </details>
 
-
 ### Network Security Concerns
 
 <details>
@@ -1584,7 +1584,8 @@ SRI проверяет байты. Оно не решает, следует ли
 <script
   src="https://cdn.example.com/script.js"
   integrity="sha384-<base64-hash>"
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"
+></script>
 ```
 
 **Sources:**
@@ -1592,7 +1593,6 @@ SRI проверяет байты. Оно не решает, следует ли
 - [MDN — Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity)
 - [OWASP Denial of Service Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html)
 </details>
-
 
 ### Secure Coding Practices
 
@@ -1739,7 +1739,6 @@ X-Content-Type-Options: nosniff
 - [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html)
 </details>
 
-
 ### Data Protection and Privacy
 
 <details>
@@ -1881,7 +1880,6 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 </details>
 
-
 ### Advanced Web Security Concepts
 
 <details>
@@ -2021,7 +2019,6 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 - [MDN — Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security)
 - [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html)
 </details>
-
 
 ### Security Testing and Audits
 
@@ -2174,7 +2171,6 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 - [OWASP Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)
 </details>
 
-
 ### Compliance and Standards
 
 <details>
@@ -2289,7 +2285,6 @@ MFA нужна учётным записям, которые открывают 
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 - [OWASP Multifactor Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html)
 </details>
-
 
 ### Emerging Threats and Trends
 
@@ -2428,7 +2423,6 @@ MFA нужна учётным записям, которые открывают 
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 </details>
 
-
 ### Incident Response and Handling
 
 <details>
@@ -2540,7 +2534,6 @@ OWASP на использованных здесь страницах не за�
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 - [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
 </details>
-
 
 ### Cloud Security
 
@@ -2683,7 +2676,6 @@ WAF видит только трафик, который через него п�
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 - [OWASP Virtual Patching Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Virtual_Patching_Cheat_Sheet.html)
 </details>
-
 
 ### Security in Web Application Frameworks
 
@@ -2845,7 +2837,6 @@ elem.textContent = untrusted;
 - [OWASP AJAX Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AJAX_Security_Cheat_Sheet.html)
 </details>
 
-
 ### Mobile Web Security
 
 <details>
@@ -2956,7 +2947,6 @@ Authorization: Bearer <access-token>
 
 - [OWASP Mobile Application Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Mobile_Application_Security_Cheat_Sheet.html)
 </details>
-
 
 ### Secure Infrastructure
 
@@ -3070,7 +3060,6 @@ USER app
 - [OWASP Network Segmentation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Network_Segmentation_Cheat_Sheet.html)
 - [OWASP Secure Cloud Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Cloud_Architecture_Cheat_Sheet.html)
 </details>
-
 
 ### Cryptography in Web Security
 
@@ -3198,7 +3187,6 @@ var nonce = new byte[12];
 - [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html)
 </details>
 
-
 ### DevSecOps and Web Security
 
 <details>
@@ -3315,7 +3303,6 @@ USER app
 - [OWASP CI CD Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html)
 </details>
 
-
 ### API and Web Service Security
 
 <details>
@@ -3395,11 +3382,14 @@ GET /authorize?response_type=code&code_challenge=<S256>&code_challenge_method=S2
 **Examples:**
 
 ```javascript
-app.use('/graphql', graphqlHTTP({
-  schema: MySessionAwareGraphQLSchema,
-  validationRules: [NoIntrospection],
-  graphiql: process.env.NODE_ENV === 'development',
-}));
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: MySessionAwareGraphQLSchema,
+    validationRules: [NoIntrospection],
+    graphiql: process.env.NODE_ENV === "development",
+  }),
+);
 ```
 
 **Sources:**
@@ -3466,7 +3456,6 @@ Retry-After: 30
 - [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html)
 - [OWASP GraphQL Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/GraphQL_Cheat_Sheet.html)
 </details>
-
 
 ### Web Security Culture and Policy
 
@@ -3609,7 +3598,6 @@ Retry-After: 30
 - [OWASP Mobile Application Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Mobile_Application_Security_Cheat_Sheet.html)
 - [OWASP Software Supply Chain Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html)
 </details>
-
 
 ### Miscellaneous Web Security
 

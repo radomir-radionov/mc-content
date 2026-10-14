@@ -1,10 +1,10 @@
 # HTML — hub
 
-Структура документа, рендеринг в браузере, формы, медиа, доступность, принципы UX/UI и SEO. Теория находится в файлах тем ниже.
+Структура документа, рендеринг в браузере, формы, медиа, принципы UX/UI и SEO. Доступность — в [Core](./0_core.md). Теория находится в файлах тем ниже.
 
 ### Related docs
 
-[HTML — Структура](./1_html_structure.md) · [HTML — Семантика](./1_html_semantics.md) · [HTML — Формы](./1_html_forms.md) · [HTML — Медиа](./1_html_media.md) · [HTML — Рендеринг](./1_html_rendering.md) · [HTML — Производительность](./1*html* Performance.md) · [HTML — Доступность](./1_html_a11y.md) · [Законы UX](./7_special_ux.md) · [Принципы UI](./7_special_ui.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Расширенный](./1_html_advanced.md) · [HTML — Интервью](./1_html_interview.md)
+[HTML — Структура](./1_html_structure.md) · [HTML — Семантика](./1_html_semantics.md) · [HTML — Формы](./1_html_forms.md) · [HTML — Медиа](./1_html_media.md) · [HTML — Рендеринг](./1_html_rendering.md) · [HTML — Производительность](./1_html_performance.md) · [Законы UX](./7_special_ux.md) · [Принципы UI](./7_special_ui.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Расширенный](./1_html_advanced.md) · [HTML — Интервью](./1_html_interview.md) · [Core — hub](./0_core.md)
 
 ### Navigation
 
@@ -16,7 +16,6 @@
 | [HTML — Медиа](./1_html_media.md)                    | Изображения, picture, аудио, видео, холст и SVG.                                                   |
 | [HTML — Рендеринг](./1_html_rendering.md)            | URL-адрес пикселей: синтаксический анализ, CSSOM, дерево рендеринга, макет, рисование, композиция. |
 | [HTML — Производительность](./1_html_performance.md) | Загрузка сценариев, подсказки по ресурсам, основные веб-показатели и FOUC.                         |
-| [HTML — Доступность](./1_html_a11y.md)               | POUR, имена, ориентиры, формы и образы.                                                            |
 | [Законы UX](./7_special_ux.md)                       | Якоб, Фиттс, Хик, Миллер, Постела и смежные эффекты.                                               |
 | [Принципы UI](./7_special_ui.md)                     | Визуальная иерархия, интервалы, обратная связь и a11y.                                             |
 | [HTML — SEO](./1_html_seo.md)                        | Возможность сканирования, метаданные и структурированные данные.                                   |

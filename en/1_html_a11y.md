@@ -2,11 +2,11 @@
 
 POUR, names, landmarks, forms, and images.
 
-[← Back to hub](./1_html.md)
+[← Back to hub](./0_core.md)
 
 ### Related docs
 
-- [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — Accessibility](./1_html_a11y.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md) · [UX & UI principles](./7_special_ux.md#ux-and-ui-principles)
+- [Web security](./7_special_security.md) · [Browser security](./6_web_api_security.md) · [Security — Interview](./7_special_security_interview.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [UX & UI principles](./7_special_ux.md#ux-and-ui-principles)
 
 ### Sections
 

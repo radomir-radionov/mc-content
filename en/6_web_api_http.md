@@ -6,7 +6,7 @@ HTTP, HTTPS, TLS, caching, CORS, and URL anatomy.
 
 ### Related docs
 
-* [Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Security](./6_web_api_security.md) · [Web APIs — Interview](./6_web_api_interview.md)
+- [Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Interview](./6_web_api_interview.md)
 
 ### Sections
 
@@ -33,30 +33,30 @@ HTTP, HTTPS, TLS, caching, CORS, and URL anatomy.
 
 start-line → headers → blank line → optional **body**. A body is signaled by `Content-Length` or `Transfer-Encoding` (e.g. `chunked`). HEAD responses have no body; many GET requests have none.
 
-| Start-line | Format | Example |
-| ---------- | ------ | ------- |
-| Request-line | `METHOD target HTTP/version` | `GET / HTTP/1.1` |
-| Status-line | `HTTP/version code reason` | `HTTP/1.1 200 OK` |
+| Start-line   | Format                       | Example           |
+| ------------ | ---------------------------- | ----------------- |
+| Request-line | `METHOD target HTTP/version` | `GET / HTTP/1.1`  |
+| Status-line  | `HTTP/version code reason`   | `HTTP/1.1 200 OK` |
 
-| Method | Intent |
-| ------ | ------ |
-| `GET` | Fetch a representation (safe; should not have a request body) |
-| `HEAD` | Same as GET, **no response body** |
-| `POST` | Submit data / trigger processing |
-| `PUT` | Replace the resource at the URI |
-| `PATCH` | Partial update |
-| `DELETE` | Remove the resource |
+| Method    | Intent                                                                    |
+| --------- | ------------------------------------------------------------------------- |
+| `GET`     | Fetch a representation (safe; should not have a request body)             |
+| `HEAD`    | Same as GET, **no response body**                                         |
+| `POST`    | Submit data / trigger processing                                          |
+| `PUT`     | Replace the resource at the URI                                           |
+| `PATCH`   | Partial update                                                            |
+| `DELETE`  | Remove the resource                                                       |
 | `OPTIONS` | Communication options for the target (`*` = whole server); CORS preflight |
-| `TRACE` | Loop-back of the request along the path (often disabled) |
-| `CONNECT` | Open a TCP tunnel (HTTPS through a proxy) |
+| `TRACE`   | Loop-back of the request along the path (often disabled)                  |
+| `CONNECT` | Open a TCP tunnel (HTTPS through a proxy)                                 |
 
-| Class | Meaning | Common codes |
-| ----- | ------- | ------------ |
-| 1xx | Informational, request continues | `100 Continue`, `103 Early Hints` |
-| 2xx | Success | `200 OK` |
-| 3xx | Redirect / cache revalidate | `301 Moved Permanently`, `307 Temporary Redirect` (method preserved), `304 Not Modified` |
-| 4xx | Client error | `400 Bad Request`, `403 Forbidden` (identity known, no access), `404 Not Found` |
-| 5xx | Server error | `500 Internal Server Error` |
+| Class | Meaning                          | Common codes                                                                             |
+| ----- | -------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1xx   | Informational, request continues | `100 Continue`, `103 Early Hints`                                                        |
+| 2xx   | Success                          | `200 OK`                                                                                 |
+| 3xx   | Redirect / cache revalidate      | `301 Moved Permanently`, `307 Temporary Redirect` (method preserved), `304 Not Modified` |
+| 4xx   | Client error                     | `400 Bad Request`, `403 Forbidden` (identity known, no access), `404 Not Found`          |
+| 5xx   | Server error                     | `500 Internal Server Error`                                                              |
 
 Headers are metadata (`Name: value`). Informal groups: **general** (either side), **request**, **response**, **representation/entity** (`Content-Type`, `Content-Length`). Custom headers are allowed. Compression: client `Accept-Encoding: gzip, br, deflate`; server `Content-Encoding: gzip` — [HTTP compression](#http-compression-content-encoding).
 
@@ -74,11 +74,11 @@ Treating HTTP as “stateful” without cookies. Calling OPTIONS “data transfo
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
-| Universal, cacheable, human-readable (HTTP/1.1) | Plain HTTP is unencrypted — use [HTTPS](#https) |
-| Extensible via headers | No built-in session — cookies/tokens |
-| Same verbs/status across HTTP/1.1, 2, 3 | HTTP/2+ framing is binary; DevTools still shows 1.1-style lines |
+| +                                               | −                                                               |
+| ----------------------------------------------- | --------------------------------------------------------------- |
+| Universal, cacheable, human-readable (HTTP/1.1) | Plain HTTP is unencrypted — use [HTTPS](#https)                 |
+| Extensible via headers                          | No built-in session — cookies/tokens                            |
+| Same verbs/status across HTTP/1.1, 2, 3         | HTTP/2+ framing is binary; DevTools still shows 1.1-style lines |
 
 **Examples:**
 
@@ -104,7 +104,7 @@ curl -v http://example.com
 
 **Thoughts:**
 
-*The browser starts every HTTP exchange; methods and status codes are the contract; cookies add sessions on a stateless protocol.*
+_The browser starts every HTTP exchange; methods and status codes are the contract; cookies add sessions on a stateless protocol._
 
 Structure: [HTTP request structure](#http-request-structure) · Headers: [HTTP headers](#http-headers) · Methods/status: [HTTP methods & status codes](#http-methods--status-codes) · Cookies: [HTTP cookies](#http-cookies) · JS: [HTTP in JavaScript](#http-in-javascript) · Server process: [Web server](#web-server) · Packets / DNS / LAN: [How the Internet works](./6_web_api_core.md#internet).
 
@@ -133,12 +133,12 @@ Structure: [HTTP request structure](#http-request-structure) · Headers: [HTTP h
 
 Message shape (HTTP/1.1 text; HTTP/2+ uses the same semantics in binary frames / pseudo-headers):
 
-| Part | Request | Response |
-| ---- | ------- | -------- |
-| Start-line | `METHOD target HTTP/1.1` | `HTTP/1.1 code reason` |
-| Headers | `Name: value` per line | same |
-| Blank line | end of head | end of head |
-| Body | optional (POST/PUT/PATCH) | optional (not for 204 / some 1xx) |
+| Part       | Request                   | Response                          |
+| ---------- | ------------------------- | --------------------------------- |
+| Start-line | `METHOD target HTTP/1.1`  | `HTTP/1.1 code reason`            |
+| Headers    | `Name: value` per line    | same                              |
+| Blank line | end of head               | end of head                       |
+| Body       | optional (POST/PUT/PATCH) | optional (not for 204 / some 1xx) |
 
 **When to use:**
 
@@ -146,23 +146,23 @@ Local preview of a built site; SPA `dist/` + `/api/` proxy; TLS termination; gzi
 
 #### Common pitfalls
 
-Treating `GET /path HTTP/2.0` as on-the-wire HTTP/2 — HTTP/2 has no textual request-line; DevTools still *shows* method + path. Using public-key crypto for the whole payload — TLS uses asymmetric crypto in the handshake, then **symmetric** session keys ([SSL/TLS handshake](#ssltls--https-handshake)). Compressing JPEGs/ZIP again ([HTTP compression](#http-compression-content-encoding)).
+Treating `GET /path HTTP/2.0` as on-the-wire HTTP/2 — HTTP/2 has no textual request-line; DevTools still _shows_ method + path. Using public-key crypto for the whole payload — TLS uses asymmetric crypto in the handshake, then **symmetric** session keys ([SSL/TLS handshake](#ssltls--https-handshake)). Compressing JPEGs/ZIP again ([HTTP compression](#http-compression-content-encoding)).
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
+| +                                            | −                                            |
+| -------------------------------------------- | -------------------------------------------- |
 | One place for TLS, compression, static files | Misconfigured proxy hides the real app error |
-| Modules cover cache, auth, reverse proxy | Dev `http-server` is not a production server |
+| Modules cover cache, auth, reverse proxy     | Dev `http-server` is not a production server |
 
 **Examples:**
 
 ```js
-import { createServer } from 'node:http';
+import { createServer } from "node:http";
 
 createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-  res.end('ok');
+  res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+  res.end("ok");
 }).listen(8080);
 ```
 
@@ -170,7 +170,7 @@ Local static preview (not for production load): `npx serve` or `npx http-server`
 
 **Thoughts:**
 
-*The web server speaks HTTP; apps, caches, and TLS are features of that process or of a reverse proxy in front of it.*
+_The web server speaks HTTP; apps, caches, and TLS are features of that process or of a reverse proxy in front of it._
 
 Protocol (client, proxy, messages): [HTTP protocol](#http-protocol). Listen port / `8080`: [Ports, sockets & network services](./6_web_api_apps.md#ports-sockets--network-services).
 
@@ -193,12 +193,12 @@ TCP/IP is the network stack; HTTP is an application protocol that runs on top of
 
 Layer names and why OSI still shows up in interviews: [OSI & TCP/IP models](./6_web_api_apps.md#osi--tcpip-models).
 
-| Protocol | Layer       | Role                       |
-| -------- | ----------- | -------------------------- |
+| Protocol | Layer       | Role                                                                   |
+| -------- | ----------- | ---------------------------------------------------------------------- |
 | IP       | Internet    | Addressing and routing ([IPv4 & IPv6](./6_web_api_apps.md#ipv4--ipv6)) |
-| TCP      | Transport   | Reliable ordered delivery  |
-| TLS      | Above TCP   | Encryption + server auth — not a TCP replacement ([HTTPS](#https)) |
-| HTTP     | Application | Request/response semantics |
+| TCP      | Transport   | Reliable ordered delivery                                              |
+| TLS      | Above TCP   | Encryption + server auth — not a TCP replacement ([HTTPS](#https))     |
+| HTTP     | Application | Request/response semantics                                             |
 
 Ports and listening sockets: [Ports, sockets & network services](./6_web_api_apps.md#ports-sockets--network-services). End-to-end path: [How the Internet works](./6_web_api_core.md#internet).
 
@@ -249,7 +249,7 @@ HTTPS is HTTP encrypted with TLS, providing confidentiality, integrity, and serv
 
 **Pluses and minuses:**
 
-| +                                 | −                                               |
+| +                                    | −                                                  |
 | ------------------------------------ | -------------------------------------------------- |
 | Stops MiTM reading/changing traffic  | First visit pays TLS handshake latency             |
 | Required for modern browser features | Certificate misconfig / expiry takes the site down |
@@ -265,7 +265,7 @@ https://example.com
 
 **Thoughts:**
 
-*HTTPS = HTTP + TLS handshake + encryption; the HTTP verbs and headers are the same, the wire is not.*
+_HTTPS = HTTP + TLS handshake + encryption; the HTTP verbs and headers are the same, the wire is not._
 
 On public Wi-Fi, HTTP is a **MITM** (read/alter) risk. TLS certificates from a trusted CA stop a café attacker from swapping keys. Users who click through cert warnings undo that. HSTS reduces HTTP downgrade. Symmetric vs public-key vs hashes: [Special — Encryption](./7_special_security.md#encryption). What a cert contains and who signs it: [TLS certificates](#tls-certificates-x509--pki). See [Special — MITM](./7_special_security.md#man-in-the-middle-mitm).
 
@@ -286,12 +286,12 @@ On public Wi-Fi, HTTP is a **MITM** (read/alter) risk. TLS certificates from a t
 
 HTTP methods have semantic properties — safe (read-only), idempotent (repeatable without side effects), and cacheable.
 
-| Property   | Meaning                   | Methods                                      |
-| ---------- | ------------------------- | -------------------------------------------- |
-| Safe       | No server state change    | GET, HEAD, OPTIONS, TRACE                    |
-| Idempotent | Same effect when repeated | GET, HEAD, OPTIONS, TRACE, PUT, DELETE       |
+| Property   | Meaning                   | Methods                                                             |
+| ---------- | ------------------------- | ------------------------------------------------------------------- |
+| Safe       | No server state change    | GET, HEAD, OPTIONS, TRACE                                           |
+| Idempotent | Same effect when repeated | GET, HEAD, OPTIONS, TRACE, PUT, DELETE                              |
 | Cacheable  | Response may be stored    | GET, HEAD (typically); POST/PATCH if freshness + `Content-Location` |
-| Neither    | Tunnel / side effects     | CONNECT (not safe, not idempotent, not cacheable) |
+| Neither    | Tunnel / side effects     | CONNECT (not safe, not idempotent, not cacheable)                   |
 
 **Examples:**
 
@@ -345,7 +345,7 @@ HSTS (`Strict-Transport-Security`) tells the browser to use HTTPS on future visi
 
 **Pluses and minuses:**
 
-| +                                             | −                                                  |
+| +                                                | −                                                     |
 | ------------------------------------------------ | ----------------------------------------------------- |
 | Fast bulk encryption after handshake             | Extra RTT(s) on cold connect                          |
 | Certificate proves you talk to the intended host | Wrong clock / missing intermediate CA fails handshake |
@@ -354,12 +354,12 @@ HSTS (`Strict-Transport-Security`) tells the browser to use HTTPS on future visi
 
 ```js
 // Node.js — enforce HTTPS in production
-if (process.env.NODE_ENV === 'production' && !req.secure) {
+if (process.env.NODE_ENV === "production" && !req.secure) {
   return res.redirect(301, `https://${req.headers.host}${req.url}`);
 }
 ```
 
-**Thoughts:** *TLS authenticates the server and sets keys; HTTP then runs inside that tunnel.*
+**Thoughts:** _TLS authenticates the server and sets keys; HTTP then runs inside that tunnel._
 
 **Sources:**
 
@@ -383,17 +383,17 @@ if (process.env.NODE_ENV === 'production' && !req.secure) {
 - Trust model: site A proves identity to visitor B because both trust CA T. T signs A’s cert with T’s private key. B hashes the cert fields and checks them against T’s signature using T’s **public** key from the root/intermediate. Match → the public key in the cert belongs to that subject (as far as T checked).
 - After the handshake, bulk traffic uses a **symmetric** session key. Asymmetric crypto authenticates the server and helps agree that key — it does not encrypt every HTTP byte.
 - Getting a cert: (1) public CA (Let’s Encrypt ACME / paid CA) after proving **domain control**; (2) **self-signed** (issuer = subject) for local/dev/intranet — browsers warn unless you install the issuer; (3) throwaway/fake names for lab only.
-- Chrome (2014+) pushed HTTPS; **July 2018** Chrome 68 labeled HTTP **Not secure**. Browsers did not generally *block* all HTTP sites. The padlock is a UI hint, not extra crypto.
+- Chrome (2014+) pushed HTTPS; **July 2018** Chrome 68 labeled HTTP **Not secure**. Browsers did not generally _block_ all HTTP sites. The padlock is a UI hint, not extra crypto.
 
 Organizations that sign certs after checks. Trust is the product: a discredited CA is dropped from root stores. Pick by inclusion in browser/OS stores, ACME automation, jurisdiction, price. **Let’s Encrypt** issues free **DV** certs via ACME (hosting often does this; otherwise Certbot or another ACME client).
 
-| Kind | What the CA actually checked | Typical use |
-| ---- | ---------------------------- | ----------- |
-| **DV** | Control of the domain (DNS/HTTP challenge) | Almost all public sites, Let’s Encrypt |
-| **OV** | Domain + organization identity | Some enterprises |
-| **EV** | Stricter org checks (CA/Browser Forum) | Banks historically; **no extra encryption**, browsers dropped the green-bar UI |
-| **Wildcard** | `*.example.com` (usually not the apex `example.com` unless also listed) | Many subdomains, one cert |
-| **SAN / multi-domain** | Several hostnames on one cert | `www` + apex + extras |
+| Kind                   | What the CA actually checked                                            | Typical use                                                                    |
+| ---------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **DV**                 | Control of the domain (DNS/HTTP challenge)                              | Almost all public sites, Let’s Encrypt                                         |
+| **OV**                 | Domain + organization identity                                          | Some enterprises                                                               |
+| **EV**                 | Stricter org checks (CA/Browser Forum)                                  | Banks historically; **no extra encryption**, browsers dropped the green-bar UI |
+| **Wildcard**           | `*.example.com` (usually not the apex `example.com` unless also listed) | Many subdomains, one cert                                                      |
+| **SAN / multi-domain** | Several hostnames on one cert                                           | `www` + apex + extras                                                          |
 
 DV/OV/EV differ in **identity vetting**, not cipher strength. Historical “Class 1–5” (VeriSign) and RU “физлицо / бизнес / EV” catalogs are vendor packaging; interview answer is **DV / OV / EV + wildcard/SAN**.
 
@@ -407,11 +407,11 @@ Treating `openssl req -new` output as a cert (it is a **CSR**). RSA key-exchange
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
+| +                                              | −                                                 |
+| ---------------------------------------------- | ------------------------------------------------- |
 | Stops casual MITM; unlocks secure-context APIs | Expiry / missing intermediate takes the site down |
-| Let’s Encrypt + ACME is free and automated | Self-signed is untrusted on the public web |
-| Same TLS crypto for cheap DV as for EV | Compromised CA is an industry-level failure |
+| Let’s Encrypt + ACME is free and automated     | Self-signed is untrusted on the public web        |
+| Same TLS crypto for cheap DV as for EV         | Compromised CA is an industry-level failure       |
 
 **Examples:**
 
@@ -430,7 +430,7 @@ openssl req -newkey rsa:2048 -x509 -sha256 -days 365 -nodes \
 
 **Thoughts:**
 
-*A CA signature on an X.509 cert lets the browser trust a public key for a hostname; TLS then uses that to authenticate the server and set symmetric keys.*
+_A CA signature on an X.509 cert lets the browser trust a public key for a hostname; TLS then uses that to authenticate the server and set symmetric keys._
 
 Handshake steps → [SSL/TLS handshake](#ssltls--https-handshake). MITM → [7_special.md](./7_special_security.md#man-in-the-middle-mitm). TLS termination at Nginx → [10_build.md — Nginx](./10_build_infra.md#nginx).
 
@@ -488,7 +488,7 @@ curl -v http://example.com
 # * connection  > request  < response
 ```
 
-**Thoughts:** *Learn HTTP/1.1 text; HTTP/2/3 change framing, not methods, status codes, or header meaning.*
+**Thoughts:** _Learn HTTP/1.1 text; HTTP/2/3 change framing, not methods, status codes, or header meaning._
 
 **Sources:**
 
@@ -509,12 +509,12 @@ curl -v http://example.com
 
 Send **general** headers first, then request- or response-only, then **representation/entity** headers (`Content-Type`, `Content-Length`, `Content-Encoding`). Names are case-insensitive. Custom headers are allowed. Typical jobs: `Host`, `Authorization`, cache (`Cache-Control`, `ETag`), language (`Accept-Language`), last modification.
 
-| Category | Role | Examples |
-| -------- | ---- | -------- |
-| General | Either side | `Cache-Control`, `Date`, `Connection` |
-| Request | Client only | `Authorization`, `Accept`, `Origin`, `Host`, `User-Agent` |
-| Response | Server only | `Set-Cookie`, `ETag`, `Location`, `WWW-Authenticate` |
-| Representation (entity) | Body metadata | `Content-Type`, `Content-Length`, `Content-Encoding` |
+| Category                | Role          | Examples                                                  |
+| ----------------------- | ------------- | --------------------------------------------------------- |
+| General                 | Either side   | `Cache-Control`, `Date`, `Connection`                     |
+| Request                 | Client only   | `Authorization`, `Accept`, `Origin`, `Host`, `User-Agent` |
+| Response                | Server only   | `Set-Cookie`, `ETag`, `Location`, `WWW-Authenticate`      |
+| Representation (entity) | Body metadata | `Content-Type`, `Content-Length`, `Content-Encoding`      |
 
 **When to use:** Negotiate encoding (`Accept-Encoding` / `Content-Encoding`) — [HTTP compression](#http-compression-content-encoding). Auth, cookies, CORS all live in headers.
 
@@ -529,7 +529,7 @@ User-Agent: MyApp/1.0
 Origin: https://app.example.com
 ```
 
-**Thoughts:** *Start-line is the verb/status; headers are the control plane.*
+**Thoughts:** _Start-line is the verb/status; headers are the control plane._
 
 **Sources:**
 
@@ -552,12 +552,12 @@ Origin: https://app.example.com
 2. Server picks one, compresses the body, responds with `Content-Encoding: br` (or `gzip`) and should send `Vary: Accept-Encoding` so caches store separate variants.
 3. `Content-Length` refers to the **encoded** bytes.
 
-| Token | Algorithm |
-| ----- | --------- |
-| `gzip` | LZ77 + CRC — universal |
-| `deflate` | zlib wrapper around deflate |
-| `br` | Brotli — usually smaller than gzip for text |
-| `zstd` | Zstandard — growing support |
+| Token     | Algorithm                                   |
+| --------- | ------------------------------------------- |
+| `gzip`    | LZ77 + CRC — universal                      |
+| `deflate` | zlib wrapper around deflate                 |
+| `br`      | Brotli — usually smaller than gzip for text |
+| `zstd`    | Zstandard — growing support                 |
 
 **When to use:**
 
@@ -569,9 +569,9 @@ Double-compressing (app + proxy both gzip). Treating Zopfli as a separate HTTP e
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
-| Smaller text payloads, faster load | CPU on server; tiny bodies may grow |
+| +                                      | −                                    |
+| -------------------------------------- | ------------------------------------ |
+| Smaller text payloads, faster load     | CPU on server; tiny bodies may grow  |
 | Brotli often beats gzip on HTML/CSS/JS | Missing `Vary` poisons shared caches |
 
 **Examples:**
@@ -587,7 +587,7 @@ Content-Encoding: br
 Vary: Accept-Encoding
 ```
 
-**Thoughts:** *Negotiate with `Accept-Encoding`; label the body with `Content-Encoding`; do not gzip JPEGs.*
+**Thoughts:** _Negotiate with `Accept-Encoding`; label the body with `Content-Encoding`; do not gzip JPEGs._
 
 **Sources:**
 
@@ -606,25 +606,25 @@ Vary: Accept-Encoding
 
 Methods express intent on a resource; status codes tell the client whether the request succeeded and how to proceed.
 
-| Method | Purpose |
-| ------ | ------- |
-| GET | Retrieve a representation |
-| HEAD | Like GET, no response body |
-| POST | Submit data / trigger action |
-| PUT | Replace the resource at this URI |
-| PATCH | Partial update |
-| DELETE | Remove the resource |
-| OPTIONS | Communication options / CORS preflight |
-| TRACE | Loop-back of the request (often disabled) |
-| CONNECT | TCP tunnel (typically HTTPS via proxy) |
+| Method  | Purpose                                   |
+| ------- | ----------------------------------------- |
+| GET     | Retrieve a representation                 |
+| HEAD    | Like GET, no response body                |
+| POST    | Submit data / trigger action              |
+| PUT     | Replace the resource at this URI          |
+| PATCH   | Partial update                            |
+| DELETE  | Remove the resource                       |
+| OPTIONS | Communication options / CORS preflight    |
+| TRACE   | Loop-back of the request (often disabled) |
+| CONNECT | TCP tunnel (typically HTTPS via proxy)    |
 
-| Code range | Meaning | Interview examples |
-| ---------- | ------- | ------------------ |
-| 1xx | Informational | `100 Continue` |
-| 2xx | Success | `200 OK`, `201 Created`, `204 No Content` |
-| 3xx | Redirect / revalidate | `301`, `307` (keep method), `304` |
-| 4xx | Client error | `400`, `403` vs `401`, `404` |
-| 5xx | Server error | `500`, `502`, `503`, `504` |
+| Code range | Meaning               | Interview examples                        |
+| ---------- | --------------------- | ----------------------------------------- |
+| 1xx        | Informational         | `100 Continue`                            |
+| 2xx        | Success               | `200 OK`, `201 Created`, `204 No Content` |
+| 3xx        | Redirect / revalidate | `301`, `307` (keep method), `304`         |
+| 4xx        | Client error          | `400`, `403` vs `401`, `404`              |
+| 5xx        | Server error          | `500`, `502`, `503`, `504`                |
 
 Safe / idempotent / PUT vs POST: [HTTP method characteristics](#http-method-characteristics) · [PUT vs POST](#put-vs-post) · [PUT vs PATCH](#put-vs-patch). Overview: [HTTP protocol](#http-protocol).
 
@@ -838,7 +838,7 @@ Cached **images** skip the network. Cached **JS/CSS** still cost parse (and JS e
 
 **Pluses and minuses:**
 
-| +                                  | −                                 |
+| +                                     | −                                    |
 | ------------------------------------- | ------------------------------------ |
 | Faster repeat loads, less server load | Stale data if TTL too long           |
 | 304 saves bandwidth                   | Invalidation is hard for dynamic API |
@@ -856,7 +856,7 @@ If-None-Match: "33a64df…"
 
 **Thoughts:**
 
-`Cache-Control` *is the HTTP/CDN layer; RTK Query is an in-memory client cache of JSON — they stack, they are not the same.*
+`Cache-Control` _is the HTTP/CDN layer; RTK Query / SWR / TanStack Query are in-memory **client** caches of JSON — they stack, they are not the same._ Next.js server caches → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR library → [SWR (stale-while-revalidate)](./4_react_ecosystem.md#swr-stale-while-revalidate).
 
 | Strategy               | Behavior                           |
 | ---------------------- | ---------------------------------- |
@@ -883,12 +883,12 @@ If-None-Match: "33a64df…"
 
 Browsers expose several APIs for asynchronous HTTP without full page reloads (AJAX pattern). `fetch` is the modern default; `XMLHttpRequest` remains for upload progress and some legacy paths.
 
-| API              | Status               |
-| ---------------- | -------------------- |
-| `fetch`          | Modern standard      |
+| API              | Status                   |
+| ---------------- | ------------------------ |
+| `fetch`          | Modern standard          |
 | `XMLHttpRequest` | Legacy + upload progress |
-| HTML `<form>`    | Full page navigation |
-| Axios / jQuery   | Third-party wrappers |
+| HTML `<form>`    | Full page navigation     |
+| Axios / jQuery   | Third-party wrappers     |
 
 **How it works:** `fetch(url, init)` returns `Promise<Response>`. Set `method` to an HTTP verb (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, …). JSON bodies need `JSON.stringify` and usually `Content-Type: application/json`. Network failures reject; HTTP 4xx/5xx do **not** — check `res.ok`. Body once: only one of `res.json()` / `text()` / `blob()` / `arrayBuffer()`.
 
@@ -901,9 +901,9 @@ Browsers expose several APIs for asynchronous HTTP without full page reloads (AJ
 **Examples:**
 
 ```js
-const res = await fetch('/api/save-text', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const res = await fetch("/api/save-text", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify(state),
 });
 if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -912,7 +912,7 @@ if (!res.ok) throw new Error(`HTTP ${res.status}`);
 ```js
 // download progress (fetch)
 const res = await fetch(url);
-const total = +res.headers.get('Content-Length') || 0;
+const total = +res.headers.get("Content-Length") || 0;
 const reader = res.body.getReader();
 let received = 0;
 const chunks = [];
@@ -957,7 +957,7 @@ while (true) {
 
 **Pluses and minuses:**
 
-| Feature           | +                                        | −                                        |
+| Feature           | +                                           | −                                           |
 | ----------------- | ------------------------------------------- | ------------------------------------------- |
 | `AbortController` | Cancels stale requests (search, navigation) | Must handle `AbortError` in catch           |
 | `FormData`        | Native multipart uploads                    | Less control than manual boundary           |
@@ -970,20 +970,20 @@ const ac = new AbortController();
 const timeout = setTimeout(() => ac.abort(), 8000);
 
 try {
-  const res = await fetch('/api/upload', {
-    method: 'POST',
+  const res = await fetch("/api/upload", {
+    method: "POST",
     signal: ac.signal,
     body: (() => {
       const fd = new FormData();
-      fd.append('title', 'Report');
-      fd.append('file', file);
+      fd.append("title", "Report");
+      fd.append("file", file);
       return fd;
     })(),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return await res.json();
 } catch (e) {
-  if (e.name === 'AbortError') return; // cancelled — ignore
+  if (e.name === "AbortError") return; // cancelled — ignore
   throw e;
 } finally {
   clearTimeout(timeout);
@@ -1022,7 +1022,7 @@ try {
 
 **Pluses and minuses:**
 
-| Approach       | +                | −                  |
+| Approach       | +                   | −                     |
 | -------------- | ------------------- | --------------------- |
 | IP-based       | Simple              | Shared NAT unfairness |
 | API key / user | Fair per tenant     | Requires auth         |
@@ -1044,7 +1044,7 @@ Content-Type: application/json
 async function fetchWithRetry(url, opts, retries = 3) {
   const res = await fetch(url, opts);
   if (res.status !== 429 || retries === 0) return res;
-  const wait = Number(res.headers.get('Retry-After') ?? 1) * 1000;
+  const wait = Number(res.headers.get("Retry-After") ?? 1) * 1000;
   await new Promise((r) => setTimeout(r, wait));
   return fetchWithRetry(url, opts, retries - 1);
 }

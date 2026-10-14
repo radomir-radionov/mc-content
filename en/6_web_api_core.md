@@ -6,7 +6,7 @@ Internet, DNS, and how the web stack fits together.
 
 ### Related docs
 
-- [Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Security](./6_web_api_security.md) · [Web APIs — Interview](./6_web_api_interview.md)
+- [Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Interview](./6_web_api_interview.md)
 
 ### Sections
 
@@ -448,26 +448,64 @@ console.log("debug");
 
 ### CDN (Content Delivery Network)
 
-**Definition:** A CDN is a geographically distributed network of edge servers that cache and serve static content closer to users.
+**Definition:** A geographically distributed network of **edge PoPs** that cache HTTP responses and serve them near the user. In frontend work, the CDN is usually the first **shared** cache between the browser and your origin.
+
+**How it works:**
+
+1. The browser resolves the asset hostname (`cdn.example.com`, `fonts.googleapis.com`, …) to a nearby edge (DNS CNAME or anycast).
+2. The edge returns a **fresh** cached object when possible; on a miss it fetches from **origin**, stores per TTL, and responds.
+3. The browser keeps a separate **HTTP cache** (memory/disk) using the same response headers — CDN and browser caches stack; neither replaces the other.
+
+```mermaid
+flowchart LR
+  Browser --> Edge[CDN edge]
+  Edge -->|hit| Browser
+  Edge -->|miss| Origin[Origin]
+  Origin --> Edge
+```
+
+| Layer              | What controls freshness        | Typical assets                          |
+| ------------------ | ------------------------------ | --------------------------------------- |
+| Browser HTTP cache | `Cache-Control`, `ETag`, `304` | JS, CSS, fonts, images (any hostname)   |
+| CDN edge           | Same headers + CDN rules       | Built bundles, media, sometimes HTML    |
+| Origin             | Source of truth                | App server, object storage, CI artifact |
+
+Pull vs push CDNs, cache keys, `Vary`, origin shield, and interview topics: [System design — CDN](./0_system_design_data.md#cdn-content-delivery-network).
+
+**When to use:** Fingerprinted JS/CSS/images on a CDN hostname; [`preconnect`](./1_html_structure.md#link-rel-types--resource-hints) before the first request to that origin; cacheable public GET responses only. In production, prefer **your** CDN for built assets over permanent third-party script URLs (version drift, availability, privacy).
 
 **Pluses and minuses:**
 
-| +                                | −                             |
-| -------------------------------- | ----------------------------- |
-| Lower latency, less origin load  | Cache invalidation complexity |
-| DDoS mitigation, TLS termination | Extra cost and configuration  |
+| +                                                              | −                                                         |
+| -------------------------------------------------------------- | --------------------------------------------------------- |
+| Lower transfer latency (often better TTFB for cacheable bytes) | Purge/TTL changes are eventual at the edge                |
+| Less origin bandwidth; TLS often at edge                       | Mis-set headers cache personalized HTML or `Set-Cookie`   |
+| HTTP/2 / HTTP/3 multiplexing at edge                           | Third-party CDN scripts need SRI + trust                  |
+| Helps when users are far from origin                           | Does not remove JS parse/execute cost after download      |
+| DDoS absorption at edge                                        | Debugging “stale on CDN, fine on origin” needs purge/tags |
 
 **Examples:**
 
 ```html
-<script src="https://cdn.example.com/lib/react.min.js"></script>
+<link rel="preconnect" href="https://cdn.example.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.example.com/app.abc123.css" />
+<script
+  src="https://cdn.example.com/app.abc123.js"
+  crossorigin
+  integrity="sha384-…"
+></script>
 ```
 
-**Thoughts:** Edge HTML + HTTP/2/3/TLS 1.3 is the usual network fix for high TTFB. Full metric: [TTFB](./6_web_api_security.md#ttfb-time-to-first-byte).
+- Hashed filenames: `Cache-Control: public, max-age=31536000, immutable` — [HTTP caching](./6_web_api_http.md#http-caching).
+- Document slowness before parse: CDN + cacheable HTML — [TTFB](./1_html_performance.md#ttfb-time-to-first-byte).
+
+**Thoughts:** CDN fixes **network** delivery; it does not shrink the [rendering pipeline](#browser-page-rendering-pipeline) work for JS. Use **Subresource Integrity** (`integrity` + `crossorigin`) when a CDN hosts scripts you do not build yourself. Authenticated pages: `private, no-store` or bypass rules — not a long `public` TTL. HTML performance checklist that points here: [TTFB — Network](./1_html_performance.md#ttfb-time-to-first-byte).
 
 **Sources:**
 
-[Cloudflare — What is a CDN?](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)
+- [MDN — HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
+- [MDN — Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)
+- [Cloudflare — What is a CDN?](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)
 
 ---
 

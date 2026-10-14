@@ -351,6 +351,8 @@ export default async function Page() {
 
 **Definition:** Извлекайте клиентские компоненты через SWR или TanStack Query, когда данные должны обновляться без навигации.
 
+Паттерны SWR (`mutate`, опции ревалидации) → [SWR (stale-while-revalidate)](./4_react_ecosystem.md#swr-stale-while-revalidate). Карта уровней → [Revalidation and invalidation across the stack](#revalidation-and-invalidation-across-the-stack).
+
 Паттерны TanStack Query: SSR prefetch, `HydrationBoundary`, persistent cache — [React — TanStack](./4_react_tanstack.md#ssr-prefetch--hydration).
 
 **When to use:** Бесконечная прокрутка, виджеты в реальном времени, персонализация после гидратации.
@@ -466,6 +468,39 @@ export default async function BlogPost({
 ## 8. Caching & revalidation
 
 _Темы следующие: Определение → Плюсы и минусы → Когда использовать → Пример → Примечания → Источник ([шаблон](./4_nextjs_core.md#topic-template))._
+
+<details>
+  <summary>Revalidation and invalidation across the stack</summary>
+
+### Revalidation and invalidation across the stack
+
+**Definition:** «Опыт кэширования» в проде обычно охватывает **несколько уровней**. Каждый кэширует своё и имеет свой API **ревалидации** или **инвалидации**. Частая ошибка — чинить не тот слой.
+
+**How it works:**
+
+| Уровень            | Что кэшируется                    | Ревалидация / инвалидация                                                                                      |
+| ------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **HTTP / CDN**     | Тела ответов, статика             | `Cache-Control`, `ETag` / `304`, purge CDN — [HTTP caching](./6_web_api_http.md#http-caching)                  |
+| **Next.js server** | Data Cache, Full Route Cache, RSC | `revalidateTag`, `revalidatePath`, `updateTag`, `router.refresh()` — ниже                                      |
+| **SWR (client)**   | JSON в памяти по `key`            | `mutate`, focus/reconnect, `refreshInterval` — [SWR](./4_react_ecosystem.md#swr-stale-while-revalidate)        |
+| **TanStack Query** | Кэш запросов по `queryKey`        | `invalidateQueries`, `onSuccess` мутации — [TanStack Query](./4_react_tanstack.md#working-with-tanstack-query) |
+
+**When to use:**
+
+- На собеседовании: «после сохранения данные устарели» — назовите **какой кэш** отдал старый UI и **какой API** обновили.
+- Новый Next.js: серверные кэши и теги для общих чтений; SWR/TanStack — только для клиентских виджетов.
+
+**Pluses and minuses:**
+
+| +                           | −                                          |
+| --------------------------- | ------------------------------------------ |
+| Ясные слои упрощают отладку | Путают HTTP-директиву SWR и библиотеку SWR |
+
+**Thoughts:** Route Handlers могут задавать [Vercel CDN cache headers](#vercel-cdn-cache-headers) для HTTP, а кэши App Router — для RSC/HTML; уровни **складываются**. См. [Common pitfall: stale UI after mutation](#common-pitfall-stale-ui-after-mutation).
+
+**Sources:** [nextjs.org/docs/app/guides/caching](https://nextjs.org/docs/app/guides/caching) · [MDN — HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
+
+</details>
 
 <details>
   <summary>Caching model overview</summary>
@@ -797,34 +832,145 @@ _Темы следующие: Определение → Плюсы и мину�
 
 ### Server Actions
 
-**Definition:** Асинхронные функции, отмеченные значком `"use server"` вызываемый из клиентских компонентов или `<form action>`. Next.js сериализует их как запросы **POST** — мост RPC между браузером и сервером.
+**Definition:** Асинхронные **Server Functions** (`"use server"`), которые Next.js отдаёт клиенту как **server references**. Вызов превращается в **POST** с зашифрованным action ID — RPC-мост для **мутаций**, а не общий read API.
 
-**When to use:** Отправка форм, мутации, внутренняя логика приложения.
+**How it works:**
+
+| Placement  | Pattern                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| **Module** | В начале `actions.ts` (или `lib/actions/*.ts`) — экспорт для импорта в Client Components            |
+| **Inline** | `async function save() { "use server"; … }` в Server Component, передаётся в `<form action={save}>` |
+
+1. Клиент вызывает `action` на `<form>` или импортирует reference и запускает в `startTransition` / `useActionState`.
+2. Next.js POSTит в приложение с action ID и **сериализуемыми** аргументами (`FormData`, строки, plain objects — не функции, `Date`, классы без plain-формы).
+3. Код выполняется **только на сервере** (БД, секреты, `cookies()` / `headers()` — в Next.js 15+ **await**).
+4. После успешной записи сбросьте кэши UI (`revalidatePath`, `revalidateTag`, `updateTag`) — см. [Common pitfall: stale UI after mutation](#common-pitfall-stale-ui-after-mutation).
+5. Опционально `redirect()` после мутации; он **бросает** — вызывайте **вне** `try/catch`, обычно **после** revalidation.
+
+Модель React (директивы, сериализация): [Server Functions](./4_react_rsc.md#server-functions) · ['use server'](./4_react_rsc.md#use-server).
+
+**When to use:**
+
+- Отправка форм и **мутации** из Server или Client Components.
+- Progressive enhancement: `<form action={action}>` работает **без** клиентского JS.
+- Colocated writes, когда потребитель только ваше Next-приложение — не мобильные клиенты и webhooks ([Route Handlers](#route-handlers)).
+
+**When not to use:**
+
+- **Чтение** / списки и детали — `async` Server Components или `fetch` в RSC ([Server Component fetching](#server-component-fetching)).
+- Публичные HTTP API, webhooks, произвольные методы — Route Handlers.
+- Долгие фоновые задачи — очередь + worker; action остаётся в рамках запроса.
 
 **Pluses and minuses:**
 
-| +                                        | −                                                          |
-| ---------------------------------------- | ---------------------------------------------------------- |
-| Совмещено с пользовательским интерфейсом | Не общедоступный HTTP API                                  |
-| Прогрессивное улучшение                  | POST-только под капотом                                    |
-| Типобезопасность с TypeScript            | Необходимо проверить все входные данные на стороне сервера |
+| +                                                | −                                                                                                     |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Рядом с UI; вызов из `<form action>`             | Не REST-контракт для сторонних систем                                                                 |
+| Progressive enhancement (JS не обязателен)       | Только POST; не кэшируется как GET                                                                    |
+| Типобезопасный импорт из Client Components       | Любой аргумент валидировать на сервере (не доверять `FormData`)                                       |
+| Встроенная same-origin CSRF-модель               | Cross-origin — `serverActions.allowedOrigins` — [CSRF with Server Actions](#csrf-with-server-actions) |
+| Сочетается с `useActionState` для ошибок/pending | Легко забыть `revalidatePath` / `revalidateTag` после записи                                          |
+
+#### Common pitfalls
+
+- Использовать actions как **query** API — они в очереди и последовательны; чтение через RSC.
+- `as string` у `formData.get` без проверок — Zod или аналог в action.
+- Только `router.refresh()` после мутации — часто мало; явно revalidate серверные кэши.
+- `redirect()` в `catch` или до revalidation — навигация обрывает поток; сначала revalidate.
+- Мутации в **render** Server Component — только в actions или Route Handlers.
 
 **Examples:**
 
 ```tsx
-// app/actions.ts
+// app/actions.ts — shared module
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 
 export async function createTodo(formData: FormData) {
-  const title = formData.get("title") as string;
-  await db.todo.create({ data: { title } });
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { error: "Title required" };
+
+  const todo = await db.todo.create({
+    data: { title, userId: session.user.id },
+  });
+
   revalidatePath("/todos");
+  redirect(`/todos/${todo.id}`);
 }
 ```
 
-**Sources:** [nextjs.org/docs/app/getting-started/mutating-data](https://nextjs.org/docs/app/getting-started/mutating-data)
+```tsx
+// app/todos/new/page.tsx — Server Component + inline action
+export default function NewTodoPage() {
+  async function create(formData: FormData) {
+    "use server";
+    const title = String(formData.get("title"));
+    await db.todo.create({ data: { title } });
+    revalidatePath("/todos");
+  }
+
+  return (
+    <form action={create}>
+      <input name="title" required />
+      <button type="submit">Add</button>
+    </form>
+  );
+}
+```
+
+```tsx
+// app/actions.ts — сигнатура для useActionState (prevState, FormData)
+export async function createTodoWithState(
+  _prev: { error?: string },
+  formData: FormData,
+) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { error: "Title required" };
+  await db.todo.create({ data: { title } });
+  revalidatePath("/todos");
+  return { error: undefined };
+}
+```
+
+```tsx
+"use client";
+
+import { useActionState } from "react";
+import { createTodoWithState } from "@/app/actions";
+
+const initialState = { error: undefined as string | undefined };
+
+export function TodoForm() {
+  const [state, formAction, pending] = useActionState(
+    createTodoWithState,
+    initialState,
+  );
+
+  return (
+    <form action={formAction}>
+      <input name="title" required />
+      {state?.error && <p role="alert">{state.error}</p>}
+      <button type="submit" disabled={pending}>
+        Save
+      </button>
+    </form>
+  );
+}
+```
+
+**Thoughts:** Держите actions тонкими — auth, validate, один вызов `lib/db` или `fetch(API_URL)` ([Colocated backend](#colocated-backend-in-nextjs) · [Separate backend](#fetching-from-a-separate-backend)). Ошибки полей — сериализуемый state для `useActionState`; throw или `redirect` при жёстких сбоях. Сравнение: [Comparison table](#comparison-table). Pending без prop drilling: [useFormStatus - 19](./4_react_hooks.md#useformstatus-19).
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/mutating-data](https://nextjs.org/docs/app/getting-started/mutating-data)
+- [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+- [nextjs.org/docs/app/guides/server-actions](https://nextjs.org/docs/app/guides/server-actions)
 
 </details>
 

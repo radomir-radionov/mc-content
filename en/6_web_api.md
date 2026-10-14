@@ -1,10 +1,10 @@
 # Web APIs — hub
 
-HTTP, REST, auth, real-time, web app types, and security. Theory lives in the topic files below.
+HTTP, REST, auth, real-time, and web app types. Browser security lives under [Core](./0_core.md). Theory lives in the topic files below.
 
 ### Related docs
 
-[Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Security](./6_web_api_security.md) · [Web APIs — Interview](./6_web_api_interview.md)
+[Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Interview](./6_web_api_interview.md) · [Core — hub](./0_core.md)
 
 ### Navigation
 
@@ -15,7 +15,6 @@ HTTP, REST, auth, real-time, web app types, and security. Theory lives in the to
 | [Web APIs — API styles](./6_web_api_rest.md)                  | REST, XML, SOAP, RPC, tRPC, and how they differ.         |
 | [Web APIs — Auth & storage](./6_web_api_auth.md)              | AuthN/AuthZ, sessions, JWT, OAuth, cookies, and storage. |
 | [Web APIs — Apps](./6_web_api_apps.md)                        | Protocols, real-time, and types of web apps.             |
-| [Web APIs — Security](./6_web_api_security.md)                | Browser security, CWV, and third-party integrations.     |
 | [Web APIs — Interview](./6_web_api_interview.md)              | Interview Q&A for HTTP and Web APIs.                     |
 | [WebSockets — Interview](./6_web_api_websockets_interview.md) | WebSocket interview questions, answers not filled in.    |
 | [PWA — Interview](./6_web_api_pwa_interview.md)               | PWA interview questions, answers not filled in.          |

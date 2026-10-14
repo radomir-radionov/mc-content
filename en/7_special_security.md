@@ -2,11 +2,11 @@
 
 Security model and common web attacks.
 
-[← Back to hub](./7_special.md)
+[← Back to hub](./0_core.md)
 
 ### Related docs
 
-- [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Design patterns](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Testing](./7_special_testing.md) · [Web security](./7_special_security.md) · [Interview leftovers](./7_special_interview.md)
+- [Accessibility](./1_html_a11y.md) · [Browser security](./6_web_api_security.md) · [Security — Interview](./7_special_security_interview.md)
 
 ### Sections
 

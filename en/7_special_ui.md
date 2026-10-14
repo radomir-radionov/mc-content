@@ -6,7 +6,7 @@ How a screen is read and styled. UI principles cover aesthetics, readability, an
 
 ### Related docs
 
-- [UX laws](./7_special_ux.md) · [HTML — Accessibility](./1_html_a11y.md) · [CSS — Visual](./2_css_visual.md) · [HTML — hub](./1_html.md)
+- [UX laws](./7_special_ux.md) · [CSS — Visual](./2_css_visual.md) · [HTML — hub](./1_html.md)
 
 ### Main concepts
 

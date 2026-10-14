@@ -2,11 +2,11 @@
 
 Модель безопасности и распространенные веб-атаки.
 
-[ ← Вернуться в хаб](./7_special.md)
+[ ← Вернуться в хаб](./0_core.md)
 
 ### Related docs
 
-- [Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Шаблоны проектирования](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Тестирование](./7_special_testing.md) · [Веб-безопасность](./7_special_security.md) · [Остатки интервью](./7_special_interview.md)
+- [Доступность](./1_html_a11y.md) · [Безопасность браузера](./6_web_api_security.md) · [Безопасность — интервью](./7_special_security_interview.md)
 
 ### Sections
 

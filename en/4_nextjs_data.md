@@ -356,6 +356,8 @@ export default async function Page() {
 
 **Definition:** Fetch in Client Components via SWR or TanStack Query when data must update without navigation.
 
+Canonical SWR patterns (`mutate`, revalidation options) → [SWR (stale-while-revalidate)](./4_react_ecosystem.md#swr-stale-while-revalidate). Stack map → [Revalidation and invalidation across the stack](#revalidation-and-invalidation-across-the-stack).
+
 For TanStack Query SSR prefetch, `HydrationBoundary`, and persistent cache patterns, see [React — TanStack](./4_react_tanstack.md#ssr-prefetch--hydration).
 
 **When to use:** Infinite scroll, real-time widgets, post-hydration personalization.
@@ -471,6 +473,39 @@ export default async function BlogPost({
 ## 8. Caching & revalidation
 
 _Topics follow: Definition → Pros / Cons → When to use → Example → Notes → Source ([template](./4_nextjs_core.md#topic-template))._
+
+<details>
+  <summary>Revalidation and invalidation across the stack</summary>
+
+### Revalidation and invalidation across the stack
+
+**Definition:** Production “caching experience” usually spans **several layers**. Each layer caches different artifacts and exposes different **revalidation** or **invalidation** APIs. Bugs often come from fixing the wrong layer.
+
+**How it works:**
+
+| Layer              | What is cached                            | Revalidate / invalidate                                                                                         |
+| ------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **HTTP / CDN**     | Response bodies, static assets            | `Cache-Control`, `ETag` / `304`, CDN purge — [HTTP caching](./6_web_api_http.md#http-caching)                   |
+| **Next.js server** | Data Cache, Full Route Cache, RSC payload | `revalidateTag`, `revalidatePath`, `updateTag`, `router.refresh()` — below                                      |
+| **SWR (client)**   | In-memory JSON per `key`                  | `mutate`, focus/reconnect, `refreshInterval` — [SWR](./4_react_ecosystem.md#swr-stale-while-revalidate)         |
+| **TanStack Query** | Query cache per `queryKey`                | `invalidateQueries`, mutation `onSuccess` — [TanStack Query](./4_react_tanstack.md#working-with-tanstack-query) |
+
+**When to use:**
+
+- Interview answer: “Data looked stale after save” — state **which cache** served the old UI and **which API** you used to refresh it.
+- Greenfield Next.js: prefer server caches + tags for shared reads; add SWR/TanStack only for client-only widgets.
+
+**Pluses and minuses:**
+
+| +                                     | −                                                 |
+| ------------------------------------- | ------------------------------------------------- |
+| Clear layering improves debuggability | Easy to confuse HTTP SWR directive vs SWR library |
+
+**Thoughts:** Route Handlers can set [Vercel CDN cache headers](#vercel-cdn-cache-headers) for the HTTP layer while App Router caches handle RSC/HTML — they stack. See [Common pitfall: stale UI after mutation](#common-pitfall-stale-ui-after-mutation).
+
+**Sources:** [nextjs.org/docs/app/guides/caching](https://nextjs.org/docs/app/guides/caching) · [MDN — HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
+
+</details>
 
 <details>
   <summary>Caching model overview</summary>
@@ -802,34 +837,145 @@ _Topics follow: Definition → Pros / Cons → When to use → Example → Notes
 
 ### Server Actions
 
-**Definition:** Async functions marked with `"use server"` callable from Client Components or `<form action>`. Next.js serializes them as **POST** requests — an RPC bridge between browser and server.
+**Definition:** Async **Server Functions** (`"use server"`) that Next.js exposes to the client as **server references**. Invocations become **POST** requests with an encrypted action ID — an RPC bridge for **mutations**, not a general read API.
 
-**When to use:** Form submissions, mutations, internal app logic.
+**How it works:**
+
+| Placement  | Pattern                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| **Module** | Top of `actions.ts` (or `lib/actions/*.ts`) — export functions imported by Client Components            |
+| **Inline** | `async function save() { "use server"; … }` inside a Server Component, passed to `<form action={save}>` |
+
+1. Client calls `action` on `<form>` or imports the reference and runs it inside `startTransition` / `useActionState`.
+2. Next.js POSTs to the app with the action ID + **serializable** arguments (`FormData`, strings, plain objects — not functions, `Date`, or class instances unless plain).
+3. The function runs **only on the server** (DB, secrets, `cookies()` / `headers()` — **await** them in Next.js 15+).
+4. After a successful write, invalidate caches the UI depends on (`revalidatePath`, `revalidateTag`, `updateTag`) — see [Common pitfall: stale UI after mutation](#common-pitfall-stale-ui-after-mutation).
+5. Optional `redirect()` navigates after mutate; it **throws** — call it **outside** `try/catch` and typically **after** revalidation.
+
+React-level model (directives, serialization): [Server Functions](./4_react_rsc.md#server-functions) · ['use server'](./4_react_rsc.md#use-server).
+
+**When to use:**
+
+- Form submits and in-app **mutations** (create/update/delete) from Server or Client Components.
+- Progressive enhancement: `<form action={action}>` works **without** client JS.
+- Colocated writes when the only consumer is your Next app — not mobile apps or partner webhooks ([Route Handlers](#route-handlers)).
+
+**When not to use:**
+
+- **Reads** / list/detail data — use `async` Server Components or `fetch` in RSC ([Server Component fetching](#server-component-fetching)).
+- Public HTTP APIs, webhooks, arbitrary verbs — Route Handlers.
+- Long-running background jobs — queue + worker; actions should stay request-scoped.
 
 **Pluses and minuses:**
 
-| +                         | −                                   |
-| ------------------------- | ----------------------------------- |
-| Colocated with UI         | Not a public HTTP API               |
-| Progressive enhancement   | POST-only under the hood            |
-| Type-safe with TypeScript | Must validate all input server-side |
+| +                                              | −                                                                                                              |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Colocated with UI; works from `<form action>`  | Not a documented REST contract for third parties                                                               |
+| Progressive enhancement (no JS required)       | POST-only transport; not cacheable like GET                                                                    |
+| Type-safe imports from Client Components       | Every argument must be validated server-side (never trust `FormData`)                                          |
+| Built-in same-origin CSRF posture              | Cross-origin calls need `serverActions.allowedOrigins` — [CSRF with Server Actions](#csrf-with-server-actions) |
+| Pairs with `useActionState` for errors/pending | Easy to forget `revalidatePath` / `revalidateTag` after write                                                  |
+
+#### Common pitfalls
+
+- Treating actions as a **query** API — they are queued and sequential; use RSC for reads.
+- `as string` on `formData.get` without length/format checks — use Zod or similar in the action.
+- Only `router.refresh()` after mutate — often insufficient; revalidate server caches explicitly.
+- `redirect()` inside `catch` or before revalidation — navigation aborts the flow; revalidate first.
+- Mutations in Server Component **render** — only in actions or Route Handlers.
 
 **Examples:**
 
 ```tsx
-// app/actions.ts
+// app/actions.ts — shared module
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 
 export async function createTodo(formData: FormData) {
-  const title = formData.get("title") as string;
-  await db.todo.create({ data: { title } });
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { error: "Title required" };
+
+  const todo = await db.todo.create({
+    data: { title, userId: session.user.id },
+  });
+
   revalidatePath("/todos");
+  redirect(`/todos/${todo.id}`);
 }
 ```
 
-**Sources:** [nextjs.org/docs/app/getting-started/mutating-data](https://nextjs.org/docs/app/getting-started/mutating-data)
+```tsx
+// app/todos/new/page.tsx — Server Component + inline action
+export default function NewTodoPage() {
+  async function create(formData: FormData) {
+    "use server";
+    const title = String(formData.get("title"));
+    await db.todo.create({ data: { title } });
+    revalidatePath("/todos");
+  }
+
+  return (
+    <form action={create}>
+      <input name="title" required />
+      <button type="submit">Add</button>
+    </form>
+  );
+}
+```
+
+```tsx
+// app/actions.ts — shape for useActionState (prevState, FormData)
+export async function createTodoWithState(
+  _prev: { error?: string },
+  formData: FormData,
+) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { error: "Title required" };
+  await db.todo.create({ data: { title } });
+  revalidatePath("/todos");
+  return { error: undefined };
+}
+```
+
+```tsx
+"use client";
+
+import { useActionState } from "react";
+import { createTodoWithState } from "@/app/actions";
+
+const initialState = { error: undefined as string | undefined };
+
+export function TodoForm() {
+  const [state, formAction, pending] = useActionState(
+    createTodoWithState,
+    initialState,
+  );
+
+  return (
+    <form action={formAction}>
+      <input name="title" required />
+      {state?.error && <p role="alert">{state.error}</p>}
+      <button type="submit" disabled={pending}>
+        Save
+      </button>
+    </form>
+  );
+}
+```
+
+**Thoughts:** Keep actions thin — auth, validate, call `lib/db` or `fetch(API_URL)` once ([Colocated backend](#colocated-backend-in-nextjs) · [Separate backend](#fetching-from-a-separate-backend)). Return field errors as serializable state for `useActionState`; throw or `redirect` for hard failures. Compare invocation models: [Comparison table](#comparison-table). Pending UI without prop drilling: [useFormStatus - 19](./4_react_hooks.md#useformstatus-19).
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/mutating-data](https://nextjs.org/docs/app/getting-started/mutating-data)
+- [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+- [nextjs.org/docs/app/guides/server-actions](https://nextjs.org/docs/app/guides/server-actions)
 
 </details>
 

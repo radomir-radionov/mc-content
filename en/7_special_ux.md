@@ -6,7 +6,7 @@ How people decide, move, and remember. UX principles cover logic, usability, and
 
 ### Related docs
 
-- [UI principles](./7_special_ui.md) · [HTML — Accessibility](./1_html_a11y.md) · [CSS — Visual](./2_css_visual.md) · [HTML — hub](./1_html.md)
+- [UI principles](./7_special_ui.md) · [CSS — Visual](./2_css_visual.md) · [HTML — hub](./1_html.md)
 
 ### Main concepts
 

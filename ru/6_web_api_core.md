@@ -6,7 +6,7 @@ Internet, DNS, and how the web stack fits together.
 
 ### Related docs
 
-- [Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Security](./6_web_api_security.md) · [Web APIs — Interview](./6_web_api_interview.md)
+- [Web APIs — Core](./6_web_api_core.md) · [Web APIs — HTTP](./6_web_api_http.md) · [Web APIs — API styles](./6_web_api_rest.md) · [Web APIs — Auth & storage](./6_web_api_auth.md) · [Web APIs — Apps](./6_web_api_apps.md) · [Web APIs — Interview](./6_web_api_interview.md)
 
 ### Sections
 
@@ -448,26 +448,64 @@ console.log("debug");
 
 ### CDN (Content Delivery Network)
 
-**Definition:** A CDN is a geographically distributed network of edge servers that cache and serve static content closer to users.
+**Definition:** Географически распределённая сеть **edge PoP**, которая кэширует HTTP-ответы и отдаёт их ближе к пользователю. Во фронтенде CDN — обычно первый **общий** кэш между браузером и вашим origin.
+
+**How it works:**
+
+1. Браузер резолвит хост ассета (`cdn.example.com`, `fonts.googleapis.com`, …) в ближайший edge (DNS CNAME или anycast).
+2. Edge отдаёт **свежий** объект из кэша; при miss тянет с **origin**, сохраняет на TTL и отвечает.
+3. У браузера свой **HTTP-кэш** (память/диск) по тем же заголовкам — уровни **складываются**, один не заменяет другой.
+
+```mermaid
+flowchart LR
+  Browser --> Edge[CDN edge]
+  Edge -->|hit| Browser
+  Edge -->|miss| Origin[Origin]
+  Origin --> Edge
+```
+
+| Layer              | Чем задаётся свежесть          | Типичные ресурсы                        |
+| ------------------ | ------------------------------ | --------------------------------------- |
+| Browser HTTP cache | `Cache-Control`, `ETag`, `304` | JS, CSS, шрифты, картинки (любой хост)  |
+| CDN edge           | Те же заголовки + правила CDN  | Сборки, медиа, иногда HTML              |
+| Origin             | Источник правды                | App server, object storage, артефакт CI |
+
+Pull vs push, cache key, `Vary`, origin shield и интервью: [System design — CDN](./0_system_design_data.md#cdn-content-delivery-network).
+
+**When to use:** Фингерпринтованные JS/CSS/картинки на CDN-хосте; [`preconnect`](./1_html_structure.md#link-rel-types--resource-hints) до первого запроса к origin; только публичные кэшируемые GET. В проде предпочитайте **свой** CDN для сборки, а не вечные third-party script URL (версии, доступность, приватность).
 
 **Pluses and minuses:**
 
-| +                                | −                             |
-| -------------------------------- | ----------------------------- |
-| Lower latency, less origin load  | Cache invalidation complexity |
-| DDoS mitigation, TLS termination | Extra cost and configuration  |
+| +                                                             | −                                                              |
+| ------------------------------------------------------------- | -------------------------------------------------------------- |
+| Ниже задержка передачи (часто лучше TTFB для кэшируемых байт) | Purge/TTL на edge распространяются не мгновенно                |
+| Меньше bandwidth с origin; TLS часто на edge                  | Неверные заголовки кэшируют персональный HTML или `Set-Cookie` |
+| HTTP/2 / HTTP/3 на edge                                       | Сторонние CDN-скрипты — нужны SRI и доверие                    |
+| Помогает, когда пользователи далеко от origin                 | Не убирает parse/execute JS после скачивания                   |
+| Поглощение DDoS на edge                                       | «На CDN устарело, на origin ок» — purge/теги                   |
 
 **Examples:**
 
 ```html
-<script src="https://cdn.example.com/lib/react.min.js"></script>
+<link rel="preconnect" href="https://cdn.example.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.example.com/app.abc123.css" />
+<script
+  src="https://cdn.example.com/app.abc123.js"
+  crossorigin
+  integrity="sha384-…"
+></script>
 ```
 
-**Thoughts:** Edge HTML + HTTP/2/3/TLS 1.3 is the usual network fix for high TTFB. Full metric: [TTFB](./6_web_api_security.md#ttfb-time-to-first-byte).
+- Хешированные имена: `Cache-Control: public, max-age=31536000, immutable` — [HTTP caching](./6_web_api_http.md#http-caching).
+- Медленный документ до parse: CDN + кэшируемый HTML — [TTFB](./1_html_performance.md#ttfb-time-to-first-byte).
+
+**Thoughts:** CDN ускоряет **сеть**, но не сокращает работу [rendering pipeline](#browser-page-rendering-pipeline) для JS. Для чужих скриптов на CDN — **Subresource Integrity** (`integrity` + `crossorigin`). Аутентифицированные страницы: `private, no-store` или bypass, а не длинный `public` TTL. Чеклист в [TTFB — Network](./1_html_performance.md#ttfb-time-to-first-byte).
 
 **Sources:**
 
-[Cloudflare — What is a CDN?](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)
+- [MDN — HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
+- [MDN — Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)
+- [Cloudflare — What is a CDN?](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)
 
 ---
 

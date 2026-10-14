@@ -190,6 +190,7 @@ function Dialog({ title, onClose, children }: DialogProps) {
 | Подход                          | Когда                                                                    |
 | ------------------------------- | ------------------------------------------------------------------------ |
 | **Серверный компонент** `fetch` | По умолчанию в маршрутизаторе приложений Next.js — кэшируется на сервере |
+| **SWR**                         | Клиентские хуки — stale-while-revalidate, `mutate`, опрос                |
 | **Запрос TanStack**             | Клиентские SPA — кэширование, выборка, оптимистические обновления        |
 | **RTK-запрос**                  | Та же идея внутри Redux Toolkit (`createApi`)                            |
 | `use()` **+ Интрига**           | Асинхронность в дереве компонентов с помощью React 19                    |
@@ -210,11 +211,86 @@ async function Page() {
 }
 ```
 
-**Thoughts:** Не `useEffect` + `fetch` для данных начальной страницы, если RSC или загрузчик маршрутизатора могут их предоставить. Заголовки HTTP и кэш клиента → [6_web_api.md — кэширование HTTP](./6_web_api.md). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
+**Thoughts:** Не `useEffect` + `fetch` для данных начальной страницы, если RSC или загрузчик маршрутизатора могут их предоставить. HTTP/CDN и клиентский кэш → [Web APIs — HTTP caching](./6_web_api_http.md#http-caching). Серверные кэши Next.js → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR → [SWR (stale-while-revalidate)](#swr-stale-while-revalidate). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
 
 **Sources:**
 
-[react.dev/reference/rsc/server-comComponents](https://react.dev/reference/rsc/server-comComponents) · [Поведение кэша запросов RTK](https://redux-toolkit.js.org/rtk-query/usage/cache-behavior)
+[react.dev/reference/rsc/server-components](https://react.dev/reference/rsc/server-components) · [RTK Query cache behavior](https://redux-toolkit.js.org/rtk-query/usage/cache-behavior)
+
+SWR (stale-while-revalidate)
+
+</details>
+
+<details>
+  <summary>SWR (stale-while-revalidate)</summary>
+
+### SWR (stale-while-revalidate)
+
+**Definition:** **SWR** — библиотека React-хуков для **клиентской** загрузки данных. Реализует UX-паттерн **stale-while-revalidate**: сразу показать данные из кэша, в фоне перезапросить, обновить UI после ответа.
+
+**How it works:**
+
+- `useSWR(key, fetcher, options)` — `key` (строка или массив), `fetcher`, опции (`refreshInterval`, `revalidateOnFocus`, `revalidateOnReconnect`).
+- **Кэш в памяти** по `key`. **Дедупликация:** одинаковые ключи в пределах `dedupingInterval` (по умолчанию **2000** мс) дают один сетевой запрос.
+- **Автоматическая ревалидация:** фокус окна и восстановление сети (по умолчанию включены); опрос через `refreshInterval`.
+- **Инвалидация / обновление:** `mutate(key, data?, { revalidate })` — патч кэша и опциональный refetch; `useSWRConfig().mutate` с **фильтром** по ключам — массовая ревалидация или очистка (например, при logout).
+
+**When to use:**
+
+- Client Components, которым нужны свежие данные без навигации (метрики, уведомления, живые списки).
+- Next.js, где критичный контент уже на сервере, а виджетам нужен refresh после гидрации — вместе с [Client-side fetching](./4_nextjs_data.md#client-side-fetching).
+
+**Pluses and minuses:**
+
+| +                                              | −                                                     |
+| ---------------------------------------------- | ----------------------------------------------------- |
+| Быстрый UI из кэша; фокус/reconnect из коробки | Ещё один клиентский кэш, который нужно отлаживать     |
+| Меньше API, чем у полноценных query-библиотек  | Не заменяет HTTP `Cache-Control` и Data Cache Next.js |
+
+**Examples:**
+
+```tsx
+"use client";
+
+import useSWR, { mutate } from "swr";
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+export function LiveMetrics() {
+  const { data, isLoading } = useSWR("/api/metrics", fetcher, {
+    refreshInterval: 5000,
+  });
+  if (isLoading && !data) return <p>Loading…</p>;
+  return <div>{data.value}</div>;
+}
+
+// После мутации в другом месте — ревалидация одного ключа
+export async function afterCreateItem() {
+  await mutate("/api/items");
+}
+```
+
+```tsx
+import { useSWRConfig } from "swr";
+
+function LogoutButton() {
+  const { mutate } = useSWRConfig();
+  return (
+    <button
+      type="button"
+      onClick={() => mutate(() => true, undefined, { revalidate: false })}
+    >
+      Log out
+    </button>
+  );
+}
+```
+
+**Thoughts:** Директива HTTP `Cache-Control: stale-while-revalidate` и npm-пакет **SWR** — разные уровни; см. [Revalidation and invalidation across the stack](./4_nextjs_data.md#revalidation-and-invalidation-across-the-stack). Для инвалидации по `queryKey` и сложных мутаций — [Working with TanStack Query](./4_react_tanstack.md#working-with-tanstack-query).
+
+**Sources:**
+
+[swr.vercel.app](https://swr.vercel.app/) · [SWR — revalidation](https://swr.vercel.app/docs/revalidation) · [SWR — mutation](https://swr.vercel.app/docs/mutation)
 
 Формы
 

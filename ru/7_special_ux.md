@@ -6,7 +6,7 @@
 
 ### Related docs
 
-- [Принципы UI](./7_special_ui.md) · [HTML — Доступность](./1_html_a11y.md) · [CSS — Оформление](./2_css_visual.md) · [HTML — hub](./1_html.md)
+- [Принципы UI](./7_special_ui.md) · [CSS — Оформление](./2_css_visual.md) · [HTML — hub](./1_html.md)
 
 ### Main concepts
 

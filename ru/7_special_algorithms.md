@@ -6,7 +6,7 @@ Big O, общие алгоритмы и шаблоны интервью. Тео�
 
 ### Related docs
 
-- [Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Шаблоны проектирования](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Тестирование](./7_special_testing.md) · [Веб-безопасность](./7_special_security.md) · [Остатки интервью](./7_special_interview.md)
+- [Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Шаблоны проектирования](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Тестирование](./7_special_testing.md) · [Остатки интервью](./7_special_interview.md)
 
 ### Navigation
 

@@ -1,10 +1,10 @@
 # Web APIs — hub
 
-HTTP, REST, аутентификация, режим реального времени, типы веб-приложений и безопасность. Теория находится в файлах тем ниже.
+HTTP, REST, аутентификация, режим реального времени и типы веб-приложений. Безопасность браузера — в [Core](./0_core.md). Теория находится в файлах тем ниже.
 
 ### Related docs
 
-[Веб-API — Core](./6_web_api_core.md) · [Веб-API — HTTP](./6_web_api_http.md) · [Веб-API — стили API](./6_web_api_rest.md) · [Веб-API — аутентификация и хранение](./6_web_api_auth.md) · [Веб-API — Приложения](./6_web_api_apps.md) · [Веб-API — Безопасность](./6_web_api_security.md) · [Веб-API — Интервью](./6_web_api_interview.md)
+[Веб-API — Core](./6_web_api_core.md) · [Веб-API — HTTP](./6_web_api_http.md) · [Веб-API — стили API](./6_web_api_rest.md) · [Веб-API — аутентификация и хранение](./6_web_api_auth.md) · [Веб-API — Приложения](./6_web_api_apps.md) · [Веб-API — Интервью](./6_web_api_interview.md) · [Core — hub](./0_core.md)
 
 ### Navigation
 
@@ -15,7 +15,6 @@ HTTP, REST, аутентификация, режим реального врем
 | [Веб-API — стили API](./6_web_api_rest.md)                   | REST, XML, SOAP, RPC, tRPC и их различия.                   |
 | [Веб-API — аутентификация и хранение](./6_web_api_auth.md)   | AuthN/AuthZ, сеансы, JWT, OAuth, файлы cookie и хранилище.  |
 | [Веб-API — Приложения](./6_web_api_apps.md)                  | Протоколы, режим реального времени и типы веб-приложений.   |
-| [Веб-API — Безопасность](./6_web_api_security.md)            | Безопасность браузера, CWV и сторонние интеграции.          |
 | [Веб-API — Интервью](./6_web_api_interview.md)               | Вопросы и ответы на собеседовании по HTTP и веб-API.        |
 | [WebSockets — Интервью](./6_web_api_websockets_interview.md) | Вопросы по WebSockets, ответы не заполнены.                 |
 | [PWA — Интервью](./6_web_api_pwa_interview.md)               | Вопросы по PWA, ответы не заполнены.                        |

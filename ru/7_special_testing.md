@@ -4,7 +4,7 @@ AAA, the test pyramid, doubles, Jest/Vitest, RTL, MSW, and specialized test type
 
 ### Related docs
 
-- [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [SDLC](./7_special_sdlc.md) · [Web security](./7_special_security.md) · [Interview leftovers](./7_special_interview.md)
+- [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [SDLC](./7_special_sdlc.md) · [Interview leftovers](./7_special_interview.md)
 
 ### Navigation
 

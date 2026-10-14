@@ -175,22 +175,57 @@ React `useMemo` memoizes values; `useCallback` memoizes functions. Reselect memo
 
 ### CDN (Content Delivery Network)
 
-**Definition:** Geographically distributed edge servers that cache and serve static content close to users.
+**Definition:** A geographically distributed network of **edge PoPs** (points of presence) that cache copies of content and answer requests from the PoP nearest the user, falling back to **origin** on a cache miss or when content is stale.
 
-**When to use:** Images, JS/CSS bundles, videos, fonts, API responses with cache headers.
+**How it works:**
+
+1. DNS for the asset hostname points at the CDN (CNAME or anycast IP).
+2. The client requests e.g. `https://cdn.example.com/app.abc123.js`.
+3. The edge node checks whether it has a **fresh** copy (HTTP `Cache-Control` / `Expires`, plus CDN-specific rules).
+4. **Cache hit** — the edge returns the object without calling origin (lower latency, less origin bandwidth).
+5. **Cache miss** — the edge fetches from **origin** (object storage, Nginx, app server), stores the response for the configured TTL, and returns it. Later requests in that region usually hit the edge copy.
+
+```mermaid
+flowchart LR
+  User --> DNS
+  DNS --> Edge[CDN edge PoP]
+  Edge -->|hit| User
+  Edge -->|miss| Origin[Origin / object storage]
+  Origin --> Edge
+```
+
+| Model        | How content reaches the edge                                 | Typical use                            |
+| ------------ | ------------------------------------------------------------ | -------------------------------------- |
+| **Pull CDN** | Edge fetches on miss; you change files at origin + TTL/purge | Websites, cacheable GET APIs           |
+| **Push CDN** | You upload objects to CDN storage before users request them  | Large video libraries, global binaries |
+
+The edge builds a **cache key** from the URL (path + query string) and headers named in `Vary` (e.g. `Accept-Encoding` for gzip vs Brotli). Keys that are too broad or too narrow cause wrong sharing or duplicate entries — `Vary` must match what actually changes the response body.
+
+**When to use:** Hashed JS/CSS/fonts/images, public media, HTML shells with short TTL or ISR, read-heavy GET APIs with explicit `Cache-Control: public`. Add an **origin shield** (or one consolidated egress) when many edges would otherwise **stampede** origin after a cold start or mass TTL expiry.
 
 **Pluses and minuses:**
 
-| +                               | −                                           |
-| ------------------------------- | ------------------------------------------- |
-| Lower latency for static assets | Cache invalidation delay                    |
-| Reduces origin server load      | Cost at very high scale                     |
-| DDoS absorption                 | Dynamic content needs careful cache headers |
-| TLS termination at edge         | Stale content if TTL too long               |
+| +                                      | −                                                       |
+| -------------------------------------- | ------------------------------------------------------- |
+| Lower latency (user ↔ nearby edge)     | Purge and TTL changes propagate gradually               |
+| Offloads bandwidth and TLS from origin | Wrong headers cache personalized HTML or cookies        |
+| Absorbs volumetric DDoS at the edge    | Request/egress cost at very high scale                  |
+| Many PoPs / anycast routing            | POST/PUT and uncacheable APIs still hit origin          |
+| Optional WAF, bot management, HTTP/3   | “Works on origin, stale on CDN” needs trace IDs / purge |
 
-**Examples:** `Cache-Control: public, max-age=31536000, immutable` for hashed build assets. `max-age=60` for semi-dynamic API responses.
+**Examples:**
 
-**Thoughts:** CDN for static assets is table stakes. Don't CDN personalized authenticated responses without Vary headers and short TTL.
+- Hashed build assets: `Cache-Control: public, max-age=31536000, immutable` — details in [HTTP caching](./6_web_api_http.md#http-caching).
+- Semi-dynamic JSON: `public, max-age=60, stale-while-revalidate=300` — edge may serve stale while revalidating in the background.
+- Authenticated HTML/API: `private, no-store` or route rules that **bypass** the CDN for `/account/*`; shared caches must not store responses with `Set-Cookie` unless you fully understand the rules.
+- After deploy: prefer **new filenames** (content hash) over purge; when needed, CDN **purge by URL or tag**. Platform-specific edge headers: [Vercel CDN cache headers](./4_nextjs_data.md#vercel-cdn-cache-headers).
+
+**Thoughts:** CDN usually sits in front of origin — see the [Reverse proxy](#reverse-proxy) diagram. It stacks with other caches (browser → CDN → reverse proxy → [Caching strategies](#caching-strategies) / Redis → database); it does not replace in-app caching. Browser loading (`preconnect`, SRI, third-party scripts): [Web APIs — CDN](./6_web_api_core.md#cdn-content-delivery-network). For interviews: mention **thundering herd** on origin when a hot object expires — mitigate with `stale-while-revalidate`, edge **request collapsing**, or pre-warming. Personalized or session-bound responses need `private` / `no-store`, or edge logic that varies on cookie/header — not a long `max-age` alone.
+
+**Sources:**
+
+- [MDN — HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
+- [Cloudflare — What is a CDN?](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)
 
 </details>
 

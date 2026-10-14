@@ -454,31 +454,69 @@ if (import.meta.server) {
 
 ### Route-level caching (ISR / SWR)
 
-**Definition:** Nitro `routeRules` can cache rendered HTML and API responses — similar in spirit to Next.js ISR.
+**Definition:** **`routeRules`** in `nuxt.config` tell **Nitro** how to render and **cache HTTP responses** per URL pattern — prerendered static HTML, origin `cache`, stale-while-revalidate (`swr`), CDN incremental static regeneration (`isr`), redirects, CORS, and `ssr: false` islands. This is **route-level** caching (full HTML or API response), separate from **`useFetch` / `useAsyncData`** keys that dedupe data within one SSR request and the Nuxt payload.
 
-**How it works:** `isr: 3600` or `swr: 60` on a route rule tells Nitro to cache the response and revalidate in the background after TTL.
+**What SWR and ISR mean:**
 
-**When to use:** Semi-static pages (product catalog, blog) on a hybrid deployment without full static rebuild.
+- **SWR (stale-while-revalidate)** — named after the HTTP `Cache-Control: stale-while-revalidate` idea. The server (or reverse proxy) keeps a **copy of the last rendered response**. While the copy is fresh, every visitor gets it instantly. When the TTL expires, the **next** request can still receive that **stale** copy for speed, while Nitro **renders a new version in the background** and replaces the cache. Good when slightly old HTML is OK and you want low latency without a full static rebuild. `swr: 300` ≈ “revalidate after 300 seconds.”
+- **ISR (incremental static regeneration)** — term from the Next.js ecosystem: treat a page like **static HTML**, but **refresh it over time** instead of rebuilding the whole site on every content change. In Nuxt, **`isr` uses the same stale-while-revalidate flow as `swr`**, plus on supported hosts (**Vercel**, **Netlify**) the response can be stored in the **CDN edge** cache, not only on the origin. `isr: true` keeps the edge copy until the **next deploy**.
+
+**How it works:**
+
+- Patterns use Nitro route matching (`/blog/**`, `/api/*`). Modules can add rules with `extendRouteRules` from `@nuxt/kit`.
+- **`prerender: true`** — generate HTML at **build** time and ship it as static assets (SSG).
+- **`cache: { maxAge }`** — set cache headers and let Nitro cache the response for `maxAge` seconds (typical for `/api/*`).
+- **`swr: number | true`** — **stale-while-revalidate** on the server or reverse proxy. After TTL, clients still receive the **cached** response while Nitro **regenerates** in the background. On the `node-server` preset, Nitro can cache the **full response**. `true` adds SWR cache headers without a fixed `Max-Age`.
+- **`isr: number | true`** — same regeneration model as `swr`, but on platforms that support it (**Vercel**, **Netlify**) the response can also be stored in the **CDN** edge cache. `true` keeps content until the **next deploy**.
+- Routes using `isr` or `swr` also emit **`_payload.json`** beside HTML so client navigations load cached data instead of refetching (see [Payload and hydration](#payload-and-hydration)).
+- **`ssr: false`** — disable server HTML for that path (client-only island); not a cache TTL, but part of the same hybrid-rendering surface.
+
+**When to use:**
+
+- Semi-static marketing pages, product listings, or blogs where slightly stale HTML is acceptable.
+- Public JSON under `/api/**` with a predictable TTL.
+- **Avoid** for authenticated, per-user, or highly dynamic views — caching is usually keyed by URL; personalized HTML needs `cache: false`, private routes, or client-only fetching.
+
+**Pluses and minuses:**
+
+| +                                                  | −                                                       |
+| -------------------------------------------------- | ------------------------------------------------------- |
+| Mix SSG, ISR/SWR, SPA islands, and live SSR in one app | TTL + CDN vs origin behavior is easy to misconfigure |
+| Cuts origin load and improves repeat-visit TTFB      | Users may see stale HTML until TTL or regen completes   |
+| `_payload.json` pairs with HTML for faster routing | Full-response caching varies by Nitro preset            |
+| Declarative config instead of ad hoc CDN rules     | `isr` CDN semantics depend on the deployment platform   |
 
 **Examples:**
 
 ```ts
 export default defineNuxtConfig({
   routeRules: {
+    "/": { prerender: true },
     "/blog/**": { isr: 3600 },
-    "/api/products/**": { swr: 300 },
+    "/products/**": { swr: 300 },
+    "/api/catalog/*": { cache: { maxAge: 60 * 60 } },
+    "/admin/**": { ssr: false },
+    "/old-docs": { redirect: { to: "/docs", statusCode: 301 } },
   },
 });
 ```
 
-**Pluses and minuses:**
+```ts
+// Inside a Nuxt module — same shape as nuxt.config routeRules
+import { defineNuxtModule, extendRouteRules } from "@nuxt/kit";
 
-| +                                 | −                              |
-| --------------------------------- | ------------------------------ |
-| Fresh-ish content without rebuild | CDN + payload cache complexity |
-| Works on serverless hosts         | TTL tuning required            |
+export default defineNuxtModule({
+  setup() {
+    extendRouteRules("/preview/**", { swr: 60 * 5 });
+  },
+});
+```
 
-**Sources:** [nuxt.com/docs/4.x/getting-started/server](https://nuxt.com/docs/4.x/getting-started/server)
+**Thoughts:** Compared with Next.js **ISR**, Nuxt exposes `isr` / `swr` on **`routeRules`** rather than a per-page `revalidate` export. Invalidation is mostly **time-based** (TTL or redeploy), not tag-based unless you add custom logic. Keep `_payload.json` small with **`pick` / `transform`** on fetches. For cookie-based locale or auth, confirm the host does not serve one visitor’s cached HTML to another.
+
+**See also:** [Payload and hydration](#payload-and-hydration) · [Hybrid rendering (routeRules)](./4_nuxt_core.md#hybrid-rendering-routerules)
+
+**Sources:** [nuxt.com/docs/4.x/guide/concepts/rendering](https://nuxt.com/docs/4.x/guide/concepts/rendering) · [nuxt.com/docs/4.x/getting-started/server](https://nuxt.com/docs/4.x/getting-started/server) · [nuxt.com/docs/4.x/guide/best-practices/performance](https://nuxt.com/docs/4.x/guide/best-practices/performance)
 
 </details>
 

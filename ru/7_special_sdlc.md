@@ -4,7 +4,7 @@
 
 ### Related docs
 
-* [Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Шаблоны проектирования](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Тестирование](./7_special_testing.md) · [Веб-безопасность](./7_special_security.md) · [Остатки интервью](./7_special_interview.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [DevOps](./15_devops.md)
+* [Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Шаблоны проектирования](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Тестирование](./7_special_testing.md) · [Остатки интервью](./7_special_interview.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [DevOps](./15_devops.md)
 
 ### Sections
 

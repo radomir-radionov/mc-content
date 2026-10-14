@@ -6,7 +6,7 @@
 
 ### Related docs
 
-- [Законы UX](./7_special_ux.md) · [HTML — Доступность](./1_html_a11y.md) · [CSS — Оформление](./2_css_visual.md) · [HTML — hub](./1_html.md)
+- [Законы UX](./7_special_ux.md) · [CSS — Оформление](./2_css_visual.md) · [HTML — hub](./1_html.md)
 
 ### Main concepts
 

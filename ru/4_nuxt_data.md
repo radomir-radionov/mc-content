@@ -452,31 +452,69 @@ if (import.meta.server) {
 
 ### Route-level caching (ISR / SWR)
 
-**Definition:** Nitro `routeRules` могут кэшировать rendered HTML и API responses — по духу похоже на Next.js ISR.
+**Definition:** **`routeRules`** в `nuxt.config` задают **Nitro**, как рендерить и **кэшировать HTTP-ответы** по шаблону URL — prerender (SSG), origin `cache`, stale-while-revalidate (`swr`), CDN incremental static regeneration (`isr`), редиректы, CORS и острова с `ssr: false`. Это **кэш на уровне маршрута** (целый HTML или API response), отдельно от ключей **`useFetch` / `useAsyncData`**, которые дедуплицируют данные внутри одного SSR-запроса и Nuxt payload.
 
-**How it works:** `isr: 3600` или `swr: 60` на route rule говорит Nitro кэшировать response и revalidate в фоне после TTL.
+**What SWR and ISR mean:**
 
-**When to use:** Полустатические страницы (каталог продуктов, блог) на hybrid deployment без полного static rebuild.
+- **SWR (stale-while-revalidate)** — от HTTP-идеи `Cache-Control: stale-while-revalidate`. Сервер (или reverse proxy) хранит **копию последнего отрендеренного ответа**. Пока копия «свежая», все получают её мгновенно. Когда TTL истёк, **следующий** запрос всё ещё может получить **устаревшую** копию для скорости, пока Nitro **в фоне рендерит новую версию** и обновляет кэш. Подходит, когда чуть устаревший HTML допустим и не нужен полный static rebuild. `swr: 300` ≈ «revalidate через 300 секунд».
+- **ISR (incremental static regeneration)** — термин из экосистемы Next.js: страница как **статический HTML**, но **обновляется со временем**, без пересборки всего сайта при каждом изменении контента. В Nuxt **`isr` даёт тот же stale-while-revalidate поток, что и `swr`**, плюс на поддерживаемых хостах (**Vercel**, **Netlify**) ответ может лежать в **CDN edge** cache, а не только на origin. `isr: true` держит edge-копию до **следующего деплоя**.
+
+**How it works:**
+
+- Шаблоны совпадают через Nitro route matching (`/blog/**`, `/api/*`). Модули добавляют правила через `extendRouteRules` из `@nuxt/kit`.
+- **`prerender: true`** — HTML генерируется на **сборке** и отдаётся как статический asset (SSG).
+- **`cache: { maxAge }`** — cache headers и кэш ответа в Nitro на `maxAge` секунд (часто для `/api/*`).
+- **`swr: number | true`** — **stale-while-revalidate** на сервере или reverse proxy. После TTL клиенты всё ещё получают **закэшированный** ответ, пока Nitro **перегенерирует** страницу в фоне. На preset `node-server` Nitro может кэшировать **полный response**. `true` добавляет SWR headers без фиксированного `Max-Age`.
+- **`isr: number | true`** — та же модель регенерации, что у `swr`, но на платформах с поддержкой (**Vercel**, **Netlify**) ответ может жить в **CDN** edge cache. `true` держит контент до **следующего деплоя**.
+- Маршруты с `isr` или `swr` также отдают **`_payload.json`** рядом с HTML, чтобы client navigation не перезапрашивала данные (см. [Payload and hydration](#payload-and-hydration)).
+- **`ssr: false`** — отключить server HTML для пути (только клиент); это не TTL-кэш, но часть того же hybrid-rendering API.
+
+**When to use:**
+
+- Полустатические лендинги, каталоги, блоги, где устаревший на несколько минут HTML допустим.
+- Публичный JSON под `/api/**` с предсказуемым TTL.
+- **Избегать** для авторизованных, персональных или сильно динамичных экранов — кэш обычно по URL; персональный HTML требует `cache: false`, приватных маршрутов или client-only fetching.
+
+**Pluses and minuses:**
+
+| + | − |
+|---|---|
+| SSG, ISR/SWR, SPA-острова и live SSR в одном приложении | TTL и CDN vs origin легко настроить неверно |
+| Меньше нагрузки на origin, лучше TTFB при повторных визитах | Пользователь может видеть stale HTML до TTL или regen |
+| `_payload.json` ускоряет client routing вместе с HTML | Полный response cache зависит от Nitro preset |
+| Декларативный config вместо разрозненных CDN rules | Семантика `isr` на CDN зависит от платформы деплоя |
 
 **Examples:**
 
 ```ts
 export default defineNuxtConfig({
   routeRules: {
+    '/': { prerender: true },
     '/blog/**': { isr: 3600 },
-    '/api/products/**': { swr: 300 },
+    '/products/**': { swr: 300 },
+    '/api/catalog/*': { cache: { maxAge: 60 * 60 } },
+    '/admin/**': { ssr: false },
+    '/old-docs': { redirect: { to: '/docs', statusCode: 301 } },
   },
 })
 ```
 
-**Pluses and minuses:**
+```ts
+// В Nuxt module — тот же формат, что routeRules в nuxt.config
+import { defineNuxtModule, extendRouteRules } from '@nuxt/kit'
 
-| + | − |
-|---|---|
-| Свежий-ish контент без rebuild | CDN + payload cache complexity |
-| Работает на serverless hosts | Нужна настройка TTL |
+export default defineNuxtModule({
+  setup() {
+    extendRouteRules('/preview/**', { swr: 60 * 5 })
+  },
+})
+```
 
-**Sources:** [nuxt.com/docs/4.x/getting-started/server](https://nuxt.com/docs/4.x/getting-started/server)
+**Thoughts:** По сравнению с Next.js **ISR**, в Nuxt `isr` / `swr` живут в **`routeRules`**, а не в per-page `revalidate`. Инвалидация в основном **по времени** (TTL или redeploy), не tag-based без своей логики. Уменьшайте `_payload.json` через **`pick` / `transform`** на fetch. Для locale или auth по cookie проверьте, что хост не отдаёт чужой закэшированный HTML.
+
+**See also:** [Payload and hydration](#payload-and-hydration) · [Hybrid rendering (routeRules)](./4_nuxt_core.md#hybrid-rendering-routerules)
+
+**Sources:** [nuxt.com/docs/4.x/guide/concepts/rendering](https://nuxt.com/docs/4.x/guide/concepts/rendering) · [nuxt.com/docs/4.x/getting-started/server](https://nuxt.com/docs/4.x/getting-started/server) · [nuxt.com/docs/4.x/guide/best-practices/performance](https://nuxt.com/docs/4.x/guide/best-practices/performance)
 
 </details>
 

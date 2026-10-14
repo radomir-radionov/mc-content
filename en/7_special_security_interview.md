@@ -2,11 +2,11 @@
 
 Answers are filled for the published interview set.
 
-[← Back to hub](./7_special.md)
+[← Back to hub](./0_core.md)
 
 ### Related docs
 
-- [Web security](./7_special_security.md) · [Web security — Interview](./7_special_security_interview.md)
+- [Accessibility](./1_html_a11y.md) · [Web security](./7_special_security.md) · [Browser security](./6_web_api_security.md)
 
 ### Sections
 
@@ -54,7 +54,7 @@ Security Headers
 
 - **X-Content-Type-Options**: Prevents content type sniffing.
 - **X-Frame-Options**: Protects against clickjacking.
-- **Content-Security-Policy**:  Mitigates cross-site scripting attacks and other code injection attacks.
+- **Content-Security-Policy**: Mitigates cross-site scripting attacks and other code injection attacks.
 - **X-XSS-Protection**: Activates the Cross-site scripting (XSS) filter in web browsers.
 
 Data Validity and Sanitation
@@ -89,7 +89,7 @@ app = Flask(__name__)
 # Example: Setting Content-Security-Policy Header
 @app.after_request
 def add_security_headers(response):
-    response.headers.add('Content-Security-Policy', 
+    response.headers.add('Content-Security-Policy',
                           "default-src 'self'; script-src 'self' 'unsafe-inline';")
     return response
 
@@ -169,6 +169,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 httpd = HTTPServer(('localhost', 8000), SimpleHTTPRequestHandler)
 httpd.serve_forever()
 ```
+
 Use Command `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365` to create self-signed SSL certificate.
 
 Code Example: Basic HTTPS Server
@@ -416,7 +417,6 @@ The **session key** is the cryptographic linchpin of secure sessions. It's a rel
 Key Generation
 
 - **Randomness**: The session key's security hinges on its unpredictability. Suitable cryptographic algorithms and high-entropy sources, such as hardware RNGs or truly random user-generated input, are essential for the key's randomness. Consistent hashing can provide a more streamlined key distribution.
-
   - **Key Size**: Longer key lengths bolster the session's security. 128-bit keys, for example, are generally deemed secure against common attacks.
 
 Session Key Establishment:
@@ -429,11 +429,11 @@ The Diffie-Hellman algorithm enables two parties to formulate a shared secret wi
 
 ```plaintext
   Here is the Key Exchange
-  
+
   User:
   Private Key: a
   Public Key: g^a mod p
-  
+
   Server:
   Private Key: b
   Public Key: g^b mod p
@@ -450,9 +450,9 @@ Additional Validation
 
 To further bolster the security and confidence in the session establishment process, a series of mechanisms are often added:
 
-  - **Certificates**: Verify the web server's identity, as well as establishing trust.
+- **Certificates**: Verify the web server's identity, as well as establishing trust.
 
-  - **Token-Based Systems**: Convert temporary tokens into sessions to keep user data secure even further.
+- **Token-Based Systems**: Convert temporary tokens into sessions to keep user data secure even further.
 
 **Sources:**
 
@@ -534,7 +534,7 @@ Cross-Site Request Forgery (CSRF)
 
 Mitigation
 
-- **Use Anti-CSRF Tokens**: Use tokens unique to authenticated users, or  employ CORS (Cross-Origin Resource Sharing) headers.
+- **Use Anti-CSRF Tokens**: Use tokens unique to authenticated users, or employ CORS (Cross-Origin Resource Sharing) headers.
 
 Unvalidated Redirects and Forwards
 
@@ -566,8 +566,8 @@ Here is the HTML code:
 
 ```html
 <form action="/comments" method="POST">
-    <textarea name="comment" placeholder="Enter your comment"></textarea>
-    <button type="submit">Post Comment</button>
+  <textarea name="comment" placeholder="Enter your comment"></textarea>
+  <button type="submit">Post Comment</button>
 </form>
 ```
 
@@ -577,9 +577,9 @@ Here is the HTML code:
 
 ```html
 <form action="/make-transfer" method="POST">
-    <input type="text" name="amount" />
-    <input type="text" name="toAccount" />
-    <button type="submit">Transfer</button>
+  <input type="text" name="amount" />
+  <input type="text" name="toAccount" />
+  <button type="submit">Transfer</button>
 </form>
 ```
 
@@ -728,7 +728,7 @@ Code Example: Parameterized Query in Python
 
 Here is the Python code:
 
-  ```python
+```python
 import sqlite3
 
 conn = sqlite3.connect('example.db')
@@ -744,7 +744,7 @@ cursor.execute(query, (username, password))
 
 # Close
 conn.close()
-  ```
+```
 
 **Sources:**
 
@@ -890,7 +890,7 @@ Implementation:
   This meta tag should be placed in the `<head>` section of HTML pages.
 
   ```html
-  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
   ```
 
 Content Security Policy (CSP)
@@ -919,7 +919,7 @@ JavaScript-Based Defense
 
 - **Pointer Lock API**: More elaborate, this API can be leveraged to confine mouse movements to a specified region on a web page.
 
-   Using the Pointer Lock API might not be a general solution; however, the lock will prevent an iframe from moving its related elements during clickjacking attempts.
+  Using the Pointer Lock API might not be a general solution; however, the lock will prevent an iframe from moving its related elements during clickjacking attempts.
 
   startPointerLock()
 
@@ -1041,17 +1041,19 @@ Code Example: SSL/TLS in Node.js
 Here is the Node.js code:
 
 ```javascript
-const https = require('https');
-const fs = require('fs');
+const https = require("https");
+const fs = require("fs");
 
 const options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
+  key: fs.readFileSync("key.pem"),
+  cert: fs.readFileSync("cert.pem"),
 };
 
-https.createServer(options, (req, res) => {
-  // Handle secure requests
-}).listen(443);
+https
+  .createServer(options, (req, res) => {
+    // Handle secure requests
+  })
+  .listen(443);
 ```
 
 **Sources:**
@@ -1124,7 +1126,6 @@ In a Java web application, the `response` object is used to send the cookie to t
 - [Devinterview.io — Web Security](https://devinterview.io/questions/web-and-mobile-development/web-security-interview-questions/)
 
 </details>
-
 
 ### Authentication and Authorization
 
@@ -1439,7 +1440,6 @@ Set-Cookie: id=; Expires=Friday, 17-May-03 18:45:00 GMT
 - [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 </details>
 
-
 ### Network Security Concerns
 
 <details>
@@ -1584,7 +1584,8 @@ SRI checks bytes. It does not decide whether you should execute that third party
 <script
   src="https://cdn.example.com/script.js"
   integrity="sha384-<base64-hash>"
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"
+></script>
 ```
 
 **Sources:**
@@ -1592,7 +1593,6 @@ SRI checks bytes. It does not decide whether you should execute that third party
 - [MDN — Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity)
 - [OWASP Denial of Service Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html)
 </details>
-
 
 ### Secure Coding Practices
 
@@ -1739,7 +1739,6 @@ X-Content-Type-Options: nosniff
 - [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html)
 </details>
 
-
 ### Data Protection and Privacy
 
 <details>
@@ -1881,7 +1880,6 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 </details>
 
-
 ### Advanced Web Security Concepts
 
 <details>
@@ -2021,7 +2019,6 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 - [MDN — Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security)
 - [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html)
 </details>
-
 
 ### Security Testing and Audits
 
@@ -2174,7 +2171,6 @@ Static analysis does not see a live configuration or a missing firewall rule. Pa
 - [OWASP Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)
 </details>
 
-
 ### Compliance and Standards
 
 <details>
@@ -2289,7 +2285,6 @@ MFA belongs on the accounts that can open those records, and again on sensitive 
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 - [OWASP Multifactor Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html)
 </details>
-
 
 ### Emerging Threats and Trends
 
@@ -2428,7 +2423,6 @@ Prefer access to a specific application over a broad VPN. A WAF can filter reque
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 </details>
 
-
 ### Incident Response and Handling
 
 <details>
@@ -2540,7 +2534,6 @@ Automated blocking, which Zero Trust lists next to the SIEM, still needs a teste
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 - [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
 </details>
-
 
 ### Cloud Security
 
@@ -2683,7 +2676,6 @@ A WAF sees only traffic that passes through it. Direct paths to the origin bypas
 - [OWASP Zero Trust Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Zero_Trust_Architecture_Cheat_Sheet.html)
 - [OWASP Virtual Patching Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Virtual_Patching_Cheat_Sheet.html)
 </details>
-
 
 ### Security in Web Application Frameworks
 
@@ -2845,7 +2837,6 @@ elem.textContent = untrusted;
 - [OWASP AJAX Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AJAX_Security_Cheat_Sheet.html)
 </details>
 
-
 ### Mobile Web Security
 
 <details>
@@ -2956,7 +2947,6 @@ Disable debugging on release builds, verify the app signature, and do not treat 
 
 - [OWASP Mobile Application Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Mobile_Application_Security_Cheat_Sheet.html)
 </details>
-
 
 ### Secure Infrastructure
 
@@ -3070,7 +3060,6 @@ Do not treat the balancer as the session or the permission system. REST endpoint
 - [OWASP Network Segmentation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Network_Segmentation_Cheat_Sheet.html)
 - [OWASP Secure Cloud Architecture Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Cloud_Architecture_Cheat_Sheet.html)
 </details>
-
 
 ### Cryptography in Web Security
 
@@ -3198,7 +3187,6 @@ For a highly privileged REST service, the REST sheet says to consider mutually a
 - [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html)
 </details>
 
-
 ### DevSecOps and Web Security
 
 <details>
@@ -3315,7 +3303,6 @@ A green pipeline shows the checks you encoded. It does not replace a human revie
 - [OWASP CI CD Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html)
 </details>
 
-
 ### API and Web Service Security
 
 <details>
@@ -3395,11 +3382,14 @@ Unbounded depth or amount can exhaust the service. Set depth and amount limits, 
 **Examples:**
 
 ```javascript
-app.use('/graphql', graphqlHTTP({
-  schema: MySessionAwareGraphQLSchema,
-  validationRules: [NoIntrospection],
-  graphiql: process.env.NODE_ENV === 'development',
-}));
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: MySessionAwareGraphQLSchema,
+    validationRules: [NoIntrospection],
+    graphiql: process.env.NODE_ENV === "development",
+  }),
+);
 ```
 
 **Sources:**
@@ -3466,7 +3456,6 @@ Retry-After: 30
 - [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html)
 - [OWASP GraphQL Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/GraphQL_Cheat_Sheet.html)
 </details>
-
 
 ### Web Security Culture and Policy
 
@@ -3609,7 +3598,6 @@ The protocol also drives preparation: audit logs before and after security event
 - [OWASP Mobile Application Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Mobile_Application_Security_Cheat_Sheet.html)
 - [OWASP Software Supply Chain Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html)
 </details>
-
 
 ### Miscellaneous Web Security
 
