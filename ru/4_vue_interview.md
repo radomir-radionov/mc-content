@@ -34,9 +34,9 @@ Vue library or framework?
 </details>
 
 <details>
-  <summary>В чём разница между computed и watch?</summary>
+  <summary>Vue library or framework?</summary>
 
-### В чём разница между computed и watch?
+### Vue library or framework?
 
 **Answer:** Ядро Vue — это прогрессивная UI-библиотека, которую вы монтируете через `createApp`. С Vue Router + Pinia + Vite она ведёт себя как стек фреймворка. **Nuxt** — полноценный full-stack фреймворк поверх Vue. На интервью: «Vue прогрессивен — библиотека в ядре, экосистема дополняет стек».
 
