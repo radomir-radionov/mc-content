@@ -6,11 +6,12 @@
 
 ### Related docs
 
-- [TypeScript — hub](./5_ts.md) · [Интервью](./5_ts_interview.md)
+- [TypeScript — hub](./5_ts.md) · [API contracts](./5_ts_api_contracts.md) · [Интервью](./5_ts_interview.md)
 
 ### Sections
 
 - [Static typing & basics](#static-typing-basics)
+- [Strict compiler options](#strict-compiler-options)
 - [Compiler & tsconfig](#compiler-tsconfig)
 - [tsconfig.json](#tsconfig-json)
 - [Declaration files (.d.ts)](#declaration-files-dts)
@@ -332,6 +333,67 @@ const user = { name: "Ada" };
 **Sources:** [TypeScript с нуля](https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html)
 
 </details>
+
+---
+
+## Strict compiler options
+
+<details>
+<summary>strict flag family</summary>
+
+**Definition:** `"strict": true` в `compilerOptions` включает **семейство** проверок, закрывающих главные «дыры» между JavaScript и TypeScript. При миграции legacy можно включать флаги по одному.
+
+**How it works:**
+
+| Flag                           | Effect                                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------- |
+| `noImplicitAny`                | Ошибка, если TS вывел бы `any` для параметра или переменной без типа                  |
+| `strictNullChecks`             | `null` / `undefined` отдельно; нужны `?.`, `??` и сужение типов                       |
+| `strictFunctionTypes`          | Параметры функций проверяются **контравариантно** (строже колбэки)                    |
+| `strictBindCallApply`          | Типизированные `bind`, `call`, `apply`                                                |
+| `strictPropertyInitialization` | Поля класса должны быть инициализированы в конструкторе или через definite assignment |
+| `noImplicitThis`               | У `this` в функциях должен быть известный тип                                         |
+| `alwaysStrict`                 | В emit добавляется `"use strict"`                                                     |
+| `useUnknownInCatchVariables`   | В `catch (e)` тип `unknown`, а не `any`                                               |
+
+**When to use:** На новых проектах — **`strict: true`**. На brownfield сначала **`noImplicitAny`** и **`strictNullChecks`**, затем остальное. Флаги вне `strict` — см. **Advanced `tsconfig` flags** в [Compiler & tsconfig](#compiler-tsconfig).
+
+**Pluses and minuses:**
+
+|                 | Pluses                                                | Minuses                          |
+| --------------- | ----------------------------------------------------- | -------------------------------- |
+| Полный `strict` | Максимальная статическая безопасность; как в handbook | Много ошибок на старом коде      |
+| Постепенно      | Можно планировать по флагам                           | Временная неоднородность модулей |
+
+**Examples:**
+
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+```typescript
+function len(s: string | null) {
+  return s?.length ?? 0;
+}
+
+try {
+  await fetch("/api");
+} catch (e: unknown) {
+  if (e instanceof Error) console.error(e.message);
+}
+```
+
+**Thoughts:** Strict mode — только **compile-time**; JSON по сети он не проверяет. Для границ API см. [API contracts](./5_ts_api_contracts.md).
+
+**Sources:** [TSConfig — strict](https://www.typescriptlang.org/tsconfig#strict) · [TypeScript handbook — tsconfig](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+
+</details>
+
+---
 
 <details>
   <summary>Compiler pipeline</summary>

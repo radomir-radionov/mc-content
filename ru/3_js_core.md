@@ -6,13 +6,13 @@
 
 ### Related docs
 
-- [Переменные](./3_js_variables.md) · [Типы данных](./3_js_data_types.md) · [Структуры данных](./3_js_data_structures.md) · [Стек и куча](./3_js_data_types.md#memory-stack-heap) · [globalThis](./3_js_variables.md#globalthis) · [Операторы](./3_js_operators.md) · [Циклы](./3_js_loops.md) · [Ошибка обработка](./3_js_loops.md#error-handling) · [Итераторы](./3_js_loops.md#iterators) · [JS-массивы](./3_js_array.md) · [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md) · [JS Дополнительно](./3_js_extra.md) · [JS-функции](./3_js_functions.md) · [Объекты](./3_js_objects.md) · [Классы](./3_js_classes.md); [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md) · [Стек вызовов](./3_js_async_event_loop.md#call-stack) · [TypeScript](./5_ts.md) · [Веб-API](./6_web_api.md) · [Build — polyfills & transpilers](./10_build_bundlers.md#polyfills-vs-transpilers) · [YAML](./10_build_ci.md#yaml) · [Node.js](./8_nodejs.md) · [Процесс и потоки](./8_nodejs_process.md#process--threads) · [React](./4_react.md) · [Vue](./4_vue.md) · [ООП и SOLID](./7_special_engineering.md#объектно-ориентированное-программирование-oop) · [Информатика](./7_special_cs.md) · [SDLC](./7_special_sdlc.md#software-design-methodology)
+- [Переменные](./3_js_variables.md) · [Типы данных](./3_js_data_types.md) · [Структуры данных](./3_js_data_structures.md) · [Стек и куча](./3_js_data_types.md#memory-stack-heap) · [globalThis](./3_js_variables.md#globalthis) · [Операторы](./3_js_operators.md) · [Циклы](./3_js_loops.md) · [Ошибка обработка](./3_js_loops.md#error-handling) · [Итераторы](./3_js_loops.md#iterators) · [JS-массивы](./3_js_array.md) · [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md) · [JS Дополнительно](./3_js_extra.md) · [JS-функции](./3_js_functions.md) · [Объекты](./3_js_objects.md) · [Классы](./3_js_classes.md); [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md) · [Стек вызовов](./3_js_async_event_loop.md#call-stack) · [TypeScript](./5_ts.md) · [Веб-API](./6_web_api.md) · [Web security (XSS, CSP, CORS)](./7_special_security.md) · [Build — polyfills & transpilers](./10_build_bundlers.md#polyfills-vs-transpilers) · [YAML](./10_build_ci.md#yaml) · [Node.js](./8_nodejs.md) · [Процесс и потоки](./8_nodejs_process.md#process--threads) · [React](./4_react.md) · [Vue](./4_vue.md) · [ООП и SOLID](./7_special_engineering.md#объектно-ориентированное-программирование-oop) · [Информатика](./7_special_cs.md) · [SDLC](./7_special_sdlc.md#software-design-methodology)
 
 ### Main concepts
 
-| Площадь              | Темы                                                                                   |
-| -------------------- | -------------------------------------------------------------------------------------- |
-| **Время выполнения** | JS против ECMAScript, JIT, polyfills и transpilers, строгий режим, консоль, стиль кода |
+| Площадь              | Темы                                                                                                                              |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Время выполнения** | JS против ECMAScript, JIT, [архитектура V8](#v8-engine-architecture), polyfills и transpilers, строгий режим, консоль, стиль кода |
 
 ### Sections
 
@@ -26,7 +26,7 @@
 
 Родственные темы Core: [Переменные](./3_js_variables.md) · [Типы данных](./3_js_data_types.md) · [Структуры данных](./3_js_data_structures.md) · [Операторы](./3_js_operators.md) · [Циклы](./3_js_loops.md) · [Массив](./3_js_array.md) · [Функции](./3_js_functions.md) · [Объекты](./3_js_objects.md) · [Классы](./3_js_classes.md).
 
-Также обсуждались темы: **JIT**, **polyfills / transpilers**, **строгий режим**. **ESM** → [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md). Типы/stack-heap → [3_js_data_types.md](./3_js_data_types.md); объекты/JSON → [3_js_data_structures.md](./3_js_data_structures.md); переменные/область/`globalThis`/замыкания → [3_js_variables.md](./3_js_variables.md); операторы → [3_js_operators.md](./3_js_operators.md); циклы/ошибки/итераторы → [3_js_loops.md](./3_js_loops.md); массивы → [3_js_array.md](./3_js_array.md); Intl/RegExp/Сигналы → [3_js_extra.md](./3_js_extra.md); цикл событий → [JS Async](./3_js_async_await.md); GC/Прокси/глубокое копирование → [Объекты](./3_js_objects.md) · [Классы](./3_js_classes.md); парадигмы → [7_special_cs.md](./7_special_cs.md).
+Также обсуждались темы: **JIT**, **архитектура V8**, **polyfills / transpilers**, **строгий режим**. **ESM** → [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md). Типы/stack-heap → [3_js_data_types.md](./3_js_data_types.md); объекты/JSON → [3_js_data_structures.md](./3_js_data_structures.md); переменные/область/`globalThis`/замыкания → [3_js_variables.md](./3_js_variables.md); операторы → [3_js_operators.md](./3_js_operators.md); циклы/ошибки/итераторы → [3_js_loops.md](./3_js_loops.md); массивы → [3_js_array.md](./3_js_array.md); Intl/RegExp/Сигналы → [3_js_extra.md](./3_js_extra.md); цикл событий → [JS Async](./3_js_async_await.md); GC/Прокси/глубокое копирование → [Объекты](./3_js_objects.md) · [Классы](./3_js_classes.md); парадигмы → [7_special_cs.md](./7_special_cs.md).
 
 <a name="core"></a>
 
@@ -49,7 +49,7 @@
 
 **How it works:**
 
-- **Движок (ВМ):** каждый хост имеет встроенный движок. Распространенные кодовые имена: **V8** (Chrome, Opera, Edge, Node), **SpiderMonkey** (Firefox), **JavaScriptCore** / Nitro / SquirrelFish (Safari). Наследие: **Чакра** (IE/ранняя версия Edge). Поддержка функций часто обсуждается по названию движка («поддерживается в V8»).
+- **Движок (ВМ):** каждый хост имеет встроенный движок. Распространенные кодовые имена: **V8** (Chrome, Opera, Edge, Node), **SpiderMonkey** (Firefox), **JavaScriptCore** / Nitro / SquirrelFish (Safari). Наследие: **Чакра** (IE/ранняя версия Edge). Поддержка функций часто обсуждается по названию движка («поддерживается в V8»). Куча, GC и уровни JIT в V8 → [V8 engine architecture](#v8-engine-architecture).
 - **Конвейер (основы):** анализ сценария → компиляция в машинный код → запуск; двигатели продолжают оптимизировать горячие пути.Более глубокое различие JIT/AOT → [Engine и среда выполнения](#engine-and-runtime).
 - **Возможности браузера:** манипулирование HTML/CSS; реагировать на ввод пользователя; сетевые запросы (XHR/`fetch`, исторически AJAX/COMET); файлы cookie/диалоги; клиентское хранилище (`localStorage`, и т. д.). То, что _может_ делать язык, зависит от **хоста**, а не только от ECMAScript.
 - **Ограничения в браузере (безопасность):** нет произвольного доступа к диску/ОС; файл/камера/микрофон требуют явных жестов или разрешения пользователя; Доступ к кросс-таблице/окну DOM заблокирован из разных источников (**Политика одного и того же происхождения** — схема + хост + порт); Для чтения из сети между источниками требуется согласие удаленной стороны (заголовки CORS).За пределами браузера (узел, расширения с предоставленными разрешениями) эти правила песочницы не применяются таким же образом. Подробности SOP/CORS → [CORS и политика одного и того же происхождения](./3_js_browser_extra.md#cors-same-origin).
@@ -204,6 +204,61 @@ JIT сочетает в себе быстрый запуск (интерпрет
 | JavaScriptCore | Сафари          |
 
 **Sources:** [javascript.info/intro](https://javascript.info/intro) · [MDN — интерпретируемый или скомпилированный](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript) · [MDN JIT](https://developer.mozilla.org/en-US/docs/Glossary/Just_in_time_compilation) · [блог V8](https://v8.dev/blog)
+
+</details>
+
+<a name="v8-engine-architecture"></a>
+
+<details>
+  <summary>V8 engine architecture</summary>
+
+### V8 engine architecture
+
+**Definition:** **V8** — открытый движок JavaScript и WebAssembly от Google; встроен в Chrome, Edge, Opera, Node.js и Deno. JS выполняется в **isolate** (отдельная куча + сборщик мусора + JIT), чтобы процесс мог держать несколько изолятов без общей памяти объектов.
+
+**How it works:**
+
+- **Isolate:** один «мир» JS — своя куча, GC и скомпилированный код. В **renderer** браузера обычно один isolate на главном потоке страницы (отдельные — у workers). Node по умолчанию — один isolate на процесс.
+- **Куча (поколения):** большинство объектов умирает молодыми. V8 выделяет в **young generation** (nursery); выжившие попадают в **old generation**. Это та же generational / mark-and-sweep модель, что в [Garbage collection](./3_js_objects.md#garbage-collection).
+- **GC (Orinoco):** concurrent и incremental marking уменьшают длинные **stop-the-world** паузы; момент сборки JS не контролирует. Утечка — «объект всё ещё достижим из root», а не «GC забыл».
+- **Уровни выполнения (имена меняются по версиям):** **Ignition** (интерпретатор → bytecode) для холодного кода; **TurboFan** (оптимизирующий компилятор) для горячих функций со стабильными типами/формами. Deoptimization возвращает к bytecode, если предположения ломаются — см. [Engine and runtime](#engine-and-runtime).
+- **Не весь браузер:** V8 выполняет JS; **Blink** (Chromium) парсит HTML, строит DOM/CSSOM, layout и paint. **SpiderMonkey** / **JavaScriptCore** — те же роли в Firefox / Safari с другими деталями.
+
+| Компонент | Роль                                        |
+| --------- | ------------------------------------------- |
+| Isolate   | Отдельная куча + GC + JIT на realm          |
+| Young gen | Быстрое выделение; частые minor GC          |
+| Old gen   | Долгоживущие объекты; реже major GC         |
+| Ignition  | Интерпретатор bytecode (старт)              |
+| TurboFan  | Оптимизированный машинный код для hot paths |
+
+**When to use:** Интервью «как V8 запускает JS»; паузы GC vs утечки; отличить **движок** (V8) от **хоста** (вкладка, Node). Event loop Node + libuv → [Node.js — Core](./8_nodejs_core.md).
+
+#### Common pitfalls
+
+Считать V8 «всем браузером» (layout/DOM не в V8). Ждать детерминированного GC. Верить модели «примитивы только на стеке, объекты только в куче» — см. [Stack & heap](./3_js_data_types.md#memory-stack-heap).
+
+**Pluses and minuses:**
+
+| +                                          | −                                     |
+| ------------------------------------------ | ------------------------------------- |
+| Зрелый JIT + generational GC в продакшене  | Детали движка меняются между версиями |
+| Один движок в Chrome и Node                | Глубже интервью обычно не требуют     |
+| Открытая документация (v8.dev) по GC и JIT | Другие движки устроены иначе          |
+
+**Examples:**
+
+```text
+JS страницы → isolate V8 (main thread) → bytecode (Ignition) → optimized code (TurboFan, если hot)
+Недостижимые объекты → mark/sweep GC (young часто, old реже)
+Обновления DOM → Blink (вне V8); JS вызывает host bindings (document.querySelector)
+```
+
+**Thoughts:** Для «глубокого JS + браузер» достаточно **isolate + generational GC + JIT + deopt** и понимания, где DOM и security (хост, не ECMAScript). Полная картина атак → [Web security](./7_special_security.md).
+
+**See also:** [Garbage collection](./3_js_objects.md#garbage-collection) · [Browser environment](./3_js_browser.md#browser-environment) · [Event loop](./3_js_async_event_loop.md#event-loop)
+
+**Sources:** [V8 — JavaScript engine](https://v8.dev/) · [V8 — Trash talk (GC)](https://v8.dev/blog/trash-talk) · [MDN — JavaScript engines](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/JavaScript_technologies_overview#javascript_engines)
 
 </details>
 

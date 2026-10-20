@@ -4,7 +4,7 @@ Objects, prototypes, `this`, descriptors, Proxy/Reflect, and garbage collection.
 
 ### Related docs
 
-- [JS Language](./3_js_core.md) · [Variables](./3_js_variables.md) · [Data Types](./3_js_data_types.md) · [Data Structures](./3_js_data_structures.md) · [Operators](./3_js_operators.md) · [Loops](./3_js_loops.md) · [JS Arrays](./3_js_array.md) · [JS Functions](./3_js_functions.md) · [Classes](./3_js_classes.md) · [JS Document](./3_js_browser.md) · [JS Events](./3_js_events.md) · [JS Browser APIs](./3_js_browser_extra.md) · [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md)
+- [JS Language](./3_js_core.md) · [V8 engine architecture](./3_js_core.md#v8-engine-architecture) · [Variables](./3_js_variables.md) · [Data Types](./3_js_data_types.md) · [Data Structures](./3_js_data_structures.md) · [Operators](./3_js_operators.md) · [Loops](./3_js_loops.md) · [JS Arrays](./3_js_array.md) · [JS Functions](./3_js_functions.md) · [Classes](./3_js_classes.md) · [JS Document](./3_js_browser.md) · [JS Events](./3_js_events.md) · [JS Browser APIs](./3_js_browser_extra.md) · [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md)
 - [OOP & SOLID](./7_special_engineering.md#object-oriented-programming-oop) · [Classes (TypeScript)](./5_ts_classes.md) · [GRASP](./0_system_design_grasp.md)
 
 [← Back to JS hub](./3_js.md)
@@ -1428,7 +1428,7 @@ for (const key in obj) {
 **How it works:**
 
 - Mark-and-sweep: start from roots (global, stack, registers); mark reachable; sweep unmarked.
-- Generational GC assumes most objects die young — nursery collected more often.
+- Generational GC assumes most objects die young — nursery collected more often. In **V8**, young objects live in the nursery; survivors move to the old generation; **Orinoco** uses concurrent/incremental marking to limit pause times — see [V8 engine architecture](./3_js_core.md#v8-engine-architecture).
 - Closures keep outer variables alive while inner function is reachable.
 
 **When to use:**
@@ -1472,7 +1472,7 @@ user = null;
 
 **Thoughts:** Outgoing references do not keep an object alive — only **incoming** references from reachable objects matter. An “island” of objects that only reference each other is collected once no root reaches it.
 
-**Sources:** [javascript.info/garbage-collection](https://javascript.info/garbage-collection)
+**Sources:** [javascript.info/garbage-collection](https://javascript.info/garbage-collection) · [V8 — Trash talk (GC)](https://v8.dev/blog/trash-talk)
 
 </details>
 

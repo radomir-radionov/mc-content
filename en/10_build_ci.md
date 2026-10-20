@@ -6,11 +6,11 @@ CI/CD, package managers, and task runners.
 
 ### Related docs
 
-* [Build — CI](./10_build_ci.md) · [Build — Bundlers](./10_build_bundlers.md) · [Build — Docker](./10_build_docker.md) · [Build — Infra](./10_build_infra.md) · [Build — Interview](./10_build_interview.md)
+- [Build — CI](./10_build_ci.md) · [Build — Bundlers](./10_build_bundlers.md) · [Build — Docker](./10_build_docker.md) · [Build — Infra](./10_build_infra.md) · [Build — Interview](./10_build_interview.md)
 
 ### Sections
 
-- [CI/CD](#cicd)
+- [CI/CD](#cicd) — includes [GitLab CI and GitLab Runner](#gitlab-ci-and-gitlab-runner)
 - [Package management](#package-management)
 - [Task runners](#task-runners)
 
@@ -22,6 +22,7 @@ CI/CD, package managers, and task runners.
   <summary>CI/CD</summary>
 
 ### CI/CD
+
 **Definition:** **CI/CD** means **Continuous Integration / Continuous Delivery** — a way of working where build, test, and publish (and often deploy) are automated so every change can be integrated and shipped with a short feedback loop. **Continuous Deployment** is a stricter variant: passing CI ships to production with no human gate. See [CI vs CD](#ci-vs-cd--comparison).
 
 **How it works:**
@@ -37,15 +38,15 @@ Principles:
 
 Product loop (stages can be skipped or merged):
 
-| Stage | What happens |
-|-------|----------------|
-| **Code** | Git workflow (often [GitHub Flow](./0_git_branching.md#github-flow--trunk-based): branch → PR → review → merge). Git Flow is heavier — better for versioned releases than for many-deploys-per-day. |
-| **Build** | After local checks, CI builds on a runner — often in **Docker** for a repeatable image. Platforms: GitHub Actions, GitLab CI/CD, Jenkins, Bitbucket Pipelines, TeamCity; hosts like Netlify/Vercel run build+deploy. Comparison: [15_devops.md — CI systems](./15_devops.md#ci-systems). |
-| **Test** | Automated unit/integration/E2E first; manual QA still used for UX and exploratory work. Pre-release builds may be versioned (`v.2.4.5-1`). Jest, Playwright/Puppeteer, Selenium — [7_special.md — tests](./7_special_testing_fundamentals.md#tests-and-aaa). |
-| **Release** | Cadence depends on the product. CI’s job is a **promotable artifact**, not Jira/analytics. Product metrics (GA, Metrika) and task trackers sit next to the loop. |
-| **Deploy** | Deliver to users. Simple SPAs need little infra; shops/search/streaming compete on caching, CDNs, and server architecture. |
-| **Operate** | Support and monitoring. Helpdesk/chatbots are not CI tools; they often expose APIs. Observability: [15_devops.md](./15_devops.md). |
-| **Plan** | Feedback → backlog → next iteration. The loop closes. |
+| Stage       | What happens                                                                                                                                                                                                                                                                             |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Code**    | Git workflow (often [GitHub Flow](./0_git_branching.md#github-flow--trunk-based): branch → PR → review → merge). Git Flow is heavier — better for versioned releases than for many-deploys-per-day.                                                                                      |
+| **Build**   | After local checks, CI builds on a runner — often in **Docker** for a repeatable image. Platforms: GitHub Actions, GitLab CI/CD, Jenkins, Bitbucket Pipelines, TeamCity; hosts like Netlify/Vercel run build+deploy. Comparison: [15_devops.md — CI systems](./15_devops.md#ci-systems). |
+| **Test**    | Automated unit/integration/E2E first; manual QA still used for UX and exploratory work. Pre-release builds may be versioned (`v.2.4.5-1`). Jest, Playwright/Puppeteer, Selenium — [7_special.md — tests](./7_special_testing_fundamentals.md#tests-and-aaa).                             |
+| **Release** | Cadence depends on the product. CI’s job is a **promotable artifact**, not Jira/analytics. Product metrics (GA, Metrika) and task trackers sit next to the loop.                                                                                                                         |
+| **Deploy**  | Deliver to users. Simple SPAs need little infra; shops/search/streaming compete on caching, CDNs, and server architecture.                                                                                                                                                               |
+| **Operate** | Support and monitoring. Helpdesk/chatbots are not CI tools; they often expose APIs. Observability: [15_devops.md](./15_devops.md).                                                                                                                                                       |
+| **Plan**    | Feedback → backlog → next iteration. The loop closes.                                                                                                                                                                                                                                    |
 
 **When to use:**
 
@@ -57,12 +58,12 @@ Treating CI/CD as a Swiss army knife for every process; skipping a shared lockfi
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Faster ship and fix cycle | Over-engineering pipelines if the team is inexperienced |
-| Less manual toil; fewer integration bugs | Tools do not fix team communication |
-| Fast feedback (PR red/green) | Everyone must share the same toolchain and secrets model |
-| Easy to re-prioritize when the plan is flexible | Flaky tests and slow jobs become a bottleneck |
+| +                                               | −                                                        |
+| ----------------------------------------------- | -------------------------------------------------------- |
+| Faster ship and fix cycle                       | Over-engineering pipelines if the team is inexperienced  |
+| Less manual toil; fewer integration bugs        | Tools do not fix team communication                      |
+| Fast feedback (PR red/green)                    | Everyone must share the same toolchain and secrets model |
+| Easy to re-prioritize when the plan is flexible | Flaky tests and slow jobs become a bottleneck            |
 
 **Examples:**
 
@@ -100,11 +101,11 @@ jobs:
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Detects broken builds before merge | Initial pipeline setup cost |
-| Enforces test coverage and lint gates | Flaky tests block the team |
-| Enables trunk-based development | Requires discipline around small PRs |
+| +                                     | −                                    |
+| ------------------------------------- | ------------------------------------ |
+| Detects broken builds before merge    | Initial pipeline setup cost          |
+| Enforces test coverage and lint gates | Flaky tests block the team           |
+| Enables trunk-based development       | Requires discipline around small PRs |
 
 **Examples:**
 
@@ -135,16 +136,17 @@ jobs:
   <summary>Continuous Delivery</summary>
 
 ### Continuous Delivery
+
 **Definition:** Every change that passes CI produces a **deployable artifact**; production release is a manual (or approval-gated) step.
 
 **When to use:** Regulated industries, staged rollouts, teams that want automation but retain release control.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Always-ready release candidate | Still requires human gate for prod |
-| Reduces release-day surprises | Artifact storage and versioning needed |
+| +                              | −                                      |
+| ------------------------------ | -------------------------------------- |
+| Always-ready release candidate | Still requires human gate for prod     |
+| Reduces release-day surprises  | Artifact storage and versioning needed |
 
 **Examples:**
 
@@ -175,11 +177,11 @@ jobs:
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Fastest time-to-market | Requires high test confidence |
-| Small, low-risk incremental changes | Rollback strategy must be automated |
-| Eliminates release bottlenecks | Feature flags often required for incomplete work |
+| +                                   | −                                                |
+| ----------------------------------- | ------------------------------------------------ |
+| Fastest time-to-market              | Requires high test confidence                    |
+| Small, low-risk incremental changes | Rollback strategy must be automated              |
+| Eliminates release bottlenecks      | Feature flags often required for incomplete work |
 
 **Thoughts:** CD extends CI. Many teams say "CD" but mean CDelivery. Clarify in architecture docs which model you use.
 
@@ -192,12 +194,12 @@ jobs:
 
 ### CI vs CD — comparison
 
-| Aspect | CI | CDelivery | CD |
-|--------|----|-----------|-----|
-| **Scope** | Build + test | + deployable artifact | + auto prod deploy |
-| **Goal** | Catch integration errors | Always releasable | Ship continuously |
-| **Deployment** | None | Manual / gated | Automatic |
-| **Risk** | Low | Medium | High without safeguards |
+| Aspect         | CI                       | CDelivery             | CD                      |
+| -------------- | ------------------------ | --------------------- | ----------------------- |
+| **Scope**      | Build + test             | + deployable artifact | + auto prod deploy      |
+| **Goal**       | Catch integration errors | Always releasable     | Ship continuously       |
+| **Deployment** | None                     | Manual / gated        | Automatic               |
+| **Risk**       | Low                      | Medium                | High without safeguards |
 
 **Sources:** [ByteByteGo — CI/CD](https://blog.bytebytego.com/p/a-crash-course-in-cicd)
 
@@ -264,11 +266,11 @@ PR gates on `main`. Matrix Node versions. Cron. Checkout → `npm ci` → test �
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Native GitHub PRs, secrets, environments | Minutes + YAML lock-in |
-| Matrix + reusable actions | `-latest` OS labels move; pin when needed |
-| Same repo as the code | Public actions are a supply-chain surface — pin versions/SHAs |
+| +                                        | −                                                             |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| Native GitHub PRs, secrets, environments | Minutes + YAML lock-in                                        |
+| Matrix + reusable actions                | `-latest` OS labels move; pin when needed                     |
+| Same repo as the code                    | Public actions are a supply-chain surface — pin versions/SHAs |
 
 **Examples:**
 
@@ -312,6 +314,90 @@ Split deploy with `needs: [test]` on another job. Secrets: `${{ secrets.* }}`, n
 </details>
 
 <details>
+  <summary>GitLab CI and GitLab Runner</summary>
+
+### GitLab CI and GitLab Runner
+
+**Definition:** **GitLab CI/CD** runs pipelines from `.gitlab-ci.yml` in the repo — **stages** (lint → test → build → deploy) executed by **GitLab Runner** agents (shared SaaS runners or self-hosted).
+
+**How it works:**
+
+| Concept       | Role                                                                                             |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| **Pipeline**  | One run for a commit/MR/tag                                                                      |
+| **Stage**     | Ordered group (`test` before `deploy`)                                                           |
+| **Job**       | Unit of work on one runner image                                                                 |
+| **Runner**    | Process that picks jobs — **shared** (gitlab.com) or **self-hosted** (Docker/K8s/shell executor) |
+| **Artifacts** | `dist/`, coverage reports passed between jobs                                                    |
+| **Cache**     | `node_modules/`, `.pnpm-store` keyed by lockfile                                                 |
+
+**When to use:** Company hosts on **GitLab**; need **self-hosted runners** for private network deploy or larger matrices.
+
+**Examples:**
+
+```yaml
+# .gitlab-ci.yml — frontend pipeline
+stages: [lint, test, build, deploy]
+
+default:
+  image: node:22-bookworm
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [node_modules/]
+
+lint:
+  stage: lint
+  script:
+    - npm ci
+    - npm run lint
+    - npm run typecheck
+
+unit:
+  stage: test
+  script:
+    - npm ci
+    - npm test -- --coverage
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths: [dist/]
+    expire_in: 1 week
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy dist/ to staging"
+  environment:
+    name: staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
+**Pluses and minuses:**
+
+| +                                     | −                                |
+| ------------------------------------- | -------------------------------- |
+| CI + registry + MR in one product     | YAML differs from GitHub Actions |
+| Flexible self-hosted runners          | Runner maintenance on you        |
+| `rules:` / `needs:` / child pipelines | Learning curve for monorepos     |
+
+**Thoughts:** Compare hosted CI → [15_devops — GitHub Actions vs GitLab CI](./15_devops.md#github-actions-vs-gitlab-ci-vs-circleci). Frontend stages mirror [CI/CD pipeline stages](#cicd-pipeline-stages). Upload **Sentry source maps** in `build` job → [React — Observability](./4_react_observability.md#operating-in-production).
+
+**Sources:** [GitLab CI/CD](https://docs.gitlab.com/ee/ci/) · [GitLab Runner](https://docs.gitlab.com/runner/) · [`.gitlab-ci.yml` reference](https://docs.gitlab.com/ee/ci/yaml/)
+
+</details>
+
+<details>
   <summary>YAML</summary>
 
 ### YAML
@@ -345,24 +431,24 @@ GitHub Actions / GitLab CI; Docker Compose; ESLint/Prettier config; Kubernetes m
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Comments; unquoted strings; readable nesting | Indent errors fail the whole file; tabs vs spaces |
-| Anchors cut duplication | YAML 1.1 vs 1.2 type surprises (`yes`/`NO` as bools in 1.1) |
-| Root can be any node type | Merge `<<` not in YAML 1.2 core — parser-dependent |
+| +                                            | −                                                           |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| Comments; unquoted strings; readable nesting | Indent errors fail the whole file; tabs vs spaces           |
+| Anchors cut duplication                      | YAML 1.1 vs 1.2 type surprises (`yes`/`NO` as bools in 1.1) |
+| Root can be any node type                    | Merge `<<` not in YAML 1.2 core — parser-dependent          |
 
 **Examples:**
 
 ```yaml
 # pet config — mapping + sequence + scalars
 bestCat:
-  name: mittens          # unquoted string
+  name: mittens # unquoted string
   isFluffy: true
   sounds:
     - mur
     - pur
   paws: 4
-  lunchTime: 9.99        # float — use a dot, not a comma
+  lunchTime: 9.99 # float — use a dot, not a comma
 
 # anchors + merge (YAML 1.1 / many CI parsers)
 base: &base
@@ -370,11 +456,11 @@ base: &base
   age: 2
 
 cat1:
-  <<: *base              # name + age from base
+  <<: *base # name + age from base
 
 cat2:
   <<: *base
-  age: 7                 # overrides base.age
+  age: 7 # overrides base.age
 ```
 
 Equivalent after merge: `cat1` → `{ name: cool cat, age: 2 }`; `cat2` → `{ name: cool cat, age: 7 }`.
@@ -408,12 +494,12 @@ jobs:
 
 **Webpack** is a mature, highly configurable module bundler with loaders and plugins. **Vite** uses native ESM in dev (esbuild) and Rollup for production — default for modern React/Vue/Svelte apps.
 
-| | Webpack | Vite |
-|---|---------|------|
-| Dev speed | Slower HMR | Instant cold start |
-| Config | High | Low (sensible defaults) |
-| Best for | Legacy apps, Module Federation | Greenfield SPAs, CRA migration |
-| Ecosystem | Largest plugin set | Growing; covers most apps |
+|           | Webpack                        | Vite                           |
+| --------- | ------------------------------ | ------------------------------ |
+| Dev speed | Slower HMR                     | Instant cold start             |
+| Config    | High                           | Low (sensible defaults)        |
+| Best for  | Legacy apps, Module Federation | Greenfield SPAs, CRA migration |
+| Ecosystem | Largest plugin set             | Growing; covers most apps      |
 
 **When to use:** Vite for new projects; Webpack for legacy codebases or Module Federation micro-frontends.
 
@@ -421,13 +507,13 @@ jobs:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  server: { host: '0.0.0.0', port: 3000 },
-  build: { sourcemap: 'hidden' },
+  server: { host: "0.0.0.0", port: 3000 },
+  build: { sourcemap: "hidden" },
 });
 ```
 
@@ -441,11 +527,11 @@ export default defineConfig({
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Consistent dev/staging/prod | Learning curve (networking, volumes) |
-| Fast startup vs VMs | Native modules must match container arch |
-| Portable deployments | Image bloat without multi-stage builds |
+| +                           | −                                        |
+| --------------------------- | ---------------------------------------- |
+| Consistent dev/staging/prod | Learning curve (networking, volumes)     |
+| Fast startup vs VMs         | Native modules must match container arch |
+| Portable deployments        | Image bloat without multi-stage builds   |
 
 **Examples:**
 
@@ -484,11 +570,11 @@ CMD ["node", "dist/index.js"]
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Universal, ships with Node | Slower installs than pnpm on large monorepos |
-| Massive registry (npmjs.com) | Flat `node_modules` can cause phantom deps |
-| `npm ci` for reproducible CI | Breaking changes in npm major versions |
+| +                            | −                                            |
+| ---------------------------- | -------------------------------------------- |
+| Universal, ships with Node   | Slower installs than pnpm on large monorepos |
+| Massive registry (npmjs.com) | Flat `node_modules` can cause phantom deps   |
+| `npm ci` for reproducible CI | Breaking changes in npm major versions       |
 
 **Examples:**
 
@@ -508,12 +594,12 @@ npm install -D eslint  # add devDependency (-D = --save-dev)
 
 **Thoughts:**
 
-| Field | Purpose |
-|-------|---------|
-| `dependencies` | Required at runtime; shipped in production bundle |
-| `devDependencies` | Build, test, lint only; not in prod bundle |
-| `peerDependencies` | Expected to be provided by the host app (libraries) |
-| `optionalDependencies` | Installed if possible; failure is non-fatal |
+| Field                  | Purpose                                             |
+| ---------------------- | --------------------------------------------------- |
+| `dependencies`         | Required at runtime; shipped in production bundle   |
+| `devDependencies`      | Build, test, lint only; not in prod bundle          |
+| `peerDependencies`     | Expected to be provided by the host app (libraries) |
+| `optionalDependencies` | Installed if possible; failure is non-fatal         |
 
 Use `npm ci` in CI — never `npm install`. Never commit `node_modules`.
 
@@ -532,11 +618,11 @@ Use `npm ci` in CI — never `npm install`. Never commit `node_modules`.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Deterministic installs via lockfile | Berry PnP breaks some tools expecting `node_modules` |
-| Workspaces for monorepos | Two major versions (Classic vs Berry) cause confusion |
-| `yarn dlx` for one-off commands | Smaller default mindshare than npm |
+| +                                   | −                                                     |
+| ----------------------------------- | ----------------------------------------------------- |
+| Deterministic installs via lockfile | Berry PnP breaks some tools expecting `node_modules`  |
+| Workspaces for monorepos            | Two major versions (Classic vs Berry) cause confusion |
+| `yarn dlx` for one-off commands     | Smaller default mindshare than npm                    |
 
 **Examples:**
 
@@ -570,11 +656,11 @@ yarn workspace @myapp/web build
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Fastest installs; saves disk space | Some tools assume npm flat layout |
+| +                                              | −                                     |
+| ---------------------------------------------- | ------------------------------------- |
+| Fastest installs; saves disk space             | Some tools assume npm flat layout     |
 | Strict dependency resolution (no phantom deps) | Occasional peer-dep resolution quirks |
-| First-class monorepo workspaces | Less universal in legacy CI templates |
+| First-class monorepo workspaces                | Less universal in legacy CI templates |
 
 **Examples:**
 
@@ -601,13 +687,13 @@ auto-install-peers=true
 
 ### npm vs Yarn vs pnpm
 
-| | npm | Yarn | pnpm |
-|---|-----|------|------|
-| **Lockfile** | `package-lock.json` | `yarn.lock` | `pnpm-lock.yaml` |
-| **CI command** | `npm ci` | `yarn install --frozen-lockfile` | `pnpm install --frozen-lockfile` |
-| **Monorepo** | workspaces | workspaces | workspaces (best DX) |
-| **Disk usage** | High (per project) | High | Low (shared store) |
-| **Strict deps** | No | No | Yes |
+|                 | npm                 | Yarn                             | pnpm                             |
+| --------------- | ------------------- | -------------------------------- | -------------------------------- |
+| **Lockfile**    | `package-lock.json` | `yarn.lock`                      | `pnpm-lock.yaml`                 |
+| **CI command**  | `npm ci`            | `yarn install --frozen-lockfile` | `pnpm install --frozen-lockfile` |
+| **Monorepo**    | workspaces          | workspaces                       | workspaces (best DX)             |
+| **Disk usage**  | High (per project)  | High                             | Low (shared store)               |
+| **Strict deps** | No                  | No                               | Yes                              |
 
 **When to use:** Pick one per org and enforce via `packageManager` field in `package.json` + Corepack.
 
@@ -636,11 +722,11 @@ auto-install-peers=true
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Zero extra dependencies | Complex orchestration gets verbose |
+| +                                         | −                                   |
+| ----------------------------------------- | ----------------------------------- |
+| Zero extra dependencies                   | Complex orchestration gets verbose  |
 | Cross-platform with `cross-env`, `rimraf` | No built-in streaming/file watching |
-| `pre`/`post` hooks for lifecycle | `pre` hooks can surprise newcomers |
+| `pre`/`post` hooks for lifecycle          | `pre` hooks can surprise newcomers  |
 
 **Examples:**
 
@@ -680,10 +766,10 @@ npm run lint -- --fix  # pass args after --
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                                | −                                     |
+| -------------------------------- | ------------------------------------- |
 | Fine-grained file stream control | Largely superseded by bundler plugins |
-| Large plugin ecosystem (legacy) | Imperative task files age poorly |
+| Large plugin ecosystem (legacy)  | Imperative task files age poorly      |
 
 **Thoughts:**
 

@@ -6,24 +6,27 @@ Creating types from types — generics, type operators, conditional and mapped t
 
 ### Related docs
 
-[TypeScript — hub](./5_ts.md) · [Object Types](./5_ts_objects.md#generic-object-types) · [Functions](./5_ts_functions.md#generic-functions) · [Utility Types](./5_ts_utility_types.md) · [Interview](./5_ts_interview.md)
+[TypeScript — hub](./5_ts.md) · [API contracts](./5_ts_api_contracts.md) · [Object Types](./5_ts_objects.md#generic-object-types) · [Functions](./5_ts_functions.md#generic-functions) · [Utility Types](./5_ts_utility_types.md) · [Interview](./5_ts_interview.md)
 
 ### Main concepts
 
-| Topic                                                   | Covers                                                       |
-| ------------------------------------------------------- | ------------------------------------------------------------ |
-| [Overview](#overview)                                   | What Type Manipulation is and handbook topic map             |
-| [Creating Types from Types](#creating-types-from-types) | Compose types from existing types                            |
-| [Generics](#generics)                                   | Type parameters, constraints, generic classes and interfaces |
-| [Keyof Type Operator](#keyof-type-operator)             | Union of object keys — `keyof T`                             |
-| [`typeof` Type Operator](#typeof-type-operator)         | Type of a value in type position                             |
-| [Indexed Access Types](#indexed-access-types)           | Look up property types — `T["key"]`                          |
-| [Conditional Types](#conditional-types)                 | Type-level if/else — `T extends U ? X : Y`                   |
-| [Mapped Types](#mapped-types)                           | Transform every property — `{ [K in keyof T]: ... }`         |
-| [Template Literal Types](#template-literal-types)       | String types from unions and literals                        |
-| [How the tools combine](#how-the-tools-combine)         | Patterns chaining operators                                  |
-| [Map Pattern](#map-pattern)                             | Union → object lookup table                                  |
-| [Branded / Nominal Types](#branded--nominal-types)      | Interview pattern for distinct primitives                    |
+| Topic                                                             | Covers                                                       |
+| ----------------------------------------------------------------- | ------------------------------------------------------------ |
+| [Overview](#overview)                                             | What Type Manipulation is and handbook topic map             |
+| [Creating Types from Types](#creating-types-from-types)           | Compose types from existing types                            |
+| [Generics](#generics)                                             | Type parameters, constraints, generic classes and interfaces |
+| [Keyof Type Operator](#keyof-type-operator)                       | Union of object keys — `keyof T`                             |
+| [`typeof` Type Operator](#typeof-type-operator)                   | Type of a value in type position                             |
+| [Indexed Access Types](#indexed-access-types)                     | Look up property types — `T["key"]`                          |
+| [Conditional Types](#conditional-types)                           | Type-level if/else — `T extends U ? X : Y`                   |
+| [Mapped Types](#mapped-types)                                     | Transform every property — `{ [K in keyof T]: ... }`         |
+| [Template Literal Types](#template-literal-types)                 | String types from unions and literals                        |
+| [How the tools combine](#how-the-tools-combine)                   | Patterns chaining operators                                  |
+| [Map Pattern](#map-pattern)                                       | Union → object lookup table                                  |
+| [Branded / Nominal Types](#branded--nominal-types)                | Interview pattern for distinct primitives                    |
+| [Advanced generics](#advanced-generics)                           | Multi-arg inference, `const` type params, currying           |
+| [Distributive conditional types](#distributive-conditional-types) | Union distribution and when to disable it                    |
+| [Recursive type-level helpers](#recursive-type-level-helpers)     | DeepReadonly, depth limits, `Awaited`-style chains           |
 
 ### Sections
 
@@ -39,6 +42,9 @@ Creating types from types — generics, type operators, conditional and mapped t
 - [How the tools combine](#how-the-tools-combine)
 - [Map Pattern](#map-pattern)
 - [Branded / Nominal Types](#branded--nominal-types)
+- [Advanced generics](#advanced-generics)
+- [Distributive conditional types](#distributive-conditional-types)
+- [Recursive type-level helpers](#recursive-type-level-helpers)
 
 ---
 
@@ -363,6 +369,18 @@ type GetReturnType<T> = T extends (...args: never[]) => infer Return
 type Num = GetReturnType<() => number>; // number
 ```
 
+**When to use:** Unwrap promises and arrays (`infer`), extract function return types, filter unions, and build custom utility types beyond the built-ins.
+
+**Pluses and minuses:**
+
+|                             | Benefit                                        | Cost                                |
+| --------------------------- | ---------------------------------------------- | ----------------------------------- |
+| Distributive conditionals   | Map over each union member                     | Surprising unless you know the rule |
+| `infer`                     | Extract inner types without manual duplication | Harder to read in deep chains       |
+| Non-distributive `[T]` wrap | Predictable union-as-a-whole behavior          | Extra syntax                        |
+
+**Thoughts:** If a conditional “splits” a union unexpectedly, wrap the checked type in a tuple: `[T] extends [U] ? X : Y`. See [Distributive conditional types](#distributive-conditional-types).
+
 **Sources:** [TypeScript handbook — Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)
 
 </details>
@@ -514,6 +532,141 @@ function getConfig(s: Status) {
 ```
 
 **Sources:** [TypeScript handbook — Creating Types from Types](https://www.typescriptlang.org/docs/handbook/2/types-from-types.html)
+
+</details>
+
+---
+
+## Advanced generics
+
+<details>
+<summary>Advanced generics</summary>
+
+**Definition:** **Advanced generics** combine multiple type parameters, **constraints**, **defaults**, and (since TS 5.0) **`const` type parameters** so APIs preserve literal and readonly information.
+
+**How it works:**
+
+| Technique                 | What it solves                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| Multi-parameter inference | `function zip<A, B>(a: A[], b: B[]): [A, B][]` — both types inferred from args |
+| Constraint + `keyof`      | `<T, K extends keyof T>` ties property access to valid keys                    |
+| Default type params       | `<T = HTMLDivElement>` — ergonomic call sites; required params first           |
+| `const` on type param     | `<const T extends readonly string[]>` preserves tuple literals in generics     |
+| Curried generics          | `<T>() => <U>(x: U) => ...` — pattern for fluent builders and scoped inference |
+
+**When to use:** Library APIs (React hooks, data fetchers, ORM helpers) where callers should get precise types without repeating type arguments.
+
+**Examples:**
+
+```typescript
+// const type parameter — literals stay literal
+function defineRoutes<const T extends readonly RouteDef[]>(routes: T) {
+  return routes;
+}
+
+const routes = defineRoutes([
+  { path: "/users", method: "GET" },
+  { path: "/users", method: "POST" },
+] as const);
+
+// Multi-arg inference
+function merge<A, B>(a: A, b: B): A & B {
+  return { ...a, ...b };
+}
+
+const m = merge({ id: 1 }, { name: "Ann" }); // { id: number; name: string }
+
+// Factory with constructor constraint
+function createInstance<T>(Ctor: new () => T): T {
+  return new Ctor();
+}
+```
+
+**Thoughts:** If inference picks `string` instead of a literal union, check whether you need `as const` on the value or a `const` type parameter on the generic. For API wrappers, see [API contracts — Typed HTTP clients](./5_ts_api_contracts.md#typed-http-clients).
+
+**Sources:** [TypeScript handbook — Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) · [TS 5.0 — const type parameters](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html#const-type-parameters)
+
+</details>
+
+---
+
+## Distributive conditional types
+
+<details>
+<summary>Distributive conditional types</summary>
+
+**Definition:** When the **checked type** is a **naked type parameter** that is a **union**, a conditional type **distributes** over each member: `ToArray<T | U>` becomes `ToArray<T> | ToArray<U>`.
+
+**How it works:**
+
+- **Distributive:** `type ToArray<T> = T extends any ? T[] : never` — maps union members individually.
+- **Disable distribution:** wrap in tuple — `[T] extends [U] ? X : Y` treats the union as one type.
+- **Filter unions:** `T extends U ? T : never` keeps only members assignable to `U` (like `Extract`).
+
+**When to use:** Building `Exclude`/`Extract`-style utilities, optional property transforms per key, and unwrap helpers that must respect unions.
+
+**Examples:**
+
+```typescript
+type ToArray<T> = T extends unknown ? T[] : never;
+
+type StrOrNumArray = ToArray<string | number>;
+// string[] | number[]  — not (string | number)[]
+
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+type T1 = NonNullable<string | null | undefined>; // string
+
+// Non-distributive — whole union at once
+type Boxed<T> = [T] extends [string] ? { s: T } : { other: T };
+
+type B = Boxed<string | number>;
+// { other: string | number }
+```
+
+**Sources:** [TypeScript handbook — Distributive Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)
+
+</details>
+
+---
+
+## Recursive type-level helpers
+
+<details>
+<summary>Recursive type-level helpers</summary>
+
+**Definition:** **Recursive conditional types** walk nested structures (arrays, promises, objects) — similar to built-in `Awaited`, `DeepReadonly`, or JSON-like trees — with optional **depth limits** to avoid compiler recursion errors.
+
+**How it works:**
+
+- Unwrap layers: `T extends Promise<infer U> ? AwaitedInner<U> : T`.
+- Object walk: map each property with `keyof` + conditional on property value type.
+- **Depth guard:** pass a tuple `[never, 0, 1, 2, …]` and decrement to stop infinite expansion.
+
+**When to use:** Custom utility types for immutable views, serializable payloads, or flattening nested `Promise` chains in library typings.
+
+**Examples:**
+
+```typescript
+type AwaitedDeep<T> = T extends Promise<infer U> ? AwaitedDeep<U> : T;
+
+type DeepReadonly<T> = T extends object
+  ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+  : T;
+
+// Depth-limited (conceptual) — stop at D = 0
+type Depth = [never, 0, 1, 2, 3, 4, 5];
+
+type DeepPartial<T, D extends number = 5> = [D] extends [never]
+  ? T
+  : T extends object
+    ? { [K in keyof T]?: DeepPartial<T[K], Depth[D]> }
+    : T;
+```
+
+**Thoughts:** Prefer built-in `Awaited`, `Partial`, and codegen for API DTOs before writing deep custom recursion — compiler performance and error messages degrade on very deep types.
+
+**Sources:** [TypeScript handbook — Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html) · [Utility Types — Awaited](./5_ts_utility_union_function.md)
 
 </details>
 

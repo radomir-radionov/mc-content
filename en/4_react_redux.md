@@ -20,6 +20,7 @@ Redux Toolkit, global client state, and RTK Query.
 - [When to use Redux](#when-to-use-redux)
 - [State management comparison](#state-management)
 - [RTK Query](#rtk-query)
+- [RTK Query essentials](#rtk-query-essentials)
 
 ---
 
@@ -849,6 +850,102 @@ TanStack Query vs RTK Query
 </details>
 
 ## RTK Query
+
+<details>
+  <summary>RTK Query essentials</summary>
+
+**Definition:** **RTK Query** is Redux Toolkit’s **server-state** layer: one `createApi` slice defines HTTP endpoints; generated React hooks cache responses, track loading/error, and **invalidate** related data after mutations.
+
+**How it works:**
+
+1. **`createApi`** — `reducerPath`, `baseQuery` (usually `fetchBaseQuery`), `endpoints` builder
+2. **Endpoints** — `query` (GET-style) and `mutation` (POST/PUT/DELETE)
+3. **Tags** — `providesTags` / `invalidatesTags` link queries to mutations for auto-refetch
+4. **Store** — add `[api.reducerPath]: api.reducer` and `api.middleware` in `configureStore`
+5. **Components** — `useGetXQuery`, `useUpdateXMutation` from the generated API slice
+
+**When to use:** App already uses Redux Toolkit for **client** state and you want **one DevTools timeline** for UI + server cache — not duplicate fetch logic in thunks.
+
+**Examples:**
+
+```tsx
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const usersApi = createApi({
+  reducerPath: "usersApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/" }),
+  tagTypes: ["User"],
+  endpoints: (build) => ({
+    getUsers: build.query<User[], void>({
+      query: () => "users",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "User" as const, id })),
+              { type: "User", id: "LIST" },
+            ]
+          : [{ type: "User", id: "LIST" }],
+    }),
+    updateUser: build.mutation<User, Partial<User> & Pick<User, "id">>({
+      query: ({ id, ...patch }) => ({
+        url: `users/${id}`,
+        method: "PATCH",
+        body: patch,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "User", id }],
+    }),
+  }),
+});
+
+export const { useGetUsersQuery, useUpdateUserMutation } = usersApi;
+
+// store.ts
+export const store = configureStore({
+  reducer: {
+    [usersApi.reducerPath]: usersApi.reducer,
+  },
+  middleware: (gDM) => gDM().concat(usersApi.middleware),
+});
+
+// Component
+function UserList() {
+  const { data, isLoading, error } = useGetUsersQuery();
+  const [updateUser] = useUpdateUserMutation();
+  if (isLoading) return <p>Loading…</p>;
+  if (error) return <p>Failed</p>;
+  return (
+    <ul>
+      {data?.map((u) => (
+        <li key={u.id}>
+          {u.name}
+          <button
+            type="button"
+            onClick={() => updateUser({ id: u.id, name: "New" })}
+          >
+            Rename
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+**Pluses and minuses:**
+
+| +                                        | −                                        |
+| ---------------------------------------- | ---------------------------------------- |
+| Generated hooks + normalized cache       | Redux boilerplate if you only need fetch |
+| Tag invalidation replaces manual refetch | Learning curve vs TanStack Query         |
+| Same store as UI state                   | Bundle tied to Redux ecosystem           |
+
+**Thoughts:** Do not store duplicate API payloads in hand-written slices — let RTK Query own server cache; keep slices for true client state (filters in memory, wizard steps).
+
+**See also:** [Redux Toolkit essentials](#redux-toolkit-essentials) · [TanStack Query vs RTK Query](#tanstack-query-vs-rtk-query) · [Modular monolith](./4_react_architecture.md#modular-monolith-feature-folders)
+
+**Sources:** [RTK Query overview](https://redux-toolkit.js.org/rtk-query/overview) · [RTK Query usage with TypeScript](https://redux-toolkit.js.org/rtk-query/usage-with-typescript)
+
+</details>
 
 <details>
   <summary>TanStack Query vs RTK Query</summary>

@@ -4,15 +4,16 @@ How to use Cursor, Copilot, Claude Code, and doc tools without shipping hallucin
 
 ### Related docs
 
-- [Cursor — Core](./0_ai_cursor_core.md) · [Skills](./0_ai_cursor_skills.md) · [Rules](./0_ai_cursor_rules.md) · [Plugins](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Slash commands](./0_ai_cursor_slash.md) · [Questions](./0_ai_cursor_questions.md) · [Interview hub](./0_interview.md) · [MVP & judgment](./0_mvp.md) · [TypeScript](./5_ts.md) · [Next.js](./4_nextjs.md)
+- [AI-first engineering & SDD](./0_ai_engineering.md) · [Full-stack role map](./0_engineering_fullstack.md) · [Cursor — Core](./0_ai_cursor_core.md) · [Skills](./0_ai_cursor_skills.md) · [Rules](./0_ai_cursor_rules.md) · [Plugins](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Slash commands](./0_ai_cursor_slash.md) · [Questions](./0_ai_cursor_questions.md) · [Interview hub](./0_interview.md) · [MVP & judgment](./0_mvp.md) · [TypeScript](./5_ts.md) · [Next.js](./4_nextjs.md)
 
 ### Main concepts
 
-| Area         | Topics                                                                                                                                                                                                                                                                                                     |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Product**  | [AI-first approach](#ai-first-approach) vs AI-enabled vs AI-augmented                                                                                                                                                                                                                                      |
-| **Workflow** | [AI-assisted editors](#ai-assisted-workflow-cursor-copilot-claude-code), [Context window](#context-window-llm-context), [Context7 / Ref](#context7-and-reftools), [RTK](#rtk-rust-token-killer)                                                                                                            |
-| **Cursor**   | [Core](./0_ai_cursor_core.md) · [Skills](./0_ai_cursor_skills.md) · [Rules](./0_ai_cursor_rules.md) · [Plugins](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Slash commands](./0_ai_cursor_slash.md) · [Questions](./0_ai_cursor_questions.md) |
+| Area            | Topics                                                                                                                                                                                                                                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Product**     | [AI-first approach](#ai-first-approach) vs AI-enabled vs AI-augmented                                                                                                                                                                                                                                      |
+| **Engineering** | [AI-first engineering & SDD](./0_ai_engineering.md) — developer habits and spec before code                                                                                                                                                                                                                |
+| **Workflow**    | [AI-assisted editors](#ai-assisted-workflow-cursor-copilot-claude-code), [Context window](#context-window-llm-context), [Context7 / Ref](#context7-and-reftools), [RTK](#rtk-rust-token-killer)                                                                                                            |
+| **Cursor**      | [Core](./0_ai_cursor_core.md) · [Skills](./0_ai_cursor_skills.md) · [Rules](./0_ai_cursor_rules.md) · [Plugins](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Slash commands](./0_ai_cursor_slash.md) · [Questions](./0_ai_cursor_questions.md) |
 
 ### Sections
 
@@ -47,7 +48,7 @@ How to use Cursor, Copilot, Claude Code, and doc tools without shipping hallucin
 | Forces a clear product thesis: what dies if the model is down? | Easy to confuse team tooling with the customer-facing product. |
 | Matches how large platforms talk about assistants vs screens.  | “AI-first” is marketing unless the model _is_ the loop.        |
 
-**Thoughts:** In this repo, most of the AI track is **AI-augmented development**. Call a note **AI-first** only when the shipped product cannot exist without the model.
+**Thoughts:** In this repo, most of the AI track is **AI-augmented development**. Call a note **AI-first** only when the shipped product cannot exist without the model. For how _developers_ delegate and verify with agents, see [AI-first engineering & SDD](./0_ai_engineering.md).
 
 **Sources:** [Google Founders’ Letter 2016](https://blog.google/alphabet/this-years-founders-letter/)
 

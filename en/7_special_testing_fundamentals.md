@@ -1,18 +1,20 @@
 # Testing — Fundamentals
 
-AAA, the test pyramid, and why tests pay off.
+AAA, the test pyramid, testing approaches, and common test purposes.
 
 [← Back to hub](./7_special_testing.md)
 
 ### Related docs
 
-- [Fundamentals](./7_special_testing_fundamentals.md) · [Layers](./7_special_testing_layers.md) · [Practices](./7_special_testing_practices.md) · [Tooling](./7_special_testing_tooling.md) · [React — Testing](./4_react_ecosystem.md#testing) · [Next.js — Vitest + RTL](./4_nextjs_platform.md#testing-nextjs-vitest--rtl) · [CI/CD](./10_build_ci.md#continuous-integration-ci) · [Interview leftovers](./7_special_interview.md)
+- [Fundamentals](./7_special_testing_fundamentals.md) · [Layers](./7_special_testing_layers.md) · [Practices](./7_special_testing_practices.md) · [Tooling](./7_special_testing_tooling.md) · [React — Testing](./4_react_testing.md) · [Next.js — Vitest + RTL](./4_nextjs_platform.md#testing-nextjs-vitest--rtl) · [CI/CD](./10_build_ci.md#continuous-integration-ci) · [Interview leftovers](./7_special_interview.md)
 
 ### Sections
 
 - [Fundamentals](#fundamentals)
 - [Tests and AAA](#tests-and-aaa)
 - [Test pyramid](#test-pyramid)
+- [Testing approaches (black-box, white-box, gray-box)](#testing-approaches-black-box-white-box-gray-box)
+- [Tests by purpose (smoke, sanity, regression)](#tests-by-purpose-smoke-sanity-regression)
 
 ---
 
@@ -140,6 +142,108 @@ flowchart TB
 **Thoughts:**
 
 Contract tests between services sit between integration and E2E. Snapshot tests are unit-ish but can be brittle. Unit tests belong on **your** code; libraries get coverage via adapters + this pyramid’s integration/E2E layers — [Making tests easy](./7_special_testing_practices.md#making-tests-easy). Depth: [Integration](./7_special_testing_layers.md#integration-testing) · [System](./7_special_testing_layers.md#system-testing) · [E2E](./7_special_testing_layers.md#e2e-testing).
+
+---
+
+</details>
+
+<a name="testing-approaches-black-box-white-box-gray-box"></a>
+
+<details>
+  <summary>Testing approaches (black-box, white-box, gray-box)</summary>
+
+### Testing approaches (black-box, white-box, gray-box)
+
+**Definition:** **Approaches** (sometimes called _methods_ in QA courses — «методы тестирования») describe **how much you know about the implementation** when you choose inputs and oracles. They are orthogonal to [test layers](./7_special_testing_fundamentals.md#test-pyramid) (unit vs E2E) and to [automation](./7_special_testing_tooling.md).
+
+**How it works:**
+
+| Approach      | Tester knows                         | Typical focus                                      | Common in dev work                                         |
+| ------------- | ------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| **Black-box** | Specs / API / UI only                | Inputs → observable outputs; requirements coverage | RTL by role/label; API contract tests; manual UAT          |
+| **White-box** | Code structure, branches, data flow  | Paths, conditions, error handling                  | Unit tests with mocks; coverage tools; branch-aware cases  |
+| **Gray-box**  | Partial internals (schema, logs, DB) | Integration seams with limited visibility          | MSW + real reducer; test DB with known seed; API + OpenAPI |
+
+**Static vs dynamic** (another QA axis):
+
+- **Static** — analyze artifacts **without running** the program: lint, typecheck, code review, SAST, dependency audit. Cheap in CI; catches many classes of bugs early.
+- **Dynamic** — **execute** the software and observe behavior: unit/integration/E2E, profilers, DAST. Required to prove runtime behavior.
+
+**Manual vs automated:** Manual exploration finds surprises; automated suites give repeatable [regression](#tests-by-purpose-smoke-sanity-regression) signal. Both stay in mature teams — automation does not remove [exploratory](./7_special_testing_interview.md) sessions.
+
+**When to use:**
+
+- **Black-box** — acceptance criteria, user stories, public APIs, “does it match the TZ?”
+- **White-box** — algorithms, parsers, security-sensitive branches, refactors where coverage guides missing cases.
+- **Gray-box** — full-stack features where you know the DB shape or wire format but still test through the UI/API.
+
+#### Common pitfalls
+
+- Calling every Jest test “white-box” while ignoring requirements — combine with black-box cases from specs.
+- 100% line coverage as a goal — coverage is a white-box **hint**, not proof of correct behavior.
+- Skipping static checks and relying only on E2E — slow feedback and shallow defect detection.
+
+**Pluses and minuses:**
+
+| +                                      | −                                           |
+| -------------------------------------- | ------------------------------------------- |
+| Shared vocabulary with QA / university | Easy to confuse with pyramid “levels”       |
+| Picks the right technique per risk     | Gray-box needs discipline (no over-mocking) |
+
+**Thoughts:** In practice you mix approaches: white-box unit tests under a black-box E2E journey. Design black-box cases systematically — [Black-box test design techniques](./7_special_testing_practices.md#black-box-test-design-techniques).
+
+**Sources:**
+
+[Doka — integration & system testing](https://doka.guide/tools/integration-and-system-testing/) · [ISTQB Glossary](https://glossary.istqb.org/)
+
+---
+
+</details>
+
+<a name="tests-by-purpose-smoke-sanity-regression"></a>
+
+<details>
+  <summary>Tests by purpose (smoke, sanity, regression)</summary>
+
+### Tests by purpose (smoke, sanity, regression)
+
+**Definition:** **Purpose** labels describe **why** you run a set of tests now — not which layer (unit/E2E) they use. The same Playwright spec can be smoke on every commit and part of a full regression before release.
+
+**How it works:**
+
+| Purpose        | Question answered                            | Scope / timing                                                                                          |
+| -------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Smoke**      | “Is the build testable at all?”              | Tiny critical path after deploy/build; fail fast                                                        |
+| **Sanity**     | “Did this change break the area we touched?” | Narrow checks around a fix or feature slice                                                             |
+| **Regression** | “Did we break something that used to work?”  | Re-run known-good suite (often all automated tests)                                                     |
+| **Acceptance** | “Does the product meet agreed requirements?” | Often manual UAT or sign-off scenarios; see [pyramid](./7_special_testing_fundamentals.md#test-pyramid) |
+
+Typical CI shape: **smoke** (or tagged `@smoke`) on every PR → full **regression** on `main` / nightly → optional manual **acceptance** before release. **Sanity** is common after hotfixes (“login + checkout still work”).
+
+**When to use:**
+
+- Add **smoke** when E2E is slow — gate the long suite behind a 2–3 minute subset ([CI](./10_build_ci.md#continuous-integration-ci)).
+- Run **regression** on every merge that touches shared code paths.
+- Use **sanity** when full regression is too heavy for a small patch.
+
+#### Common pitfalls
+
+- Using “smoke” for the entire E2E folder — smoke must stay minimal or it stops being a gate.
+- No regression after refactors — the pyramid only helps if CI actually re-runs the suite.
+- Confusing **sanity** with **smoke** — sanity is **targeted**; smoke is **breadth-minimal**.
+
+**Pluses and minuses:**
+
+| +                               | −                                               |
+| ------------------------------- | ----------------------------------------------- |
+| Clear release and CI vocabulary | Teams define smoke differently — document yours |
+| Faster feedback loops           | Over-tagging tests blurs categories             |
+
+**Thoughts:** Tag tests (`@smoke`, `@regression`) in Playwright/Jest so one codebase serves multiple purposes.
+
+**Sources:**
+
+[Doka — how and why to write tests](https://doka.guide/tools/how-to-test-and-why/) · [Playwright — test projects & grep](https://playwright.dev/docs/test-projects)
 
 ---
 

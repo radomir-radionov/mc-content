@@ -8,15 +8,15 @@
 
 - [JS Core](./3_js_core.md) · [JS Array](./3_js_array.md) · [JS-функции](./3_js_functions.md) · [Objects](./3_js_objects.md) · [Classes](./3_js_classes.md) · [JS Async](./3_js_async.md)
 - [События](./3_js_events.md) · [Дополнительный браузер](./3_js_browser_extra.md) · [JS Interview](./3_js_interview.md)
-- [HTML-браузер и рендеринг](./1_html.md) · [Веб-API](./6_web_api.md) · [файлы и файловые системы ОС](./8_nodejs_modules.md#files--file-systems)\* [Jest DOM-тесты (`jsdom`)](./7_special_testing_tooling.md#jest--first-tests-node-vs-jsdom)
+- [HTML-браузер и рендеринг](./1_html.md) · [Critical rendering path](./1_html_rendering.md) · [Веб-API](./6_web_api.md) · [Web security (XSS, CSP)](./7_special_security.md) · [JS Core — V8](./3_js_core.md#v8-engine-architecture) · [файлы и файловые системы ОС](./8_nodejs_modules.md#files--file-systems) · [Jest DOM-тесты (`jsdom`)](./7_special_testing_tooling.md#jest--first-tests-node-vs-jsdom)
 
 ### Main concepts
 
-| Area            | Topics                                                          |
-| --------------- | --------------------------------------------------------------- |
-| **Environment** | Browser host, specs, script loading, BOM                        |
-| **DOM**         | Tree, navigation, search, node/attribute APIs, mutation, styles |
-| **Geometry**    | Element/window size, scroll, coordinates                        |
+| Area            | Topics                                                               |
+| --------------- | -------------------------------------------------------------------- |
+| **Environment** | Browser host, multi-process architecture, specs, script loading, BOM |
+| **DOM**         | Tree, navigation, search, node/attribute APIs, mutation, styles      |
+| **Geometry**    | Element/window size, scroll, coordinates                             |
 
 ### Sections
 
@@ -122,6 +122,8 @@
 - **Web platform** — page APIs (`document`, `fetch`, `localStorage`) defined by HTML/DOM/CSSOM specs.
 - **`window`** — global object in browsers; `document`, `location`, `history`, `navigator` are properties of `window`.
 - **`globalThis`** — same global in any realm (browser `window`, Node `global`, workers).
+- **Processes & main thread:** модель процессов, site isolation, pipeline → [Core — Browser work principles](./0_core_browser.md#browser-work-principles) · [Multi-process architecture](./0_core_browser.md#multi-process-architecture). Этапы CRP → [HTML — Rendering](./1_html_rendering.md). JS страницы на **main thread** renderer ([Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) в других потоках). Layout/paint — **не** ECMAScript (Blink в Chrome). Движок → [V8 engine architecture](./3_js_core.md#v8-engine-architecture).
+- **Security на уровне хоста:** sandbox, same-origin, permission prompts. HTTP-защита (CORS, CSP) дополняет гигиену DOM — [CORS / SOP](./3_js_browser_extra.md#cors-same-origin) · [XSS & CSP](./7_special_security.md).
 
 | Spec layer | Examples                                   |
 | ---------- | ------------------------------------------ |
@@ -136,7 +138,7 @@ Know which APIs are language vs browser; feature-detect host APIs before calling
 
 #### Common pitfalls
 
-Assuming every global exists in Node; treating BOM objects as part of ECMAScript; mixing up `window` vs `document` entry points.
+Assuming every global exists in Node; treating BOM objects as part of ECMAScript; mixing up `window` vs `document` entry points; blaming V8 for layout bugs or CORS (это слои хоста/сети).
 
 **Pluses and minuses:**
 
@@ -153,9 +155,9 @@ window.document === document;
 typeof fetch; // "function" in modern browsers, undefined in older Node without polyfill
 ```
 
-**See also:** [BOM](#bom) · [Script loading](#script-loading)
+**See also:** [BOM](#bom) · [Script loading](#script-loading) · [Event loop](./3_js_async_event_loop.md#event-loop)
 
-**Sources:** [javascript.info/browser-environment](https://javascript.info/browser-environment) · [MDN Window](https://developer.mozilla.org/en-US/docs/Web/API/Window)
+**Sources:** [javascript.info/browser-environment](https://javascript.info/browser-environment) · [MDN Window](https://developer.mozilla.org/en-US/docs/Web/API/Window) · [Chromium — multi-process architecture](https://www.chromium.org/developers/design-documents/multi-process-architecture/) · [MDN — Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
 
 </details>
 

@@ -1,12 +1,12 @@
 # Testing — Practices
 
-TDD, BDD, test doubles, and making tests easy to write.
+TDD, BDD, test doubles, black-box design techniques, and making tests easy to write.
 
 [← Back to hub](./7_special_testing.md)
 
 ### Related docs
 
-- [Fundamentals](./7_special_testing_fundamentals.md) · [Layers](./7_special_testing_layers.md) · [Practices](./7_special_testing_practices.md) · [Tooling](./7_special_testing_tooling.md) · [React — Testing](./4_react_ecosystem.md#testing) · [Next.js — Vitest + RTL](./4_nextjs_platform.md#testing-nextjs-vitest--rtl) · [CI/CD](./10_build_ci.md#continuous-integration-ci) · [Interview leftovers](./7_special_interview.md)
+- [Fundamentals](./7_special_testing_fundamentals.md) · [Layers](./7_special_testing_layers.md) · [Practices](./7_special_testing_practices.md) · [Tooling](./7_special_testing_tooling.md) · [React — Testing](./4_react_testing.md) · [Next.js — Vitest + RTL](./4_nextjs_platform.md#testing-nextjs-vitest--rtl) · [CI/CD](./10_build_ci.md#continuous-integration-ci) · [Interview leftovers](./7_special_interview.md)
 
 ### Sections
 
@@ -14,6 +14,7 @@ TDD, BDD, test doubles, and making tests easy to write.
 - [TDD (Test-Driven Development)](#tdd-test-driven-development)
 - [BDD (Behavior-Driven Development)](#bdd-behavior-driven-development)
 - [Test doubles (stubs, mocks, spies)](#test-doubles-stubs-mocks-spies)
+- [Black-box test design techniques](#black-box-test-design-techniques)
 - [Making tests easy](#making-tests-easy)
 
 ---
@@ -142,11 +143,11 @@ Scenario: Successful login
   Then they see the dashboard
 ```
 
-| | TDD | BDD |
-| | -------- | ---------------- |
-| | Focus | Code correctness | Behavior / user value |
-| | Language | Code tests | Often natural language |
-| | Audience | Developers | Devs + PM + QA |
+|          | TDD              | BDD                    |
+| -------- | ---------------- | ---------------------- |
+| Focus    | Code correctness | Behavior / user value  |
+| Language | Code tests       | Often natural language |
+| Audience | Developers       | Devs + PM + QA         |
 
 **Mocha-style `describe` / `it` (tutorial / classic BDD runners):**
 
@@ -259,6 +260,74 @@ test("spy: wrap a real method; restore after", () => {
 **Sources:**
 
 [Jest mock functions](https://jestjs.io/docs/mock-functions) · [jest.spyOn](https://jestjs.io/docs/jest-object#jestspyonobject-methodname) · [toHaveBeenCalledWith](https://jestjs.io/docs/expect#tohavebeencalledwitharg1-arg2-) · [Doka — mocks & stubs](https://doka.guide/tools/mocks-n-stubs/)
+
+---
+
+</details>
+
+<a name="black-box-test-design-techniques"></a>
+
+<details>
+  <summary>Black-box test design techniques</summary>
+
+### Black-box test design techniques
+
+**Definition:** Systematic ways to pick **test inputs** from requirements without reading implementation — core material in «методы тестирования» courses. Pair with [Testing approaches](./7_special_testing_fundamentals.md#testing-approaches-black-box-white-box-gray-box); use at unit level (pure functions) or manual charters.
+
+**How it works:**
+
+| Technique                    | Idea                                                                 | Quick example |
+| ---------------------------- | -------------------------------------------------------------------- | ------------- |
+| **Equivalence partitioning** | Split inputs into classes that the spec treats the same; one case per class | Age 0–17 / 18–64 / 65+ discount tiers |
+| **Boundary value analysis**  | Defects cluster on edges — test min, max, just inside/outside        | Field max length 10 → 9, 10, 11 |
+| **Decision tables**          | Many rules × conditions → table of combinations to cover           | Shipping cost vs weight × region × member |
+| **State transition**         | Model allowed states/events; test valid transitions and forbidden ones | Cart: empty → items → checkout → paid |
+
+**Pairwise** (all-pairs) reduces combinations when many parameters interact — useful for config matrices, less common in everyday frontend unit work.
+
+**When to use:**
+
+- Requirements list input ranges, business rules, or state machines.
+- Before writing dozens of copy-paste tests — partition first, then add boundaries.
+- Manual QA scripts and automated table-driven `test.each` share the same matrix.
+
+#### Common pitfalls
+
+- Only happy-path partitions — include invalid classes (empty string, null where disallowed).
+- Boundary tests without reading the spec — “off by one” bugs need the real limits.
+- Giant decision tables — prune impossible combinations; automate generation when tables grow.
+
+**Pluses and minuses:**
+
+| +                                   | −                                      |
+| ----------------------------------- | -------------------------------------- |
+| Fewer redundant tests               | Upfront time to model rules            |
+| Finds edge bugs specs imply         | Not a substitute for exploratory testing |
+
+**Examples:**
+
+```js
+// Boundary: discount applies for age >= 18
+function eligibleForAdultDiscount(age) {
+  return age >= 18;
+}
+
+describe("adult discount eligibility (boundaries)", () => {
+  it.each([
+    [17, false],
+    [18, true],
+    [19, true],
+  ])("age %i → %s", (age, expected) => {
+    expect(eligibleForAdultDiscount(age)).toBe(expected);
+  });
+});
+```
+
+**Thoughts:** BDD scenarios often encode the same partitions in Given/When/Then — [BDD](./7_special_testing_practices.md#bdd-behavior-driven-development). Deeper interview drills: [Testing — Interview](./7_special_testing_interview.md).
+
+**Sources:**
+
+[Doka — integration & system testing](https://doka.guide/tools/integration-and-system-testing/) · [ISTQB Glossary](https://glossary.istqb.org/)
 
 ---
 

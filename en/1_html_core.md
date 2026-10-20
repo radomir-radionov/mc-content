@@ -10,17 +10,19 @@ What HTML is, how markup models content, and how it fits with CSS and JavaScript
 
 ### Main concepts
 
-| Area         | Topics                                         |
-| ------------ | ---------------------------------------------- |
-| **Language** | What HTML is, living standard, HTML vs XML     |
-| **Model**    | Elements, tags, attributes, content categories |
-| **Platform** | HTML + CSS + JavaScript layers                 |
+| Area             | Topics                                                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Language**     | What HTML is, living standard, HTML vs XML                                                                             |
+| **Model**        | Elements, tags, attributes, content categories                                                                         |
+| **Platform**     | HTML + CSS + JavaScript layers; [browser platform](./0_core_browser.md) (Frontend → Core)                              |
+| **Layout (CSS)** | Flexbox, Grid, responsive → [CSS — Layout](./2_css_layout.md); tooling → [CSS — Architecture](./2_css_architecture.md) |
 
 ### Sections
 
 - [Language & standard](#language-standard)
 - [Markup model](#markup-model)
 - [Web platform layers](#web-platform-layers)
+- [Browser platform (Frontend Core)](./0_core_browser.md)
 
 ---
 
@@ -265,7 +267,7 @@ The classic **web platform stack** splits responsibilities:
 
 Architecture discussions, interview “PEA” / three-layer answers, deciding what belongs in templates vs styles vs modules.
 
-**Thoughts:** Mnemonic **PEA** — **P**latform (HTML), **E**ngine (JS), **A**ppearance (CSS).
+**Thoughts:** Mnemonic **PEA** — **P**latform (HTML), **E**ngine (JS), **A**ppearance (CSS). How the host runs all three → [Browser platform (Core)](./0_core_browser.md).
 
 **Sources:** [MDN — How the web works](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works)
 

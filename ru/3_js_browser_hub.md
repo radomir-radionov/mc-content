@@ -1,29 +1,31 @@
 # JS — Browser
 
-DOM, events, windows, files, network APIs from page scripts, animation, and Web Components. Each section links to a dedicated topic page.
+DOM, events, windows, files, network APIs from page scripts, animation, and Web Components — плюс **платформа браузера** (процессы, движок JS, безопасность). Each section links to a dedicated topic page.
 
 [← Back to JS hub](./3_js.md)
 
 ### Related docs
 
-- [JS Core](./3_js_core.md) · [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md)
-- [HTML browser & rendering](./1_html.md) · [Web API](./6_web_api.md) · [CSS motion](./2_css_motion.md)
+- [JS Core](./3_js_core.md) · [V8 engine architecture](./3_js_core.md#v8-engine-architecture) · [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md)
+- [HTML browser & rendering](./1_html.md) · [HTML — Rendering](./1_html_rendering.md#browser-platform-architecture) · [Web API](./6_web_api.md) · [Web security](./7_special_security.md) · [CSS motion](./2_css_motion.md)
 
 ### Main concepts
 
-| Topic | Covers |
-| ----- | ------ |
-| **Document** | DOM tree, BOM, forms, script loading |
-| **Events** | Bubbling, delegation, lifecycle |
-| **Windows** | Frames, popups, `postMessage`, clickjacking |
-| **Files & binary** | `Blob`, `ArrayBuffer`, `FormData`, `FileReader` |
-| **Network** | `fetch`, XHR, realtime transports (see also Web API) |
-| **Animation** | `requestAnimationFrame`, easing, CSS vs JS |
-| **Web Components** | Custom elements, shadow DOM, slots |
-| **More APIs** | Storage, CORS, observers, History, URL utilities |
+| Topic              | Covers                                               |
+| ------------------ | ---------------------------------------------------- |
+| **Platform**       | Multi-process browser, V8, event loop, CORS/XSS/CSP  |
+| **Document**       | DOM tree, BOM, forms, script loading                 |
+| **Events**         | Bubbling, delegation, lifecycle                      |
+| **Windows**        | Frames, popups, `postMessage`, clickjacking          |
+| **Files & binary** | `Blob`, `ArrayBuffer`, `FormData`, `FileReader`      |
+| **Network**        | `fetch`, XHR, realtime transports (see also Web API) |
+| **Animation**      | `requestAnimationFrame`, easing, CSS vs JS           |
+| **Web Components** | Custom elements, shadow DOM, slots                   |
+| **More APIs**      | Storage, CORS, observers, History, URL utilities     |
 
 ### Sections
 
+- [Browser platform](#browser-platform)
 - [Document](#document)
 - [Events](#events)
 - [Windows & frames](#windows--frames)
@@ -34,6 +36,27 @@ DOM, events, windows, files, network APIs from page scripts, animation, and Web 
 - [Browser APIs (more)](#browser-apis-more)
 
 ---
+
+<a name="browser-platform"></a>
+
+## Browser platform
+
+<details>
+  <summary>Browser platform architecture</summary>
+
+### Browser platform architecture
+
+**Definition:** Загрузка, рендер, script и изоляция сайтов — канонически на **Frontend → Core** ([Browser platform](./0_core_browser.md)).
+
+**How it works:** [Browser work principles](./0_core_browser.md#browser-work-principles) (navigation → sandbox). Дальше: [CRP](./0_core_browser.md#critical-rendering-path-detailed-stages) → [HTML — Rendering](./1_html_rendering.md); [JS host](./0_core_browser.md#browser-environment-javascript-host) → [Browser environment](./3_js_browser.md#browser-environment); движок → [V8](./3_js_core.md#v8-engine-architecture); scheduling → [Event loop](./3_js_async_event_loop.md#event-loop).
+
+**When to use:** Вход в JS Browser hub перед **Document**, **Events** и API-топиками.
+
+**Thoughts:** Hub индексирует API; теория platform — в Core.
+
+**Sources:** [Core — Browser platform](./0_core_browser.md)
+
+</details>
 
 <a name="document"></a>
 

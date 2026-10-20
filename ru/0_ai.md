@@ -4,13 +4,14 @@
 
 ### Related docs
 
-- [Курсор — Core](./0_ai_cursor_core.md) · [Навыки](./0_ai_cursor_skills.md) · [Правила](./0_ai_cursor_rules.md) · [Плагины](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Команды слэша](./0_ai_cursor_slash.md) · [Вопросы](./0_ai_cursor_questions.md) · [Центр интервью](./0_interview.md) · [MVP и суждение](./0_mvp.md) · [TypeScript](./5_ts.md) · [Next.js](./4_nextjs.md)
+- [AI-first engineering & SDD](./0_ai_engineering.md) · [Full-stack role map](./0_engineering_fullstack.md) · [Курсор — Core](./0_ai_cursor_core.md) · [Навыки](./0_ai_cursor_skills.md) · [Правила](./0_ai_cursor_rules.md) · [Плагины](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Команды слэша](./0_ai_cursor_slash.md) · [Вопросы](./0_ai_cursor_questions.md) · [Центр интервью](./0_interview.md) · [MVP и суждение](./0_mvp.md) · [TypeScript](./5_ts.md) · [Next.js](./4_nextjs.md)
 
 ### Main concepts
 
 | Площадь             | Темы                                                                                                                                                                                                                                                                                                     |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Продукт**         | [подход на основе искусственного интеллекта](#ai-first-approach) против использования искусственного интеллекта против расширенного искусственного интеллекта                                                                                                                                            |
+| **Engineering**     | [AI-first engineering & SDD](./0_ai_engineering.md) — привычки разработчика и spec до кода                                                                                                                                                                                                               |
 | **Рабочий процесс** | [Редакторы с помощью ИИ](#ai-assisted-workflow-cursor-copilot-claude-code), [Context window](#context-window-llm-context), [Context7 / Ref](#context7-and-reftools), [RTK](#rtk-rust-token-killer)                                                                                                       |
 | **Курсор**          | [Core](./0_ai_cursor_core.md) · [Навыки](./0_ai_cursor_skills.md) · [Правила](./0_ai_cursor_rules.md) · [Плагины](./0_ai_cursor_plugins.md) · [Subagents](./0_ai_cursor_subagents.md) · [Hooks](./0_ai_cursor_hooks.md) · [Слэш-команды](./0_ai_cursor_slash.md) · [Вопросы](./0_ai_cursor_questions.md) |
 
@@ -46,7 +47,7 @@
 | Вызывает четкий тезис продукта: что умрет, если модель выйдет из строя?    | Легко спутать командный инструментарий с продуктом, ориентированным на клиента. |
 | Соответствует тому, как крупные платформы говорят об помощниках и экранах. | «ИИ-прежде всего» — это маркетинг, если только модель не является циклом.       |
 
-**Thoughts:** В этом репозитории большая часть направления ИИ — это **разработка с использованием ИИ**. Делайте замечание **AI-first** только в том случае, если поставляемый продукт не может существовать без модели.
+**Thoughts:** В этом репозитории большая часть направления ИИ — это **разработка с использованием ИИ**. Делайте замечание **AI-first** только в том случае, если поставляемый продукт не может существовать без модели. Как _разработчик_ делегирует и проверяет работу с агентами — см. [AI-first engineering & SDD](./0_ai_engineering.md).
 
 **Sources:** [Письмо основателей Google, 2016 г.](https://blog.google/alphabet/this-years-founders-letter/)
 

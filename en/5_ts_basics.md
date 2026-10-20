@@ -6,11 +6,12 @@ tsconfig, declaration files, and a short intro for JavaScript programmers.
 
 ### Related docs
 
-- [TypeScript — hub](./5_ts.md) · [Compiler fundamentals](./5_ts_compiler_fundamentals.md) · [Variable Declaration](./5_ts_variable_declaration.md) · [Interview](./5_ts_interview.md)
+- [TypeScript — hub](./5_ts.md) · [API contracts](./5_ts_api_contracts.md) · [Compiler fundamentals](./5_ts_compiler_fundamentals.md) · [Variable Declaration](./5_ts_variable_declaration.md) · [Interview](./5_ts_interview.md)
 
 ### Sections
 
 - [TypeScript overview](#typescript-overview)
+- [Strict compiler options](#strict-compiler-options)
 - [Compiler & tsconfig](#compiler-tsconfig)
 - [tsconfig.json](#tsconfig-json)
 - [Declaration files (.d.ts)](#declaration-files-dts)
@@ -32,6 +33,67 @@ tsconfig, declaration files, and a short intro for JavaScript programmers.
 **Type system (everyday types):** [Types hub](./5_ts_types.md).
 
 **Sources:** [TypeScript from scratch](https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html)
+
+</details>
+
+---
+
+## Strict compiler options
+
+<details>
+<summary>strict flag family</summary>
+
+**Definition:** Setting `"strict": true` in `compilerOptions` enables a **family** of checks that close the largest soundness gaps between JavaScript and TypeScript. You can turn flags on individually when migrating legacy code.
+
+**How it works:**
+
+| Flag                           | Effect                                                                      |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `noImplicitAny`                | Error when TS would infer `any` for a parameter or untyped variable         |
+| `strictNullChecks`             | `null` / `undefined` are separate; optional chaining and guards required    |
+| `strictFunctionTypes`          | Function parameters are checked **contravariantly** (stricter callbacks)    |
+| `strictBindCallApply`          | Typed `bind`, `call`, and `apply`                                           |
+| `strictPropertyInitialization` | Class fields must be initialized in constructor or with definite assignment |
+| `noImplicitThis`               | `this` must have a known type in functions                                  |
+| `alwaysStrict`                 | Emit `"use strict"` in JS output                                            |
+| `useUnknownInCatchVariables`   | `catch (e)` is `unknown`, not `any`                                         |
+
+**When to use:** Enable **`strict: true`** on new projects. For brownfield, enable **`noImplicitAny`** and **`strictNullChecks`** first, then the rest. Stricter optional flags (not part of `strict`): see **Advanced `tsconfig` flags** under [Compiler & tsconfig](#compiler-tsconfig).
+
+**Pluses and minuses:**
+
+|               | Pluses                                           | Minuses                                |
+| ------------- | ------------------------------------------------ | -------------------------------------- |
+| Full `strict` | Maximum static safety; matches handbook examples | Large error bursts on old code         |
+| Incremental   | Team can schedule flag-by-flag                   | Temporary inconsistency across modules |
+
+**Examples:**
+
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+```typescript
+// strictNullChecks — parameter must allow null or guard
+function len(s: string | null) {
+  return s?.length ?? 0;
+}
+
+// useUnknownInCatchVariables
+try {
+  await fetch("/api");
+} catch (e: unknown) {
+  if (e instanceof Error) console.error(e.message);
+}
+```
+
+**Thoughts:** Strict mode is **compile-time only** — it does not validate JSON at runtime. Pair with [API contracts](./5_ts_api_contracts.md) for network boundaries.
+
+**Sources:** [TSConfig — strict](https://www.typescriptlang.org/tsconfig#strict) · [TypeScript handbook — tsconfig](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 
 </details>
 
@@ -198,10 +260,6 @@ Escape hatches when the compiler is wrong or types are missing. Prefer fixing ty
 | Aspect  | Detail                                                                                              |
 | ------- | --------------------------------------------------------------------------------------------------- |
 | Summary | Escape hatches when the compiler is wrong or types are missing. Prefer fixing types; use sparingly. |
-
-Escape hatches when |
-
-Escape hatches when the compiler is wrong or types are missing. Prefer fixing types; use sparingly.
 
 **How it works:** `@ts-expect-error` is preferred — it fails when the underlying issue is fixed, so suppressions don't rot.
 

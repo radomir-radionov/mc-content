@@ -6,33 +6,54 @@ URL to pixels: parse, CSSOM, render tree, layout, paint, composite.
 
 ### Related docs
 
-* [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
+- [Core — Browser platform](./0_core_browser.md) · [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Performance](./1_html_performance.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
 
 ### Sections
 
 - [Browser & rendering](#browser-rendering)
+- [Browser platform architecture](#browser-platform-architecture)
 
 ---
 
 ## Browser & rendering
 
+<a name="browser-platform-architecture"></a>
+
+<details>
+  <summary>Browser platform architecture</summary>
+
+### Browser platform architecture
+
+**Definition:** The **browser platform** (processes, main thread, JS engine vs layout, security boundaries) is documented on **Frontend → Core**, not duplicated on this page.
+
+**How it works:** Read [Core — Browser platform](./0_core_browser.md#browser-platform-architecture) and the eight [Browser work principles](./0_core_browser.md#browser-work-principles) subtopics first. This file covers **CRP stages** below ([From URL to pixels](#from-url-to-pixels)).
+
+**When to use:** HTML track rendering depth after the Core map; JS-side host APIs → [Browser environment](./3_js_browser.md#browser-environment).
+
+**See also:** [JS — Browser hub](./3_js_browser_hub.md) · [V8 engine architecture](./3_js_core.md#v8-engine-architecture)
+
+**Sources:** [MDN — How browsers work](https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Browsing_the_web)
+
+</details>
+
 <details>
   <summary>From URL to pixels</summary>
 
 ### From URL to pixels
+
 **Definition:**
 
 Entering a URL triggers a chain from DNS resolution through HTTP to HTML parsing and the full browser rendering pipeline.
 
-| Step | Action |
-|------|--------|
-| Parse URL | Scheme, host, path, query, fragment |
-| Resolve IP | HTTP cache of HTML, then DNS caches → IP |
-| TCP | Three-way handshake (SYN → SYN-ACK → ACK) |
-| TLS | Extra handshake + encryption if `https:` |
-| HTTP | Request HTML; stream response |
-| Parse | HTML → DOM; CSS → CSSOM |
-| Render | Render tree → layout → paint → **GPU compositing** |
+| Step       | Action                                             |
+| ---------- | -------------------------------------------------- |
+| Parse URL  | Scheme, host, path, query, fragment                |
+| Resolve IP | HTTP cache of HTML, then DNS caches → IP           |
+| TCP        | Three-way handshake (SYN → SYN-ACK → ACK)          |
+| TLS        | Extra handshake + encryption if `https:`           |
+| HTTP       | Request HTML; stream response                      |
+| Parse      | HTML → DOM; CSS → CSSOM                            |
+| Render     | Render tree → layout → paint → **GPU compositing** |
 
 **How it works:**
 
@@ -59,24 +80,28 @@ Full page load · SPA client navigation (History API skips full reload) · prefe
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                         | −                               |
+| ------------------------- | ------------------------------- |
 | Predictable critical path | Many network hops on cold start |
-| Cacheable at each layer | Hard to debug without DevTools |
+| Cacheable at each layer   | Hard to debug without DevTools  |
 
 **Examples:**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head><title>Products</title></head>
-  <body><h1>Catalog</h1></body>
+  <head>
+    <title>Products</title>
+  </head>
+  <body>
+    <h1>Catalog</h1>
+  </body>
 </html>
 ```
 
 **Thoughts:**
 
-*URL → caches/DNS → TCP → TLS if HTTPS → HTTP HTML → DOM+CSSOM → render tree → layout → paint → GPU composite.*
+_URL → caches/DNS → TCP → TLS if HTTPS → HTTP HTML → DOM+CSSOM → render tree → layout → paint → GPU composite._
 
 CSSOM and paint stages → [2_css.md](./2_css.md). DOM APIs after parse → [3_js_browser.md](./3_js_browser.md). HTTP/TLS/cache → [6_web_api.md](./6_web_api.md).
 
@@ -88,17 +113,18 @@ CSSOM and paint stages → [2_css.md](./2_css.md). DOM APIs after parse → [3_j
   <summary>DNS</summary>
 
 ### DNS
+
 **Definition:**
 
 DNS (Domain Name System) maps human-readable domain names to IP addresses so the browser can open a network connection.
 
-| Lookup order | Cache layer |
-|--------------|-------------|
-| 0 | `/etc/hosts` (or Windows `hosts`) — local overrides |
-| 1 | Browser DNS cache |
-| 2 | OS DNS cache |
-| 3 | Recursive resolver (often ISP) |
-| 4 | Root → TLD → authoritative nameserver |
+| Lookup order | Cache layer                                         |
+| ------------ | --------------------------------------------------- |
+| 0            | `/etc/hosts` (or Windows `hosts`) — local overrides |
+| 1            | Browser DNS cache                                   |
+| 2            | OS DNS cache                                        |
+| 3            | Recursive resolver (often ISP)                      |
+| 4            | Root → TLD → authoritative nameserver               |
 
 **How it works:**
 
@@ -118,10 +144,10 @@ First visit · CDN CNAME · split-horizon internal DNS.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Human-readable hostnames | Extra lookup latency |
-| Distributed, cacheable | Misconfigured TTL causes stale IPs |
+| +                        | −                                  |
+| ------------------------ | ---------------------------------- |
+| Human-readable hostnames | Extra lookup latency               |
+| Distributed, cacheable   | Misconfigured TTL causes stale IPs |
 
 **Examples:**
 
@@ -137,16 +163,17 @@ First visit · CDN CNAME · split-horizon internal DNS.
   <summary>Fetching HTML</summary>
 
 ### Fetching HTML
+
 **Definition:**
 
 After DNS resolves, the browser opens a TCP/TLS connection, sends an HTTP request, and receives an HTML document stream to parse.
 
-| Phase | What happens |
-|-------|--------------|
-| Connect | TCP + TLS handshake (HTTPS) |
-| Request | `GET /` with `Host` header |
+| Phase    | What happens                        |
+| -------- | ----------------------------------- |
+| Connect  | TCP + TLS handshake (HTTPS)         |
+| Request  | `GET /` with `Host` header          |
 | Response | `200 OK`, `Content-Type: text/html` |
-| Parse | Tokenize HTML stream into DOM |
+| Parse    | Tokenize HTML stream into DOM       |
 
 **How it works:**
 
@@ -168,10 +195,10 @@ Same-origin HTML · CDN edge cache hit · `304 Not Modified` revalidation.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                            | −                                   |
+| ---------------------------- | ----------------------------------- |
 | Streaming parse starts early | Large HTML still blocks first paint |
-| HTTP/2 multiplexing | Head-of-line blocking on HTTP/1.1 |
+| HTTP/2 multiplexing          | Head-of-line blocking on HTTP/1.1   |
 
 **Examples:**
 
@@ -199,14 +226,15 @@ The HTML response also triggers fetches for `style.css`, `hello.jpg`, and `index
   <summary>DOM</summary>
 
 ### DOM
+
 **Definition:**
 
 The DOM (Document Object Model) is the browser's live in-memory tree representation of the HTML document. HTML is the source; parsing builds the DOM.
 
-| Concept | Description |
-|---------|-------------|
-| HTML | Static markup in the response |
-| DOM | Runtime object graph |
+| Concept  | Description                         |
+| -------- | ----------------------------------- |
+| HTML     | Static markup in the response       |
+| DOM      | Runtime object graph                |
 | Mutation | JS changes DOM → browser re-renders |
 
 **How it works:**
@@ -228,10 +256,10 @@ Static pages · client-rendered SPAs · `innerHTML` updates.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Standard API across browsers | Verbose vs frameworks |
-| Live updates | Frequent writes cause layout thrashing |
+| +                            | −                                      |
+| ---------------------------- | -------------------------------------- |
+| Standard API across browsers | Verbose vs frameworks                  |
+| Live updates                 | Frequent writes cause layout thrashing |
 
 **Examples:**
 
@@ -259,16 +287,17 @@ Static pages · client-rendered SPAs · `innerHTML` updates.
   <summary>HTML parsing</summary>
 
 ### HTML parsing
+
 **Definition:**
 
 The browser parses HTML top-to-bottom: tokenization converts bytes to tokens, then tree construction creates DOM nodes. Classic scripts without `async`/`defer`/`type="module"` block parsing.
 
-| Step | Action |
-|------|--------|
-| Tokenization | Bytes → start/end tags, text, comments |
-| Tree construction | Tokens → DOM nodes |
-| Script handling | Blocking scripts pause parser |
-| Preload scanner | Discovers resources early |
+| Step              | Action                                 |
+| ----------------- | -------------------------------------- |
+| Tokenization      | Bytes → start/end tags, text, comments |
+| Tree construction | Tokens → DOM nodes                     |
+| Script handling   | Blocking scripts pause parser          |
+| Preload scanner   | Discovers resources early              |
 
 **How it works:**
 
@@ -289,15 +318,20 @@ Document with deferred scripts · inline script mid-body · malformed HTML (erro
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Forgiving error recovery | Invalid HTML may differ across engines |
-| Incremental build | Blocking scripts delay DOMContentLoaded |
+| +                        | −                                       |
+| ------------------------ | --------------------------------------- |
+| Forgiving error recovery | Invalid HTML may differ across engines  |
+| Incremental build        | Blocking scripts delay DOMContentLoaded |
 
 **Examples:**
 
 ```html
-<html><body><h1>Hello</h1><p>Text</p></body></html>
+<html>
+  <body>
+    <h1>Hello</h1>
+    <p>Text</p>
+  </body>
+</html>
 ```
 
 **Thoughts:** `async`/`defer` script behavior → [3_js_browser.md](./3_js_browser.md).
@@ -310,15 +344,16 @@ Document with deferred scripts · inline script mid-body · malformed HTML (erro
   <summary>CSSOM</summary>
 
 ### CSSOM
+
 **Definition:**
 
 The CSSOM (CSS Object Model) is the browser's object representation of parsed CSS rules. The DOM holds structure; the CSSOM holds computed style information.
 
-| Model | Holds |
-|-------|-------|
-| DOM | Document structure |
-| CSSOM | Style rules per selector |
-| Render tree | DOM + CSSOM merged |
+| Model       | Holds                    |
+| ----------- | ------------------------ |
+| DOM         | Document structure       |
+| CSSOM       | Style rules per selector |
+| Render tree | DOM + CSSOM merged       |
 
 **How it works:**
 
@@ -340,16 +375,20 @@ External stylesheet · inline `<style>` · `@import` chains (slower).
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                                     | −                               |
+| ------------------------------------- | ------------------------------- |
 | Separates structure from presentation | `@import` blocks parallel fetch |
-| Cacheable CSS files | Large CSS delays first paint |
+| Cacheable CSS files                   | Large CSS delays first paint    |
 
 **Examples:**
 
 ```html
-<head><link rel="stylesheet" href="/styles.css" /></head>
-<body><h1>Hello</h1></body>
+<head>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <h1>Hello</h1>
+</body>
 ```
 
 **Thoughts:** CSS cascade and specificity → [2_css.md](./2_css.md).
@@ -362,14 +401,15 @@ External stylesheet · inline `<style>` · `@import` chains (slower).
   <summary>Render tree</summary>
 
 ### Render tree
+
 **Definition:**
 
 The render tree combines the DOM and CSSOM into a tree of boxes ready for layout and paint. Elements with `display: none` are excluded. WebKit/Blink call it the render tree; Gecko uses **frame tree**.
 
-| Input | Output |
-|-------|--------|
-| DOM | Structure nodes |
-| CSSOM | Style for each node |
+| Input       | Output                             |
+| ----------- | ---------------------------------- |
+| DOM         | Structure nodes                    |
+| CSSOM       | Style for each node                |
 | Render tree | Visible boxes with computed styles |
 
 **How it works:**
@@ -391,10 +431,10 @@ Hidden modals (`display:none`) · off-screen menus · `content-visibility: auto`
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                             | −                                          |
+| ----------------------------- | ------------------------------------------ |
 | Only visible work is laid out | Easy to confuse `hidden` vs `display:none` |
-| Merges DOM + styles | Pseudo-elements add extra boxes |
+| Merges DOM + styles           | Pseudo-elements add extra boxes            |
 
 **Examples:**
 
@@ -420,11 +460,11 @@ Hidden modals (`display:none`) · off-screen menus · `content-visibility: auto`
 
 Layout (reflow) computes the geometry of every visible element — width, height, position, and margins — on the page.
 
-| Property change | Triggers reflow? |
-|-----------------|-----------------|
-| `width`, `height`, `padding` | Yes |
-| DOM insert/remove | Yes |
-| `transform`, `opacity` | No (compositor) |
+| Property change              | Triggers reflow? |
+| ---------------------------- | ---------------- |
+| `width`, `height`, `padding` | Yes              |
+| DOM insert/remove            | Yes              |
+| `transform`, `opacity`       | No (compositor)  |
 
 **How it works:**
 
@@ -446,9 +486,9 @@ Initial page layout · responsive resize · dynamic content injection.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Accurate geometry | Most expensive rendering stage |
+| +                               | −                                          |
+| ------------------------------- | ------------------------------------------ |
+| Accurate geometry               | Most expensive rendering stage             |
 | Required for readable text flow | Layout thrashing if read/write interleaved |
 
 **Examples:**
@@ -473,10 +513,10 @@ Initial page layout · responsive resize · dynamic content injection.
 
 Paint rasterizes the visual appearance of each box — text, backgrounds, borders, and shadows — into bitmap layers.
 
-| Stage | Answers |
-|-------|---------|
-| Layout | Where and how big? |
-| Paint | What does it look like? |
+| Stage     | Answers                 |
+| --------- | ----------------------- |
+| Layout    | Where and how big?      |
+| Paint     | What does it look like? |
 | Composite | How are layers stacked? |
 
 **How it works:**
@@ -499,10 +539,10 @@ Text rendering · box shadows · `border-radius` · large `box-shadow` repaints.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Necessary for visual fidelity | Large paint areas are costly |
-| Layer splitting helps | `will-change` overuse wastes memory |
+| +                             | −                                   |
+| ----------------------------- | ----------------------------------- |
+| Necessary for visual fidelity | Large paint areas are costly        |
+| Layer splitting helps         | `will-change` overuse wastes memory |
 
 **Examples:**
 
@@ -525,11 +565,11 @@ Text rendering · box shadows · `border-radius` · large `box-shadow` repaints.
 
 Compositing merges painted layers into the final frame on the GPU. Elements with `transform`, `opacity`, or `will-change` may be promoted to their own layer.
 
-| Change type | Typical cost |
-|-------------|--------------|
-| Layout | Highest |
-| Paint | Medium |
-| Composite only | Lowest |
+| Change type    | Typical cost |
+| -------------- | ------------ |
+| Layout         | Highest      |
+| Paint          | Medium       |
+| Composite only | Lowest       |
 
 **How it works:**
 
@@ -551,9 +591,9 @@ Compositing merges painted layers into the final frame on the GPU. Elements with
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Smooth 60fps animations | Extra layers use GPU memory |
+| +                           | −                                     |
+| --------------------------- | ------------------------------------- |
+| Smooth 60fps animations     | Extra layers use GPU memory           |
 | Skips layout for transforms | Over-promotion causes layer explosion |
 
 **Examples:**
@@ -577,11 +617,11 @@ Compositing merges painted layers into the final frame on the GPU. Elements with
 
 These three rendering stages answer different questions. Understanding which CSS properties trigger which stage helps optimize animations and avoid jank.
 
-| Stage | Answers | Typical triggers |
-|-------|---------|------------------|
-| **Layout** | Where? How big? | `width`, `height`, `padding`, DOM insert |
-| **Paint** | What does it look like? | `color`, `background`, `box-shadow` |
-| **Composite** | How are layers stacked? | `transform`, `opacity` |
+| Stage         | Answers                 | Typical triggers                         |
+| ------------- | ----------------------- | ---------------------------------------- |
+| **Layout**    | Where? How big?         | `width`, `height`, `padding`, DOM insert |
+| **Paint**     | What does it look like? | `color`, `background`, `box-shadow`      |
+| **Composite** | How are layers stacked? | `transform`, `opacity`                   |
 
 **How it works:**
 
@@ -589,11 +629,11 @@ These three rendering stages answer different questions. Understanding which CSS
 - DevTools Performance panel shows which stage each change triggered.
 - Prefer composite-friendly properties for animations.
 
-| Stage | Cost | Typical properties |
-|-------|------|--------------------|
-| Layout | Highest | `width`, `height`, `padding` |
-| Paint | Medium | `color`, `background`, `box-shadow` |
-| Composite | Lowest | `transform`, `opacity` |
+| Stage     | Cost    | Typical properties                  |
+| --------- | ------- | ----------------------------------- |
+| Layout    | Highest | `width`, `height`, `padding`        |
+| Paint     | Medium  | `color`, `background`, `box-shadow` |
+| Composite | Lowest  | `transform`, `opacity`              |
 
 **When to use:**
 
@@ -640,16 +680,16 @@ Reading `offsetHeight` after a write forces a synchronous (often global-feeling)
 
 **Pluses and minuses:**
 
-| + | − |
-|---|---|
-| Incremental avoids full-tree work | Dirty parent still walks all children |
+| +                                             | −                                                    |
+| --------------------------------------------- | ---------------------------------------------------- |
+| Incremental avoids full-tree work             | Dirty parent still walks all children                |
 | Flow layout is one-pass for independent boxes | Out-of-flow / percentage sizes can cascade dirtiness |
 
 **Examples:** Changing one card's `padding` relayouts that card and its nested content, not necessarily the whole page.
 
 **Thoughts:**
 
-*Dirty = changed node + descendants; window resize is global.*
+_Dirty = changed node + descendants; window resize is global._
 
 CSS property cost table → [2_css.md — Reflow, repaint, composite](./2_css.md).
 
@@ -675,10 +715,10 @@ CSS property cost table → [2_css.md — Reflow, repaint, composite](./2_css.md
 
 Canvas/JS animation loops · measuring layout then mutating in rAF · avoiding layout thrashing.
 
-| + rAF | − `setInterval` for visuals |
-|--------|-----------------------------|
-| Before paint, pauses in background | Unrelated to paint phase |
-| Close to refresh rate | Catch-up bursts after inactive tab |
+| + rAF                              | − `setInterval` for visuals        |
+| ---------------------------------- | ---------------------------------- |
+| Before paint, pauses in background | Unrelated to paint phase           |
+| Close to refresh rate              | Catch-up bursts after inactive tab |
 
 #### Common pitfalls
 
@@ -696,7 +736,7 @@ requestAnimationFrame(animate);
 
 **Thoughts:**
 
-*One cycle = one animation frame; tell the browser with `requestAnimationFrame`, not a 16 ms interval.*
+_One cycle = one animation frame; tell the browser with `requestAnimationFrame`, not a 16 ms interval._
 
 API details → [3_js_browser.md — requestAnimationFrame](./3_js_browser_extra.md#request-animation-frame).
 
@@ -727,16 +767,16 @@ One giant CSS file in `<head>`; parser-blocking bundle before content.
 
 **Pluses and minuses:**
 
-| + | − |
-|---|---|
-| Faster FCP/LCP perception | Extra split CSS/JS complexity |
+| +                                 | −                                              |
+| --------------------------------- | ---------------------------------------------- |
+| Faster FCP/LCP perception         | Extra split CSS/JS complexity                  |
 | Streaming HTML starts parse early | Incomplete CSS still delays first styled paint |
 
 **Examples:** Inline above-the-fold CSS in `<head>`; `<script defer>` for the app; `loading="lazy"` on below-fold images.
 
 **Thoughts:**
 
-*Paint something useful ASAP — critical CSS + non-blocking JS + lazy below-fold.*
+_Paint something useful ASAP — critical CSS + non-blocking JS + lazy below-fold._
 
 CSS techniques → [2_css.md — progressive rendering](./2_css.md). Script loading → [3_js_browser.md](./3_js_browser.md).
 
@@ -753,15 +793,15 @@ CSS techniques → [2_css.md — progressive rendering](./2_css.md). Script load
 
 The critical rendering path is the sequence from receiving HTML/CSS/JS to the first painted frame. Parser-blocking resources delay time-to-first-paint.
 
-| # | Step |
-|---|------|
-| 1 | DNS lookup |
-| 2 | TCP/TLS connection |
-| 3 | HTTP request/response |
-| 4 | HTML → DOM |
-| 5 | CSS → CSSOM |
-| 6 | Render tree |
-| 7 | Layout → Paint → Composite |
+| #   | Step                       |
+| --- | -------------------------- |
+| 1   | DNS lookup                 |
+| 2   | TCP/TLS connection         |
+| 3   | HTTP request/response      |
+| 4   | HTML → DOM                 |
+| 5   | CSS → CSSOM                |
+| 6   | Render tree                |
+| 7   | Layout → Paint → Composite |
 
 **How it works:**
 
@@ -781,10 +821,10 @@ Marketing landing (optimize LCP hero) · dashboard (defer non-critical JS) · SS
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                                | −                                    |
+| -------------------------------- | ------------------------------------ |
 | Clear optimization targets (CRP) | Many moving parts across HTML/CSS/JS |
-| Measurable via Web Vitals | Over-inlining bloats HTML |
+| Measurable via Web Vitals        | Over-inlining bloats HTML            |
 
 **Examples:**
 
@@ -796,7 +836,9 @@ Marketing landing (optimize LCP hero) · dashboard (defer non-critical JS) · SS
     <link rel="stylesheet" href="/critical.css" />
     <script src="/app.js" defer></script>
   </head>
-  <body><main><h1>First paint</h1></main></body>
+  <body>
+    <main><h1>First paint</h1></main>
+  </body>
 </html>
 ```
 

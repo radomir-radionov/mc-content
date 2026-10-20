@@ -9,6 +9,7 @@
 ### Sections
 
 - [11. SDLC & Agile](#11-sdlc-agile)
+- [Frontend team in Agile](#frontend-team-in-agile)
 - [Code refactoring](#code-refactoring)
 
 ---
@@ -400,6 +401,43 @@ flowchart LR
 ---
 
 </details>
+
+---
+
+## Frontend team in Agile
+
+<details>
+  <summary>Frontend team in Agile</summary>
+
+### Frontend team in Agile
+
+**Definition:** **Frontend work in Scrum/Kanban** — UI-команда в том же **cadence, WIP limits и Definition of Done**, что и backend, с deliverables в виде **отгружаемых UI-слайсов**, а не «все экраны в конце».
+
+**How it works:**
+
+| Scrum artifact | Frontend angle |
+| -------------- | -------------- |
+| **Product Backlog** | Вертикальные слайсы (login flow, checkout), не «весь CSS» |
+| **Sprint Goal** | Демо UI + API contract, не скрытая integration week |
+| **Definition of Done** | Lint, types, unit/RTL tests, a11y spot-check, preview URL |
+| **Daily Scrum** | Blockers: API не готов, design tokens, flaky E2E |
+| **Kanban columns** | Design → Ready for dev → In progress (WIP limit) → Review → Done |
+
+**When to use:** В вакансиях «Scrum/Kanban experience» — описывайте **вашу роль** (оценки, demos, DoD, pairing с QA), а не только названия церемоний.
+
+**Pluses and minuses:**
+
+| + | − |
+| - | - |
+| Ранний feedback на UI на review | Отставание backend ломает vertical slices |
+| Preview deploys per MR | «Frontend-only sprint» без integrated increment |
+
+**Thoughts:** Церемонии подробнее → [Scrum](#scrum) · [Kanban](#kanban). CI gates на MR → [GitLab CI](./10_build_ci.md#gitlab-ci-and-gitlab-runner) · [Testing pyramid — React](./4_react_testing.md#testing-pyramid-react).
+
+**Sources:** [Scrum Guide](https://scrumguides.org/scrum-guide.html) · [Doka — Agile](https://doka.guide/tools/agile/)
+
+</details>
+
 
 <details>
   <summary>Not a silver bullet</summary>

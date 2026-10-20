@@ -1,47 +1,74 @@
 # React — Ecosystem
 
-Маршрутизация, библиотеки, производительность и наследие.
+Сторонние библиотеки, **client routing**, загрузка данных, стили, производительность и legacy. **Структурная** архитектура (FSD, Atomic, MFE) → [React — Architecture](./4_react_architecture.md).
 
-[ ← Вернуться в центр](./4_react.md)
+[← Back to hub](./4_react.md)
 
 ### Related docs
 
-- [React — Core](./4_react_core.md) · [React — Hooks](./4_react_hooks.md) · [React — Components](./4_react_components.md) · [React — APIs](./4_react_apis.md) · [React — React 19](./4_react_server.md) · [React — Ecosystem](./4_react_ecosystem.md) · [React — Redux](./4_react_redux.md) · [React — Интервью](./4_react_interview.md) · [Архитектура шаблоны](./7_special_architecture.md)
+- [React — Architecture](./4_react_architecture.md) · [React — Core](./4_react_core.md) · [React — Hooks](./4_react_hooks.md) · [React — React 19](./4_react_server.md) · [React — Redux](./4_react_redux.md) · [React — TanStack](./4_react_tanstack.md) · [Interview](./4_react_interview.md)
+
+### Main concepts
+
+| Topic                                         | Covers                              |
+| --------------------------------------------- | ----------------------------------- |
+| [App architecture (pointer)](#app-architecture) | FSD, Atomic, MFE → тема Architecture |
+| [Client routing](#client-routing)             | React Router, URL → UI                |
+| [Data fetching](#data-fetching)               | RSC, SWR, TanStack Query, RTK Query   |
+| [10. Performance](#10-performance)            | Re-renders, bundle, legacy patterns |
 
 ### Sections
 
-- [9. Ecosystem & architecture](#9-ecosystem-architecture)
+- [9. Ecosystem & libraries](#9-ecosystem--libraries)
+- [Client routing](#client-routing)
 - [10. Performance](#10-performance)
 - [11. Legacy & migration](#11-legacy-migration)
 
 ---
 
-## 9. Ecosystem & architecture
-
-Маршрутизация
+## 9. Ecosystem & libraries
 
 <details>
-  <summary>Routing</summary>
+  <summary>App architecture</summary>
 
-### Routing
-
-**Definition:** **Маршрутизация на стороне клиента** сопоставляет URL-пути с компонентами **без** полной перезагрузки страницы — API истории браузера обновляет URL-адрес; React меняет представление.
+**Definition:** **Структура кода** — Atomic Design, FSD, feature folders, MFE — в теме Architecture. **Routing** и **rendering** описаны отдельно (ниже и в [React 19](./4_react_server.md)).
 
 **How it works:**
 
-1. Клики пользователей `<Link to="/users">` или браузер назад/вперед
-2. Маршрутизатор сопоставляет URL с конфигурацией маршрута (путь, параметры, вложенные макеты).
-3. Рендеринг соответствующих компонентов; другие размонтируют
-4. Дополнительный **загрузчик** извлекает данные до/во время рендеринга (React Router, шаблон Remix).
-5. В Next.js App Router **файловая система** определяет маршруты (`app/users/page.tsx`)
+| Topic | Where |
+| ----- | ----- |
+| Atomic, FSD, modular monolith, MFE | [React — Architecture](./4_react_architecture.md) |
+| Client routing, React Router | [Client routing](#client-routing) (эта страница) |
+| SPA vs SSR vs RSC | [SPA vs SSR vs RSC](./4_react_server.md#spa-vs-ssr-vs-rsc) |
 
-| Библиотека                           | Заметки                                   |
-| ------------------------------------ | ----------------------------------------- |
-| **Маршрутизатор приложений Next.js** | Файловые маршруты + RSC по умолчанию      |
-| **React Router v7**                  | Режим SPA + Framework с SSR/RSC           |
-| **Маршрутизатор TanStack**           | Типобезопасные маршруты, параметры поиска |
+**When to use:** Открывайте **Architecture** для структуры папок/design system; оставайтесь здесь для routers, data libraries и performance.
 
-**When to use:** Любое многостраничное приложение React. Next.js, если вам нужна маршрутизация на основе файлов + SSR/RSC; React Router для режима SPA или фреймворка.
+**Sources:** [React — Architecture](./4_react_architecture.md)
+
+</details>
+
+## Client routing
+
+<details>
+  <summary>Client routing</summary>
+
+**Definition:** **Client-side routing** сопоставляет URL-пути с компонентами **без** полной перезагрузки страницы — History API обновляет URL; React меняет представление.
+
+**How it works:**
+
+1. Пользователь кликает `<Link to="/users">` или back/forward в браузере
+2. Router сопоставляет URL с конфигом маршрута (path, params, nested layouts)
+3. Matching-компоненты рендерятся; остальные размонтируются
+4. Опциональный **loader** загружает данные до/во время render
+5. В Next.js App Router **файловая система** задаёт маршруты (`app/users/page.tsx`)
+
+| Library | Notes |
+| ------- | ----- |
+| **Next.js App Router** | File-based routes + RSC — [Next.js routing](./4_nextjs_routing.md) |
+| **React Router v7** | SPA + framework mode — [React Router essentials](#react-router-essentials) |
+| **TanStack Router** | Type-safe routes — [TanStack Router](./4_react_tanstack.md#tanstack-router) |
+
+**When to use:** Любое многостраничное React-приложение.
 
 **Examples:**
 
@@ -52,36 +79,18 @@
 </Routes>
 ```
 
-**Thoughts:** _URL-адрес определяет, какие компоненты монтируются — без полной перезагрузки документа._
+**See also:** [React Router essentials](#react-router-essentials) · [Architecture — FSD `pages` layer](./4_react_architecture.md#feature-sliced-design-fsd)
 
-**See also:** [Основные сведения о React Router](#react-router-essentials) · [TanStack Router](./4_react_tanstack.md#tanstack-router)
-
-**Sources:**
-
-[reactrouter.com](https://reactrouter.com/)
-
-Основы React Router
+**Sources:** [reactrouter.com](https://reactrouter.com/)
 
 </details>
 
 <details>
   <summary>React Router essentials</summary>
 
-### React Router essentials
+**Definition:** **React Router v7** сопоставляет URL с UI, поддерживает nested layouts, **loaders**, **actions** и опциональный framework mode (SSR/RSC).
 
-**Definition:** **React Router v7** сопоставляет URL-адреса с пользовательским интерфейсом, поддерживает вложенные макеты, **загрузчики данных** и режим платформы с SSR/RSC — де-факто клиентским маршрутизатором для React SPA.
-
-**How it works:** Маршруты образуют дерево — родительские маршруты отображают `<Outlet />` где появляются дочерние маршруты. **Загрузчики** запускаются перед навигацией/рендерингом для получения данных (параллельно сопоставлению маршрутов); результаты доступны через `useLoaderData()`. **Действия** обрабатывают мутации форм. В режиме платформы файловые маршруты и SSR интегрируются, как Next.js lite. Режим SPA использует `<BrowserRouter>` + `<Routes>`; API данных используют `createBrowserRouter` + `RouterProvider`.
-
-**When to use:** Панель инструментов с макетом боковой панели + вложенные страницы, предварительная загрузка пользователя `/users/:id` через загрузчик, формируем POST через действие.
-
-**Pluses and minuses:**
-
-| +                                                                    | −                                        |
-| -------------------------------------------------------------------- | ---------------------------------------- |
-| Вложенные макеты без перемонтирования родительского                  | Кривая обучения миграции v6 → v7         |
-| Погрузчики уменьшают количество водопадов при извлечении при монтаже | Режим Framework пересекается с Next.js   |
-| Типобезопасные маршруты через альтернативу TanStack Router           | В режиме «только клиент» отсутствует RSC |
+**How it works:** Parent routes рендерят `<Outlet />` для children. **Loaders** отдают данные через `useLoaderData()`; **actions** обрабатывают mutations. SPA mode: `createBrowserRouter` + `RouterProvider`.
 
 **Examples:**
 
@@ -90,41 +99,19 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    loader: () => fetchRootData(),
     children: [
       { index: true, element: <Home /> },
       {
         path: "users/:userId",
-        loader: ({ params }) => fetchUser(params.userId),
+        loader: ({ params }) => fetchUser(params.userId!),
         element: <UserProfile />,
       },
     ],
   },
 ]);
-
-function UserProfile() {
-  const user = useLoaderData() as User;
-  return <h1>{user.name}</h1>;
-}
-
-function Layout() {
-  return (
-    <>
-      <nav />
-      <Outlet />
-      <footer />
-    </>
-  );
-}
 ```
 
-**Thoughts:** Предпочитаю погрузчики `useEffect` выборка данных, привязанных к маршруту. Разделите загрузчики на каждый маршрут, чтобы медленные дочерние данные не блокировали родительскую оболочку.
-
-**Sources:**
-
-[reactrouter.com](https://reactrouter.com/) · [Загрузчики маршрутов](https://reactrouter.com/start/framework/route-module#loader)
-
-Доступность в React (a11y)
+**Sources:** [reactrouter.com](https://reactrouter.com/) · [Route loaders](https://reactrouter.com/start/framework/route-module#loader)
 
 </details>
 
@@ -211,7 +198,7 @@ async function Page() {
 }
 ```
 
-**Thoughts:** Не `useEffect` + `fetch` для данных начальной страницы, если RSC или загрузчик маршрутизатора могут их предоставить. HTTP/CDN и клиентский кэш → [Web APIs — HTTP caching](./6_web_api_http.md#http-caching). Серверные кэши Next.js → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR → [SWR (stale-while-revalidate)](#swr-stale-while-revalidate). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
+**Thoughts:** Не `useEffect` + `fetch` для данных начальной страницы, если RSC или загрузчик маршрутизатора могут их предоставить. Полный клиентский гайд → [React — REST API client](./4_react_api_client.md). HTTP/CDN и клиентский кэш → [Web APIs — HTTP caching](./6_web_api_http.md#http-caching). Серверные кэши Next.js → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR → [SWR (stale-while-revalidate)](#swr-stale-while-revalidate). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
 
 **Sources:**
 
@@ -382,13 +369,11 @@ export function Button({ children }: { children: React.ReactNode }) {
 <details>
   <summary>Feature-Sliced Design (FSD)</summary>
 
-### Feature-Sliced Design (FSD)
+**Definition:** Методология слоёв папок для крупных React SPA.
 
-**Definition:** Методология создания папок внешнего интерфейса: слои (приложение → страницы → виджеты → функции → сущности → общие) плюс фрагменты с общедоступным `index.ts`.
+**How it works:** Каноническое описание → [Feature-Sliced Design (FSD)](./4_react_architecture.md#feature-sliced-design-fsd). Сквозные паттерны → [Architecture patterns](./7_special_architecture.md#feature-sliced-design-fsd).
 
-Канонический: [Функциональный дизайн](./7_special_architecture.md#feature-sliced-design-fsd). Специфично для React: не допускайте попадания библиотек состояния сервера `entities` модели — [Состояние в масштабе](./7_special_architecture.md#state-at-scale).
-
-**Sources:** [feature-sliced.design](https://feature-sliced.design/)
+**Sources:** [React — Architecture — FSD](./4_react_architecture.md#feature-sliced-design-fsd)
 
 </details>
 
@@ -401,7 +386,7 @@ export function Button({ children }: { children: React.ReactNode }) {
 
 Полное руководство → [React — TanStack](./4_react_tanstack.md#tanstack-router).
 
-**See also:** [Routing](#routing) · [nuqs (URL search params)](#nuqs-url-search-params)
+**See also:** [Client routing (Architecture)](./4_react_architecture.md#client-routing) · [nuqs (URL search params)](#nuqs-url-search-params)
 
 **Sources:**
 

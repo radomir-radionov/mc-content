@@ -1058,15 +1058,78 @@ function VideoList({ videos }: { videos: Video[] }) {
 
 _Компоненты — это функции: заглавная буква = компонент React, строчная = HTML._
 
-Единая ответственность — если компонент растет, разделите его. Страницы/виджеты/функции в терминах FSD (см. [Раздел 9](./4_react_ecosystem.md#9-ecosystem--architecture)).
+Единая ответственность — если компонент растёт, разделите его. Pages/widgets/features в терминах FSD (см. [React — Architecture](./4_react_architecture.md#feature-sliced-design-fsd)).
 
-**See also:** [Элемент против компонента](#элемент-против-компонента) · [Чистота](#purity)
+**See also:** [Element vs component](#element-vs-component) · [Purity](#purity)
 
 **Sources:**
 
-[react.dev/learn/ваш-первый-компонент](https://react.dev/learn/ваш-первый-компонент)
+[react.dev/learn/your-first-component](https://react.dev/learn/your-first-component)
 
-JSX
+</details>
+
+<details>
+  <summary>Functional components</summary>
+
+**Definition:** **Function component** — JavaScript-функция, принимающая **props** и возвращающая **JSX**. С Hooks (React 16.8+) function components — **стандарт** для React: state, effects, context и refs живут в hooks вместо lifecycle methods классов.
+
+**How it works:**
+
+| Concern | Function component approach |
+| ------- | --------------------------- |
+| Local UI state | `useState`, `useReducer` |
+| Side effects | `useEffect`, `useLayoutEffect` |
+| Refs / DOM | `useRef`; React 19: `ref` как обычный prop |
+| Shared logic | Custom hooks (функции `use*`) |
+| Performance | `memo`, `useMemo`, `useCallback` — после профилирования ([Performance](./4_react_perf.md)) |
+
+**When to use:** Весь **новый** код. Class components — только legacy; не вводите их в greenfield features.
+
+**Pluses and minuses:**
+
+| + | − |
+| - | - |
+| Меньше boilerplate, чем у classes; hooks хорошо композируются | Нужно соблюдать Rules of Hooks (top level, без conditionals) |
+| Проще тестировать и tree-shake | Крупные компоненты требуют split + custom hooks |
+| Согласовано с React Compiler и concurrent features | Усилия миграции со старых class codebases |
+
+**Examples:**
+
+```tsx
+type UserCardProps = {
+  user: { id: string; name: string };
+  onSelect: (id: string) => void;
+};
+
+export function UserCard({ user, onSelect }: UserCardProps) {
+  return (
+    <button type="button" onClick={() => onSelect(user.id)}>
+      {user.name}
+    </button>
+  );
+}
+
+function useOnlineStatus() {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
+  return online;
+}
+```
+
+**Thoughts:** Предпочитайте **named** function declarations на module scope. Выносите non-UI логику в custom hooks — см. [Hooks reference](./4_react_hooks.md).
+
+**See also:** [Components](#components) · [Rules of Hooks](./4_react_hooks.md#5-hooks-reference) · [Class components (legacy) in Ecosystem](./4_react_ecosystem.md#11-legacy-migration)
+
+**Sources:** [react.dev/learn — Your first component](https://react.dev/learn/your-first-component) · [react.dev/reference/react/hooks](https://react.dev/reference/react/hooks)
 
 </details>
 

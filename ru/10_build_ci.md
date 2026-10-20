@@ -10,7 +10,7 @@ CI/CD, менеджеры пакетов и средства запуска за
 
 ### Sections
 
-- [CI/CD](#cicd)
+- [CI/CD](#cicd) — includes [GitLab CI and GitLab Runner](#gitlab-ci-and-gitlab-runner)
 - [Package management](#package-management)
 - [Task runners](#task-runners)
 
@@ -308,6 +308,90 @@ jobs:
 **Thoughts:** Событие → вакансии (`needs`, матрица, `runs-on`) → заказано `uses`/`run` шаги; `${{ }}` читает контексты, которые заполняет GitHub.
 
 **Sources:** [Синтаксис рабочего процесса](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax) · [События/cron](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows) · [Контексты](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts) · [Изображения бегунов](https://github.com/actions/runner-images)
+
+</details>
+
+<details>
+  <summary>GitLab CI and GitLab Runner</summary>
+
+### GitLab CI and GitLab Runner
+
+**Definition:** **GitLab CI/CD** запускает pipelines из `.gitlab-ci.yml` в репозитории — **stages** (lint → test → build → deploy), которые выполняют агенты **GitLab Runner** (shared SaaS или self-hosted).
+
+**How it works:**
+
+| Concept | Role |
+| ------- | ---- |
+| **Pipeline** | Один прогон для commit/MR/tag |
+| **Stage** | Упорядоченная группа (`test` перед `deploy`) |
+| **Job** | Единица работы на одном runner image |
+| **Runner** | Процесс, забирающий jobs — **shared** (gitlab.com) или **self-hosted** (Docker/K8s/shell executor) |
+| **Artifacts** | `dist/`, coverage reports между jobs |
+| **Cache** | `node_modules/`, `.pnpm-store` с ключом по lockfile |
+
+**When to use:** Компания на **GitLab**; нужны **self-hosted runners** для deploy в private network или больших matrix.
+
+**Examples:**
+
+```yaml
+# .gitlab-ci.yml — frontend pipeline
+stages: [lint, test, build, deploy]
+
+default:
+  image: node:22-bookworm
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [node_modules/]
+
+lint:
+  stage: lint
+  script:
+    - npm ci
+    - npm run lint
+    - npm run typecheck
+
+unit:
+  stage: test
+  script:
+    - npm ci
+    - npm test -- --coverage
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths: [dist/]
+    expire_in: 1 week
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy dist/ to staging"
+  environment:
+    name: staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
+**Pluses and minuses:**
+
+| + | − |
+| - | - |
+| CI + registry + MR в одном продукте | YAML отличается от GitHub Actions |
+| Гибкие self-hosted runners | Обслуживание runner на вас |
+| `rules:` / `needs:` / child pipelines | Кривая обучения для monorepos |
+
+**Thoughts:** Сравнение hosted CI → [15_devops — GitHub Actions vs GitLab CI](./15_devops.md#github-actions-vs-gitlab-ci-vs-circleci). Frontend stages зеркалят [CI/CD pipeline stages](#cicd-pipeline-stages). Upload **Sentry source maps** в job `build` → [React — Observability](./4_react_observability.md#operating-in-production).
+
+**Sources:** [GitLab CI/CD](https://docs.gitlab.com/ee/ci/) · [GitLab Runner](https://docs.gitlab.com/runner/) · [`.gitlab-ci.yml` reference](https://docs.gitlab.com/ee/ci/yaml/)
 
 </details>
 

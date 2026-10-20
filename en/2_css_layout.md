@@ -6,17 +6,31 @@ Flexbox, grid, positioning, responsive design, and mobile viewport.
 
 ### Related docs
 
-* [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md)
+- [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md)
+
+### Main concepts
+
+| Section             | Topics                                                             |
+| ------------------- | ------------------------------------------------------------------ |
+| **Positioning**     | `position`, stacking contexts, legacy float, centering patterns    |
+| **Flexbox**         | 1D main/cross axis, container & item properties, overflow pitfalls |
+| **CSS Grid**        | 2D tracks, `fr` / `minmax`, areas, placement, `subgrid`            |
+| **Responsive**      | Mobile-first breakpoints, container queries, cross-browser layout  |
+| **Mobile viewport** | Units, safe areas, scroll, touch/pointer                           |
 
 ### Sections
 
-- [Layout Systems](#layout-systems)
+- [Positioning & stacking](#positioning-stacking)
+- [Flexbox](#flexbox)
+- [CSS Grid](#css-grid)
 - [Responsive Design & Container Queries](#responsive-design-container-queries)
 - [Scroll, Touch & Mobile Viewport](#scroll-touch-mobile-viewport)
 
 ---
 
-## Layout Systems
+<a name="positioning-stacking"></a>
+
+## Positioning & stacking
 
 <details>
   <summary>Positioning</summary>
@@ -27,13 +41,13 @@ Flexbox, grid, positioning, responsive design, and mobile viewport.
 
 `position` removes elements from normal flow (`absolute`, `fixed`) or offsets them (`relative`, `sticky`).
 
-| Value | Containing block | Scroll behavior |
-|-------|------------------|-----------------|
-| `static` | Normal flow | Normal |
-| `relative` | Self (offset from normal position) | Normal |
-| `absolute` | Nearest positioned ancestor | Normal |
-| `fixed` | Viewport | Fixed to viewport |
-| `sticky` | Nearest scroll ancestor | Sticks within parent bounds |
+| Value      | Containing block                   | Scroll behavior             |
+| ---------- | ---------------------------------- | --------------------------- |
+| `static`   | Normal flow                        | Normal                      |
+| `relative` | Self (offset from normal position) | Normal                      |
+| `absolute` | Nearest positioned ancestor        | Normal                      |
+| `fixed`    | Viewport                           | Fixed to viewport           |
+| `sticky`   | Nearest scroll ancestor            | Sticks within parent bounds |
 
 **How it works:**
 
@@ -70,20 +84,24 @@ A stacking context layers painted elements; `z-index` only compares within the s
 7. Stacking contexts with z-index: auto that created a context (opacity, transform, etc.)
 ```
 
-* `position` + `z-index` (not `auto`) on positioned/flex/grid item
-* `opacity < 1`
-* `transform`, `filter`, `perspective`, `clip-path`
-* `will-change` for transform/opacity/filter
-* `isolation: isolate`
-* `mix-blend-mode` other than `normal`
+- `position` + `z-index` (not `auto`) on positioned/flex/grid item
+- `opacity < 1`
+- `transform`, `filter`, `perspective`, `clip-path`
+- `will-change` for transform/opacity/filter
+- `isolation: isolate`
+- `mix-blend-mode` other than `normal`
 
 move overlay/tooltip to a top-level portal, or ensure parent does not create an unintended stacking context.
 
 **`isolation: isolate`** — force a new stacking context without side effects (useful for blend modes / z-index scoping).
 
 ```css
-.overlay { mix-blend-mode: multiply; }
-.hero    { background-blend-mode: overlay; }
+.overlay {
+  mix-blend-mode: multiply;
+}
+.hero {
+  background-blend-mode: overlay;
+}
 ```
 
 **When to use:**
@@ -101,169 +119,15 @@ move overlay/tooltip to a top-level portal, or ensure parent does not create an 
 **Examples:**
 
 ```css
-.card { isolation: isolate; }
-.tooltip { z-index: 1; } /* competes only within .card */
+.card {
+  isolation: isolate;
+}
+.tooltip {
+  z-index: 1;
+} /* competes only within .card */
 ```
 
 **Sources:** [MDN — Stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context)
-
-</details>
-
-<details>
-  <summary>Flexbox</summary>
-
-### Flexbox
-
-**Definition:** One-dimensional layout: distribute space along a **main axis** (`row` or `column`).
-
-**How it works:**
-
-`display: flex` / `inline-flex`. Main axis = `flex-direction`; cross axis is perpendicular. Items size with `flex` (`grow shrink basis`). Default `min-width: auto` (min-content) — set `min-width: 0` (column: `min-height: 0`) so items can shrink. `justify-self` does **not** apply to flex items — use `align-self` or `margin: auto`.
-
-| Container | Role |
-|-----------|------|
-| `flex-direction` | `row` \| `row-reverse` \| `column` \| `column-reverse` |
-| `flex-wrap` | `nowrap` \| `wrap` \| `wrap-reverse` |
-| `justify-content` | Main axis: `flex-start` \| `center` \| `flex-end` \| `space-between` \| `space-around` \| `space-evenly` |
-| `align-items` | Cross axis, one line: `stretch` \| `flex-start` \| `center` \| `flex-end` \| `baseline` |
-| `align-content` | Extra cross-axis space when wrapped; ignored on a single line |
-| `gap` | Space between items |
-
-| Item | Role |
-|------|------|
-| `flex: 1` | `1 1 0%` — share leftover space evenly |
-| `flex: auto` | `1 1 auto` — grow/shrink from content size |
-| `flex: none` | `0 0 auto` — fixed; no grow/shrink |
-| `flex: 0 0 240px` | Fixed sidebar |
-| `align-self` | Override `align-items` |
-| `order` | Visual reorder only — **not** tab order |
-
-**When to use:**
-
-Toolbars, nav, card rows, centering, sidebar + main.
-
-#### Common pitfalls
-
-Overflow without `min-width: 0`. `order` vs a11y. Column flex: `justify-content` is **vertical**.
-
-**Pluses and minuses:**
-
-| + | − |
-| --- | --- |
-| Content-driven 1D alignment | Nested 2D layouts fight Flex — use Grid |
-| `gap` + `margin: auto` for leftover space | `min-width: auto` overflows text unless reset |
-
-**Examples:**
-
-```css
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.sidebar { flex: 0 0 240px; }
-.main { flex: 1 1 auto; min-width: 0; }
-
-.nav { display: flex; }
-.nav .logo { margin-inline-end: auto; } /* leftover space → links right */
-```
-
-**Thoughts:** One axis at a time — Flex for rows/columns; Grid when you need both.
-
-**Sources:** [MDN — Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout)
-
-</details>
-
-<details>
-  <summary>CSS Grid</summary>
-
-### CSS Grid
-
-**Definition:** Two-dimensional layout: rows **and** columns on one container.
-
-**How it works:**
-
-`display: grid` / `inline-grid`. Explicit tracks = `grid-template-columns` / `rows` / `areas`. Overflowing items create an **implicit** grid (`grid-auto-rows` / `columns` / `flow`). `fr` = share of free space; `minmax(min, max)` bounds a track — use `minmax(0, 1fr)` so tracks can shrink below content. Items: `grid-column` / `grid-row` / `grid-area`, `justify-self` / `align-self`. Align cells with `justify-items` / `align-items`; align the whole grid with `justify-content` / `align-content`. `gap` for gutters.
-
-`repeat(auto-fit|auto-fill, minmax(280px, 1fr))`: **auto-fill** keeps empty tracks; **auto-fit** collapses them so remaining columns stretch. Areas: same cell count per row, rectangles only (no L-shapes), `.` for empty cells.
-
-**When to use:**
-
-Page shells, dashboards, card matrices. Nested `subgrid` inherits parent tracks (align card title/body/footer across a row).
-
-#### Common pitfalls
-
-`1fr` that won’t shrink (use `minmax(0, 1fr)`). L-shaped `grid-template-areas`. Mixing Flex 2D nesting instead of Grid.
-
-**Pluses and minuses:**
-
-| + | − |
-| --- | --- |
-| 2D template + named areas | Overkill for a single toolbar row |
-| `auto-fit` / `fr` without media queries | Implicit tracks surprise if `auto-flow` unset |
-
-**Examples:**
-
-```css
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.dashboard {
-  display: grid;
-  grid-template-areas:
-    "header header"
-    "sidebar main"
-    "footer footer";
-  grid-template-columns: 240px 1fr;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100dvh;
-}
-.header { grid-area: header; }
-
-.grid {
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: minmax(120px, auto);
-  grid-auto-flow: dense;
-}
-
-.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.card {
-  display: grid;
-  grid-template-rows: subgrid;
-  grid-row: span 3;
-}
-```
-
-**Thoughts:** Grid owns the 2D shell; Flex owns 1D alignment inside cells.
-
-**Sources:** [MDN — Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
-
-</details>
-
-<details>
-  <summary>Flex vs Grid — when to use which</summary>
-
-### Flex vs Grid — when to use which
-
-**Definition:**
-
-Flexbox excels at 1D component rows; Grid excels at 2D page shells and card matrices.
-
-| | Flexbox | Grid |
-|---|---------|------|
-| Dimensions | 1D | 2D |
-| Content-driven | Yes — items dictate flow | Yes — or template-driven |
-| Gaps | `gap` | `gap` |
-| Best for | Nav, rows, alignment | Page layout, card matrices |
-
-Use both together: Grid for page shell, Flexbox inside cells.
-
-**Sources:** [web.dev — Flexbox vs Grid](https://web.dev/learn/css/grid/#grid-or-flexbox)
 
 </details>
 
@@ -292,11 +156,11 @@ use Flexbox or Grid. Floats remain valid for text-wrapping around images.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Natural text wrap around images | Collapsed parent height without BFC |
+| +                                   | −                                          |
+| ----------------------------------- | ------------------------------------------ |
+| Natural text wrap around images     | Collapsed parent height without BFC        |
 | Still valid for magazine-style wrap | Clearing hacks (`clearfix`) add complexity |
-| Works without flex/grid support | Multi-column layouts fragile vs Grid |
+| Works without flex/grid support     | Multi-column layouts fragile vs Grid       |
 
 **Examples:**
 
@@ -330,7 +194,8 @@ use Flexbox or Grid. Floats remain valid for text-wrapping around images.
 percentage height requires explicit height on every ancestor up to the containing block. Prefer `min-height: 100dvh` on `html, body` for full-viewport layouts.
 
 ```css
-html, body {
+html,
+body {
   min-height: 100%;
 }
 /* or */
@@ -380,6 +245,285 @@ body {
 
 </details>
 
+<a name="flexbox"></a>
+
+## Flexbox
+
+<details>
+  <summary>Flexbox</summary>
+
+### Flexbox
+
+**Definition:** **Flexbox** is a **one-dimensional** layout: distribute free space and align items along a **main axis** (`flex-direction`) and **cross axis** (perpendicular).
+
+**How it works:**
+
+- Container: `display: flex` or `inline-flex` creates a **flex formatting context**.
+- **Main axis** follows `flex-direction` (`row` default in LTR); **cross axis** is perpendicular.
+- Items default to `flex: 0 1 auto` — can shrink but not grow; `flex: 1` often means `1 1 0%` (equal columns).
+- **`justify-content`** aligns on the **main** axis; **`align-items`** on the **cross** axis (single line).
+- **`flex-wrap: wrap`** → multiple lines; then **`align-content`** distributes extra cross-axis space between lines.
+- **`gap`** sets gutters between items (preferred over margin hacks).
+- **`justify-self`** does **not** apply to flex items — use **`align-self`**, **`margin: auto`**, or wrapper.
+
+**When to use:** Nav bars, toolbars, card rows, media objects, sidebar + main, 1D centering ([Centering cookbook](#centering-cookbook)).
+
+**Thoughts:** Full property lists → [Flex container properties](#flex-container-properties) · [Flex item sizing](#flex-item-sizing-and-overflow).
+
+**Sources:** [MDN — Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout)
+
+</details>
+
+<details>
+  <summary>Flex container properties</summary>
+
+### Flex container properties
+
+**Definition:** Properties on the **flex container** control direction, wrapping, distribution, and default item alignment.
+
+**How it works:**
+
+| Property                         | Values (common)                               | Effect                      |
+| -------------------------------- | --------------------------------------------- | --------------------------- |
+| `flex-direction`                 | `row` · `column` · `*-reverse`                | Main axis direction         |
+| `flex-wrap`                      | `nowrap` · `wrap`                             | Single vs multi-line        |
+| `flex-flow`                      | shorthand of direction + wrap                 |                             |
+| `justify-content`                | `flex-start` · `center` · `space-between` · … | Main-axis distribution      |
+| `align-items`                    | `stretch` · `center` · `baseline` · …         | Cross-axis per line         |
+| `align-content`                  | same keywords as justify                      | Cross-axis when **wrapped** |
+| `gap` / `row-gap` / `column-gap` | lengths                                       | Space between items         |
+
+- In **`flex-direction: column`**, **`justify-content` moves vertically** and **`align-items` horizontally** — common interview trap.
+- **`align-items: baseline`** lines up text baselines; mixed font sizes need consistent line-height.
+- **`align-content`** has **no effect** on a single line (`flex-wrap: nowrap`).
+
+**When to use:** Interview “how do you space items in a row?” — name axis first, then pick justify vs align.
+
+**Examples:**
+
+```css
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+```
+
+**Sources:** [MDN — justify-content](https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content)
+
+</details>
+
+<details>
+  <summary>Flex item sizing and overflow</summary>
+
+### Flex item sizing and overflow
+
+**Definition:** **Flex items** size with **`flex-grow`**, **`flex-shrink`**, **`flex-basis`**, and browser defaults that often cause **overflow**.
+
+**How it works:**
+
+| Shorthand         | Computed       | Typical use                       |
+| ----------------- | -------------- | --------------------------------- |
+| `flex: 1`         | `1 1 0%`       | Equal-width columns sharing space |
+| `flex: auto`      | `1 1 auto`     | Grow/shrink from content width    |
+| `flex: none`      | `0 0 auto`     | Fixed-size chip / icon            |
+| `flex: 0 0 240px` | explicit basis | Sidebar fixed width               |
+
+- Default **`min-width: auto`** (min-content) prevents shrinking below longest word — text overflows. Fix: **`min-width: 0`** on flex child (column layouts: **`min-height: 0`**).
+- **`flex-basis`** sets starting size before free space is distributed; `% basis needs definite container width.
+- **`align-self`** overrides container `align-items` for one item.
+- **`order`** changes **visual** order only — **tab order** follows DOM; bad for accessibility if misused.
+
+**When to use:** Truncation + ellipsis in flex rows; holy-grail sidebar; pushing one item with `margin-inline-start: auto`.
+
+**Examples:**
+
+```css
+.sidebar {
+  flex: 0 0 240px;
+}
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.nav {
+  display: flex;
+}
+.nav .logo {
+  margin-inline-end: auto;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+.row > .truncate {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+```
+
+#### Common pitfalls
+
+Nested flex without `min-width: 0`. Using `order` for “importance” instead of DOM order. Expecting `justify-self` on flex items.
+
+**Sources:** [MDN — flex](https://developer.mozilla.org/en-US/docs/Web/CSS/flex)
+
+</details>
+
+<a name="css-grid"></a>
+
+## CSS Grid
+
+<details>
+  <summary>CSS Grid</summary>
+
+### CSS Grid
+
+**Definition:** **CSS Grid** is **two-dimensional**: explicit **rows and columns** on one container, with optional **named areas** and **line-based** placement.
+
+**How it works:**
+
+- `display: grid` / `inline-grid` on the container.
+- **Explicit grid:** `grid-template-columns`, `grid-template-rows`, `grid-template-areas`.
+- **Implicit grid:** extra items flow into auto tracks (`grid-auto-rows`, `grid-auto-columns`, `grid-auto-flow`).
+- **`fr`** distributes **leftover** space; pair with **`minmax()`** so tracks can shrink (`minmax(0, 1fr)`).
+- **Gap** separates tracks; **`place-items`** shorthand for cell alignment inside tracks.
+- **Grid item** properties: `grid-column`, `grid-row`, `grid-area`, `justify-self`, `align-self`.
+
+**When to use:** Page shells, dashboards, responsive card matrices, aligning form labels + fields in two columns.
+
+**Thoughts:** Tracks & `fr` → [Grid tracks and minmax](#grid-tracks-and-minmax) · placement → [Grid placement and template areas](#grid-placement-and-template-areas).
+
+**Sources:** [MDN — Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
+
+</details>
+
+<details>
+  <summary>Grid tracks and minmax</summary>
+
+### Grid tracks and minmax
+
+**Definition:** **Grid tracks** are row/column sizing lines; **`repeat()`**, **`fr`**, and **`minmax()`** build responsive layouts without extra media queries.
+
+**How it works:**
+
+```css
+grid-template-columns: repeat(3, 1fr);
+grid-template-columns: 240px 1fr;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+```
+
+| Pattern                   | Behavior                                                               |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `repeat(3, 1fr)`          | Three equal columns                                                    |
+| `minmax(200px, 1fr)`      | At least 200px, share extra space                                      |
+| `minmax(0, 1fr)`          | Allow track to shrink below content (fix overflow)                     |
+| `auto-fill` vs `auto-fit` | **fill** keeps empty tracks; **fit** collapses them so columns stretch |
+
+- **`grid-auto-rows: minmax(120px, auto)`** sizes implicit rows.
+- **`grid-auto-flow: dense`** fills holes when items span different sizes (mind reading order vs visual order).
+- **`subgrid`** (where supported): child grid inherits parent tracks — align card sections across a row.
+
+**When to use:** Responsive product grids; fixed sidebar + fluid main (`240px 1fr`).
+
+**Examples:**
+
+```css
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+```
+
+**Sources:** [MDN — repeat()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) · [MDN — minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/minmax)
+
+</details>
+
+<details>
+  <summary>Grid placement and template areas</summary>
+
+### Grid placement and template areas
+
+**Definition:** Items are placed by **line numbers**, **`span`**, or **named areas** on a rectangular template.
+
+**How it works:**
+
+```css
+.dashboard {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100dvh;
+}
+.header {
+  grid-area: header;
+}
+```
+
+- **Areas** must form **rectangles** — no L-shapes; use `.` for empty cells.
+- **Line-based:** `grid-column: 1 / 3` or `span 2` for ad-hoc spans.
+- **`justify-items` / `align-items`** align content **inside** each cell; **`justify-content` / `align-content`** move the **whole grid** when smaller than container.
+- **`place-content: center`** centers the grid in the viewport (with fixed track sizes).
+
+**When to use:** App chrome (header/sidebar/main/footer); overlapping layers via same cell + `z-index` (sparingly).
+
+**Examples:**
+
+```css
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+}
+```
+
+#### Common pitfalls
+
+L-shaped areas (invalid). `1fr` columns that refuse to shrink. Dense auto-flow vs DOM order for screen readers.
+
+**Sources:** [MDN — grid-template-areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas)
+
+</details>
+
+<details>
+  <summary>Flex vs Grid — when to use which</summary>
+
+### Flex vs Grid — when to use which
+
+**Definition:**
+
+Flexbox excels at 1D component rows; Grid excels at 2D page shells and card matrices.
+
+|                | Flexbox                  | Grid                       |
+| -------------- | ------------------------ | -------------------------- |
+| Dimensions     | 1D                       | 2D                         |
+| Content-driven | Yes — items dictate flow | Yes — or template-driven   |
+| Gaps           | `gap`                    | `gap`                      |
+| Best for       | Nav, rows, alignment     | Page layout, card matrices |
+
+Use both together: Grid for page shell, Flexbox inside cells.
+
+**Sources:** [web.dev — Flexbox vs Grid](https://web.dev/learn/css/grid/#grid-or-flexbox)
+
+</details>
+
 <a name="responsive-design"></a>
 
 ## Responsive Design & Container Queries
@@ -393,14 +537,37 @@ body {
 
 Responsive layouts scale fluidly; adaptive layouts switch at discrete breakpoints.
 
-| Approach | Behavior |
-|----------|----------|
+| Approach       | Behavior                                                                 |
+| -------------- | ------------------------------------------------------------------------ |
 | **Responsive** | Fluid layouts — one design scales smoothly (%, `fr`, `clamp`, flex/grid) |
-| **Adaptive** | Discrete breakpoints — different layouts at fixed widths |
+| **Adaptive**   | Discrete breakpoints — different layouts at fixed widths                 |
 
 Modern practice: **mobile-first responsive** with breakpoints as enhancement.
 
 **Sources:** [web.dev — Responsive](https://web.dev/learn/design/responsive)
+
+</details>
+
+<details>
+  <summary>Cross-browser responsive layout</summary>
+
+### Cross-browser responsive layout
+
+**Definition:** **Adaptive/responsive** layouts must render consistently across engines — via standards-first CSS, **feature queries**, and build-time **prefixing**, not user-agent sniffing.
+
+**How it works:**
+
+- **Mobile-first:** base styles for narrow viewports; **`min-width`** media queries add columns and spacing ([Media queries](#media-queries)).
+- **Flex/Grid:** prefer layout modes with broad support; use **`@supports (display: grid)`** fallback when needed.
+- **Viewport:** `<meta name="viewport" content="width=device-width, initial-scale=1">` — required for mobile scaling; pair with **`100dvh` / safe-area** → [Safe areas & viewport units](#safe-areas-viewport-units).
+- **Cross-browser CSS:** **normalize/reset** → [CSS Core](./2_css_core.md); **Autoprefixer + Browserslist** → [CSS — Architecture](./2_css_architecture.md) (PostCSS & Autoprefixer); check gaps on [caniuse.com](https://caniuse.com/) (linked from [CSS hub](./2_css.md)).
+- **Feature detection:** `@supports` for `container-type`, `subgrid`, `backdrop-filter` — degrade gracefully.
+
+**When to use:** JD “кросс-браузерная вёрстка”; fixing Safari vs Chrome flex/grid quirks; production build pipeline questions.
+
+**See also:** [Container queries](#container-queries) · [Touch & pointer](#touch-pointer)
+
+**Sources:** [MDN — Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries)
 
 </details>
 
@@ -417,39 +584,49 @@ Modern practice: **mobile-first responsive** with breakpoints as enhancement.
 
 ```css
 @supports (display: grid) {
-  .layout { display: grid; }
+  .layout {
+    display: grid;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.01ms !important; }
+  * {
+    animation-duration: 0.01ms !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
-  :root { color-scheme: dark; }
+  :root {
+    color-scheme: dark;
+  }
 }
 ```
 
-| Feature | Values | Use case |
-|---------|--------|----------|
-| `prefers-reduced-motion` | `reduce` | Disable/limit animations |
-| `prefers-color-scheme` | `light` \| `dark` | Theme switching |
-| `prefers-contrast` | `more` \| `less` | High-contrast UI |
-| `prefers-reduced-transparency` | `reduce` | Solid backgrounds over glass |
+| Feature                        | Values            | Use case                     |
+| ------------------------------ | ----------------- | ---------------------------- |
+| `prefers-reduced-motion`       | `reduce`          | Disable/limit animations     |
+| `prefers-color-scheme`         | `light` \| `dark` | Theme switching              |
+| `prefers-contrast`             | `more` \| `less`  | High-contrast UI             |
+| `prefers-reduced-transparency` | `reduce`          | Solid backgrounds over glass |
 
-| Feature | Values | Use case |
-|---------|--------|----------|
-| `(hover: hover)` | hover-capable device | Show hover-only UI on desktop |
-| `(hover: none)` | touch-primary | Larger tap targets, no hover-dependent UX |
-| `(pointer: fine)` | mouse/stylus | Dense UI |
-| `(pointer: coarse)` | finger | Bigger buttons, more spacing |
+| Feature             | Values               | Use case                                  |
+| ------------------- | -------------------- | ----------------------------------------- |
+| `(hover: hover)`    | hover-capable device | Show hover-only UI on desktop             |
+| `(hover: none)`     | touch-primary        | Larger tap targets, no hover-dependent UX |
+| `(pointer: fine)`   | mouse/stylus         | Dense UI                                  |
+| `(pointer: coarse)` | finger               | Bigger buttons, more spacing              |
 
 ```css
 @media (hover: hover) and (pointer: fine) {
-  .card:hover { transform: translateY(-2px); }
+  .card:hover {
+    transform: translateY(-2px);
+  }
 }
 
 @media (hover: none) {
-  .card-actions { opacity: 1; } /* always visible on touch */
+  .card-actions {
+    opacity: 1;
+  } /* always visible on touch */
 }
 ```
 
@@ -457,7 +634,9 @@ Modern practice: **mobile-first responsive** with breakpoints as enhancement.
 
 ```css
 @supports (backdrop-filter: blur(1px)) {
-  .glass { backdrop-filter: blur(12px); }
+  .glass {
+    backdrop-filter: blur(12px);
+  }
 }
 ```
 
@@ -472,11 +651,15 @@ Modern practice: **mobile-first responsive** with breakpoints as enhancement.
 }
 
 @media (min-width: 640px) {
-  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
-  .card-grid { grid-template-columns: repeat(3, 1fr); }
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 ```
 
@@ -497,23 +680,25 @@ Style based on **parent container size**, not viewport — essential for reusabl
 
 **How it works:**
 
-| Value | Queries on |
-|-------|------------|
+| Value         | Queries on               |
+| ------------- | ------------------------ |
 | `inline-size` | Width only (most common) |
-| `size` | Width and height |
-| `normal` | Not a query container |
+| `size`        | Width and height         |
+| `normal`      | Not a query container    |
 
 **Container query units** (relative to the query container, not viewport):
 
-| Unit | Meaning |
-|------|---------|
-| `cqw` | 1% of container width |
-| `cqh` | 1% of container height |
-| `cqi` / `cqb` | Inline/block axis % |
+| Unit              | Meaning                       |
+| ----------------- | ----------------------------- |
+| `cqw`             | 1% of container width         |
+| `cqh`             | 1% of container height        |
+| `cqi` / `cqb`     | Inline/block axis %           |
 | `cqmin` / `cqmax` | Smaller/larger of cqi and cqb |
 
 ```css
-.card-container { container-type: inline-size; }
+.card-container {
+  container-type: inline-size;
+}
 
 .card-title {
   font-size: clamp(1rem, 4cqi + 0.5rem, 1.5rem);
@@ -541,7 +726,9 @@ use `@container` when a **component** must adapt to its parent (sidebar widget, 
 
 /* Shorthand */
 @container (min-width: 30rem) {
-  .widget { padding: 2rem; }
+  .widget {
+    padding: 2rem;
+  }
 }
 ```
 
@@ -558,16 +745,16 @@ use `@container` when a **component** must adapt to its parent (sidebar widget, 
 
 CSS length units (`px`, `rem`, `%`, `vw`, `fr`, `dvh`) resolve relative to different reference boxes.
 
-| Unit | Meaning | Pitfalls |
-|------|---------|----------|
-| `px` | Absolute pixels | Fine for borders; avoid for root font sizing |
-| `%` | Relative to parent | Height % needs parent height |
-| `em` | Relative to element font-size | Compounds when nested |
-| `rem` | Relative to root font-size | Preferred for spacing/type scale |
-| `ch` | Character width of "0" | Max line length (`max-width: 65ch`) |
-| `vw` / `vh` | % of viewport | Mobile `100vh` includes URL bar — use `dvh`/`svh`/`lvh` |
-| `fr` | Grid free space fraction | Grid only |
-| `dvh` | Dynamic viewport height | Adapts when mobile browser chrome shows/hides |
+| Unit        | Meaning                       | Pitfalls                                                |
+| ----------- | ----------------------------- | ------------------------------------------------------- |
+| `px`        | Absolute pixels               | Fine for borders; avoid for root font sizing            |
+| `%`         | Relative to parent            | Height % needs parent height                            |
+| `em`        | Relative to element font-size | Compounds when nested                                   |
+| `rem`       | Relative to root font-size    | Preferred for spacing/type scale                        |
+| `ch`        | Character width of "0"        | Max line length (`max-width: 65ch`)                     |
+| `vw` / `vh` | % of viewport                 | Mobile `100vh` includes URL bar — use `dvh`/`svh`/`lvh` |
+| `fr`        | Grid free space fraction      | Grid only                                               |
+| `dvh`       | Dynamic viewport height       | Adapts when mobile browser chrome shows/hides           |
 
 **How it works:**
 
@@ -705,11 +892,11 @@ html {
 }
 ```
 
-| Property | Values | Use case |
-|----------|--------|----------|
-| `scroll-behavior` | `auto` \| `smooth` | Smooth anchor navigation |
+| Property              | Values                        | Use case                                  |
+| --------------------- | ----------------------------- | ----------------------------------------- |
+| `scroll-behavior`     | `auto` \| `smooth`            | Smooth anchor navigation                  |
 | `overscroll-behavior` | `auto` \| `contain` \| `none` | Prevent pull-to-refresh / bounce chaining |
-| `scroll-padding-top` | length | Offset for fixed headers on anchor scroll |
+| `scroll-padding-top`  | length                        | Offset for fixed headers on anchor scroll |
 
 **Sources:** [MDN — overscroll-behavior](https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior)
 
@@ -734,12 +921,12 @@ html {
 }
 ```
 
-| `touch-action` | Effect |
-|----------------|--------|
-| `auto` | Browser handles all gestures |
-| `none` | Disable browser gestures (custom drag) |
-| `pan-x` / `pan-y` | Allow scroll on one axis |
-| `manipulation` | Pan + pinch-zoom; no double-tap delay |
+| `touch-action`    | Effect                                 |
+| ----------------- | -------------------------------------- |
+| `auto`            | Browser handles all gestures           |
+| `none`            | Disable browser gestures (custom drag) |
+| `pan-x` / `pan-y` | Allow scroll on one axis               |
+| `manipulation`    | Pan + pinch-zoom; no double-tap delay  |
 
 Pair with media queries: `@media (pointer: coarse)` for larger hit areas on touch devices.
 
@@ -772,12 +959,12 @@ Notched devices and mobile browser chrome need extra padding:
 }
 ```
 
-| Viewport unit | Behavior |
-|---------------|----------|
-| `vh` / `vw` | Static viewport — `100vh` can overflow on mobile |
-| `dvh` / `dvw` | Dynamic — changes as browser UI shows/hides |
-| `svh` | Small viewport (UI visible) |
-| `lvh` | Large viewport (UI hidden) |
+| Viewport unit | Behavior                                         |
+| ------------- | ------------------------------------------------ |
+| `vh` / `vw`   | Static viewport — `100vh` can overflow on mobile |
+| `dvh` / `dvw` | Dynamic — changes as browser UI shows/hides      |
+| `svh`         | Small viewport (UI visible)                      |
+| `lvh`         | Large viewport (UI hidden)                       |
 
 Enable safe-area: `<meta name="viewport" content="width=device-width, viewport-fit=cover">`
 

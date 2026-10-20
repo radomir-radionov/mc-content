@@ -8,6 +8,15 @@ Methodologies, tooling, and rendering performance.
 
 - [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md) · [SDLC — methodologies](./7_special_sdlc.md#development-methodologies)
 
+### Main concepts
+
+| Area            | Topics                                                       |
+| --------------- | ------------------------------------------------------------ |
+| **Methodology** | BEM, preprocessors, comparison tables                        |
+| **Tooling**     | PostCSS, CSS Modules, Tailwind, styled-components, Bootstrap |
+| **Compat**      | Autoprefixer, Browserslist, cross-browser interview patterns |
+| **Performance** | Reflow/paint, critical CSS, containment                      |
+
 ### Sections
 
 - [Architecture & Tooling](#architecture-tooling)
@@ -199,31 +208,89 @@ import styles from "./Button.module.css";
 </details>
 
 <details>
+  <summary>styled-components (CSS-in-JS)</summary>
+
+### styled-components (CSS-in-JS)
+
+**Definition:** **styled-components** (and similar libraries like **Emotion**) define styled UI by writing **CSS inside JavaScript** — tagged template literals generate scoped class names at runtime or build time.
+
+**How it works:**
+
+- **`styled.button`** / **`styled(Component)`** returns a React component that injects a `<style>` tag or extracted CSS with a unique class.
+- **Dynamic styles** read props: `` styled.div`color: ${p => p.theme.primary};` `` — props changes can trigger re-injection (watch performance).
+- **Theming:** `ThemeProvider` passes tokens; prefer design tokens over magic strings.
+- **vs CSS Modules:** Modules scope at **build** time (static `.module.css`); styled-components colocate at **component** level with runtime cost unless using compiler plugins / SSR extraction.
+- **SSR:** collect styles on server (`ServerStyleSheet`) so first paint is not unstyled; hydrate matched class names on client.
+- **When to skip:** static marketing pages — plain CSS, Modules, or Tailwind often simpler; strict CSP without `'unsafe-inline'` needs hashed/extracted CSS strategy.
+
+**When to use:** React design systems with prop-driven variants; interview “how does CSS-in-JS work?” (generation + injection + specificity).
+
+**Pluses and minuses:**
+
+| +                        | −                                       |
+| ------------------------ | --------------------------------------- |
+| Colocated styles + props | Runtime cost unless compiled away       |
+| Automatic vendor scoping | Harder to inspect vs static stylesheets |
+| Theming via context      | Bundle size vs utility CSS              |
+
+**Examples:**
+
+```jsx
+import styled from "styled-components";
+
+const Button = styled.button`
+  padding: 0.5rem 1rem;
+  background: ${(p) => (p.$primary ? "#2563eb" : "#e5e7eb")};
+`;
+```
+
+**See also:** [CSS Modules](#css-modules) · [Tailwind CSS (utility-first)](#tailwind-css-utility-first) · [React ecosystem — CSS-in-JS](./4_react_ecosystem.md)
+
+**Sources:** [styled-components docs](https://styled-components.com/docs)
+
+</details>
+
+<details>
   <summary>Tailwind CSS (utility-first)</summary>
 
 ### Tailwind CSS (utility-first)
 
-**Definition:** Tailwind applies atomic utility classes in HTML for rapid, token-consistent styling.
+**Definition:** **Tailwind CSS** is a **utility-first** framework: small atomic classes (`flex`, `p-4`, `text-sm`) composed in markup, with design tokens in **`tailwind.config`**.
 
-**How it works:** Tailwind utilities have equal specificity — order in generated CSS matters, not HTML class order. Use `tailwind-merge` or arbitrary variants for conflicts.
+**How it works:**
+
+- **JIT compiler** scans source files and emits only used utilities — small production CSS.
+- **Responsive prefixes:** `md:grid-cols-3`, `lg:gap-8` map to your `screens` breakpoints (mobile-first).
+- **State variants:** `hover:`, `focus-visible:`, `dark:` — keep interaction accessible (`focus-visible` over `focus` alone for mouse users).
+- **Conflicts:** utilities share specificity — use **`tailwind-merge`** / **`clsx`** when building class strings in JS; arbitrary values `w-[137px]` sparingly.
+- **`@apply`:** pull utilities into a CSS rule in component layers — prefer utilities in JSX for discoverability unless repeating long clusters.
+- **With React/Next:** `@tailwindcss/postcss` or v4 `@import "tailwindcss"`; content paths must include `app/`, `components/`.
+
+**When to use:** Rapid UI, design-system spacing scale, responsive grids without writing custom media-query blocks for every component.
 
 **Pluses and minuses:**
 
-| +                         | −                                            |
-| ------------------------- | -------------------------------------------- |
-| Fast prototyping          | HTML verbosity                               |
-| Consistent design tokens  | Learning curve                               |
-| Purged unused CSS in prod | Class precedence issues with dynamic classes |
+| +                         | −                                        |
+| ------------------------- | ---------------------------------------- |
+| Fast prototyping          | HTML verbosity                           |
+| Consistent design tokens  | Learning curve                           |
+| Purged unused CSS in prod | Dynamic class strings need merge helpers |
 
 **Examples:**
 
 ```html
-<button class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+<button
+  class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus-visible:ring-2 md:px-6"
+>
   Submit
 </button>
 ```
 
-**Sources:** [Learn Tailwind — responsive card](https://www.freecodecamp.org/news/learn-tailwind-css-by-building-a-responsive-product-card/)
+```html
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">…</div>
+```
+
+**Sources:** [Tailwind CSS — documentation](https://tailwindcss.com/docs) · [Responsive design](https://tailwindcss.com/docs/responsive-design)
 
 </details>
 

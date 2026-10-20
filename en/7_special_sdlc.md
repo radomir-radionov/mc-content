@@ -4,11 +4,12 @@ Waterfall, Agile, Scrum, and Kanban.
 
 ### Related docs
 
-* [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Design patterns](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Testing](./7_special_testing.md) · [Interview leftovers](./7_special_interview.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [DevOps](./15_devops.md)
+- [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Design patterns](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Testing](./7_special_testing.md) · [Interview leftovers](./7_special_interview.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [DevOps](./15_devops.md)
 
 ### Sections
 
 - [11. SDLC & Agile](#11-sdlc-agile)
+- [Frontend team in Agile](#frontend-team-in-agile)
 - [Code refactoring](#code-refactoring)
 
 ---
@@ -36,12 +37,12 @@ Same phases, different **order and feedback**. Waterfall runs them once, end-to-
 
 **Pluses and minuses:**
 
-| + (formal methodology) | − |
-|---------------------------|------|
+| + (formal methodology)                      | −                                                      |
+| ------------------------------------------- | ------------------------------------------------------ |
 | Shared language for status, roles, and risk | Cargo-cult process (“we do standups”) without shipping |
-| Checkpoints before irreversible spend | Overhead if the process is heavier than the product |
+| Checkpoints before irreversible spend       | Overhead if the process is heavier than the product    |
 
-**Thoughts:** *Methodologies exist so delivery matches uncertainty — software changes cheaper than bridges, so process should allow change.*
+**Thoughts:** _Methodologies exist so delivery matches uncertainty — software changes cheaper than bridges, so process should allow change._
 
 **Sources:**
 
@@ -58,15 +59,15 @@ Same phases, different **order and feedback**. Waterfall runs them once, end-to-
 
 **Definition:** Methodologies are structured practices for organizing code and teams — distinct from language paradigms (how you express logic).
 
-| Category | Examples | Notes |
-| --- | --- | --- |
-| CSS architecture | BEM, SMACSS, OOCSS, Atomic Design | [CSS Architecture](./2_css_architecture.md) |
-| App structure | MVC, MVVM, Flux, Redux | [Architecture patterns](./7_special_architecture.md) |
-| Process | TDD, BDD, DDD | [Testing](./7_special_testing_fundamentals.md#12-testing) |
-| Principles | DRY, KISS, SOLID, YAGNI | [SOLID](./7_special_engineering.md#9-oop-and-solid) · [DRY, KISS, YAGNI](./0_system_design_principles.md) |
-| Frontend | Component-driven, mobile-first, progressive enhancement | Product/UX conventions |
+| Category         | Examples                                                | Notes                                                                                                     |
+| ---------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| CSS architecture | BEM, SMACSS, OOCSS, Atomic Design                       | [CSS Architecture](./2_css_architecture.md)                                                               |
+| App structure    | MVC, MVVM, Flux, Redux                                  | [Architecture patterns](./7_special_architecture.md)                                                      |
+| Process          | TDD, BDD, DDD                                           | [Testing](./7_special_testing_fundamentals.md#12-testing)                                                 |
+| Principles       | DRY, KISS, SOLID, YAGNI                                 | [SOLID](./7_special_engineering.md#9-oop-and-solid) · [DRY, KISS, YAGNI](./0_system_design_principles.md) |
+| Frontend         | Component-driven, mobile-first, progressive enhancement | Product/UX conventions                                                                                    |
 
-**How it works:** Paradigms answer *how to express logic* (FP vs OOP). Methodologies answer *how to structure a codebase and collaborate* (MVC, TDD, BEM). Use both: paradigm for the problem, methodology for maintainability at scale.
+**How it works:** Paradigms answer _how to express logic_ (FP vs OOP). Methodologies answer _how to structure a codebase and collaborate_ (MVC, TDD, BEM). Use both: paradigm for the problem, methodology for maintainability at scale.
 
 **Thoughts:** Do not file this under JavaScript language notes — JS is multi-paradigm; these practices apply across stacks. Paradigms map: [Programming paradigms](./7_special_cs.md#programming-paradigm).
 
@@ -102,12 +103,12 @@ Copied from construction / electronics / manufacturing. Software is more dynamic
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Clear milestones and documentation | Late feedback — users see the product at the end |
-| Works for fixed scope and budgets | Expensive to change after design |
-| Traceability for regulated industries | Assumes requirements are knowable upfront |
-| Predictable for contract bidding | Long time without shippable value |
+| +                                     | −                                                |
+| ------------------------------------- | ------------------------------------------------ |
+| Clear milestones and documentation    | Late feedback — users see the product at the end |
+| Works for fixed scope and budgets     | Expensive to change after design                 |
+| Traceability for regulated industries | Assumes requirements are knowable upfront        |
+| Predictable for contract bidding      | Long time without shippable value                |
 
 **Examples:**
 
@@ -142,10 +143,10 @@ Most modern products; foundation of Agile.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Early feedback | Scope creep without discipline |
-| Reduced big-bang risk | |
+| +                     | −                              |
+| --------------------- | ------------------------------ |
+| Early feedback        | Scope creep without discipline |
+| Reduced big-bang risk |                                |
 
 </details>
 
@@ -164,10 +165,10 @@ Large, high-risk systems (aerospace, enterprise).
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                        | −                        |
+| ------------------------ | ------------------------ |
 | Explicit risk management | Heavy for small projects |
-| | |
+|                          |                          |
 
 </details>
 
@@ -186,10 +187,10 @@ Safety-critical, medical, embedded with strict validation.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                   | −     |
+| ------------------- | ----- |
 | Test planning early | Rigid |
-| Traceability | |
+| Traceability        |       |
 
 </details>
 
@@ -208,10 +209,10 @@ UI-heavy apps, uncertain requirements, internal tools.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                 | −                          |
+| ----------------- | -------------------------- |
 | Fast time to demo | Can sacrifice architecture |
-| User-driven | |
+| User-driven       |                            |
 
 </details>
 
@@ -224,14 +225,14 @@ UI-heavy apps, uncertain requirements, internal tools.
 
 A **mindset** (not a single process): values and principles from the 2001 Agile Manifesto. Frameworks like Scrum and Kanban implement them. Goal: people, working software, and **fast delivery of features** so hypotheses can be validated.
 
-**Four values** (left side valued *more*, not “instead of” the right):
+**Four values** (left side valued _more_, not “instead of” the right):
 
-| We value more | Than |
-|---------------|------|
-| Individuals and interactions | Processes and tools |
-| Working software | Comprehensive documentation |
-| Customer collaboration | Contract negotiation |
-| Responding to change | Following a plan |
+| We value more                | Than                        |
+| ---------------------------- | --------------------------- |
+| Individuals and interactions | Processes and tools         |
+| Working software             | Comprehensive documentation |
+| Customer collaboration       | Contract negotiation        |
+| Responding to change         | Following a plan            |
 
 **How it works:**
 
@@ -260,12 +261,12 @@ A **mindset** (not a single process): values and principles from the 2001 Agile 
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Frequent value and learning | Needs an engaged product owner / customer |
-| Adapts to market and user feedback | “Agile theater” = ceremonies without shipping |
-| Reduces big-bang release risk | Awkward for rigid fixed-price/fixed-scope contracts |
-| Continuous improvement via retros | Architecture can drift without discipline |
+| +                                  | −                                                   |
+| ---------------------------------- | --------------------------------------------------- |
+| Frequent value and learning        | Needs an engaged product owner / customer           |
+| Adapts to market and user feedback | “Agile theater” = ceremonies without shipping       |
+| Reduces big-bang release risk      | Awkward for rigid fixed-price/fixed-scope contracts |
+| Continuous improvement via retros  | Architecture can drift without discipline           |
 
 **Examples:**
 
@@ -294,28 +295,28 @@ flowchart LR
 
 **How it works:**
 
-The **Sprint** is the container for all other events — a fixed-length iteration (**one month or less**, commonly 1–4 weeks). A new Sprint starts immediately after the previous one. The Increment should be **usable** (Definition of Done); it *may* be released before the Sprint Review (the Review is not a release gate).
+The **Sprint** is the container for all other events — a fixed-length iteration (**one month or less**, commonly 1–4 weeks). A new Sprint starts immediately after the previous one. The Increment should be **usable** (Definition of Done); it _may_ be released before the Sprint Review (the Review is not a release gate).
 
-| Accountability | Role |
-|----------------|------|
-| **Product Owner** | One person (not a committee). Maximizes product value; orders the Product Backlog; Product Goal. |
-| **Scrum Master** | Accountable for Scrum as defined and for team effectiveness: coach, remove impediments, keep events useful and timeboxed. |
-| **Developers** | Cross-functional people who create the Increment; own Sprint Backlog and Definition of Done. |
+| Accountability    | Role                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Product Owner** | One person (not a committee). Maximizes product value; orders the Product Backlog; Product Goal.                          |
+| **Scrum Master**  | Accountable for Scrum as defined and for team effectiveness: coach, remove impediments, keep events useful and timeboxed. |
+| **Developers**    | Cross-functional people who create the Increment; own Sprint Backlog and Definition of Done.                              |
 
 Typical team size: **10 or fewer**, self-managing, no sub-teams.
 
-| Artifact | Commitment |
-|----------|------------|
+| Artifact            | Commitment                                                                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Product Backlog** | Emergent ordered list of everything that might improve the product (features **and** tech debt). **Product Goal**. Refined ongoing (break down, add detail, size). |
-| **Sprint Backlog** | Sprint Goal (why) + selected items (what) + plan (how). Owned by Developers; updated during the Sprint. |
-| **Increment** | Additive, verified, usable. **Definition of Done** — if not Done, it is not an Increment (back to backlog). |
+| **Sprint Backlog**  | Sprint Goal (why) + selected items (what) + plan (how). Owned by Developers; updated during the Sprint.                                                            |
+| **Increment**       | Additive, verified, usable. **Definition of Done** — if not Done, it is not an Increment (back to backlog).                                                        |
 
-| Event | Purpose (Guide) |
-|-------|-----------------|
-| **Sprint Planning** | Why valuable → Sprint Goal; what can be Done; how. Timebox ≤ 8h for a 1-month Sprint. |
-| **Daily Scrum** | 15 min, Developers: inspect progress toward Sprint Goal, adapt the plan for the next day. |
-| **Sprint Review** | Inspect Increment with stakeholders; adapt Product Backlog. Working session, not a slide deck. ≤ 4h / month. |
-| **Sprint Retrospective** | Inspect people, process, tools, DoD; pick improvements. Ends the Sprint. ≤ 3h / month. |
+| Event                    | Purpose (Guide)                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| **Sprint Planning**      | Why valuable → Sprint Goal; what can be Done; how. Timebox ≤ 8h for a 1-month Sprint.                        |
+| **Daily Scrum**          | 15 min, Developers: inspect progress toward Sprint Goal, adapt the plan for the next day.                    |
+| **Sprint Review**        | Inspect Increment with stakeholders; adapt Product Backlog. Working session, not a slide deck. ≤ 4h / month. |
+| **Sprint Retrospective** | Inspect people, process, tools, DoD; pick improvements. Ends the Sprint. ≤ 3h / month.                       |
 
 During the Sprint: do not endanger the Sprint Goal; quality does not drop; backlog can be **refined**; scope can be renegotiated with the PO as learning happens. Only the PO may **cancel** a Sprint if the Goal is obsolete.
 
@@ -325,11 +326,11 @@ Rugby-style “scrum” popularized in a 1986 HBR paper (Takeuchi/Nonaka). Schwa
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Cadence, transparency, regular inspect/adapt | Ceremony cost; cargo-cult “Scrum” if events are skipped or empty |
-| Frequent stakeholder feedback on a working Increment | Needs a real PO; PO bottleneck if they are a committee in disguise |
-| Makes process problems visible | Guide: partial Scrum is **not** Scrum — many teams still tailor (Scrumban) |
+| +                                                    | −                                                                          |
+| ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| Cadence, transparency, regular inspect/adapt         | Ceremony cost; cargo-cult “Scrum” if events are skipped or empty           |
+| Frequent stakeholder feedback on a working Increment | Needs a real PO; PO bottleneck if they are a committee in disguise         |
+| Makes process problems visible                       | Guide: partial Scrum is **not** Scrum — many teams still tailor (Scrumban) |
 
 **Examples:**
 
@@ -347,7 +348,7 @@ flowchart LR
 
 Scrum is first a pattern of **interaction** aimed at regular, quality delivery — not a meeting checklist. Many teams drop events; others hire a Scrum Master to run the framework well.
 
-*Sprint = timeboxed inspect-and-adapt loop that produces a Done Increment toward a Product Goal.*
+_Sprint = timeboxed inspect-and-adapt loop that produces a Done Increment toward a Product Goal._
 
 **Sources:**
 
@@ -376,25 +377,25 @@ Scrum is first a pattern of **interaction** aimed at regular, quality delivery �
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Transparent progress; bottlenecks are visible | No built-in planning rhythm or Sprint Goal |
-| Pull + WIP limits cut multitasking | Weak for a greenfield “we need a shared cadence” product |
-| Fits interrupt-driven work | Dates are forecasts from flow metrics, not sprint commitments |
-| Continuous delivery, no sprint boundary | Infinite WIP if limits are ignored |
+| +                                             | −                                                             |
+| --------------------------------------------- | ------------------------------------------------------------- |
+| Transparent progress; bottlenecks are visible | No built-in planning rhythm or Sprint Goal                    |
+| Pull + WIP limits cut multitasking            | Weak for a greenfield “we need a shared cadence” product      |
+| Fits interrupt-driven work                    | Dates are forecasts from flow metrics, not sprint commitments |
+| Continuous delivery, no sprint boundary       | Infinite WIP if limits are ignored                            |
 
 **Examples:**
 
-| Ready for design | Ready for dev | In progress (WIP ≤ 3) | Review | Done |
-|------------------|---------------|----------------------|--------|------|
-| Landing v2 | Auth API | Feature A | PR #101 | v2.1 |
-| | Bug #42 | | | |
+| Ready for design | Ready for dev | In progress (WIP ≤ 3) | Review  | Done |
+| ---------------- | ------------- | --------------------- | ------- | ---- |
+| Landing v2       | Auth API      | Feature A             | PR #101 | v2.1 |
+|                  | Bug #42       |                       |         |      |
 
 **Thoughts:**
 
 Kanban ≠ “no planning.” A Jira/GitHub board is only Kanban if **WIP limits and pull** are real.
 
-*Make the queue visible; the column that fills up is the team’s bottleneck.*
+_Make the queue visible; the column that fills up is the team’s bottleneck._
 
 **Sources:**
 
@@ -403,6 +404,44 @@ Kanban ≠ “no planning.” A Jira/GitHub board is only Kanban if **WIP limits
 ---
 
 </details>
+
+---
+
+## Frontend team in Agile
+
+<details>
+  <summary>Frontend team in Agile</summary>
+
+### Frontend team in Agile
+
+**Definition:** **Frontend work in Scrum/Kanban** means the UI team shares the same **cadence, WIP limits, and Definition of Done** as backend — with deliverables that are **shippable UI slices**, not “all screens done at the end.”
+
+**How it works:**
+
+| Scrum artifact         | Frontend angle                                                   |
+| ---------------------- | ---------------------------------------------------------------- |
+| **Product Backlog**    | Vertical slices (login flow, checkout), not “all CSS”            |
+| **Sprint Goal**        | Demoable UI + API contract, not hidden integration week          |
+| **Definition of Done** | Lint, types, unit/RTL tests, a11y spot-check, preview URL        |
+| **Daily Scrum**        | Blockers: API not ready, design tokens, flaky E2E                |
+| **Kanban columns**     | Design → Ready for dev → In progress (WIP limit) → Review → Done |
+
+**When to use:** Job ads “Scrum/Kanban experience” — describe **your role** (estimates, demos, DoD, pairing with QA), not only ceremony names.
+
+**Pluses and minuses:**
+
+| +                               | −                                                   |
+| ------------------------------- | --------------------------------------------------- |
+| Early feedback on UI in reviews | Backend lag breaks vertical slices                  |
+| Preview deploys per MR          | “Frontend-only sprint” without integrated increment |
+
+**Thoughts:** Ceremonies in depth → [Scrum](#scrum) · [Kanban](#kanban). CI gates on MR → [GitLab CI](./10_build_ci.md#gitlab-ci-and-gitlab-runner) · [Testing pyramid — React](./4_react_testing.md#testing-pyramid-react).
+
+**Sources:** [Scrum Guide](https://scrumguides.org/scrum-guide.html) · [Doka — Agile](https://doka.guide/tools/agile/)
+
+</details>
+
+---
 
 <details>
   <summary>Not a silver bullet</summary>
@@ -423,12 +462,12 @@ Kanban ≠ “no planning.” A Jira/GitHub board is only Kanban if **WIP limits
 
 **Pluses and minuses:**
 
-| + of mixing | − of dogma |
-|----------------|---------------|
-| Process matches risk and contract type | Forcing Scrum ceremonies on a support queue (or Waterfall on a startup) wastes time |
-| Honest hybrids (Scrumban, time-and-materials) | Manifesto values without shipping working software |
+| + of mixing                                   | − of dogma                                                                          |
+| --------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Process matches risk and contract type        | Forcing Scrum ceremonies on a support queue (or Waterfall on a startup) wastes time |
+| Honest hybrids (Scrumban, time-and-materials) | Manifesto values without shipping working software                                  |
 
-**Thoughts:** *Agile is a means to validate hypotheses and ship; if it does not serve that, drop or shrink it.*
+**Thoughts:** _Agile is a means to validate hypotheses and ship; if it does not serve that, drop or shrink it._
 
 **Sources:**
 
@@ -462,10 +501,10 @@ Canonical notes live in [DevOps](./15_devops.md). Pipeline tooling: [CI/CD](./10
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Reduces tech debt incrementally | Risky without tests |
-| Enables safer feature work | Can become endless "cleanup" without product value |
+| +                               | −                                                  |
+| ------------------------------- | -------------------------------------------------- |
+| Reduces tech debt incrementally | Risky without tests                                |
+| Enables safer feature work      | Can become endless "cleanup" without product value |
 
 **Examples:** Extract duplicated validation into `validateUser(input)` — same API, clearer modules.
 

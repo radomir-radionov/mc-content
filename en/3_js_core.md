@@ -7,13 +7,13 @@ Covers ECMAScript runtime fundamentals: engines and the language runtime. ES mod
 ### Related docs
 
 - [Variables](./3_js_variables.md) · [Data Types](./3_js_data_types.md) · [Data Structures](./3_js_data_structures.md) · [Stack & heap](./3_js_data_types.md#memory-stack-heap) · [globalThis](./3_js_variables.md#globalthis) · [Operators](./3_js_operators.md) · [Loops](./3_js_loops.md) · [Error handling](./3_js_loops.md#error-handling) · [Iterators](./3_js_loops.md#iterators) · [JS Arrays](./3_js_array.md) · [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md) · [JS Additional](./3_js_extra.md) · [JS Functions](./3_js_functions.md) · [Objects](./3_js_objects.md) · [Classes](./3_js_classes.md) · [JS Document](./3_js_browser.md) · [JS Events](./3_js_events.md) · [JS Browser APIs](./3_js_browser_extra.md) · [CORS / same-origin](./3_js_browser_extra.md#cors-same-origin) · [JS Async](./3_js_async.md) · [JS Interview](./3_js_interview.md) · [Call stack](./3_js_async_event_loop.md#call-stack)
-- [TypeScript](./5_ts.md) · [Web API](./6_web_api.md) · [Build — polyfills & transpilers](./10_build_bundlers.md#polyfills-vs-transpilers) · [YAML](./10_build_ci.md#yaml) · [Node.js](./8_nodejs.md) · [Process & threads](./8_nodejs_process.md#process--threads) · [React](./4_react.md) · [Vue](./4_vue.md) · [OOP & SOLID](./7_special_engineering.md#object-oriented-programming-oop) · [Computer science](./7_special_cs.md) · [SDLC](./7_special_sdlc.md#software-design-methodology)
+- [TypeScript](./5_ts.md) · [Web API](./6_web_api.md) · [Web security (XSS, CSP, CORS)](./7_special_security.md) · [Build — polyfills & transpilers](./10_build_bundlers.md#polyfills-vs-transpilers) · [YAML](./10_build_ci.md#yaml) · [Node.js](./8_nodejs.md) · [Process & threads](./8_nodejs_process.md#process--threads) · [React](./4_react.md) · [Vue](./4_vue.md) · [OOP & SOLID](./7_special_engineering.md#object-oriented-programming-oop) · [Computer science](./7_special_cs.md) · [SDLC](./7_special_sdlc.md#software-design-methodology)
 
 ### Main concepts
 
 | Area        | Topics                                                                           |
 | ----------- | -------------------------------------------------------------------------------- |
-| **Runtime** | JS vs ECMAScript, JIT, polyfills & transpilers, strict mode, console, code style |
+| **Runtime** | JS vs ECMAScript, JIT, [V8 architecture](#v8-engine-architecture), polyfills & transpilers, strict mode, console, code style |
 
 ### Sections
 
@@ -27,7 +27,7 @@ Stack & heap → [Data Types](./3_js_data_types.md#memory-stack-heap). Error han
 
 Sibling Core topics: [Variables](./3_js_variables.md) · [Data Types](./3_js_data_types.md) · [Data Structures](./3_js_data_structures.md) · [Operators](./3_js_operators.md) · [Loops](./3_js_loops.md) · [Array](./3_js_array.md) · [Functions](./3_js_functions.md) · [Objects](./3_js_objects.md) · [Classes](./3_js_classes.md).
 
-Topics also covered: **JIT**, **polyfills / transpilers**, **strict mode**. **ESM** → [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md). Types / stack-heap → [3_js_data_types.md](./3_js_data_types.md); objects / JSON → [3_js_data_structures.md](./3_js_data_structures.md); variables / scope / `globalThis` / closures → [3_js_variables.md](./3_js_variables.md); Operators → [3_js_operators.md](./3_js_operators.md); loops / errors / iterators → [3_js_loops.md](./3_js_loops.md); Arrays → [3_js_array.md](./3_js_array.md); Intl / RegExp / Signals → [3_js_extra.md](./3_js_extra.md); event loop → [JS Async](./3_js_async_await.md); GC / Proxy / deep copy → [Objects](./3_js_objects.md) · [Classes](./3_js_classes.md); paradigms → [7_special_cs.md](./7_special_cs.md).
+Topics also covered: **JIT**, **V8 engine architecture**, **polyfills / transpilers**, **strict mode**. **ESM** → [Modules](./3_js_modules.md) · [Export and Import](./3_js_import_export.md) · [Dynamic imports](./3_js_dynamic_import.md). Types / stack-heap → [3_js_data_types.md](./3_js_data_types.md); objects / JSON → [3_js_data_structures.md](./3_js_data_structures.md); variables / scope / `globalThis` / closures → [3_js_variables.md](./3_js_variables.md); Operators → [3_js_operators.md](./3_js_operators.md); loops / errors / iterators → [3_js_loops.md](./3_js_loops.md); Arrays → [3_js_array.md](./3_js_array.md); Intl / RegExp / Signals → [3_js_extra.md](./3_js_extra.md); event loop → [JS Async](./3_js_async_await.md); GC / Proxy / deep copy → [Objects](./3_js_objects.md) · [Classes](./3_js_classes.md); paradigms → [7_special_cs.md](./7_special_cs.md).
 
 <a name="core"></a>
 
@@ -50,7 +50,7 @@ Topics also covered: **JIT**, **polyfills / transpilers**, **strict mode**. **ES
 
 **How it works:**
 
-- **Engine (VM):** each host embeds an engine. Common codenames: **V8** (Chrome, Opera, Edge, Node), **SpiderMonkey** (Firefox), **JavaScriptCore** / Nitro / SquirrelFish (Safari). Legacy: **Chakra** (IE / early Edge). Feature support is often discussed by engine name (“supported in V8”).
+- **Engine (VM):** each host embeds an engine. Common codenames: **V8** (Chrome, Opera, Edge, Node), **SpiderMonkey** (Firefox), **JavaScriptCore** / Nitro / SquirrelFish (Safari). Legacy: **Chakra** (IE / early Edge). Feature support is often discussed by engine name (“supported in V8”). V8 heap, GC, and JIT tiers → [V8 engine architecture](#v8-engine-architecture).
 - **Pipeline (basics):** parse script → compile to machine code → run; engines keep optimizing hot paths. Deeper JIT/AOT distinction → [Engine and runtime](#engine-and-runtime).
 - **In-browser capabilities:** manipulate HTML/CSS; react to user input; network requests (XHR/`fetch`, historically AJAX/COMET); cookies / dialogs; client storage (`localStorage`, etc.). What the language _can_ do depends on the **host**, not on ECMAScript alone.
 - **In-browser limits (safety):** no arbitrary disk / OS access; file/camera/mic need explicit user gestures or permission; cross-tab/window DOM access blocked across different origins (**Same-Origin Policy** — scheme + host + port); cross-origin network reads need the remote side’s agreement (CORS headers). Outside the browser (Node, extensions with granted permissions) those sandbox rules do not apply the same way. SOP/CORS detail → [CORS and same-origin policy](./3_js_browser_extra.md#cors-same-origin).
@@ -205,6 +205,61 @@ JIT combines fast startup (interpreter) with peak performance (compiler). Transp
 | JavaScriptCore | Safari             |
 
 **Sources:** [javascript.info/intro](https://javascript.info/intro) · [MDN — interpreted vs compiled](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript) · [MDN JIT](https://developer.mozilla.org/en-US/docs/Glossary/Just_in_time_compilation) · [V8 blog](https://v8.dev/blog)
+
+</details>
+
+<a name="v8-engine-architecture"></a>
+
+<details>
+  <summary>V8 engine architecture</summary>
+
+### V8 engine architecture
+
+**Definition:** **V8** is Google’s open-source JavaScript and WebAssembly engine embedded in Chrome, Edge, Opera, Node.js, and Deno. It runs your JS inside an **isolate** (separate heap + garbage collector + JIT compilers) so one process can host many isolates without sharing object memory.
+
+**How it works:**
+
+- **Isolate:** one JS “world” — its own heap, GC, and compiled code. A browser **renderer** process typically runs one main-thread isolate for the page (plus separate isolates for workers). Node runs one isolate per process by default.
+- **Heap (generational):** most objects die young. V8 allocates in a **young generation** (nursery); survivors are promoted to the **old generation**. That matches the mark-and-sweep / generational model in [Garbage collection](./3_js_objects.md#garbage-collection).
+- **GC (Orinoco):** concurrent and incremental marking reduces long **stop-the-world** pauses; collection timing is still not exposed to JS. Leaks are “still reachable from a root,” not “GC forgot.”
+- **Execution tiers (names vary by version):** **Ignition** (interpreter → bytecode) for cold code; **TurboFan** (optimizing compiler) for hot functions with stable shapes/types. Deoptimization returns to bytecode if assumptions break (e.g. type changes) — ties to [Engine and runtime](#engine-and-runtime).
+- **Not the whole browser:** V8 executes JS; **Blink** (Chromium) parses HTML, builds DOM/CSSOM, layout, and paint. **SpiderMonkey** / **JavaScriptCore** play the same engine role in Firefox / Safari with different internals.
+
+| Piece        | Role                                      |
+| ------------ | ----------------------------------------- |
+| Isolate      | Separate JS heap + GC + JIT per realm     |
+| Young gen    | Fast allocation; frequent minor collections |
+| Old gen      | Long-lived objects; less frequent major GC |
+| Ignition     | Bytecode interpreter (startup path)       |
+| TurboFan     | Optimized machine code for hot paths      |
+
+**When to use:** Interview “how V8 runs JS”; explain GC pauses vs leaks; contrast **engine** (V8) with **host** (browser tab, Node). Node event loop + libuv → [Node.js — Core](./8_nodejs_core.md).
+
+#### Common pitfalls
+
+Equating V8 with “the browser” (no layout/DOM in V8). Expecting deterministic GC (`finalize` timing). Assuming “objects always on heap, primitives always on stack” — teaching model only; see [Stack & heap](./3_js_data_types.md#memory-stack-heap).
+
+**Pluses and minuses:**
+
+| +                                      | −                                        |
+| -------------------------------------- | ---------------------------------------- |
+| Mature JIT + generational GC at scale  | Engine-specific tuning details change    |
+| Same engine in Chrome and Node         | Deep internals beyond interview scope    |
+| Open docs (v8.dev) for GC and compiler | Other engines differ (JSC, SpiderMonkey) |
+
+**Examples:**
+
+```text
+Page JS → V8 isolate (main thread) → bytecode (Ignition) → optimized code (TurboFan, if hot)
+Unreachable objects → GC mark/sweep (young often, old less often)
+DOM updates → Blink (outside V8); JS calls host bindings (e.g. document.querySelector)
+```
+
+**Thoughts:** For “deep JS + browser,” know **isolate + generational GC + JIT tiers + deopt** and where DOM/security live (host, not ECMAScript). Full attack surface → [Web security](./7_special_security.md).
+
+**See also:** [Garbage collection](./3_js_objects.md#garbage-collection) · [Browser environment](./3_js_browser.md#browser-environment) · [Event loop](./3_js_async_event_loop.md#event-loop)
+
+**Sources:** [V8 — JavaScript engine](https://v8.dev/) · [V8 — Trash talk (GC)](https://v8.dev/blog/trash-talk) · [MDN — JavaScript engines](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/JavaScript_technologies_overview#javascript_engines)
 
 </details>
 

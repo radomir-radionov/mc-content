@@ -4,28 +4,35 @@ Components, hooks, rendering, RSC, and ecosystem patterns. Theory lives in the t
 
 ### Related docs
 
-[React — Core](./4_react_core.md) · [React — Hooks](./4_react_hooks.md) · [React — Components](./4_react_components.md) · [React — APIs](./4_react_apis.md) · [React — Server Components](./4_react_rsc.md) · [React — React 19](./4_react_server.md) · [React — Ecosystem](./4_react_ecosystem.md) · [React — Redux](./4_react_redux.md) · [React — TanStack](./4_react_tanstack.md) · [React — Patterns](./4_react_patterns.md) · [React — Algorithms](./4_react_algorithms.md) · [React — Performance](./4_react_perf.md) · [React — Concurrent UI](./4_react_concurrent.md) · [React — Resilience](./4_react_resilience.md) · [React — Interview](./4_react_interview.md)
+[React — Core](./4_react_core.md) · [React — Architecture](./4_react_architecture.md) · [React — Hooks](./4_react_hooks.md) · [React — Components](./4_react_components.md) · [React — APIs](./4_react_apis.md) · [React — Server Components](./4_react_rsc.md) · [React — React 19](./4_react_server.md) · [React — Ecosystem](./4_react_ecosystem.md) · [React — Redux](./4_react_redux.md) · [React — TanStack](./4_react_tanstack.md) · [React — Patterns](./4_react_patterns.md) · [React — Algorithms](./4_react_algorithms.md) · [React — Performance](./4_react_perf.md) · [React — Concurrent UI](./4_react_concurrent.md) · [React — Resilience](./4_react_resilience.md) · [React — Interview](./4_react_interview.md)
 
 ### Navigation
 
-| Topic                                                   | Covers                                                 |
-| ------------------------------------------------------- | ------------------------------------------------------ |
-| [React — Core](./4_react_core.md)                       | Library model, rendering, JSX, and state.              |
-| [React — Hooks](./4_react_hooks.md)                     | Hooks reference and escape hatches.                    |
-| [React — Components](./4_react_components.md)           | Fragment, Profiler, StrictMode, Suspense, Activity.    |
-| [React — APIs](./4_react_apis.md)                       | createContext, lazy, memo, cache, act, transitions.    |
-| [React — Server Components](./4_react_rsc.md)           | RSC, Server Functions, `'use client'`, `'use server'`. |
-| [React — React 19](./4_react_server.md)                 | React 19 APIs, SSR, and streaming patterns.            |
-| [React — Ecosystem](./4_react_ecosystem.md)             | Routing, libraries, performance, and legacy.           |
-| [React — Redux](./4_react_redux.md)                     | Redux Toolkit, global client state, and RTK Query.     |
-| [React — TanStack](./4_react_tanstack.md)               | TanStack Query, Router, Table, Virtual, and Form.      |
-| [React — Patterns](./4_react_patterns.md)               | Composition, state, and compound-component patterns.   |
-| [React — Algorithms](./4_react_algorithms.md)           | Debounce, pagination, optimistic UI, list rendering.   |
-| [React — Performance](./4_react_perf.md)                | Profiling, waterfalls, bundles, render discipline.     |
-| [React — Concurrent UI](./4_react_concurrent.md)        | Transitions, Suspense, deferred UI.                    |
-| [React — Resilience](./4_react_resilience.md)           | Error boundaries, retry, route errors.                 |
-| [React — Interview](./4_react_interview.md)             | React interview questions, answers not filled in.      |
-| [React — Redux interview](./4_react_redux_interview.md) | Redux interview questions, answers not filled in.      |
+| Topic                                                           | Covers                                                  |
+| --------------------------------------------------------------- | ------------------------------------------------------- |
+| [React — Core](./4_react_core.md)                               | Library model, rendering, JSX, and state.               |
+| [React — Architecture](./4_react_architecture.md)               | Atomic, FSD, Bulletproof React, slices, MFE, monorepo.  |
+| [React — Hooks](./4_react_hooks.md)                             | Hooks reference and escape hatches.                     |
+| [React — Components](./4_react_components.md)                   | Fragment, Profiler, StrictMode, Suspense, Activity.     |
+| [React — APIs](./4_react_apis.md)                               | createContext, lazy, memo, cache, act, transitions.     |
+| [React — Server Components](./4_react_rsc.md)                   | RSC, Server Functions, `'use client'`, `'use server'`.  |
+| [React — React 19](./4_react_server.md)                         | React 19 APIs, SSR, and streaming patterns.             |
+| [React — Ecosystem](./4_react_ecosystem.md)                     | Libraries, data fetching, styling, performance, legacy. |
+| [React — Build tooling](./4_react_build.md)                     | Vite/Webpack, code splitting, tree shaking.             |
+| [React — Testing](./4_react_testing.md)                         | Jest, RTL, pyramid, Playwright/Cypress.                 |
+| [React — REST API client](./4_react_api_client.md)              | fetch, axios, errors, caching.                          |
+| [React — Backend integration](./4_react_backend_integration.md) | Microservices, gateway, BFF, contracts.                 |
+| [React — Observability](./4_react_observability.md)             | Sentry, logs, RUM, production triage.                   |
+| [React — Web & mobile platforms](./4_react_platforms.md)        | SPA, SSR, PWA, React Native overview.                   |
+| [React — Redux](./4_react_redux.md)                             | Redux Toolkit, global client state, and RTK Query.      |
+| [React — TanStack](./4_react_tanstack.md)                       | TanStack Query, Router, Table, Virtual, and Form.       |
+| [React — Patterns](./4_react_patterns.md)                       | Composition, state, and compound-component patterns.    |
+| [React — Algorithms](./4_react_algorithms.md)                   | Debounce, pagination, optimistic UI, list rendering.    |
+| [React — Performance](./4_react_perf.md)                        | Profiling, waterfalls, bundles, render discipline.      |
+| [React — Concurrent UI](./4_react_concurrent.md)                | Transitions, Suspense, deferred UI.                     |
+| [React — Resilience](./4_react_resilience.md)                   | Error boundaries, retry, route errors.                  |
+| [React — Interview](./4_react_interview.md)                     | React interview questions, answers not filled in.       |
+| [React — Redux interview](./4_react_redux_interview.md)         | Redux interview questions, answers not filled in.       |
 
 ### Interview practice
 

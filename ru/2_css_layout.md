@@ -1,22 +1,36 @@
 # CSS — Layout
 
-Flexbox, сетка, позиционирование, адаптивный дизайн и мобильная область просмотра.
+Flexbox, Grid, позиционирование, адаптивная вёрстка и mobile viewport.
 
 [ ← Вернуться в центр](./2_css.md)
 
 ### Related docs
 
-* [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Архитектура](./2_css_architecture.md) · [CSS — Интервью](./2_css_interview.md)
+- [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md)
+
+### Main concepts
+
+| Section             | Topics                                          |
+| ------------------- | ----------------------------------------------- |
+| **Positioning**     | `position`, stacking contexts, float, centering |
+| **Flexbox**         | main/cross axis, container & item, overflow     |
+| **CSS Grid**        | tracks, `fr` / `minmax`, areas, `subgrid`       |
+| **Responsive**      | mobile-first, container queries, cross-browser  |
+| **Mobile viewport** | units, safe-area, scroll, touch/pointer         |
 
 ### Sections
 
-- [Layout Systems](#layout-systems)
+- [Positioning & stacking](#positioning-stacking)
+- [Flexbox](#flexbox)
+- [CSS Grid](#css-grid)
 - [Responsive Design & Container Queries](#responsive-design-container-queries)
 - [Scroll, Touch & Mobile Viewport](#scroll-touch-mobile-viewport)
 
 ---
 
-## Layout Systems
+<a name="positioning-stacking"></a>
+
+## Positioning & stacking
 
 <details>
   <summary>Positioning</summary>
@@ -25,23 +39,23 @@ Flexbox, сетка, позиционирование, адаптивный ди
 
 **Definition:**
 
-`position` удаляет элементы из нормального потока (`absolute`, `fixed`) или компенсирует их (`relative`, `sticky`).
+`position` removes elements from normal flow (`absolute`, `fixed`) or offsets them (`relative`, `sticky`).
 
-| Значение | Содержащий блок | Поведение прокрутки |
-|-------|------------------|-----------------|
-| `static` | Нормальный поток | Нормальный |
-| `relative` | Self (смещение от нормального положения) | Нормальный |
-| `absolute` | Ближайший предок | Нормальный |
-| `fixed` | Область просмотра | Исправлено в окне просмотра |
-| `sticky` | Ближайший предок свитка | Придерживается родительских границ |
+| Value      | Containing block                   | Scroll behavior             |
+| ---------- | ---------------------------------- | --------------------------- |
+| `static`   | Normal flow                        | Normal                      |
+| `relative` | Self (offset from normal position) | Normal                      |
+| `absolute` | Nearest positioned ancestor        | Normal                      |
+| `fixed`    | Viewport                           | Fixed to viewport           |
+| `sticky`   | Nearest scroll ancestor            | Sticks within parent bounds |
 
 **How it works:**
 
-предок не должен иметь `overflow: hidden`; `top`/`bottom`/`left`/`right` должен быть установлен; родитель должен быть достаточно высоким, чтобы прокручивать.
+ancestor must not have `overflow: hidden`; `top`/`bottom`/`left`/`right` must be set; parent must be tall enough to scroll.
 
-`fixed` всегда относительно области просмотра; `sticky` переключается между относительными и фиксированными значениями в пределах диапазона прокрутки контейнера.
+`fixed` is always viewport-relative; `sticky` toggles between relative and fixed within its container's scroll range.
 
-**Sources:** [MDN — позиция](https://developer.mozilla.org/en-US/docs/Web/CSS/position)
+**Sources:** [MDN — position](https://developer.mozilla.org/en-US/docs/Web/CSS/position)
 
 </details>
 
@@ -52,13 +66,13 @@ Flexbox, сетка, позиционирование, адаптивный ди
 
 **Definition:**
 
-Контекст наложения слоев окрашенных элементов; `z-index` сравниваются только в одном и том же контексте.
+A stacking context layers painted elements; `z-index` only compares within the same context.
 
-`z-index` работает только с **позиционированными** элементами (`relative`, `absolute`, `fixed`, `sticky`) или гибкие/сетчатые дочерние элементы.
+`z-index` only works on **positioned** elements (`relative`, `absolute`, `fixed`, `sticky`) or flex/grid children.
 
 **How it works:**
 
-`background-color` → `background-image` → `border` → потомки → `outline`. Полный список штабелирования ниже. Конвейер рендеринга → [1_html.md](./1_html.md).
+`background-color` → `background-image` → `border` → descendants → `outline`. Full stacking list below. Render pipeline → [1_html.md](./1_html.md).
 
 ```
 1. Stacking contexts with negative z-index
@@ -70,20 +84,24 @@ Flexbox, сетка, позиционирование, адаптивный ди
 7. Stacking contexts with z-index: auto that created a context (opacity, transform, etc.)
 ```
 
-* `position` + `z-index` (нет `auto`) на позиционированном/гибком/сеточном элементе
-* `opacity < 1`
-* `transform`, `filter`, `perspective`, `clip-path`
-* `will-change` для преобразования/непрозрачности/фильтра
-* `isolation: isolate`
-* `mix-blend-mode` кроме `normal`
+- `position` + `z-index` (not `auto`) on positioned/flex/grid item
+- `opacity < 1`
+- `transform`, `filter`, `perspective`, `clip-path`
+- `will-change` for transform/opacity/filter
+- `isolation: isolate`
+- `mix-blend-mode` other than `normal`
 
-переместите наложение/подсказку на портал верхнего уровня или убедитесь, что родительский объект не создает непреднамеренный контекст стекирования.
+move overlay/tooltip to a top-level portal, or ensure parent does not create an unintended stacking context.
 
-**`isolation: isolate`** — принудительно создать новый контекст стекирования без побочных эффектов (полезно для режимов наложения/охвата z-индекса).
+**`isolation: isolate`** — force a new stacking context without side effects (useful for blend modes / z-index scoping).
 
 ```css
-.overlay { mix-blend-mode: multiply; }
-.hero    { background-blend-mode: overlay; }
+.overlay {
+  mix-blend-mode: multiply;
+}
+.hero {
+  background-blend-mode: overlay;
+}
 ```
 
 **When to use:**
@@ -101,170 +119,15 @@ Flexbox, сетка, позиционирование, адаптивный ди
 **Examples:**
 
 ```css
-.card { isolation: isolate; }
-.tooltip { z-index: 1; } /* competes only within .card */
-```
-
-**Sources:** [MDN — контекст стекирования] (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context)
-
-</details>
-
-<details>
-  <summary>Flexbox</summary>
-
-### Flexbox
-
-**Definition:** Одномерная планировка: распределите пространство по **основной оси** (`row` or `column`).
-
-**How it works:**
-
-`display: flex` / `inline-flex`. Главная ось = `flex-direction`; поперечная ось перпендикулярна. Размер предметов с `flex` (`grow shrink basis`). По умолчанию `min-width: auto` (мин-контент) — установить `min-width: 0` (столбец: `min-height: 0`), поэтому предметы могут сжиматься. `justify-self` **не** применяется к гибким элементам — используйте `align-self` or `margin: auto`.
-
-| Контейнер | Роль |
-|-----------|------|
-| `flex-direction` | `row` \| `row-reverse` \| `column` \| `column-reverse` |
-| `flex-wrap` | `nowrap` \| `wrap` \| `wrap-reverse` |
-| `justify-content` | Основная ось: `flex-start` \| `center` \| `flex-end` \| `space-between` \| `space-around` \| `space-evenly` |
-| `align-items` | Поперечная ось, одна линия: `stretch` \| `flex-start` \| `center` \| `flex-end` \| `baseline` |
-| `align-content` | Дополнительное поперечное пространство при упаковке; игнорируется в одной строке |
-| `gap` | Пространство между элементами |
-
-| Товар | Роль |
-|------|------|
-| `flex: 1` | `1 1 0%` — поровну распределите оставшееся пространство |
-| `flex: auto` | `1 1 auto` — увеличивать/уменьшать размер контента |
-| `flex: none` | `0 0 auto` - зафиксированный; нет роста/сжатия |
-| `flex: 0 0 240px` | Фиксированная боковая панель |
-| `align-self` | Переопределить `align-items` |
-| `order` | Только визуальное изменение порядка табуляции — **не** порядок табуляции |
-
-**When to use:**
-
-Панели инструментов, навигация, ряды карточек, центрирование, боковая панель + основная.
-
-#### Common pitfalls
-
-Переполнение без `min-width: 0`. `order` против a11y. Колонка гибкая: `justify-content` является **вертикальным**.
-
-**Pluses and minuses:**
-
-| + | − |
-| --- | --- |
-| Выравнивание 1D на основе контента | Вложенные 2D-макеты противостоят Flex — используйте Grid |
-| `gap` + `margin: auto` за оставшееся пространство | `min-width: auto` переполняет текст, если не выполнить сброс |
-
-**Examples:**
-
-```css
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.sidebar { flex: 0 0 240px; }
-.main { flex: 1 1 auto; min-width: 0; }
-
-.nav { display: flex; }
-.nav .logo { margin-inline-end: auto; } /* leftover space → links right */
-```
-
-**Thoughts:** По одной оси за раз — Flex для строк/столбцов; Сетка, когда вам нужно и то, и другое.
-
-**Sources:** [MDN — Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout)
-
-</details>
-
-<details>
-  <summary>CSS Grid</summary>
-
-### CSS Grid
-
-**Definition:** Двумерный макет: строки **и** столбцы в одном контейнере.
-
-**How it works:**
-
-`display: grid` / `inline-grid`. Явные следы = `grid-template-columns` / `rows` / `areas`. Переполняющиеся элементы создают **неявную** сетку (`grid-auto-rows` / `columns` / `flow`). `fr` = доля свободного места; `minmax(min, max)` ограничивает дорожку — используйте `minmax(0, 1fr)` поэтому треки могут сжиматься ниже содержимого. Предметы: `grid-column` / `grid-row` / `grid-area`, `justify-self` / `align-self`. Выровнять ячейки по `justify-items` / `align-items`; выровнять всю сетку по `justify-content` / `align-content`. `gap` для желобов.
-
-`repeat(auto-fit|auto-fill, minmax(280px, 1fr))`: **автозаполнение** оставляет пустые дорожки; **автоподбор** сворачивает их, поэтому остальные столбцы растягиваются. Области: одинаковое количество ячеек в строке, только прямоугольники (без L-образных форм), `.` для пустых ячеек.
-
-**When to use:**
-
-Оболочки страниц, дашборды, карточные матрицы. Вложенный `subgrid` наследует родительские дорожки (выровняйте заголовок/тело/нижний колонтитул карточки по строке).
-
-#### Common pitfalls
-
-`1fr` который не будет сжиматься (используйте `minmax(0, 1fr)`). L-образный `grid-template-areas`. Использование вложений Flex 2D вместо Grid.
-
-**Pluses and minuses:**
-
-| + | − |
-| --- | --- |
-| 2D-шаблон + именованные области | Избыточное убийство для одной строки панели инструментов |
-| `auto-fit` / `fr` без медиа-запросов | Неявные следы удивляют, если `auto-flow` не установлен |
-
-**Examples:**
-
-```css
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.dashboard {
-  display: grid;
-  grid-template-areas:
-    "header header"
-    "sidebar main"
-    "footer footer";
-  grid-template-columns: 240px 1fr;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100dvh;
-}
-.header { grid-area: header; }
-
-.grid {
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: minmax(120px, auto);
-  grid-auto-flow: dense;
-}
-
-.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 .card {
-  display: grid;
-  grid-template-rows: subgrid;
-  grid-row: span 3;
+  isolation: isolate;
 }
+.tooltip {
+  z-index: 1;
+} /* competes only within .card */
 ```
 
-**Thoughts:** Grid владеет 2D-оболочкой; Flex владеет 1D-выравниванием внутри ячеек.
-
-**Sources:** [MDN — Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
-
-</details>
-
-<details>
-  <summary>Flex vs Grid — when to use which</summary>
-
-### Flex vs Grid — when to use which
-
-**Definition:**
-
-Flexbox превосходно работает со строками одномерных компонентов; Grid превосходно справляется с двухмерными оболочками страниц и карточными матрицами.
-
-
-| | Флексбокс | Сетка |
-| | --- | --------- |
-| | Размеры | 1Д | 2D |
-| | На основе контента | Да — элементы определяют поток | Да — или на основе шаблонов |
-| | Пробелы | `gap` | `gap` |
-| | Лучшее для | Навигация, строки, выравнивание | Макет страницы, карточные матрицы |
-
-Используйте оба вместе: Grid для оболочки страницы, Flexbox внутри ячеек.
-
-**Sources:** [web.dev — Flexbox против Grid](https://web.dev/learn/css/grid/#grid-or-flexbox)
+**Sources:** [MDN — Stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context)
 
 </details>
 
@@ -275,29 +138,29 @@ Flexbox превосходно работает со строками одном
 
 **Definition:**
 
-Поплавки вытягивают элементы из потока для переноса текста; наследие для макета — предпочитайте гибкий или сеточный.
+Floats pull elements out of flow for text wrapping; legacy for layout — prefer flex or grid.
 
-Плавает (`float: left/right`) вытягивать элементы из потока; текст обтекает их. Исторически использовался для макетов с несколькими столбцами.
+Floats (`float: left/right`) pull elements out of flow; text wraps around them. Historically used for multi-column layouts.
 
 **How it works:**
 
-- Плавающий элемент выводится из нормального потока блоков; встроенный контент обтекает его.
-- Родительский элемент часто сворачивается до нулевой высоты, если он не создает BFC (`flow-root`, `overflow`, гибкость/сетка).
-- Очистка(`clear`, `display: flow-root` на родителе) прекращает перенос содержимого после переноса.
+- Floated element is taken out of normal block flow; inline content wraps around it.
+- Parent often collapses to zero height unless it creates a BFC (`flow-root`, `overflow`, flex/grid).
+- Clearing (`clear`, clearfix, `display: flow-root` on parent) stops following content from wrapping.
 
-свернутая родительская высота, необходима очистка (`clearfix`, `overflow: hidden`, `display: flow-root`).
+collapsed parent height, clearing needed (`clearfix`, `overflow: hidden`, `display: flow-root`).
 
-используйте Flexbox или Grid. Плавающие элементы остаются действительными для обтекания изображений текстом.
+use Flexbox or Grid. Floats remain valid for text-wrapping around images.
 
-**When to use:** Изображение с переносом текста; `shape-outside` для непрямоугольной упаковки. **Нет** для столбцов страниц, панелей навигации или сеток карточек — используйте flex/grid.
+**When to use:** Image with text wrap; `shape-outside` for non-rectangular wrap. **Not** for page columns, nav bars, or card grids — use flex/grid.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| Естественный перенос текста вокруг изображений | Свернутая родительская высота без BFC |
-| Все еще действует для упаковки в журнальном стиле | Удаление хаков(`clearfix`) добавить сложности |
-| Работает без поддержки flex/grid | Хрупкие многоколоночные макеты по сравнению с Grid |
+| +                                   | −                                          |
+| ----------------------------------- | ------------------------------------------ |
+| Natural text wrap around images     | Collapsed parent height without BFC        |
+| Still valid for magazine-style wrap | Clearing hacks (`clearfix`) add complexity |
+| Works without flex/grid support     | Multi-column layouts fragile vs Grid       |
 
 **Examples:**
 
@@ -324,14 +187,15 @@ Flexbox превосходно работает со строками одном
 
 ### Centering cookbook
 
-**Definition:** Общие шаблоны горизонтального, вертикального и полного центрирования с использованием поля, гибкости, сетки или абсолютного позиционирования.
+**Definition:** Common patterns for horizontal, vertical, and full centering using margin, flex, grid, or absolute positioning.
 
 **How it works:**
 
-процентная высота требует явной высоты для каждого предка до содержащего блока. Предпочитать `min-height: 100dvh` on `html, body` для полноэкранных макетов.
+percentage height requires explicit height on every ancestor up to the containing block. Prefer `min-height: 100dvh` on `html, body` for full-viewport layouts.
 
 ```css
-html, body {
+html,
+body {
   min-height: 100%;
 }
 /* or */
@@ -377,7 +241,286 @@ body {
 }
 ```
 
-**Sources:** [CSS для JS](https://learn.javascript.ru/css-for-js)
+**Sources:** [CSS for JS](https://learn.javascript.ru/css-for-js)
+
+</details>
+
+<a name="flexbox"></a>
+
+## Flexbox
+
+<details>
+  <summary>Flexbox</summary>
+
+### Flexbox
+
+**Definition:** **Flexbox** is a **one-dimensional** layout: distribute free space and align items along a **main axis** (`flex-direction`) and **cross axis** (perpendicular).
+
+**How it works:**
+
+- Container: `display: flex` or `inline-flex` creates a **flex formatting context**.
+- **Main axis** follows `flex-direction` (`row` default in LTR); **cross axis** is perpendicular.
+- Items default to `flex: 0 1 auto` — can shrink but not grow; `flex: 1` often means `1 1 0%` (equal columns).
+- **`justify-content`** aligns on the **main** axis; **`align-items`** on the **cross** axis (single line).
+- **`flex-wrap: wrap`** → multiple lines; then **`align-content`** distributes extra cross-axis space between lines.
+- **`gap`** sets gutters between items (preferred over margin hacks).
+- **`justify-self`** does **not** apply to flex items — use **`align-self`**, **`margin: auto`**, or wrapper.
+
+**When to use:** Nav bars, toolbars, card rows, media objects, sidebar + main, 1D centering ([Centering cookbook](#centering-cookbook)).
+
+**Thoughts:** Full property lists → [Flex container properties](#flex-container-properties) · [Flex item sizing](#flex-item-sizing-and-overflow).
+
+**Sources:** [MDN — Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout)
+
+</details>
+
+<details>
+  <summary>Flex container properties</summary>
+
+### Flex container properties
+
+**Definition:** Свойства **flex-контейнера** задают направление, перенос строк, распределение и выравнивание элементов по умолчанию.
+
+**How it works:**
+
+| Property                         | Values (common)                               | Effect                      |
+| -------------------------------- | --------------------------------------------- | --------------------------- |
+| `flex-direction`                 | `row` · `column` · `*-reverse`                | Main axis direction         |
+| `flex-wrap`                      | `nowrap` · `wrap`                             | Single vs multi-line        |
+| `flex-flow`                      | shorthand of direction + wrap                 |                             |
+| `justify-content`                | `flex-start` · `center` · `space-between` · … | Main-axis distribution      |
+| `align-items`                    | `stretch` · `center` · `baseline` · …         | Cross-axis per line         |
+| `align-content`                  | same keywords as justify                      | Cross-axis when **wrapped** |
+| `gap` / `row-gap` / `column-gap` | lengths                                       | Space between items         |
+
+- In **`flex-direction: column`**, **`justify-content` moves vertically** and **`align-items` horizontally** — common interview trap.
+- **`align-items: baseline`** lines up text baselines; mixed font sizes need consistent line-height.
+- **`align-content`** has **no effect** on a single line (`flex-wrap: nowrap`).
+
+**When to use:** Interview “how do you space items in a row?” — name axis first, then pick justify vs align.
+
+**Examples:**
+
+```css
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+```
+
+**Sources:** [MDN — justify-content](https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content)
+
+</details>
+
+<details>
+  <summary>Flex item sizing and overflow</summary>
+
+### Flex item sizing and overflow
+
+**Definition:** **Flex-элементы** размер задают **`flex-grow`**, **`flex-shrink`**, **`flex-basis`**; дефолты браузера часто дают **overflow**.
+
+**How it works:**
+
+| Shorthand         | Computed       | Typical use                       |
+| ----------------- | -------------- | --------------------------------- |
+| `flex: 1`         | `1 1 0%`       | Equal-width columns sharing space |
+| `flex: auto`      | `1 1 auto`     | Grow/shrink from content width    |
+| `flex: none`      | `0 0 auto`     | Fixed-size chip / icon            |
+| `flex: 0 0 240px` | explicit basis | Sidebar fixed width               |
+
+- Default **`min-width: auto`** (min-content) prevents shrinking below longest word — text overflows. Fix: **`min-width: 0`** on flex child (column layouts: **`min-height: 0`**).
+- **`flex-basis`** sets starting size before free space is distributed; `% basis needs definite container width.
+- **`align-self`** overrides container `align-items` for one item.
+- **`order`** changes **visual** order only — **tab order** follows DOM; bad for accessibility if misused.
+
+**When to use:** Truncation + ellipsis in flex rows; holy-grail sidebar; pushing one item with `margin-inline-start: auto`.
+
+**Examples:**
+
+```css
+.sidebar {
+  flex: 0 0 240px;
+}
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.nav {
+  display: flex;
+}
+.nav .logo {
+  margin-inline-end: auto;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+.row > .truncate {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+```
+
+#### Common pitfalls
+
+Nested flex without `min-width: 0`. Using `order` for “importance” instead of DOM order. Expecting `justify-self` on flex items.
+
+**Sources:** [MDN — flex](https://developer.mozilla.org/en-US/docs/Web/CSS/flex)
+
+</details>
+
+<a name="css-grid"></a>
+
+## CSS Grid
+
+<details>
+  <summary>CSS Grid</summary>
+
+### CSS Grid
+
+**Definition:** **CSS Grid** is **two-dimensional**: explicit **rows and columns** on one container, with optional **named areas** and **line-based** placement.
+
+**How it works:**
+
+- `display: grid` / `inline-grid` on the container.
+- **Explicit grid:** `grid-template-columns`, `grid-template-rows`, `grid-template-areas`.
+- **Implicit grid:** extra items flow into auto tracks (`grid-auto-rows`, `grid-auto-columns`, `grid-auto-flow`).
+- **`fr`** distributes **leftover** space; pair with **`minmax()`** so tracks can shrink (`minmax(0, 1fr)`).
+- **Gap** separates tracks; **`place-items`** shorthand for cell alignment inside tracks.
+- **Grid item** properties: `grid-column`, `grid-row`, `grid-area`, `justify-self`, `align-self`.
+
+**When to use:** Page shells, dashboards, responsive card matrices, aligning form labels + fields in two columns.
+
+**Thoughts:** Tracks & `fr` → [Grid tracks and minmax](#grid-tracks-and-minmax) · placement → [Grid placement and template areas](#grid-placement-and-template-areas).
+
+**Sources:** [MDN — Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
+
+</details>
+
+<details>
+  <summary>Grid tracks and minmax</summary>
+
+### Grid tracks and minmax
+
+**Definition:** **Grid tracks** — линии размеров строк/колонок; **`repeat()`**, **`fr`**, **`minmax()`** строят адаптив без лишних media queries.
+
+**How it works:**
+
+```css
+grid-template-columns: repeat(3, 1fr);
+grid-template-columns: 240px 1fr;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+```
+
+| Pattern                   | Behavior                                                               |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `repeat(3, 1fr)`          | Three equal columns                                                    |
+| `minmax(200px, 1fr)`      | At least 200px, share extra space                                      |
+| `minmax(0, 1fr)`          | Allow track to shrink below content (fix overflow)                     |
+| `auto-fill` vs `auto-fit` | **fill** keeps empty tracks; **fit** collapses them so columns stretch |
+
+- **`grid-auto-rows: minmax(120px, auto)`** sizes implicit rows.
+- **`grid-auto-flow: dense`** fills holes when items span different sizes (mind reading order vs visual order).
+- **`subgrid`** (where supported): child grid inherits parent tracks — align card sections across a row.
+
+**When to use:** Responsive product grids; fixed sidebar + fluid main (`240px 1fr`).
+
+**Examples:**
+
+```css
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+```
+
+**Sources:** [MDN — repeat()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) · [MDN — minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/minmax)
+
+</details>
+
+<details>
+  <summary>Grid placement and template areas</summary>
+
+### Grid placement and template areas
+
+**Definition:** Элементы размещают по **номерам линий**, **`span`** или **именованным areas** на прямоугольном шаблоне.
+
+**How it works:**
+
+```css
+.dashboard {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100dvh;
+}
+.header {
+  grid-area: header;
+}
+```
+
+- **Areas** must form **rectangles** — no L-shapes; use `.` for empty cells.
+- **Line-based:** `grid-column: 1 / 3` or `span 2` for ad-hoc spans.
+- **`justify-items` / `align-items`** align content **inside** each cell; **`justify-content` / `align-content`** move the **whole grid** when smaller than container.
+- **`place-content: center`** centers the grid in the viewport (with fixed track sizes).
+
+**When to use:** App chrome (header/sidebar/main/footer); overlapping layers via same cell + `z-index` (sparingly).
+
+**Examples:**
+
+```css
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+}
+```
+
+#### Common pitfalls
+
+L-shaped areas (invalid). `1fr` columns that refuse to shrink. Dense auto-flow vs DOM order for screen readers.
+
+**Sources:** [MDN — grid-template-areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas)
+
+</details>
+
+<details>
+  <summary>Flex vs Grid — when to use which</summary>
+
+### Flex vs Grid — when to use which
+
+**Definition:**
+
+Flexbox excels at 1D component rows; Grid excels at 2D page shells and card matrices.
+
+|                | Flexbox                  | Grid                       |
+| -------------- | ------------------------ | -------------------------- |
+| Dimensions     | 1D                       | 2D                         |
+| Content-driven | Yes — items dictate flow | Yes — or template-driven   |
+| Gaps           | `gap`                    | `gap`                      |
+| Best for       | Nav, rows, alignment     | Page layout, card matrices |
+
+Use both together: Grid for page shell, Flexbox inside cells.
+
+**Sources:** [web.dev — Flexbox vs Grid](https://web.dev/learn/css/grid/#grid-or-flexbox)
 
 </details>
 
@@ -392,16 +535,39 @@ body {
 
 **Definition:**
 
-Адаптивные макеты легко масштабируются; адаптивные макеты переключаются в дискретных точках останова.
+Responsive layouts scale fluidly; adaptive layouts switch at discrete breakpoints.
 
-| Подход | Поведение |
-|----------|----------|
-| **Отзывчивый** | Гибкие макеты — один дизайн плавно масштабируется (%, `fr`, `clamp`, гибкий/сетка) |
-| **Адаптивный** | Дискретные точки останова — разные макеты с фиксированной шириной |
+| Approach       | Behavior                                                                 |
+| -------------- | ------------------------------------------------------------------------ |
+| **Responsive** | Fluid layouts — one design scales smoothly (%, `fr`, `clamp`, flex/grid) |
+| **Adaptive**   | Discrete breakpoints — different layouts at fixed widths                 |
 
-Современная практика: **мобильное реагирование** с точками останова в качестве улучшения.
+Modern practice: **mobile-first responsive** with breakpoints as enhancement.
 
-**Sources:** [web.dev — Адаптивный](https://web.dev/learn/design/Response)
+**Sources:** [web.dev — Responsive](https://web.dev/learn/design/responsive)
+
+</details>
+
+<details>
+  <summary>Cross-browser responsive layout</summary>
+
+### Cross-browser responsive layout
+
+**Definition:** **Адаптивная/ responsive** вёрстка должна быть предсказуемой в разных движках — через стандартный CSS, **`@supports`**, **Autoprefixer**, без sniffing user-agent.
+
+**How it works:**
+
+- **Mobile-first:** base styles for narrow viewports; **`min-width`** media queries add columns and spacing ([Media queries](#media-queries)).
+- **Flex/Grid:** prefer layout modes with broad support; use **`@supports (display: grid)`** fallback when needed.
+- **Viewport:** `<meta name="viewport" content="width=device-width, initial-scale=1">` — required for mobile scaling; pair with **`100dvh` / safe-area** → [Safe areas & viewport units](#safe-areas-viewport-units).
+- **Cross-browser CSS:** **normalize/reset** → [CSS Core](./2_css_core.md); **Autoprefixer + Browserslist** → [CSS — Architecture](./2_css_architecture.md) (PostCSS & Autoprefixer); check gaps on [caniuse.com](https://caniuse.com/) (linked from [CSS hub](./2_css.md)).
+- **Feature detection:** `@supports` for `container-type`, `subgrid`, `backdrop-filter` — degrade gracefully.
+
+**When to use:** JD “кросс-браузерная вёрстка”; fixing Safari vs Chrome flex/grid quirks; production build pipeline questions.
+
+**See also:** [Container queries](#container-queries) · [Touch & pointer](#touch-pointer)
+
+**Sources:** [MDN — Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries)
 
 </details>
 
@@ -410,55 +576,67 @@ body {
 
 ### Media queries
 
-**Definition:** Медиа-запросы применяют CSS на основе особенностей области просмотра — ширины, предпочтений движения, цветовой схемы, типа указателя.
+**Definition:** Media queries apply CSS based on viewport features — width, motion preference, color scheme, pointer type.
 
 **How it works:**
 
-640 пикселей · 768 пикселей · 1024 пикселей · 1280 пикселей — настройтесь на свой контент.
+640px · 768px · 1024px · 1280px — tune to your content.
 
 ```css
 @supports (display: grid) {
-  .layout { display: grid; }
+  .layout {
+    display: grid;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.01ms !important; }
+  * {
+    animation-duration: 0.01ms !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
-  :root { color-scheme: dark; }
+  :root {
+    color-scheme: dark;
+  }
 }
 ```
 
-| Особенность | Ценности | Вариант использования |
-|---------|--------|----------|
-| `prefers-reduced-motion` | `reduce` | Отключить/ограничить анимацию |
-| `prefers-color-scheme` | `light` \| `dark` | Переключение тем |
-| `prefers-contrast` | `more` \| `less` | Высококонтрастный пользовательский интерфейс |
-| `prefers-reduced-transparency` | `reduce` | Сплошные фоны над стеклом |
+| Feature                        | Values            | Use case                     |
+| ------------------------------ | ----------------- | ---------------------------- |
+| `prefers-reduced-motion`       | `reduce`          | Disable/limit animations     |
+| `prefers-color-scheme`         | `light` \| `dark` | Theme switching              |
+| `prefers-contrast`             | `more` \| `less`  | High-contrast UI             |
+| `prefers-reduced-transparency` | `reduce`          | Solid backgrounds over glass |
 
-| Особенность | Ценности | Вариант использования |
-|---------|--------|----------|
-| `(hover: hover)` | устройство с возможностью наведения | Показывать пользовательский интерфейс, доступный только при наведении, на рабочем столе |
-| `(hover: none)` | сенсорный первичный | Большие цели касания, отсутствие пользовательского интерфейса, зависящего от наведения |
-| `(pointer: fine)` | мышь/стилус | Плотный интерфейс |
-| `(pointer: coarse)` | палец | Кнопки большего размера, больше интервалов |
+| Feature             | Values               | Use case                                  |
+| ------------------- | -------------------- | ----------------------------------------- |
+| `(hover: hover)`    | hover-capable device | Show hover-only UI on desktop             |
+| `(hover: none)`     | touch-primary        | Larger tap targets, no hover-dependent UX |
+| `(pointer: fine)`   | mouse/stylus         | Dense UI                                  |
+| `(pointer: coarse)` | finger               | Bigger buttons, more spacing              |
 
 ```css
 @media (hover: hover) and (pointer: fine) {
-  .card:hover { transform: translateY(-2px); }
+  .card:hover {
+    transform: translateY(-2px);
+  }
 }
 
 @media (hover: none) {
-  .card-actions { opacity: 1; } /* always visible on touch */
+  .card-actions {
+    opacity: 1;
+  } /* always visible on touch */
 }
 ```
 
-**`@supports`** — обнаружение функций для прогрессивного улучшения (не перехват браузера):
+**`@supports`** — feature detection for progressive enhancement (not browser sniffing):
 
 ```css
 @supports (backdrop-filter: blur(1px)) {
-  .glass { backdrop-filter: blur(12px); }
+  .glass {
+    backdrop-filter: blur(12px);
+  }
 }
 ```
 
@@ -473,15 +651,19 @@ body {
 }
 
 @media (min-width: 640px) {
-  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
-  .card-grid { grid-template-columns: repeat(3, 1fr); }
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 ```
 
-**Sources:** [MDN — Медиа-запросы](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries)
+**Sources:** [MDN — Media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries)
 
 </details>
 
@@ -492,38 +674,40 @@ body {
 
 **Definition:**
 
-Контейнер запрашивает элементы стиля на основе размера родительского контейнера, а не области просмотра.
+Container queries style elements based on their parent container's size, not the viewport.
 
-Стиль основан на **размере родительского контейнера**, а не на области просмотра — это важно для многократно используемых компонентов на боковых панелях, в разделенных представлениях и т. д.
+Style based on **parent container size**, not viewport — essential for reusable components in sidebars, split views, etc.
 
 **How it works:**
 
-| Значение | Вопросы по |
-|-------|------------|
-| `inline-size` | Только ширина (наиболее распространенный вариант) |
-| `size` | Ширина и высота |
-| `normal` | Не контейнер запросов |
+| Value         | Queries on               |
+| ------------- | ------------------------ |
+| `inline-size` | Width only (most common) |
+| `size`        | Width and height         |
+| `normal`      | Not a query container    |
 
-**Единицы запроса контейнера** (относительно контейнера запроса, а не области просмотра):
+**Container query units** (relative to the query container, not viewport):
 
-| Единица | Значение |
-|------|---------|
-| `cqw` | 1% ширины контейнера |
-| `cqh` | 1% высоты контейнера |
-| `cqi` / `cqb` | Линейная/блочная ось % |
-| `cqmin` / `cqmax` | Меньше/больше cqi и cqb |
+| Unit              | Meaning                       |
+| ----------------- | ----------------------------- |
+| `cqw`             | 1% of container width         |
+| `cqh`             | 1% of container height        |
+| `cqi` / `cqb`     | Inline/block axis %           |
+| `cqmin` / `cqmax` | Smaller/larger of cqi and cqb |
 
 ```css
-.card-container { container-type: inline-size; }
+.card-container {
+  container-type: inline-size;
+}
 
 .card-title {
   font-size: clamp(1rem, 4cqi + 0.5rem, 1.5rem);
 }
 ```
 
-использовать `@container` когда **компонент** должен адаптироваться к своему родительскому элементу (виджет боковой панели, панель мониторинга); использовать `@media` когда макет зависит от **окна просмотра** (глобальная навигация, сетка страниц).
+use `@container` when a **component** must adapt to its parent (sidebar widget, dashboard panel); use `@media` when layout depends on **viewport** (global nav, page grid).
 
-**When to use:** компонент адаптируется к своему слоту; медиа-запросы, когда макет зависит от области просмотра (навигация, сетка страницы).
+**When to use:** component adapts to its slot; media queries when layout depends on viewport (nav, page grid).
 
 **Examples:**
 
@@ -542,11 +726,13 @@ body {
 
 /* Shorthand */
 @container (min-width: 30rem) {
-  .widget { padding: 2rem; }
+  .widget {
+    padding: 2rem;
+  }
 }
 ```
 
-**Sources:** [MDN — запросы к контейнеру](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries)
+**Sources:** [MDN — Container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries)
 
 </details>
 
@@ -557,22 +743,22 @@ body {
 
 **Definition:**
 
-Единицы длины CSS (`px`, `rem`, `%`, `vw`, `fr`, `dvh`) разрешается относительно разных ссылочных полей.
+CSS length units (`px`, `rem`, `%`, `vw`, `fr`, `dvh`) resolve relative to different reference boxes.
 
-| Единица | Значение | Подводные камни |
-|------|---------|----------|
-| `px` | Абсолютные пиксели | Штраф за границы; избегать изменения размера корневого шрифта |
-| `%` | Относительно родителя | Для высоты % требуется родительская высота |
-| `em` | Относительно размера шрифта элемента | Соединения при вложенности |
-| `rem` | Относительно корневого размера шрифта | Предпочтительно для интервалов/масштаба шрифта |
-| `ch` | Ширина символа «0» | Максимальная длина строки (`max-width: 65ch`) |
-| `vw` / `vh` | % области просмотра | мобильный `100vh` включает строку URL — используйте `dvh`/`svh`/`lvh` |
-| `fr` | Сетка доля свободного пространства | Только сетка |
-| `dvh` | Динамическая высота области просмотра | Адаптируется, когда Chrome мобильного браузера показывает/скрывает |
+| Unit        | Meaning                       | Pitfalls                                                |
+| ----------- | ----------------------------- | ------------------------------------------------------- |
+| `px`        | Absolute pixels               | Fine for borders; avoid for root font sizing            |
+| `%`         | Relative to parent            | Height % needs parent height                            |
+| `em`        | Relative to element font-size | Compounds when nested                                   |
+| `rem`       | Relative to root font-size    | Preferred for spacing/type scale                        |
+| `ch`        | Character width of "0"        | Max line length (`max-width: 65ch`)                     |
+| `vw` / `vh` | % of viewport                 | Mobile `100vh` includes URL bar — use `dvh`/`svh`/`lvh` |
+| `fr`        | Grid free space fraction      | Grid only                                               |
+| `dvh`       | Dynamic viewport height       | Adapts when mobile browser chrome shows/hides           |
 
 **How it works:**
 
-предпочитать `rem` для консистенции; `em` при изменении размера относительно родительского компонента (кнопок внутри карточки).
+prefer `rem` for consistency; `em` when sizing relative to parent component (buttons inside a card).
 
 ```css
 .sidebar {
@@ -582,7 +768,7 @@ body {
 }
 ```
 
-`calc()` — смешанные единицы (`%`, `px`, `rem`, `vw`). `min()` / `max()` — выберите самый маленький/самый большой. `clamp(min, preferred, max)` — изменчивые значения без медиа-запросов.
+`calc()` — mix units (`%`, `px`, `rem`, `vw`). `min()` / `max()` — pick smallest/largest. `clamp(min, preferred, max)` — fluid values without media queries.
 
 ---
 
@@ -598,7 +784,7 @@ h1 {
 }
 ```
 
-**Sources:** [MDN — значения CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units)
+**Sources:** [MDN — CSS values](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units)
 
 </details>
 
@@ -607,17 +793,17 @@ h1 {
 
 ### CSS Custom Properties
 
-**Definition:** Пользовательские свойства (`--name`) — это живые переменные CSS, которые каскадируются и наследуются, обеспечивая тематизацию во время выполнения.
+**Definition:** Custom properties (`--name`) are live CSS variables that cascade and inherit, enabling runtime theming.
 
 **How it works:**
 
-Переменные, определенные с помощью `--name`, используется с `var()`. Каскадируйте и наследуйте как обычные свойства.
+Variables defined with `--name`, used with `var()`. Cascade and inherit like normal properties.
 
 `var(--missing, fallback-value)`
 
-установить на `:root` для глобального; в классе компонентов для локальной темы.
+set on `:root` for global; on a component class for local theming.
 
-пользовательские свойства доступны в браузере — темы времени выполнения, медиа-запросы и обновления JS (`element.style.setProperty('--x', val)`).
+custom properties are live in the browser — runtime theming, media queries, and JS updates (`element.style.setProperty('--x', val)`).
 
 **Examples:**
 
@@ -643,7 +829,7 @@ h1 {
 }
 ```
 
-**Sources:** [MDN — Пользовательские свойства](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
+**Sources:** [MDN — Custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
 
 </details>
 
@@ -654,9 +840,9 @@ h1 {
 
 **Definition:**
 
-Встроенная вложенность позволяет писать дочерние и псевдоселекторы внутри блока правил без препроцессора.
+Native nesting lets you write descendant and pseudo selectors inside a rule block without a preprocessor.
 
-Поддерживается в современных браузерах (2023+). Препроцессор не требуется:
+Supported in modern browsers (2023+). No preprocessor required:
 
 **Examples:**
 
@@ -676,7 +862,7 @@ h1 {
 
 ---
 
-**Sources:** [MDN — вложение](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting)
+**Sources:** [MDN — Nesting](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting)
 
 </details>
 
@@ -689,9 +875,9 @@ h1 {
 
 ### Scroll behavior
 
-**Definition:** Свойства, связанные с прокруткой, управляют плавной прокруткой, цепочкой прокрутки и смещением привязки для фиксированных заголовков.
+**Definition:** Scroll-related properties control smooth scrolling, scroll chaining, and anchor offset for fixed headers.
 
-**How it works:** `-webkit-overflow-scrolling: touch` (прокрутка по импульсу на старой iOS) — больше не требуется в современном Safari.
+**How it works:** `-webkit-overflow-scrolling: touch` (momentum scroll on old iOS) — no longer needed on modern Safari.
 
 **Examples:**
 
@@ -706,13 +892,13 @@ html {
 }
 ```
 
-| Недвижимость | Ценности | Вариант использования |
-|----------|--------|----------|
-| `scroll-behavior` | `auto` \| `smooth` | Плавная навигация по якорям |
-| `overscroll-behavior` | `auto` \| `contain` \| `none` | Предотвратить цепочку «тянуть-обновить/отскочить» |
-| `scroll-padding-top` | длина | Смещение фиксированных заголовков при прокрутке привязки |
+| Property              | Values                        | Use case                                  |
+| --------------------- | ----------------------------- | ----------------------------------------- |
+| `scroll-behavior`     | `auto` \| `smooth`            | Smooth anchor navigation                  |
+| `overscroll-behavior` | `auto` \| `contain` \| `none` | Prevent pull-to-refresh / bounce chaining |
+| `scroll-padding-top`  | length                        | Offset for fixed headers on anchor scroll |
 
-**Sources:** [MDN — поведение при прокрутке](https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior)
+**Sources:** [MDN — overscroll-behavior](https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior)
 
 </details>
 
@@ -721,7 +907,7 @@ html {
 
 ### Touch & pointer
 
-**Definition:** `touch-action` и мультимедийные запросы указателя адаптируют взаимодействие между устройствами с сенсорным экраном и мышью.
+**Definition:** `touch-action` and pointer media queries adapt interaction for touch vs mouse devices.
 
 **Examples:**
 
@@ -735,16 +921,16 @@ html {
 }
 ```
 
-| `touch-action` | Эффект |
-|----------------|--------|
-| `auto` | Браузер обрабатывает все жесты |
-| `none` | Отключить жесты браузера (настраиваемое перетаскивание) |
-| `pan-x` / `pan-y` | Разрешить прокрутку по одной оси |
-| `manipulation` | Панорамирование + масштабирование; нет задержки двойного нажатия |
+| `touch-action`    | Effect                                 |
+| ----------------- | -------------------------------------- |
+| `auto`            | Browser handles all gestures           |
+| `none`            | Disable browser gestures (custom drag) |
+| `pan-x` / `pan-y` | Allow scroll on one axis               |
+| `manipulation`    | Pan + pinch-zoom; no double-tap delay  |
 
-Сопряжение с медиа-запросами: `@media (pointer: coarse)` для больших зон воздействия на сенсорных устройствах.
+Pair with media queries: `@media (pointer: coarse)` for larger hit areas on touch devices.
 
-**Sources:** [MDN — сенсорное действие](https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action)
+**Sources:** [MDN — touch-action](https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action)
 
 </details>
 
@@ -755,9 +941,9 @@ html {
 
 **Definition:**
 
-Вставки безопасной области и динамические единицы видового экрана (`dvh`) обрабатывать устройства с надрезом и мобильный браузер Chrome.
+Safe-area insets and dynamic viewport units (`dvh`) handle notched devices and mobile browser chrome.
 
-Устройства с надрезом и Chrome мобильного браузера нуждаются в дополнительном заполнении:
+Notched devices and mobile browser chrome need extra padding:
 
 **Examples:**
 
@@ -773,16 +959,16 @@ html {
 }
 ```
 
-| Блок просмотра | Поведение |
-|---------------|----------|
-| `vh` / `vw` | Статическое окно просмотра — `100vh` может переполниться на мобильном телефоне |
-| `dvh` / `dvw` | Динамический — меняется по мере того, как показывает/скрывает пользовательский интерфейс браузера |
-| `svh` | Маленькое окно просмотра (виден пользовательский интерфейс) |
-| `lvh` | Большое окно просмотра (пользовательский интерфейс скрыт) |
+| Viewport unit | Behavior                                         |
+| ------------- | ------------------------------------------------ |
+| `vh` / `vw`   | Static viewport — `100vh` can overflow on mobile |
+| `dvh` / `dvw` | Dynamic — changes as browser UI shows/hides      |
+| `svh`         | Small viewport (UI visible)                      |
+| `lvh`         | Large viewport (UI hidden)                       |
 
-Включить безопасную зону: `<meta name="viewport" content="width=device-width, viewport-fit=cover">`
+Enable safe-area: `<meta name="viewport" content="width=device-width, viewport-fit=cover">`
 
-**Sources:** [MDN — единицы области просмотра](https://developer.mozilla.org/en-US/docs/Web/CSS/length#viewport-percentage_lengths)
+**Sources:** [MDN — viewport units](https://developer.mozilla.org/en-US/docs/Web/CSS/length#viewport-percentage_lengths)
 
 </details>
 

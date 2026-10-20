@@ -343,7 +343,9 @@ const fromForage = await localforage.getItem("user");
 
 **Examples:** see [Web API — CORS](./6_web_api_security.md#cors).
 
-**Thoughts:** SOP is the default isolate; CORS is server headers that let **page JS** read a response — not a server firewall.
+**Thoughts:** SOP is the default isolate; CORS is server headers that let **page JS** read a response — not a server firewall. CORS does **not** stop CSRF with cookies; XSS bypasses same-origin because attacker script runs **as your origin** — encode output and use [CSP](./7_special_security.md#content-security-policy-csp).
+
+**See also:** [XSS](./7_special_security.md#xss-cross-site-scripting) · [CSP](./7_special_security.md#content-security-policy-csp) · [DOM XSS notes](./3_js_browser.md) · [Web API — CORS](./6_web_api_security.md#cors)
 
 **Sources:** [javascript.info/fetch-crossorigin](https://javascript.info/fetch-crossorigin) · [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
 

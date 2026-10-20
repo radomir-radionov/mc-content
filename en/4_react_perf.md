@@ -6,7 +6,7 @@ Applied **render and network performance** — measure first, then fix waterfall
 
 ### Related docs
 
-- [React — Patterns](./4_react_patterns.md) · [React — Algorithms](./4_react_algorithms.md) · [React — Concurrent UI](./4_react_concurrent.md) · [React — Resilience](./4_react_resilience.md) · [Ecosystem — Performance](./4_react_ecosystem.md#10-performance) · [Profiler](./4_react_components.md#profiler)
+- [React — Build tooling](./4_react_build.md) · [React — Patterns](./4_react_patterns.md) · [React — Concurrent UI](./4_react_concurrent.md) · [CSS — Reflow & paint](./2_css_architecture.md#reflow-repaint-composite) · [Browser pipeline](./1_html_structure.md#browser-rendering-pipeline) · [Profiler](./4_react_components.md#profiler)
 
 ### Main concepts
 
@@ -15,8 +15,10 @@ Applied **render and network performance** — measure first, then fix waterfall
 | **Measure before memo**       | Profiler, React DevTools, real metrics    |
 | **Request waterfalls**        | Parallelize fetches; Suspense + `use`     |
 | **Render discipline**         | Pure components, context split, list keys |
-| **Code splitting**            | `lazy`, route-level chunks                |
+| **Layout, paint, composite**  | Browser pipeline after React commits DOM  |
+| **Code splitting**            | `lazy`, route-level chunks, bundle size   |
 | **Expensive work off render** | `useMemo`, Web Workers, debounce          |
+| **Memoization toolkit**       | `memo`, `useMemo`, `useCallback`          |
 | **Production checklist**      | Bundle analyze, hydration, INP            |
 
 ### Sections
@@ -24,7 +26,8 @@ Applied **render and network performance** — measure first, then fix waterfall
 - [Overview](#overview)
 - [Measurement](#measurement)
 - [Network & data](#network-data)
-- [Render & bundle](#render-bundle) — includes [Expensive work off render](#expensive-work-off-render)
+- [Render & bundle](#render-bundle) — [Layout, paint, composite](#layout-paint-and-composite) · [Expensive work off render](#expensive-work-off-render)
+- [Memoization toolkit](#memoization-toolkit)
 
 ---
 
@@ -246,7 +249,41 @@ Render discipline
 
 [react.dev/learn/scaling-up-with-reducer-and-context](https://react.dev/learn/scaling-up-with-reducer-and-context)
 
-Expensive work off render
+</details>
+
+<details>
+  <summary>Layout, paint, and composite</summary>
+
+### Layout, paint, and composite
+
+**Definition:** After React commits DOM updates, the browser runs **layout** (reflow), **paint**, and often **composite** on the GPU. Heavy layout/paint work shows up as jank and hurts **INP** even when React re-render count is low.
+
+**How it works:**
+
+| Stage | Trigger (examples) | React tie-in |
+| ----- | ------------------ | ------------ |
+| **Layout (reflow)** | width/height, DOM insert, reading `offsetHeight` after write | Lists without virtualization; measuring every item in render |
+| **Paint** | color, shadow, visibility | Large `box-shadow` on scroll containers |
+| **Composite** | `transform`, `opacity` (often) | Prefer CSS transitions over `setState` per frame |
+
+**When to use:** Profiler shows fast React phase but **Performance** panel shows long **Layout** or **Paint**; CLS from late layout shifts.
+
+**Examples:**
+
+```tsx
+// Prefer transform for move animations (composite-friendly)
+<div style={{ transform: `translateX(${x}px)` }} />
+
+// Avoid: layout thrashing — read then write in a loop
+rows.forEach((el) => {
+  const h = el.offsetHeight; // read forces layout
+  el.style.height = `${h + 10}px`; // write
+});
+```
+
+**Thoughts:** React batching does not batch browser layout — batch DOM reads/writes in `requestAnimationFrame` or one effect. Deep dive → [CSS — Reflow, repaint, composite](./2_css_architecture.md#reflow-repaint-composite) · [HTML — rendering pipeline](./1_html_structure.md#browser-rendering-pipeline).
+
+**Sources:** [MDN — Rendering performance](https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Rendering) · [web.dev — INP](https://web.dev/articles/inp)
 
 </details>
 
@@ -314,5 +351,80 @@ Framework file-based routing usually splits automatically; use `lazy` for heavy 
 **Sources:**
 
 [react.dev/reference/react/lazy](https://react.dev/reference/react/lazy)
+
+</details>
+
+---
+
+## Memoization toolkit
+
+<details>
+<summary>memo, useMemo, and useCallback</summary>
+
+**Definition:** React **memoization** skips work when inputs are unchanged: **`React.memo`** for components, **`useMemo`** for expensive derived values, **`useCallback`** for stable function references passed to memoized children.
+
+**How it works:**
+
+| Tool                    | What it caches       | Default compare                      |
+| ----------------------- | -------------------- | ------------------------------------ |
+| `memo(Component)`       | Component re-render  | Shallow `Object.is` on each prop     |
+| `useMemo(fn, deps)`     | Return value of `fn` | Re-runs when any dep changes (`===`) |
+| `useCallback(fn, deps)` | Function identity    | Same as `useMemo(() => fn, deps)`    |
+
+**Order of operations (recommended):**
+
+1. [Measure before memo](#measure-before-memo) — Profiler or React DevTools
+2. Fix **architecture** — colocate state, split context ([Render discipline](#render-discipline))
+3. Stabilize props — `useCallback` for handlers passed to `memo` rows
+4. Memoize **expensive** pure subtrees or calculations only
+
+**When to use:** Large lists where parent re-renders often but row props are stable; heavy derive (filter/sort thousands of items) where deps change rarely.
+
+**Pluses and minuses:**
+
+| +                            | −                                                  |
+| ---------------------------- | -------------------------------------------------- |
+| Cuts wasted reconciliation   | Wrong deps → stale UI                              |
+| Pairs with virtualized lists | `memo` on everything adds compare overhead         |
+|                              | Unstable inline `{}` / `() =>` props defeat `memo` |
+
+**Examples:**
+
+```tsx
+import { memo, useCallback, useMemo, useState } from "react";
+
+type RowProps = { id: string; label: string; onPick: (id: string) => void };
+
+const Row = memo(function Row({ id, label, onPick }: RowProps) {
+  return (
+    <button type="button" onClick={() => onPick(id)}>
+      {label}
+    </button>
+  );
+});
+
+function Table({ items }: { items: { id: string; label: string }[] }) {
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(
+    () => items.filter((i) => i.label.includes(query)),
+    [items, query],
+  );
+  const onPick = useCallback((id: string) => {
+    console.log("picked", id);
+  }, []);
+  return (
+    <>
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      {filtered.map((i) => (
+        <Row key={i.id} id={i.id} label={i.label} onPick={onPick} />
+      ))}
+    </>
+  );
+}
+```
+
+**Thoughts:** React 19 **Compiler** may auto-memoize in supported setups — still profile. API reference: [`memo`](./4_react_apis.md), [When to memoize (patterns)](./4_react_patterns.md#when-to-memoize).
+
+**Sources:** [react.dev/reference/react/memo](https://react.dev/reference/react/memo) · [useMemo](https://react.dev/reference/react/useMemo) · [useCallback](https://react.dev/reference/react/useCallback)
 
 </details>

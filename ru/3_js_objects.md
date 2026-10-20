@@ -4,7 +4,7 @@
 
 ### Связанные материалы
 
-- [Язык JS](./3_js_core.md) · [Переменные](./3_js_variables.md) · [Типы данных](./3_js_data_types.md) · [Структуры данных](./3_js_data_structures.md) · [Операторы](./3_js_operators.md) · [Циклы](./3_js_loops.md) · [Массивы](./3_js_array.md) · [Функции](./3_js_functions.md) · [Классы](./3_js_classes.md) · [Документ](./3_js_browser.md) · [События](./3_js_events.md) · [Browser APIs](./3_js_browser_extra.md) · [Асинхронность](./3_js_async.md) · [Интервью JS](./3_js_interview.md)
+- [Язык JS](./3_js_core.md) · [V8 engine architecture](./3_js_core.md#v8-engine-architecture) · [Переменные](./3_js_variables.md) · [Типы данных](./3_js_data_types.md) · [Структуры данных](./3_js_data_structures.md) · [Операторы](./3_js_operators.md) · [Циклы](./3_js_loops.md) · [Массивы](./3_js_array.md) · [Функции](./3_js_functions.md) · [Классы](./3_js_classes.md) · [Документ](./3_js_browser.md) · [События](./3_js_events.md) · [Browser APIs](./3_js_browser_extra.md) · [Асинхронность](./3_js_async.md) · [Интервью JS](./3_js_interview.md)
 - [OOP & SOLID](./7_special_engineering.md#object-oriented-programming-oop) · [Классы (TypeScript)](./5_ts_classes.md) · [GRASP](./0_system_design_grasp.md)
 
 [← К оглавлению JS](./3_js.md)
@@ -1428,7 +1428,7 @@ for (const key in obj) {
 **How it works:**
 
 - Mark-and-sweep: start from roots (global, stack, registers); mark reachable; sweep unmarked.
-- Generational GC assumes most objects die young — nursery collected more often.
+- Generational GC assumes most objects die young — nursery collected more often. В **V8** молодые объекты в nursery; выжившие — в old generation; **Orinoco** использует concurrent/incremental marking для меньших пауз — см. [V8 engine architecture](./3_js_core.md#v8-engine-architecture).
 - Closures keep outer variables alive while inner function is reachable.
 
 **When to use:**
@@ -1472,7 +1472,7 @@ user = null;
 
 **Thoughts:** Outgoing references do not keep an object alive — only **incoming** references from reachable objects matter. An “island” of objects that only reference each other is collected once no root reaches it.
 
-**Sources:** [javascript.info/garbage-collection](https://javascript.info/garbage-collection)
+**Sources:** [javascript.info/garbage-collection](https://javascript.info/garbage-collection) · [V8 — Trash talk (GC)](https://v8.dev/blog/trash-talk)
 
 </details>
 

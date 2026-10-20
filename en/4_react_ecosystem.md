@@ -1,47 +1,74 @@
 # React — Ecosystem
 
-Routing, libraries, performance, and legacy.
+Third-party libraries, **client routing**, data fetching, styling, performance, and legacy. **Structural** architecture (FSD, Atomic, MFE) → [React — Architecture](./4_react_architecture.md).
 
 [← Back to hub](./4_react.md)
 
 ### Related docs
 
-- [React — Core](./4_react_core.md) · [React — Hooks](./4_react_hooks.md) · [React — Components](./4_react_components.md) · [React — APIs](./4_react_apis.md) · [React — React 19](./4_react_server.md) · [React — Ecosystem](./4_react_ecosystem.md) · [React — Redux](./4_react_redux.md) · [React — Interview](./4_react_interview.md) · [Architecture patterns](./7_special_architecture.md)
+- [React — Architecture](./4_react_architecture.md) · [React — Core](./4_react_core.md) · [React — Hooks](./4_react_hooks.md) · [React — React 19](./4_react_server.md) · [React — Redux](./4_react_redux.md) · [React — TanStack](./4_react_tanstack.md) · [Interview](./4_react_interview.md)
+
+### Main concepts
+
+| Topic                                           | Covers                                |
+| ----------------------------------------------- | ------------------------------------- |
+| [App architecture (pointer)](#app-architecture) | FSD, Atomic, MFE → Architecture topic |
+| [Client routing](#client-routing)               | React Router, URL → UI                |
+| [Data fetching](#data-fetching)                 | RSC, SWR, TanStack Query, RTK Query   |
+| [10. Performance](#10-performance)              | Re-renders, bundle, legacy patterns   |
 
 ### Sections
 
-- [9. Ecosystem & architecture](#9-ecosystem-architecture)
+- [9. Ecosystem & libraries](#9-ecosystem--libraries)
+- [Client routing](#client-routing)
 - [10. Performance](#10-performance)
 - [11. Legacy & migration](#11-legacy-migration)
 
 ---
 
-## 9. Ecosystem & architecture
-
-Routing
+## 9. Ecosystem & libraries
 
 <details>
-  <summary>Routing</summary>
+  <summary>App architecture</summary>
 
-### Routing
+**Definition:** **Code structure** — Atomic Design, FSD, feature folders, MFE — lives in the Architecture topic. **Routing** and **rendering** are documented separately (below and in [React 19](./4_react_server.md)).
 
-**Definition:** **Client-side routing** maps URL paths to components **without** a full page reload — the browser history API updates the URL; React swaps the view.
+**How it works:**
+
+| Topic                              | Where                                                      |
+| ---------------------------------- | ---------------------------------------------------------- |
+| Atomic, FSD, modular monolith, MFE | [React — Architecture](./4_react_architecture.md)          |
+| Client routing, React Router       | [Client routing](#client-routing) (this page)              |
+| SPA vs SSR vs RSC                  | [SPA vs SSR vs RSC](./4_react_server.md#spa-vs-ssr-vs-rsc) |
+
+**When to use:** Open **Architecture** for folder/design-system structure; stay here for routers, data libraries, and performance.
+
+**Sources:** [React — Architecture](./4_react_architecture.md)
+
+</details>
+
+## Client routing
+
+<details>
+  <summary>Client routing</summary>
+
+**Definition:** **Client-side routing** maps URL paths to components **without** a full page reload — the history API updates the URL; React swaps the view.
 
 **How it works:**
 
 1. User clicks `<Link to="/users">` or browser back/forward
 2. Router matches URL to route config (path, params, nested layouts)
 3. Matching components render; others unmount
-4. Optional **loader** fetches data before/during render (React Router, Remix pattern)
+4. Optional **loader** fetches data before/during render
 5. In Next.js App Router, **file system** defines routes (`app/users/page.tsx`)
 
-| Library                | Notes                              |
-| ---------------------- | ---------------------------------- |
-| **Next.js App Router** | File-based routes + RSC by default |
-| **React Router v7**    | SPA + framework mode with SSR/RSC  |
-| **TanStack Router**    | Type-safe routes, search params    |
+| Library                | Notes                                                                       |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Next.js App Router** | File-based routes + RSC — [Next.js routing](./4_nextjs_routing.md)          |
+| **React Router v7**    | SPA + framework mode — [React Router essentials](#react-router-essentials)  |
+| **TanStack Router**    | Type-safe routes — [TanStack Router](./4_react_tanstack.md#tanstack-router) |
 
-**When to use:** Any multi-page React app. Next.js if you want file-based routing + SSR/RSC; React Router for SPA or framework mode.
+**When to use:** Any multi-page React app.
 
 **Examples:**
 
@@ -52,36 +79,18 @@ Routing
 </Routes>
 ```
 
-**Thoughts:** _URL drives which components mount — no full document reload._
+**See also:** [React Router essentials](#react-router-essentials) · [Architecture — FSD `pages` layer](./4_react_architecture.md#feature-sliced-design-fsd)
 
-**See also:** [React Router essentials](#react-router-essentials) · [TanStack Router](./4_react_tanstack.md#tanstack-router)
-
-**Sources:**
-
-[reactrouter.com](https://reactrouter.com/)
-
-React Router essentials
+**Sources:** [reactrouter.com](https://reactrouter.com/)
 
 </details>
 
 <details>
   <summary>React Router essentials</summary>
 
-### React Router essentials
+**Definition:** **React Router v7** maps URLs to UI with nested layouts, **loaders**, **actions**, and optional framework mode (SSR/RSC).
 
-**Definition:** **React Router v7** maps URLs to UI, supports nested layouts, data **loaders**, and framework mode with SSR/RSC — the de facto client router for React SPAs.
-
-**How it works:** Routes form a tree — parent routes render an `<Outlet />` where child routes appear. **Loaders** run before navigation/render to fetch data (parallel to route matching); results are available via `useLoaderData()`. **Actions** handle form mutations. In framework mode, file-based routes and SSR integrate like Next.js lite. SPA mode uses `<BrowserRouter>` + `<Routes>`; data APIs use `createBrowserRouter` + `RouterProvider`.
-
-**When to use:** Dashboard with sidebar layout + nested pages, prefetch user on `/users/:id` via loader, form POST via action.
-
-**Pluses and minuses:**
-
-| +                                                | −                                    |
-| ------------------------------------------------ | ------------------------------------ |
-| Nested layouts without remounting parent         | v6→v7 migration learning curve       |
-| Loaders reduce fetch-on-mount waterfalls         | Framework mode overlaps with Next.js |
-| Type-safe routes via TanStack Router alternative | Client-only mode lacks RSC           |
+**How it works:** Parent routes render `<Outlet />` for children. **Loaders** supply data via `useLoaderData()`; **actions** handle mutations. SPA mode: `createBrowserRouter` + `RouterProvider`.
 
 **Examples:**
 
@@ -90,41 +99,19 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    loader: () => fetchRootData(),
     children: [
       { index: true, element: <Home /> },
       {
         path: "users/:userId",
-        loader: ({ params }) => fetchUser(params.userId),
+        loader: ({ params }) => fetchUser(params.userId!),
         element: <UserProfile />,
       },
     ],
   },
 ]);
-
-function UserProfile() {
-  const user = useLoaderData() as User;
-  return <h1>{user.name}</h1>;
-}
-
-function Layout() {
-  return (
-    <>
-      <nav />
-      <Outlet />
-      <footer />
-    </>
-  );
-}
 ```
 
-**Thoughts:** Prefer loaders over `useEffect` fetch for route-bound data. Split loaders per route so slow child data does not block parent shell.
-
-**Sources:**
-
-[reactrouter.com](https://reactrouter.com/) · [Route loaders](https://reactrouter.com/start/framework/route-module#loader)
-
-Accessibility in React (a11y)
+**Sources:** [reactrouter.com](https://reactrouter.com/) · [Route loaders](https://reactrouter.com/start/framework/route-module#loader)
 
 </details>
 
@@ -211,7 +198,7 @@ async function Page() {
 }
 ```
 
-**Thoughts:** Don't `useEffect` + `fetch` for initial page data if RSC or router loader can provide it. HTTP/CDN vs client cache → [Web APIs — HTTP caching](./6_web_api_http.md#http-caching). Next.js server caches → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR → [SWR (stale-while-revalidate)](#swr-stale-while-revalidate). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
+**Thoughts:** Don't `useEffect` + `fetch` for initial page data if RSC or router loader can provide it. Full client guide → [React — REST API client](./4_react_api_client.md). HTTP/CDN vs client cache → [Web APIs — HTTP caching](./6_web_api_http.md#http-caching). Next.js server caches → [Next.js — Caching & revalidation](./4_nextjs_data.md#8-caching--revalidation). SWR → [SWR (stale-while-revalidate)](#swr-stale-while-revalidate). TanStack Query → [React — TanStack](./4_react_tanstack.md). RTK Query → [React — Redux](./4_react_redux.md).
 
 **Sources:**
 
@@ -382,13 +369,11 @@ export function Button({ children }: { children: React.ReactNode }) {
 <details>
   <summary>Feature-Sliced Design (FSD)</summary>
 
-### Feature-Sliced Design (FSD)
+**Definition:** Folder-layer methodology for large React SPAs.
 
-**Definition:** Frontend folder methodology: layers (app → pages → widgets → features → entities → shared) plus slices with a public `index.ts`.
+**How it works:** Canonical write-up → [Feature-Sliced Design (FSD)](./4_react_architecture.md#feature-sliced-design-fsd). Cross-cutting patterns → [Architecture patterns](./7_special_architecture.md#feature-sliced-design-fsd).
 
-Canonical: [Feature-Sliced Design](./7_special_architecture.md#feature-sliced-design-fsd). React-specific: keep server-state libraries out of `entities` models — [State at scale](./7_special_architecture.md#state-at-scale).
-
-**Sources:** [feature-sliced.design](https://feature-sliced.design/)
+**Sources:** [React — Architecture — FSD](./4_react_architecture.md#feature-sliced-design-fsd)
 
 </details>
 
@@ -401,7 +386,7 @@ Canonical: [Feature-Sliced Design](./7_special_architecture.md#feature-sliced-de
 
 Full guide → [React — TanStack](./4_react_tanstack.md#tanstack-router).
 
-**See also:** [Routing](#routing) · [nuqs (URL search params)](#nuqs-url-search-params)
+**See also:** [Client routing (Architecture)](./4_react_architecture.md#client-routing) · [nuqs (URL search params)](#nuqs-url-search-params)
 
 **Sources:**
 

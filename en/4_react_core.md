@@ -13,6 +13,7 @@ Library model, rendering, JSX, and state.
 - [1. Library overview](#1-library-overview)
 - [2. Rendering model](#2-rendering-model)
 - [3. Describing the UI](#3-describing-the-ui)
+- [Functional components](#functional-components)
 - [4. State & interactivity](#4-state-interactivity)
 
 ---
@@ -1121,7 +1122,7 @@ function VideoList({ videos }: { videos: Video[] }) {
 
 _Components are functions — capital letter = React component, lowercase = HTML._
 
-Single Responsibility — if a component grows, split it. Pages/widgets/features in FSD terms (see [Section 9](./4_react_ecosystem.md#9-ecosystem--architecture)).
+Single Responsibility — if a component grows, split it. Pages/widgets/features in FSD terms (see [React — Architecture](./4_react_architecture.md#feature-sliced-design-fsd)).
 
 **See also:** [Element vs component](#element-vs-component) · [Purity](#purity)
 
@@ -1129,7 +1130,70 @@ Single Responsibility — if a component grows, split it. Pages/widgets/features
 
 [react.dev/learn/your-first-component](https://react.dev/learn/your-first-component)
 
-JSX
+</details>
+
+<details>
+  <summary>Functional components</summary>
+
+**Definition:** A **function component** is a JavaScript function that accepts **props** and returns **JSX**. Since Hooks (React 16.8+), function components are the **standard** way to write React — state, effects, context, and refs live in hooks instead of class lifecycle methods.
+
+**How it works:**
+
+| Concern        | Function component approach                                                           |
+| -------------- | ------------------------------------------------------------------------------------- |
+| Local UI state | `useState`, `useReducer`                                                              |
+| Side effects   | `useEffect`, `useLayoutEffect`                                                        |
+| Refs / DOM     | `useRef`; React 19: `ref` as a normal prop                                            |
+| Shared logic   | Custom hooks (`use*` functions)                                                       |
+| Performance    | `memo`, `useMemo`, `useCallback` — after profiling ([Performance](./4_react_perf.md)) |
+
+**When to use:** All **new** code. Class components remain for legacy only — do not introduce them in greenfield features.
+
+**Pluses and minuses:**
+
+| +                                                  | −                                                         |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| Less boilerplate than classes; hooks compose well  | Hooks rules must be followed (top level, no conditionals) |
+| Easier testing and tree-shaking                    | Large components need splitting + custom hooks            |
+| Aligns with React Compiler and concurrent features | Migration effort from old class codebases                 |
+
+**Examples:**
+
+```tsx
+type UserCardProps = {
+  user: { id: string; name: string };
+  onSelect: (id: string) => void;
+};
+
+export function UserCard({ user, onSelect }: UserCardProps) {
+  return (
+    <button type="button" onClick={() => onSelect(user.id)}>
+      {user.name}
+    </button>
+  );
+}
+
+function useOnlineStatus() {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
+  return online;
+}
+```
+
+**Thoughts:** Prefer **named** function declarations at module scope. Extract non-UI logic into custom hooks — see [Hooks reference](./4_react_hooks.md).
+
+**See also:** [Components](#components) · [Rules of Hooks](./4_react_hooks.md#5-hooks-reference) · [Class components (legacy) in Ecosystem](./4_react_ecosystem.md#11-legacy-migration)
+
+**Sources:** [react.dev/learn — Your first component](https://react.dev/learn/your-first-component) · [react.dev/reference/react/hooks](https://react.dev/reference/react/hooks)
 
 </details>
 

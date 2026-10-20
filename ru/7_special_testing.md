@@ -1,6 +1,6 @@
 # Testing — hub
 
-AAA, the test pyramid, doubles, Jest/Vitest, RTL, MSW, and specialized test types.
+AAA, pyramid, black/white/gray-box, smoke/regression, doubles, Jest/Vitest, RTL, MSW, and specialized test types.
 
 ### Related docs
 
@@ -10,9 +10,9 @@ AAA, the test pyramid, doubles, Jest/Vitest, RTL, MSW, and specialized test type
 
 | Topic                                                         | Covers                                                   |
 | ------------------------------------------------------------- | -------------------------------------------------------- |
-| [Testing — Fundamentals](./7_special_testing_fundamentals.md) | AAA and the test pyramid.                                |
+| [Testing — Fundamentals](./7_special_testing_fundamentals.md) | AAA, pyramid, approaches, smoke/regression.              |
 | [Testing — Layers](./7_special_testing_layers.md)             | Integration, system, E2E, visual, performance, security. |
-| [Testing — Practices](./7_special_testing_practices.md)       | TDD, BDD, doubles, making tests easy.                    |
+| [Testing — Practices](./7_special_testing_practices.md)       | TDD, BDD, doubles, black-box techniques, testability.    |
 | [Testing — Tooling](./7_special_testing_tooling.md)           | Jest, Vitest, RTL, MSW, coverage.                        |
 | [Testing — Interview](./7_special_testing_interview.md)       | Вопросы по тестированию, ответы не заполнены.            |
 

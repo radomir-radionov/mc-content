@@ -4,7 +4,7 @@ When to ship fast, when to invest in structure, and how engineering decisions af
 
 ### Related docs
 
-- [System design](./0_system_design.md) · [Interview hub](./0_interview.md) · [AI-first approach](./0_ai.md#ai-first-approach) · [TypeScript](./5_ts.md) · [React architecture](./4_react_ecosystem.md#9-ecosystem--architecture)
+- [System design](./0_system_design.md) · [Full-stack role map](./0_engineering_fullstack.md) · [Interview hub](./0_interview.md) · [AI-first approach](./0_ai.md#ai-first-approach) · [AI-first engineering](./0_ai_engineering.md) · [TypeScript](./5_ts.md) · [React architecture](./4_react_architecture.md)
 
 ### Main concepts
 

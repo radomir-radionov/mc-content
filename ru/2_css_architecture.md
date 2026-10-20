@@ -6,7 +6,16 @@
 
 ### Related docs
 
-- [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Архитектура](./2_css_architecture.md) · [CSS — Интервью](./2_css_interview.md) · [SDLC — методологии](./7_special_sdlc.md#development-methodologies)
+- [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md) · [SDLC — methodologies](./7_special_sdlc.md#development-methodologies)
+
+### Main concepts
+
+| Area            | Topics                                                       |
+| --------------- | ------------------------------------------------------------ |
+| **Methodology** | BEM, preprocessors, comparison tables                        |
+| **Tooling**     | PostCSS, CSS Modules, Tailwind, styled-components, Bootstrap |
+| **Compat**      | Autoprefixer, Browserslist, cross-browser interview patterns |
+| **Performance** | Reflow/paint, critical CSS, containment                      |
 
 ### Sections
 
@@ -24,15 +33,15 @@
 
 **Definition:**
 
-БЭМ — это соглашение об именах: `block__element--modifier` для предсказуемого CSS с низкой специфичностью.
+BEM is a naming convention: `block__element--modifier` for predictable, low-specificity CSS.
 
-Соглашение об именах для модульного CSS:
+Naming convention for modular CSS:
 
 **Pluses and minuses:**
 
-предсказуемая специфика, многоразовые блоки, слаженность команды
+predictable specificity, reusable blocks, team consistency
 
-подробные имена классов; не требуется при использовании модулей CSS или фреймворков с ограниченной областью действия.
+verbose class names; not required if using CSS Modules or scoped frameworks
 
 **Examples:**
 
@@ -47,11 +56,11 @@ block__element--modifier
 </button>
 ```
 
-| Часть       | Сепаратор | Пример            |
-| ----------- | --------- | ----------------- |
-| Блокировать | —         | `button`          |
-| Элемент     | `__`      | `button__icon`    |
-| Модификатор | `--`      | `button--primary` |
+| Part     | Separator | Example           |
+| -------- | --------- | ----------------- |
+| Block    | —         | `button`          |
+| Element  | `__`      | `button__icon`    |
+| Modifier | `--`      | `button--primary` |
 
 **Sources:** [getbem.com](http://getbem.com/)
 
@@ -64,15 +73,15 @@ block__element--modifier
 
 **Definition:**
 
-Препроцессоры компилируют Sass/Less в CSS, добавляя переменные, примеси и вложенность во время сборки.
+Preprocessors compile Sass/Less to CSS, adding variables, mixins, and nesting at build time.
 
-Скомпилируйте в CSS. Исторически добавленные переменные, вложение, миксины, импорт.
+Compile to CSS. Historically added variables, nesting, mixins, imports.
 
 **How it works:**
 
-Собственные пользовательские свойства и вложенность уменьшают потребность в препроцессорах. Sass по-прежнему полезен для `@mixin`, `@function`и большие конвейеры токенов проектирования.
+native custom properties and nesting reduce the need for preprocessors. Sass still useful for `@mixin`, `@function`, and large design-token pipelines.
 
-SCSS использует `{}` синтаксис (CSS-совместимый); синтаксис Sass с отступом встречается реже.
+SCSS uses `{}` syntax (CSS-compatible); indented Sass syntax is less common.
 
 **Examples:**
 
@@ -105,26 +114,26 @@ $primary: #2563eb;
 
 **Definition:**
 
-PostCSS преобразует CSS с помощью плагинов; Autoprefixer добавляет префиксы поставщиков из конфигурации Browserslist.
+PostCSS transforms CSS with plugins; Autoprefixer adds vendor prefixes from Browserslist config.
 
-PostCSS преобразует CSS с помощью плагинов. **Autoprefixer** добавляет префиксы поставщиков из конфигурации [Browserslist](https://browsersl.ist/) — не пишите вручную. `-webkit-` префиксы в 2025 году.
+PostCSS transforms CSS with plugins. **Autoprefixer** adds vendor prefixes from [Browserslist](https://browsersl.ist/) config — do not hand-write `-webkit-` prefixes in 2025.
 
 **How it works:**
 
-- PostCSS анализирует CSS в AST; плагины преобразуют и преобразуют в строки — например, Babel для CSS.
-- **Автопрефиксер** читает список браузеров (`> 1%, last 2 versions`) и добавляет только необходимые префиксы.
-- Другие плагины: `postcss-preset-env` (этапные особенности), `cssnano` (уменьшить), `postcss-nesting`, пользовательские преобразования.
-- Запускается во время сборки в Vite/Webpack — затраты времени выполнения нулевые.
+- PostCSS parses CSS to an AST; plugins transform and stringify back — like Babel for CSS.
+- **Autoprefixer** reads Browserslist (`> 1%, last 2 versions`) and adds only needed prefixes.
+- Other plugins: `postcss-preset-env` (stage features), `cssnano` (minify), `postcss-nesting`, custom transforms.
+- Runs at build time in Vite/Webpack — zero runtime cost.
 
-**When to use:** Автопрефиксер для всех производственных сборок; `postcss-preset-env` для гнездования/`color-mix` полифилы; `cssnano` для минификации производства. Установить список браузеров в `package.json` — единственный источник истины.
+**When to use:** Autoprefixer for all production builds; `postcss-preset-env` for nesting/`color-mix` polyfills; `cssnano` for production minification. Set Browserslist in `package.json` — single source of truth.
 
 **Pluses and minuses:**
 
-| +                                             | −                                                                            |
-| --------------------------------------------- | ---------------------------------------------------------------------------- |
-| Напишите современный CSS; совместимость с CSS | Дополнительный шаг сборки и конфигурация                                     |
-| Autoprefixer исключает ручные префиксы        | Порядок плагинов имеет значение — может сломаться при неправильной настройке |
-| Экосистема трансформаций                      | Отладка сгенерированного CSS сложнее, чем исходного                          |
+| +                                       | −                                                 |
+| --------------------------------------- | ------------------------------------------------- |
+| Write modern CSS; ship compatible CSS   | Extra build step and config                       |
+| Autoprefixer eliminates manual prefixes | Plugin order matters — can break if misconfigured |
+| Ecosystem of transforms                 | Debugging generated CSS harder than source        |
 
 **Examples:**
 
@@ -144,7 +153,7 @@ export default {
 };
 ```
 
-**Sources:** [PostCSS](https://postcss.org/) · [Автопрефиксер](https://github.com/postcss/autoprefixer)
+**Sources:** [PostCSS](https://postcss.org/) · [Autoprefixer](https://github.com/postcss/autoprefixer)
 
 </details>
 
@@ -155,26 +164,26 @@ export default {
 
 **Definition:**
 
-Модули CSS определяют имена классов во время сборки, чтобы предотвратить глобальные конфликты стилей.
+CSS Modules scope class names at build time to prevent global style collisions.
 
-Имена классов области действия во время сборки — `import styles from './Button.module.css'` → уникальные хеши предотвращают глобальные коллизии.
+Scope class names at build time — `import styles from './Button.module.css'` → unique hashes prevent global collisions.
 
 **How it works:**
 
-- Бандлер переименовывает `.button` → `.Button_button_x7f3a` во время компиляции.
-- Импортировать как объект JS: `className={styles.button}` — защита от опечаток благодаря плагинам TypeScript.
-- `:global(.foo)` избегает возможности сторонних переопределений; `:local` является значением по умолчанию.
-- Состав: `composes: primary from './theme.module.css'`.
+- Bundler renames `.button` → `.Button_button_x7f3a` at compile time.
+- Import as JS object: `className={styles.button}` — typo-safe with TypeScript plugins.
+- `:global(.foo)` escapes scoping for third-party overrides; `:local` is default.
+- Composition: `composes: primary from './theme.module.css'`.
 
-**When to use:** Стили компонентов React/Vue/Svelte; примитивы дизайн-системы; замена БЭМ в SPA. Используйте пользовательские свойства CSS для оформления тем между модулями.
+**When to use:** React/Vue/Svelte component styles; design-system primitives; replacing BEM in SPAs. Pair with CSS custom properties for theming across modules.
 
 **Pluses and minuses:**
 
-| +                                              | −                                                                                        |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Никаких глобальных конфликтов пространств имен | Имена классов нечитабельны в DevTools                                                    |
-| Совмещенные стили с компонентами               | Динамические имена классов нужны `styles[variant]` узор                                  |
-| Работает с любым фреймворком                   | Никакой настоящей инкапсуляции DOM — глобальные переменные все равно могут просачиваться |
+| +                                 | −                                                     |
+| --------------------------------- | ----------------------------------------------------- |
+| No global namespace collisions    | Class names unreadable in DevTools                    |
+| Co-located styles with components | Dynamic class names need `styles[variant]` pattern    |
+| Works with any framework          | No true DOM encapsulation — globals can still leak in |
 
 **Examples:**
 
@@ -194,7 +203,50 @@ import styles from "./Button.module.css";
 <button className={styles.primary}>Submit</button>;
 ```
 
-**Sources:** [Модули CSS](https://github.com/css-modules/css-modules)
+**Sources:** [CSS Modules](https://github.com/css-modules/css-modules)
+
+</details>
+
+<details>
+  <summary>styled-components (CSS-in-JS)</summary>
+
+### styled-components (CSS-in-JS)
+
+**Definition:** **styled-components** (и **Emotion**) — **CSS-in-JS**: стили в JavaScript; tagged templates создают scoped class names в runtime или при сборке.
+
+**How it works:**
+
+- **`styled.button`** / **`styled(Component)`** returns a React component that injects a `<style>` tag or extracted CSS with a unique class.
+- **Dynamic styles** read props: `` styled.div`color: ${p => p.theme.primary};` `` — props changes can trigger re-injection (watch performance).
+- **Theming:** `ThemeProvider` passes tokens; prefer design tokens over magic strings.
+- **vs CSS Modules:** Modules scope at **build** time (static `.module.css`); styled-components colocate at **component** level with runtime cost unless using compiler plugins / SSR extraction.
+- **SSR:** collect styles on server (`ServerStyleSheet`) so first paint is not unstyled; hydrate matched class names on client.
+- **When to skip:** static marketing pages — plain CSS, Modules, or Tailwind often simpler; strict CSP without `'unsafe-inline'` needs hashed/extracted CSS strategy.
+
+**When to use:** React design systems with prop-driven variants; interview “how does CSS-in-JS work?” (generation + injection + specificity).
+
+**Pluses and minuses:**
+
+| +                        | −                                       |
+| ------------------------ | --------------------------------------- |
+| Colocated styles + props | Runtime cost unless compiled away       |
+| Automatic vendor scoping | Harder to inspect vs static stylesheets |
+| Theming via context      | Bundle size vs utility CSS              |
+
+**Examples:**
+
+```jsx
+import styled from "styled-components";
+
+const Button = styled.button`
+  padding: 0.5rem 1rem;
+  background: ${(p) => (p.$primary ? "#2563eb" : "#e5e7eb")};
+`;
+```
+
+**See also:** [CSS Modules](#css-modules) · [Tailwind CSS (utility-first)](#tailwind-css-utility-first) · [React ecosystem — CSS-in-JS](./4_react_ecosystem.md)
+
+**Sources:** [styled-components docs](https://styled-components.com/docs)
 
 </details>
 
@@ -203,27 +255,42 @@ import styles from "./Button.module.css";
 
 ### Tailwind CSS (utility-first)
 
-**Definition:** Tailwind применяет атомарные служебные классы в HTML для быстрого и согласованного с токенами стиля.
+**Definition:** **Tailwind CSS** is a **utility-first** framework: small atomic classes (`flex`, `p-4`, `text-sm`) composed in markup, with design tokens in **`tailwind.config`**.
 
-**How it works:** Утилиты Tailwind обладают такой же специфичностью: важен порядок в сгенерированных CSS, а не порядок классов HTML. Использовать `tailwind-merge` или произвольные варианты конфликтов.
+**How it works:**
+
+- **JIT compiler** scans source files and emits only used utilities — small production CSS.
+- **Responsive prefixes:** `md:grid-cols-3`, `lg:gap-8` map to your `screens` breakpoints (mobile-first).
+- **State variants:** `hover:`, `focus-visible:`, `dark:` — keep interaction accessible (`focus-visible` over `focus` alone for mouse users).
+- **Conflicts:** utilities share specificity — use **`tailwind-merge`** / **`clsx`** when building class strings in JS; arbitrary values `w-[137px]` sparingly.
+- **`@apply`:** pull utilities into a CSS rule in component layers — prefer utilities in JSX for discoverability unless repeating long clusters.
+- **With React/Next:** `@tailwindcss/postcss` or v4 `@import "tailwindcss"`; content paths must include `app/`, `components/`.
+
+**When to use:** Rapid UI, design-system spacing scale, responsive grids without writing custom media-query blocks for every component.
 
 **Pluses and minuses:**
 
-| +                                    | −                                                    |
-| ------------------------------------ | ---------------------------------------------------- |
-| Быстрое прототипирование             | Подробность HTML                                     |
-| Последовательный дизайн жетонов      | Кривая обучения                                      |
-| Удален неиспользуемый CSS в продукте | Проблемы приоритета классов с динамическими классами |
+| +                         | −                                        |
+| ------------------------- | ---------------------------------------- |
+| Fast prototyping          | HTML verbosity                           |
+| Consistent design tokens  | Learning curve                           |
+| Purged unused CSS in prod | Dynamic class strings need merge helpers |
 
 **Examples:**
 
 ```html
-<button class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+<button
+  class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus-visible:ring-2 md:px-6"
+>
   Submit
 </button>
 ```
 
-**Sources:** [Изучите Tailwind — адаптивную карточку](https://www.freecodecamp.org/news/learn-tailwind-css-by-building-a-Response-product-card/)
+```html
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">…</div>
+```
+
+**Sources:** [Tailwind CSS — documentation](https://tailwindcss.com/docs) · [Responsive design](https://tailwindcss.com/docs/responsive-design)
 
 </details>
 
@@ -234,9 +301,9 @@ import styles from "./Button.module.css";
 
 **Definition:**
 
-Bootstrap — это компонентная среда с сеткой, утилитами и дополнительными виджетами JS.
+Bootstrap is a component framework with grid, utilities, and optional JS widgets.
 
-Платформа компонентов с сеткой, утилитами и виджетами JS. Подходит для быстрых MVP; изучите базовый CSS, чтобы избежать борьбы с фреймворком.
+Component framework with grid, utilities, and JS widgets. Good for rapid MVPs; learn underlying CSS to avoid fighting the framework.
 
 **Sources:** [Bootstrap](https://getbootstrap.com/docs/)
 
@@ -249,18 +316,18 @@ Bootstrap — это компонентная среда с сеткой, ути
 
 **Definition:**
 
-Методологии (BEM, OOCSS, SMACSS, ITCSS) организуют CSS для удобства сопровождения и масштабирования команды.
+Methodologies (BEM, OOCSS, SMACSS, ITCSS) organize CSS for maintainability and team scale.
 
-| Метод      | Идея                                            |
-| ---------- | ----------------------------------------------- |
-| **БЭМ**    | Именование блока/элемента/модификатора          |
-| **ООКСС**  | Отдельная структура и скин                      |
-| **СМАКСС** | База, макет, модуль, состояние, категории тем   |
-| **ИТСС**   | Перевернутый треугольник — уровни специфичности |
+| Method     | Idea                                          |
+| ---------- | --------------------------------------------- |
+| **BEM**    | Block/element/modifier naming                 |
+| **OOCSS**  | Separate structure and skin                   |
+| **SMACSS** | Base, layout, module, state, theme categories |
+| **ITCSS**  | Inverted triangle — specificity layers        |
 
 ---
 
-**Sources:** [CSS-Tricks — методологии](https://css-tricks.com/poll-results-what-css-methodology-do-you-use/)
+**Sources:** [CSS-Tricks — methodologies](https://css-tricks.com/poll-results-what-css-methodology-do-you-use/)
 
 </details>
 
@@ -275,22 +342,22 @@ Bootstrap — это компонентная среда с сеткой, ути
 
 **Definition:**
 
-Изменения стиля вызывают перерасчет стиля, макет (перекомпонование), рисование или компоновку — с разными затратами производительности.
+Style changes trigger style recalc, layout (reflow), paint, or composite — with different performance costs.
 
-Когда CSS меняется, браузер платит разные затраты:
+When CSS changes, the browser pays different costs:
 
-| Шаг                        | Примеры триггеров                                     | Стоимость                      |
-| -------------------------- | ----------------------------------------------------- | ------------------------------ |
-| **Пересчет стиля**         | смена класса, `:hover`                                | Низкий–средний                 |
-| **Макет (перекомпоновка)** | `width`, `height`, `margin`, `font-size`, вставка ДОМ | Высокий                        |
-| **Краска**                 | `color`, `background`, `box-shadow`, `visibility`     | Средний                        |
-| **Композитный**            | `transform`, `opacity`, `filter`                      | Низкий (графический процессор) |
+| Step                | Trigger examples                                     | Cost       |
+| ------------------- | ---------------------------------------------------- | ---------- |
+| **Style recalc**    | class change, `:hover`                               | Low–medium |
+| **Layout (reflow)** | `width`, `height`, `margin`, `font-size`, DOM insert | High       |
+| **Paint**           | `color`, `background`, `box-shadow`, `visibility`    | Medium     |
+| **Composite**       | `transform`, `opacity`, `filter`                     | Low (GPU)  |
 
 **How it works:**
 
-оживлять `transform` и `opacity`; избегайте свойств макета в циклах анимации. Пакетное чтение/запись DOM в JS, чтобы избежать сбоев в макете.
+animate `transform` and `opacity`; avoid layout properties in animation loops. Batch DOM reads/writes in JS to avoid layout thrashing.
 
-`width`, `height`, `min-*`, `max-*`, `margin`, `padding`, `border`, `font-size`, `line-height`, `display`, `position`, `top`/`left`, `flex-*`, `grid-*`, вставка/удаление DOM, чтение `offsetHeight`/`getBoundingClientRect()` после записи.
+`width`, `height`, `min-*`, `max-*`, `margin`, `padding`, `border`, `font-size`, `line-height`, `display`, `position`, `top`/`left`, `flex-*`, `grid-*`, DOM insert/remove, reading `offsetHeight`/`getBoundingClientRect()` after a write.
 
 ```
 Need to animate?
@@ -299,9 +366,9 @@ Need to animate?
 └─ width / height / margin / top → Layout (expensive — avoid in loops)
 ```
 
-**Thoughts:** Полный конвейер, грязный/глобальный макет, rAF против интервала → [1_html.md — Браузер и рендеринг](./1_html_rendering.md#browser--rendering). Свойство → макет/рисование/композит → [Триггеры CSS](https://csstriggers.com/). Метрики полей (LCP/INP/CLS) → [6_web_api.md — Core Web Vitals](./1_html_performance.md#core-web-vitals). Фазы/исправления INP → [6_web_api.md — INP](./1_html_performance.md#inp-interaction-to-next-paint).Метрика смещения макета → [CLS](./1*html* Performance.md#cls-cumulative-layout-shift).
+**Thoughts:** Full pipeline, dirty/global layout, rAF vs interval → [1_html.md — Browser & rendering](./1_html_rendering.md#browser--rendering). Property → layout/paint/composite → [CSS Triggers](https://csstriggers.com/). Field metrics (LCP / INP / CLS) → [6_web_api.md — Core Web Vitals](./1_html_performance.md#core-web-vitals). INP phases/fixes → [6_web_api.md — INP](./1_html_performance.md#inp-interaction-to-next-paint). Layout-shift metric → [CLS](./1_html_performance.md#cls-cumulative-layout-shift).
 
-**Sources:** [web.dev — Производительность рендеринга](https://web.dev/articles/critical-rendering-path)
+**Sources:** [web.dev — Rendering performance](https://web.dev/articles/critical-rendering-path)
 
 </details>
 
@@ -312,13 +379,13 @@ Need to animate?
 
 **Definition:**
 
-Критический CSS встраивает стили над сгибом, чтобы уменьшить блокировку рендеринга и улучшить первую отрисовку.
+Critical CSS inlines above-the-fold styles to reduce render-blocking and improve first paint.
 
-Для контента **над сгибом** требуется встроенный или предварительно загруженный CSS, чтобы уменьшить блокировку рендеринга.
+Inline or preload CSS required for **above-the-fold** content to reduce render-blocking.
 
-Преимущества: более быстрая первая отрисовка, лучший LCP, улучшенная мобильная производительность.
+Benefits: faster first paint, better LCP, improved mobile performance.
 
-**Sources:** [web.dev — Извлечение критического CSS](https://web.dev/articles/extract-critical-css)
+**Sources:** [web.dev — Extract critical CSS](https://web.dev/articles/extract-critical-css)
 
 </details>
 
@@ -329,27 +396,27 @@ Need to animate?
 
 **Definition:**
 
-Слои композитора изолируют свойства, дружественные к графическому процессору (`transform`, `opacity`) для плавной анимации.
+Compositor layers isolate GPU-friendly properties (`transform`, `opacity`) for smooth animation.
 
-Свойства, которые обычно комбинируются с графическим процессором (без макета/отрисовки): `transform`, `opacity`, `filter`, `will-change`.
+Properties that typically composite on GPU (no layout/paint): `transform`, `opacity`, `filter`, `will-change`.
 
 **How it works:**
 
-`transform`, `opacity < 1`, `filter`, `will-change`, `position: fixed`, видео/холст и т. д.
+`transform`, `opacity < 1`, `filter`, `will-change`, `position: fixed`, video/canvas, etc.
 
-| Делать                                                   | Не                                                        |
-| -------------------------------------------------------- | --------------------------------------------------------- |
-| Добавить кратко перед известной анимацией                | Оставить десятки элементов навсегда                       |
-| Использовать `will-change: transform` для парящих лифтов | Использовать `will-change: auto` везде «на всякий случай» |
-| Удалить после `transitionend` / `animationend`           | Ожидайте, что он исправит ошибки макета                   |
+| Do                                            | Don't                                             |
+| --------------------------------------------- | ------------------------------------------------- |
+| Add briefly before a known animation          | Leave on dozens of elements permanently           |
+| Use `will-change: transform` for hover lifts  | Use `will-change: auto` everywhere "just in case" |
+| Remove after `transitionend` / `animationend` | Expect it to fix layout bugs                      |
 
 **When to use:**
 
 #### Pitfall
 
-слишком много слоев → большое использование памяти → вылетает на мобильном устройстве. Не посыпать `will-change` повсюду; применить перед анимацией, удалить после.
+too many layers → high memory use → crashes on mobile. Do not sprinkle `will-change` everywhere; apply before animation, remove after.
 
-**Sources:** [web.dev — Слои](https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count)
+**Sources:** [web.dev — Layers](https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count)
 
 </details>
 
@@ -358,7 +425,7 @@ Need to animate?
 
 ### contain & content-visibility
 
-**Definition:** `contain` изолирует макет/краску; `content-visibility: auto` пропускает рендеринг закадрового контента.
+**Definition:** `contain` isolates layout/paint; `content-visibility: auto` skips rendering off-screen content.
 
 **How it works:**
 
@@ -369,15 +436,15 @@ Need to animate?
 }
 ```
 
-Браузер пропускает макет/отрисовку закадровых разделов; `contain-intrinsic-size` резервирует приблизительное пространство, поэтому положение прокрутки остается стабильным.
+Browser skips layout/paint for off-screen sections; `contain-intrinsic-size` reserves approximate space so scroll position stays stable.
 
-| `contain` ценность | Изоляты                                         |
-| ------------------ | ----------------------------------------------- |
-| `layout`           | Внутренняя планировка от влияния снаружи        |
-| `style`            | Счетчики, котировки                             |
-| `paint`            | Покраска в элемент коробки                      |
-| `size`             | Размер как будто пустой (используйте осторожно) |
-| `strict`           | `layout style paint size`                       |
+| `contain` value | Isolates                               |
+| --------------- | -------------------------------------- |
+| `layout`        | Internal layout from affecting outside |
+| `style`         | Counters, quotes                       |
+| `paint`         | Painting to element box                |
+| `size`          | Size as if empty (use carefully)       |
+| `strict`        | `layout style paint size`              |
 
 **Examples:**
 
@@ -392,9 +459,9 @@ Need to animate?
 }
 ```
 
-`content-visibility: auto` пропускает рендеринг закадрового контента — значительный выигрыш в производительности для длинных списков.
+`content-visibility: auto` skips rendering off-screen content — major perf win for long lists.
 
-**Sources:** [MDN — видимость контента](https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility) · INP/большой DOM: [6_web_api.md](./1_html_performance.md#inp-interaction-to-next-paint)
+**Sources:** [MDN — content-visibility](https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility) · INP / large DOM: [6_web_api.md](./1_html_performance.md#inp-interaction-to-next-paint)
 
 </details>
 
@@ -405,25 +472,25 @@ Need to animate?
 
 **Definition:**
 
-Спрайты объединяют несколько значков в одном изображении, позиционированных с помощью `background-position` — в значительной степени заменен SVG.
+Sprites pack multiple icons in one image, positioned via `background-position` — largely replaced by SVG.
 
-Одно изображение, несколько значков через `background-position`. Менее актуально для HTTP/2, значков SVG и шрифтов значков, но все еще применимо для устаревших листов спрайтов.
+One image, multiple icons via `background-position`. Less relevant with HTTP/2, SVG icons, and icon fonts — but still valid for legacy sprite sheets.
 
 **How it works:**
 
-- Одно растровое изображение содержит все значки в фиксированных координатах.
-- Каждый набор элементов значка `background-image: url(sprite.png)`, зафиксированный `width`/`height`и отрицательный `background-position` чтобы показать правильную плитку.
-- Уменьшение количества запросов HTTP/1.1 — одно изображение вместо многих; HTTP/2 уменьшает это преимущество.
+- Single raster image contains all icons at fixed coordinates.
+- Each icon element sets `background-image: url(sprite.png)`, fixed `width`/`height`, and negative `background-position` to show the correct tile.
+- HTTP/1.1 reduced requests — one image vs many; HTTP/2 reduces this advantage.
 
-**When to use:** Устаревшие корпоративные сайты; шаблоны электронной почты (ограниченная поддержка SVG). **Сегодня:** встроенный SVG, спрайты SVG (`<symbol>` + `<use>`) или шрифты значков, а не растровые спрайты.
+**When to use:** Legacy enterprise sites; email templates (limited SVG support). **Today:** inline SVG, SVG sprites (`<symbol>` + `<use>`), or icon fonts — not raster sprites.
 
 **Pluses and minuses:**
 
-| +                                            | −                                                                        |
-| -------------------------------------------- | ------------------------------------------------------------------------ |
-| Меньше HTTP-запросов на HTTP/1               | Больно поддерживать — пиксельная математика при каждом добавлении значка |
-| Согласованный размер значков в одном ресурсе | Сетчатка требует `@2x` листы спрайтов                                    |
-| JS не требуется                              | Значки SVG + компоненты значков являются современными по умолчанию       |
+| +                                   | −                                                  |
+| ----------------------------------- | -------------------------------------------------- |
+| Fewer HTTP requests on HTTP/1       | Painful to maintain — pixel math on every icon add |
+| Consistent icon sizing in one asset | Retina requires `@2x` sprite sheets                |
+| No JS required                      | SVG icons + icon components are the modern default |
 
 **Examples:**
 
@@ -438,7 +505,7 @@ Need to animate?
 }
 ```
 
-**Sources:** [MDN — фоновая позиция](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position)
+**Sources:** [MDN — background-position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position)
 
 </details>
 
@@ -449,9 +516,9 @@ Need to animate?
 
 **Definition:**
 
-Сокращения CSS сбрасывают пропущенные подсвойства к исходным значениям — используйте длинные обозначения при переопределении одного подсвойства.
+CSS shorthands reset omitted sub-properties to initial values — use longhands when overriding one sub-property.
 
-Сокращение сбрасывает неуказанные подсвойства к исходным значениям:
+Shorthand resets unspecified sub-properties to initial values:
 
 **Examples:**
 
@@ -465,7 +532,7 @@ background-color: #fff;
 
 ---
 
-**Sources:** [MDN — сокращенные свойства](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties)
+**Sources:** [MDN — Shorthand properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties)
 
 </details>
 
@@ -474,7 +541,7 @@ background-color: #fff;
 
 ### Accessibility in CSS
 
-**Definition:** Доступный CSS учитывает предпочтения движения, сохраняет индикаторы фокуса и поддерживает достаточный контраст.
+**Definition:** Accessible CSS respects motion preferences, preserves focus indicators, and maintains sufficient contrast.
 
 **Examples:**
 
@@ -514,11 +581,11 @@ background-color: #fff;
 /* Sufficient contrast — aim WCAG AA: 4.5:1 body text, 3:1 large text */
 ```
 
-Никогда не снимайте индикаторы фокусировки без `:focus-visible` замена.
+Never remove focus indicators without a `:focus-visible` replacement.
 
 ---
 
-**Sources:** [MDN — Доступность](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/CSS_and_JavaScript)
+**Sources:** [MDN — Accessibility](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/CSS_and_JavaScript)
 
 </details>
 
@@ -531,83 +598,83 @@ background-color: #fff;
 
 ### Interview Practice
 
-Вопросы и практические задания от [0_interview.md](0_interview.md). Темы только для HTML → [1_html.md](1_html.md). Конвейер рендеринга → [1_html.md](./1_html.md).
+Questions and hands-on tasks from [0_interview.md](0_interview.md). HTML-only topics → [1_html.md](1_html.md). Render pipeline → [1_html.md](./1_html.md).
 
-Попробуйте ответить, прежде чем открывать решения.
+Try answering before opening solutions.
 
 ### Original questions (from 0_interview.md)
 
-**Младший — CSS/верстка (Q53–61)**
+**Junior — CSS / layout (Q53–61)**
 
-53. Что такое блочная модель CSS?
-54. Какие способы центрирования вы знаете (горизонтальное и вертикальное)?
-55. Какие подходы к верстке вы знаете (float, flex, сетка и т. д.)?
-56. Как сделать приложение отзывчивым?
-57. Почему некоторым свойствам CSS нужны вендорные префиксы (`-webkit-`, `-moz-`, и т. д.)?
-58. Как упростить кроссбраузерную стилизацию?
-59. Практическое: просмотрите и исправьте плохой пример CSS или HTML.
-60. Что такое препроцессоры CSS? Какой вы использовали? Что они добавляют по сравнению со стандартным CSS?
+53. What is the CSS box model?
+54. What centering techniques do you know (horizontal and vertical)?
+55. What layout approaches do you know (float, flex, grid, etc.)?
+56. How do you make an application responsive?
+57. Why do some CSS properties need vendor prefixes (`-webkit-`, `-moz-`, etc.)?
+58. How do you simplify cross-browser styling?
+59. Practical: review and fix a bad CSS or HTML example.
+60. What are CSS preprocessors? Which have you used? What do they add over standard CSS?
 
-> Q57 (семантическая раскладка) → [1_html.md](1_html.md)
+> Q57 (semantic layout) → [1_html.md](1_html.md)
 
-**CSS/макет (вопросы 57–73, только CSS)**
+**CSS / layout (Q57–73, CSS only)**
 
-57. Объясните разницу между `px`, `em`, и `rem`.
-58. Для чего нужны пользовательские свойства CSS? Приведите примеры использования.
-59. Что произойдет, если вы добавите `* { box-sizing: border-box; }`?
-60. Как вы адаптируете страницу для печати?
-61. Опишите стиль собственных элементов управления формы.
-62. Что такое прогрессивный рендеринг? Какие подходы существуют?
-63. Назовите способы ленивой загрузки мультимедиа на странице.
-64. Назовите популярные методологии CSS и их различия.
-65. Как работает CSS Grid?
-66. Какие форматы изображений поддерживают анимацию?
-67. Как вы отслеживаете CSS `@keyframes` or `transition` закончиться на JS?
-68. Какие свойства CSS создаются с помощью графического процессора? Что такое слои композитора?
-69. Как повторно использовать встроенные элементы SVG на странице?
-70. Что такое рендеринг шрифта с искусственным жирным шрифтом или с искусственным курсивом?
+57. Explain the difference between `px`, `em`, and `rem`.
+58. What are CSS custom properties for? Give usage examples.
+59. What happens when you add `* { box-sizing: border-box; }`?
+60. How do you adapt a page for print?
+61. Describe styling native form controls.
+62. What is progressive rendering? What approaches exist?
+63. Name ways to lazy-load media on a page.
+64. Name popular CSS methodologies and their differences.
+65. How does CSS Grid work?
+66. Which image formats support animation?
+67. How do you track CSS `@keyframes` or `transition` end in JS?
+68. Which CSS properties are GPU-composited? What are compositor layers?
+69. How do you reuse inline SVG elements on a page?
+70. What is faux bold or faux italic font rendering?
 
-> Q64 (шаблоны), Q71–72, Q74–77 (опция SVG, теневой DOM, холст) → [1_html.md](1_html.md) или общий интерфейс
+> Q64 (templating), Q71–72, Q74–77 (SVG opt, shadow DOM, canvas) → [1_html.md](1_html.md) or general frontend
 
 ### Question index
 
-| #     | Тема                                                    | Ответ ниже                       |
-|  -----  |  -------------------------------------------------------  |  --------------------------------  |
-| 53    | Модель коробки                                          | Модель коробки                   |
-| 54    | Центрирование                                           | Центрирование                    |
-| 55    | плавающий / гибкий / сетка                              | Подходы к планировке             |
-| 56    | Адаптивное приложение                                   | Адаптивный                       |
-| 58–59 | Вендорные префиксы/кроссбраузерность                    | Префиксы поставщиков             |
-| 60    | Обзор плохого CSS                                       | Плохой обзор CSS + Задача 6      |
-| 61    | Препроцессоры                                           | Препроцессоры                    |
-| 57 †  | пикс/эм/бэр                                             | Единицы |
-| 58 † | CSS-переменные                           | Пользовательские свойства    |
-| 59 †  | `* { box-sizing }`                                      | Универсальная калибровка коробок |
-| 60 †  | Стили печати                                            | Стили печати                     |
-| 61 †  | Стилизация формы                                        | Стилизация формы                 |
-| 62 †  | Прогрессивный рендеринг                                 | Прогрессивный рендеринг          |
-| 63 †  | Ленивая загрузка мультимедиа                            | Ленивая загрузка                 |
-| 65 †  | CSS-методологии                                         | Методологии                      |
-| 66 †  | CSS-сетка                                               | Сетка                            |
-| 67 †  | Форматы анимированных изображений                       | Анимированные изображения        |
-| 68 †  | Анимационные события в JS                               | Анимация JS + Задача 8 |
-| 69 † | Слои графического процессора/композитора | Слои графического процессора |
-| 70 †  | Повторное использование встроенного SVG                 | Повторное использование SVG      |
-| 73 †  | Искусственный жирный/курсив                             | Искусственные шрифты             |
-| —     | BFC, перекомпоновка, гибкое переполнение, неявная сетка | См. вопросы и ответы             |
-| —     | Содержащий блок                                         | Содержащий блок                  |
-| —     | `min-width: 0` в гибком                                 | Гибкая минимальная ширина        |
-| —     | `auto-fit` vs `auto-fill`                               | Автоподбор против автозаполнения |
-| —     | Внутренняя и внешняя калибровка                         | Внутренний размер                |
-| —     | `100vh` vs `100dvh`                                     | Единицы просмотра                |
-| —     | `@supports`                                             | Поддерживает запросы             |
-| —     | Контекст укладки                                        | Контекст укладки                 |
-| —     | `box-shadow` vs `drop-shadow`                           | Тень против тени                 |
-| —     | Родной `<select>` пределы                               | Выберите стиль                   |
-| —     | Переключатель на чистом CSS                             | Переключение CSS                 |
-| 45    | Переключение iPhone без JS                              | Переключение CSS + Задача 15     |
-| Q13   | Очистка кеша CSS/JS                                     | Перебор кеша                     |
+| #     | Topic                                     | Answer below            |
+| ----- | ----------------------------------------- | ----------------------- |
+| 53    | Box model                                 | Box model               |
+| 54    | Centering                                 | Centering               |
+| 55    | float / flex / grid                       | Layout approaches       |
+| 56    | Responsive app                            | Responsive              |
+| 58–59 | Vendor prefixes / cross-browser           | Vendor prefixes         |
+| 60    | Review bad CSS                            | Bad CSS review + Task 6 |
+| 61    | Preprocessors                             | Preprocessors           |
+| 57†   | px / em / rem                             | Units                   |
+| 58†   | CSS variables                             | Custom properties       |
+| 59†   | `* { box-sizing }`                        | Universal box-sizing    |
+| 60†   | Print styles                              | Print styles            |
+| 61†   | Form styling                              | Form styling            |
+| 62†   | Progressive rendering                     | Progressive rendering   |
+| 63†   | Lazy-loading media                        | Lazy-loading            |
+| 65†   | CSS methodologies                         | Methodologies           |
+| 66†   | CSS Grid                                  | Grid                    |
+| 67†   | Animated image formats                    | Animated images         |
+| 68†   | Animation events in JS                    | Animation JS + Task 8   |
+| 69†   | GPU / compositor layers                   | GPU layers              |
+| 70†   | Reuse inline SVG                          | Reuse SVG               |
+| 73†   | Faux bold/italic                          | Faux fonts              |
+| —     | BFC, reflow, flex overflow, implicit grid | See Q&A                 |
+| —     | Containing block                          | Containing block        |
+| —     | `min-width: 0` in flex                    | Flex min-width          |
+| —     | `auto-fit` vs `auto-fill`                 | Auto-fit vs auto-fill   |
+| —     | Intrinsic vs extrinsic sizing             | Intrinsic sizing        |
+| —     | `100vh` vs `100dvh`                       | Viewport units          |
+| —     | `@supports`                               | Supports queries        |
+| —     | Stacking context                          | Stacking context        |
+| —     | `box-shadow` vs `drop-shadow`             | Shadow vs drop-shadow   |
+| —     | Native `<select>` limits                  | Select styling          |
+| —     | Pure CSS toggle                           | CSS toggle              |
+| 45    | iPhone toggle without JS                  | CSS toggle + Task 15    |
+| Q13   | Cache busting CSS/JS                      | Cache busting           |
 
-† Расширенный блок · Семантическая компоновка (Q57) → [1_html.md](1_html.md)
+† Advanced block · Semantic layout (Q57) → [1_html.md](1_html.md)
 
 ---
