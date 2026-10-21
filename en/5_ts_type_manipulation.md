@@ -23,10 +23,10 @@ Creating types from types — generics, type operators, conditional and mapped t
 | [Template Literal Types](#template-literal-types)                 | String types from unions and literals                        |
 | [How the tools combine](#how-the-tools-combine)                   | Patterns chaining operators                                  |
 | [Map Pattern](#map-pattern)                                       | Union → object lookup table                                  |
-| [Branded / Nominal Types](#branded--nominal-types)                | Interview pattern for distinct primitives                    |
 | [Advanced generics](#advanced-generics)                           | Multi-arg inference, `const` type params, currying           |
 | [Distributive conditional types](#distributive-conditional-types) | Union distribution and when to disable it                    |
 | [Recursive type-level helpers](#recursive-type-level-helpers)     | DeepReadonly, depth limits, `Awaited`-style chains           |
+| [Branded / Nominal Types](#branded--nominal-types)                | Interview pattern for distinct primitives                    |
 
 ### Sections
 
@@ -41,10 +41,10 @@ Creating types from types — generics, type operators, conditional and mapped t
 - [Template Literal Types](#template-literal-types)
 - [How the tools combine](#how-the-tools-combine)
 - [Map Pattern](#map-pattern)
-- [Branded / Nominal Types](#branded--nominal-types)
 - [Advanced generics](#advanced-generics)
 - [Distributive conditional types](#distributive-conditional-types)
 - [Recursive type-level helpers](#recursive-type-level-helpers)
+- [Branded / Nominal Types](#branded--nominal-types)
 
 ---
 

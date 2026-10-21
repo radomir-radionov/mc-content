@@ -10,23 +10,23 @@
 
 ### Main concepts
 
-| Topic                                                   | Covers                                                       |
-| ------------------------------------------------------- | ------------------------------------------------------------ |
-| [Overview](#overview)                                   | Что такое Type Manipulation и карта тем handbook             |
-| [Creating Types from Types](#creating-types-from-types) | Композиция типов из существующих типов                       |
-| [Generics](#generics)                                   | Параметры типов, ограничения, generic-классы и интерфейсы    |
-| [Keyof Type Operator](#keyof-type-operator)             | Union ключей объекта — `keyof T`                             |
-| [`typeof` Type Operator](#typeof-type-operator)         | Тип значения в type position                                 |
-| [Indexed Access Types](#indexed-access-types)           | Тип свойства — `T["key"]`                                    |
-| [Conditional Types](#conditional-types)                 | If/else на уровне типов — `T extends U ? X : Y`              |
-| [Mapped Types](#mapped-types)                           | Преобразование каждого свойства — `{ [K in keyof T]: ... }`  |
-| [Template Literal Types](#template-literal-types)       | Строковые типы из union и литералов                          |
-| [How the tools combine](#how-the-tools-combine)         | Цепочки операторов                                           |
-| [Map Pattern](#map-pattern)                             | Union → lookup-таблица на объекте                            |
-| [Branded / Nominal Types](#branded--nominal-types)      | Паттерн для различимых примитивов на собеседованиях          |
-| [Advanced generics](#advanced-generics)                 | Multi-arg inference, `const` type params, currying           |
-| [Distributive conditional types](#distributive-conditional-types) | Распределение по union и отключение              |
-| [Recursive type-level helpers](#recursive-type-level-helpers) | DeepReadonly, лимиты глубины, цепочки в стиле `Awaited` |
+| Topic                                                             | Covers                                                      |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| [Overview](#overview)                                             | Что такое Type Manipulation и карта тем handbook            |
+| [Creating Types from Types](#creating-types-from-types)           | Композиция типов из существующих типов                      |
+| [Generics](#generics)                                             | Параметры типов, ограничения, generic-классы и интерфейсы   |
+| [Keyof Type Operator](#keyof-type-operator)                       | Union ключей объекта — `keyof T`                            |
+| [`typeof` Type Operator](#typeof-type-operator)                   | Тип значения в type position                                |
+| [Indexed Access Types](#indexed-access-types)                     | Тип свойства — `T["key"]`                                   |
+| [Conditional Types](#conditional-types)                           | If/else на уровне типов — `T extends U ? X : Y`             |
+| [Mapped Types](#mapped-types)                                     | Преобразование каждого свойства — `{ [K in keyof T]: ... }` |
+| [Template Literal Types](#template-literal-types)                 | Строковые типы из union и литералов                         |
+| [How the tools combine](#how-the-tools-combine)                   | Цепочки операторов                                          |
+| [Map Pattern](#map-pattern)                                       | Union → lookup-таблица на объекте                           |
+| [Advanced generics](#advanced-generics)                           | Multi-arg inference, `const` type params, currying          |
+| [Distributive conditional types](#distributive-conditional-types) | Распределение по union и отключение                         |
+| [Recursive type-level helpers](#recursive-type-level-helpers)     | DeepReadonly, лимиты глубины, цепочки в стиле `Awaited`     |
+| [Branded / Nominal Types](#branded--nominal-types)                | Паттерн для различимых примитивов на собеседованиях         |
 
 ### Sections
 
@@ -41,10 +41,10 @@
 - [Template Literal Types](#template-literal-types)
 - [How the tools combine](#how-the-tools-combine)
 - [Map Pattern](#map-pattern)
-- [Branded / Nominal Types](#branded--nominal-types)
 - [Advanced generics](#advanced-generics)
 - [Distributive conditional types](#distributive-conditional-types)
 - [Recursive type-level helpers](#recursive-type-level-helpers)
+- [Branded / Nominal Types](#branded--nominal-types)
 
 ---
 
@@ -57,15 +57,15 @@
 
 **How it works:**
 
-| Topic                                             | Covers                                            | Example                           |
-| ------------------------------------------------- | ------------------------------------------------- | --------------------------------- |
-| [Generics](#generics)                             | Параметры типов у функций, интерфейсов, классов   | `function id<T>(x: T): T`         |
-| [Keyof Type Operator](#keyof-type-operator)       | Union ключей — `keyof T`                          | `type K = keyof { a: 1 }` → `"a"` |
-| [`typeof` Type Operator](#typeof-type-operator)   | Тип значения в type position                      | `type S = typeof myString`        |
-| [Indexed Access Types](#indexed-access-types)     | Тип свойства по lookup                            | `type Age = Person["age"]`        |
-| [Conditional Types](#conditional-types)           | If/else на уровне типов                           | `T extends U ? X : Y`             |
-| [Mapped Types](#mapped-types)                     | Преобразование каждого свойства                   | `{ [K in keyof T]: boolean }`     |
-| [Template Literal Types](#template-literal-types) | Строковые типы из union                           | `` `${"a" \| "b"}_id` ``          |
+| Topic                                             | Covers                                          | Example                           |
+| ------------------------------------------------- | ----------------------------------------------- | --------------------------------- |
+| [Generics](#generics)                             | Параметры типов у функций, интерфейсов, классов | `function id<T>(x: T): T`         |
+| [Keyof Type Operator](#keyof-type-operator)       | Union ключей — `keyof T`                        | `type K = keyof { a: 1 }` → `"a"` |
+| [`typeof` Type Operator](#typeof-type-operator)   | Тип значения в type position                    | `type S = typeof myString`        |
+| [Indexed Access Types](#indexed-access-types)     | Тип свойства по lookup                          | `type Age = Person["age"]`        |
+| [Conditional Types](#conditional-types)           | If/else на уровне типов                         | `T extends U ? X : Y`             |
+| [Mapped Types](#mapped-types)                     | Преобразование каждого свойства                 | `{ [K in keyof T]: boolean }`     |
+| [Template Literal Types](#template-literal-types) | Строковые типы из union                         | `` `${"a" \| "b"}_id` ``          |
 
 **Prerequisites:** Повседневные типы ([Types](./5_ts_types.md)), формы объектов ([Object Types](./5_ts_objects.md)) и основы generic-функций ([Functions — Generic Functions](./5_ts_functions.md#generic-functions)). Встроенные helpers на этих паттернах: [Utility Types](./5_ts_utility_types.md).
 
@@ -373,11 +373,11 @@ type Num = GetReturnType<() => number>; // number
 
 **Pluses and minuses:**
 
-| | Benefit | Cost |
-| - | ------- | ---- |
-| Distributive conditionals | Обработка каждого члена union | Неожиданно, если не знать правило |
-| `infer` | Внутренние типы без ручного дублирования | Сложнее читать в глубоких цепочках |
-| Non-distributive обёртка `[T]` | Union как целое — предсказуемо | Дополнительный синтаксис |
+|                                | Benefit                                  | Cost                               |
+| ------------------------------ | ---------------------------------------- | ---------------------------------- |
+| Distributive conditionals      | Обработка каждого члена union            | Неожиданно, если не знать правило  |
+| `infer`                        | Внутренние типы без ручного дублирования | Сложнее читать в глубоких цепочках |
+| Non-distributive обёртка `[T]` | Union как целое — предсказуемо           | Дополнительный синтаксис           |
 
 **Thoughts:** Если conditional «режет» union неожиданно — оберните проверяемый тип в tuple: `[T] extends [U] ? X : Y`. См. [Distributive conditional types](#distributive-conditional-types).
 
@@ -546,13 +546,13 @@ function getConfig(s: Status) {
 
 **How it works:**
 
-| Technique | What it solves |
-| --------- | -------------- |
-| Multi-parameter inference | `function zip<A, B>(a: A[], b: B[]): [A, B][]` — оба типа из аргументов |
-| Constraint + `keyof` | `<T, K extends keyof T>` привязывает доступ к валидным ключам |
-| Default type params | `<T = HTMLDivElement>` — удобные call sites; обязательные params первыми |
-| `const` on type param | `<const T extends readonly string[]>` сохраняет tuple literals в generics |
-| Curried generics | `<T>() => <U>(x: U) => ...` — fluent builders и scoped inference |
+| Technique                 | What it solves                                                            |
+| ------------------------- | ------------------------------------------------------------------------- |
+| Multi-parameter inference | `function zip<A, B>(a: A[], b: B[]): [A, B][]` — оба типа из аргументов   |
+| Constraint + `keyof`      | `<T, K extends keyof T>` привязывает доступ к валидным ключам             |
+| Default type params       | `<T = HTMLDivElement>` — удобные call sites; обязательные params первыми  |
+| `const` on type param     | `<const T extends readonly string[]>` сохраняет tuple literals в generics |
+| Curried generics          | `<T>() => <U>(x: U) => ...` — fluent builders и scoped inference          |
 
 **When to use:** API библиотек (React hooks, data fetchers, ORM helpers), где вызывающий должен получать точные типы без повторения type arguments.
 

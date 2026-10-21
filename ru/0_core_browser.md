@@ -22,8 +22,8 @@
 
 ### Sections
 
-- **Browser work principles** — [overview](#browser-work-principles) · [navigation](#navigation-and-fetching) · [HTML/DOM](#html-parsing-and-the-dom) · [CSSOM](#cssom-and-style-computation) · [layout/paint/composite](#layout-paint-and-compositing) · [JS & main thread](#javascript-engine-and-main-thread) · [event loop](#event-loop-and-task-queues) · [multi-process](#multi-process-architecture) · [sandbox & origin](#sandbox-and-same-origin-policy)
-- **Browser platform** — [architecture](#browser-platform-architecture) · [HTML/CSS/JS stack](#web-platform-stack-html-css-javascript) · [security model](#security-model-overview) · [CRP deep dive](#critical-rendering-path-detailed-stages) · [JS host environment](#browser-environment-javascript-host)
+- [Browser work principles](#browser-work-principles)
+- [Browser platform](#browser-platform)
 
 ---
 
