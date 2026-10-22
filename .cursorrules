@@ -1,0 +1,25 @@
+# Git commit messages (qoomon conventional commits)
+# https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13
+
+When generating a Git commit message for this repository, output **exactly one line** — the subject only.
+
+## Required output shape
+
+<type>(<optional scope>): <description>
+
+Nothing else: no blank line, no body, no bullet lists, no file list, no footer.
+
+- Types: feat, fix, refactor, perf, style, test, docs, build, ops, chore
+- Scopes (examples): en, ru, conspect, locale, resources, toc
+- Description: imperative present tense; lowercase first letter; no trailing period
+- Type must be spelled in full (e.g. `docs`, never truncated)
+- Summarize the whole change in one line; do not enumerate each file
+
+## Pick type (first match)
+
+fix → feat → test → style → docs → build → ops → chore → perf → refactor
+
+## Examples (entire commit message = one line)
+
+docs(en): expand AI SDLC topic and sync TOC
+feat(conspect): add multi-agent roles section in en and ru
