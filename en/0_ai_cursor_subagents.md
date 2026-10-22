@@ -4,7 +4,7 @@ Specialized assistants the main Agent delegates to via the **Task** tool. Each r
 
 ### Related docs
 
-- [AI workflow](./0_ai.md) · [Core](./0_ai_cursor_core.md) · [Skills](./0_ai_cursor_skills.md) · [Rules](./0_ai_cursor_rules.md) · [Hooks](./0_ai_cursor_hooks.md) · [Plugins](./0_ai_cursor_plugins.md) · [Slash commands](./0_ai_cursor_slash.md) · [Questions](./0_ai_cursor_questions.md)
+- [AI workflow](./0_ai.md) · [Agentic SDLC](./0_ai_agentic_sdlc.md) · [Core](./0_ai_cursor_core.md) · [Skills](./0_ai_cursor_skills.md) · [Rules](./0_ai_cursor_rules.md) · [Hooks](./0_ai_cursor_hooks.md) · [Plugins](./0_ai_cursor_plugins.md) · [Slash commands](./0_ai_cursor_slash.md) · [Questions](./0_ai_cursor_questions.md)
 
 ### Main concepts
 
@@ -322,7 +322,7 @@ Official guidance: if you would create a subagent for a one-shot chore (“gener
 - **Subagent** — context isolation, parallel work, independent skeptic.
 - **Skill** — step-by-step workflow the parent should follow directly.
 
-**Thoughts:** MyConspect pattern: `readonly` subagents report drift; `update-conspect` / `sync-locales` skills fix notes.
+**Thoughts:** MyConspect pattern: `readonly` subagents report drift; `update-conspect` / `sync-locales` skills fix notes. In a full delivery pipeline, the same idea is the [Skeptic agent (critic loop)](./0_ai_agentic_sdlc.md#skeptic-agent-critic-loop) — see [Agentic SDLC](./0_ai_agentic_sdlc.md).
 
 **Sources:** [Subagents — when to use](https://cursor.com/docs/subagents) · [Skills](./0_ai_cursor_skills.md)
 

@@ -4,7 +4,7 @@
 
 ### Related docs
 
-[Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [Остатки интервью](./7_special_interview.md) · [OOP & SOLID](./7_special_engineering.md) · [SDLC](./7_special_sdlc.md) · [Тестирование](./7_special_testing.md) · [Шаблоны проектирования](./7_special_patterns.md) · [Алгоритмы](./7_special_algorithms.md) · [Структуры данных](./7_special_data_sstructures.md) · [Core — hub](./0_core.md)
+[Информатика](./7_special_cs.md) · [Шаблоны архитектуры](./7_special_architecture.md) · [Остатки интервью](./7_special_interview.md) · [OOP & SOLID](./7_special_engineering.md) · [Agentic SDLC (AI)](./0_ai_agentic_sdlc.md) · [Тестирование](./7_special_testing.md) · [Шаблоны проектирования](./7_special_patterns.md) · [Алгоритмы](./7_special_algorithms.md) · [Структуры данных](./7_special_data_sstructures.md) · [Core — hub](./0_core.md)
 
 ### Navigation
 

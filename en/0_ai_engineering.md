@@ -4,7 +4,7 @@ How developers delegate work to AI agents, verify outcomes, and write specs befo
 
 ### Related docs
 
-- [AI workflow hub](./0_ai.md) · [Full-stack competency map](./0_engineering_fullstack.md) · [Cursor — verification loops](./0_ai_cursor_core.md#test-driven-agent-loops) · [Cursor Skills & rules](./0_ai_cursor_skills.md) · [SDLC & Agile](./7_special_sdlc.md) · [MVP & judgment](./0_mvp.md)
+- [AI workflow hub](./0_ai.md) · [Agentic SDLC](./0_ai_agentic_sdlc.md) · [Full-stack competency map](./0_engineering_fullstack.md) · [Cursor — verification loops](./0_ai_cursor_core.md#test-driven-agent-loops) · [Cursor Skills & rules](./0_ai_cursor_skills.md) · [SDLC & Agile](./7_special_sdlc.md) · [MVP & judgment](./0_mvp.md)
 
 ### Main concepts
 
@@ -76,7 +76,7 @@ How developers delegate work to AI agents, verify outcomes, and write specs befo
 3. **Implement & verify** — code and tests must trace back to spec items; failing tests mean spec or code is wrong — fix the right layer.
 4. **Sync on change** — when requirements shift, update the spec first (or in the same PR), then code and tests so all three stay aligned.
 
-SDD complements [SDLC & Agile](./7_special_sdlc.md): Agile decides _cadence_; SDD decides _what “done” means_ before the agent writes the diff.
+SDD complements [SDLC & Agile](./7_special_sdlc.md): Agile decides _cadence_; SDD decides _what “done” means_ before the agent writes the diff. For **multi-agent** handoffs across stages (spec → architecture → code → test), see [Agentic SDLC](./0_ai_agentic_sdlc.md).
 
 **When to use:** New features, API changes, handbook topics, refactors that move behavior, and any work you would hand to another engineer with a ticket. Optional for trivial fixes only.
 

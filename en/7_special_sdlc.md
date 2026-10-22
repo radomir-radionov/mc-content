@@ -1,14 +1,23 @@
 # SDLC
 
-Waterfall, Agile, Scrum, and Kanban.
+Waterfall, Agile, Scrum, and Kanban. Canonical **principles** and **six phases** live in sibling topics — this file focuses on **methodology models**.
 
 ### Related docs
 
-- [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Design patterns](./7_special_patterns.md) · [SDLC](./7_special_sdlc.md) · [Testing](./7_special_testing.md) · [Interview leftovers](./7_special_interview.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [DevOps](./15_devops.md)
+- [SDLC principles](./7_special_sdlc_principles.md) · [SDLC phases](./7_special_sdlc_phases.md) · [Computer science](./7_special_cs.md) · [Architecture patterns](./7_special_architecture.md) · [SOLID](./7_special_engineering.md) · [Design patterns](./7_special_patterns.md) · [Agentic SDLC (AI)](./0_ai_agentic_sdlc.md) · [Testing](./7_special_testing.md) · [Interview leftovers](./7_special_interview.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [DevOps](./15_devops.md)
+
+### Main concepts
+
+| Area            | Topics                                                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| **Foundations** | [SDLC principles](./7_special_sdlc_principles.md) · [SDLC phases](./7_special_sdlc_phases.md)         |
+| **Process**     | [Software design methodology](#software-design-methodology), [Waterfall](#waterfall), [Agile](#agile) |
+| **AI**          | [AI augmentation of SDLC phases](#ai-augmentation-of-sdlc-phases)                                     |
 
 ### Sections
 
 - [11. SDLC & Agile](#11-sdlc-agile)
+- [AI augmentation of SDLC phases](#ai-augmentation-of-sdlc-phases)
 - [Frontend team in Agile](#frontend-team-in-agile)
 - [Code refactoring](#code-refactoring)
 
@@ -29,7 +38,7 @@ Waterfall, Agile, Scrum, and Kanban.
 
 Companies need to **test hypotheses fast** — drop the wrong ones and grow the ones that work. A methodology is the operating system for that: who decides priority, how work flows, when users see value, and how the team reacts when requirements move.
 
-Requirements → Design → Implementation → Testing → Deployment → Maintenance
+Requirements → Design → Implementation → Testing → Deployment → Maintenance — see [Phases overview](./7_special_sdlc_phases.md#overview) for definitions and deliverables per stage. Guiding rules: [SDLC principles](./7_special_sdlc_principles.md).
 
 Same phases, different **order and feedback**. Waterfall runs them once, end-to-end. Agile repeats a short slice of the whole cycle so the product can change before years of work are wasted.
 
@@ -112,11 +121,16 @@ Copied from construction / electronics / manufacturing. Software is more dynamic
 
 **Examples:**
 
-```mermaid
-flowchart LR
-  req[Requirements] --> design[Design] --> impl[Implementation]
-  impl --> test[Testing] --> deploy[Deployment] --> maint[Maintenance]
-```
+| Step               | What happens                                    |
+| ------------------ | ----------------------------------------------- |
+| **Requirements**   | Capture and sign off the full spec before build |
+| **Design**         | Freeze architecture and UI against that spec    |
+| **Implementation** | Build to the document                           |
+| **Testing**        | Verify against the requirements doc             |
+| **Deployment**     | Release (often once per major version)          |
+| **Maintenance**    | Fixes and controlled change requests            |
+
+One pass, left to right — the next big change usually restarts requirements, not a tight weekly loop.
 
 **Thoughts:** Rarely pure waterfall in modern **product** teams — often hybrid (iterative chunks inside phases). Still common in **outsourcing**: client pays for a result; many studios still use Agile **internally** (range estimate, bill actual time). Contrast with [Agile](#agile).
 
@@ -270,11 +284,14 @@ A **mindset** (not a single process): values and principles from the 2001 Agile 
 
 **Examples:**
 
-```mermaid
-flowchart LR
-  plan[Plan] --> build[Build] --> demo[Review]
-  demo --> retro[Retrospective] --> plan
-```
+| Step              | What happens                                                          |
+| ----------------- | --------------------------------------------------------------------- |
+| **Plan**          | Pick a small slice of value for this iteration (backlog, sprint goal) |
+| **Build**         | Ship **working** software toward that slice                           |
+| **Review**        | Demo to stakeholders; learn what to do next                           |
+| **Retrospective** | Improve how the team works (process, quality, collaboration)          |
+
+After **Review** and **Retrospective**, the loop starts again at **Plan** — same idea as [cyclicity](./7_special_sdlc_principles.md#cyclicity), but on a **short** cadence (weeks, not years).
 
 **Thoughts:** Agile ≠ no docs — **just enough**, living docs. The word is often **marketing** on job posts; ask how the team actually ships. Not a silver bullet — see [Not a silver bullet](#not-a-silver-bullet).
 
@@ -334,15 +351,16 @@ Rugby-style “scrum” popularized in a 1986 HBR paper (Takeuchi/Nonaka). Schwa
 
 **Examples:**
 
-```mermaid
-flowchart LR
-  pb[Product Backlog] --> plan[Sprint Planning]
-  plan --> sb[Sprint Backlog]
-  sb --> daily[Daily Scrum]
-  daily --> inc[Increment]
-  inc --> review[Sprint Review]
-  review --> retro[Retrospective]
-```
+One **Sprint** (fixed length, often 1–4 weeks), in plain order:
+
+1. **Product Backlog** — ordered work and Product Goal (ongoing refinement).
+2. **Sprint Planning** — pick Sprint Goal + Sprint Backlog for this Sprint.
+3. **Daily Scrum** — 15 min inspect/adapt toward the Sprint Goal.
+4. **Increment** — Done, usable product slice (Definition of Done).
+5. **Sprint Review** — inspect Increment with stakeholders; update backlog.
+6. **Sprint Retrospective** — improve team and process; then the **next Sprint** starts.
+
+Details and timeboxes: table above in this section.
 
 **Thoughts:**
 
@@ -402,6 +420,36 @@ _Make the queue visible; the column that fills up is the team’s bottleneck._
 [Doka — Agile](https://doka.guide/tools/agile/) · [Kanban Guide](https://kanbanguides.org/)
 
 ---
+
+</details>
+
+---
+
+## AI augmentation of SDLC phases
+
+<details>
+<summary>AI augmentation of SDLC phases</summary>
+
+**Definition:** **AI augmentation of SDLC phases** means the classic phase model (requirements → design → build → test → deploy → maintain) stays, but **agents** can produce and iterate on phase artifacts while humans approve at **gateways**.
+
+**How it works:**
+
+- Maps each classical phase to [multi-agent SDLC roles](./0_ai_agentic_sdlc.md#multi-agent-sdlc-roles): analyst (requirements), architect (design), developer (build), reviewer/tester (quality), deploy (release).
+- Differs from “Copilot only in build”: [lead time](./0_ai_agentic_sdlc.md#lead-time-vs-coding-speed) improves only when upstream/downstream work is automated too.
+- [Agile](#agile) and [Kanban](#kanban) still govern cadence; agentic SDLC governs **who executes** inside each slice.
+
+**When to use:** Connecting process interviews (Waterfall/Scrum) with modern AI delivery talk; scoping a pilot on one phase vs full pipeline.
+
+**Pluses and minuses:**
+
+| +                                       | −                                                                                        |
+| --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Reuses familiar SDLC vocabulary         | Not a replacement for team agreements                                                    |
+| Clear place for human architecture gate | Full pipeline needs [infrastructure](./0_ai_agentic_sdlc.md#agentic-sdlc-infrastructure) |
+
+**Thoughts:** Canonical deep dive: [Agentic SDLC](./0_ai_agentic_sdlc.md). This note is the bridge from **process methodology** to **AI operations**.
+
+**Sources:** [Agentic SDLC — AI in SDLC](./0_ai_agentic_sdlc.md#ai-in-sdlc)
 
 </details>
 

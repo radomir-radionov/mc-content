@@ -4,7 +4,7 @@
 
 ### Related docs
 
-- [Хаб AI workflow](./0_ai.md) · [Full-stack competency map](./0_engineering_fullstack.md) · [Cursor — циклы проверки](./0_ai_cursor_core.md#test-driven-agent-loops) · [Cursor Skills & rules](./0_ai_cursor_skills.md) · [SDLC & Agile](./7_special_sdlc.md) · [MVP и суждение](./0_mvp.md)
+- [Хаб AI workflow](./0_ai.md) · [Agentic SDLC](./0_ai_agentic_sdlc.md) · [Full-stack competency map](./0_engineering_fullstack.md) · [Cursor — циклы проверки](./0_ai_cursor_core.md#test-driven-agent-loops) · [Cursor Skills & rules](./0_ai_cursor_skills.md) · [SDLC & Agile](./7_special_sdlc.md) · [MVP и суждение](./0_mvp.md)
 
 ### Main concepts
 
@@ -76,7 +76,7 @@
 3. **Implement & verify** — код и тесты должны трассироваться к пунктам спеки; падающие тесты означают ошибку в спеке или коде — чини нужный слой.
 4. **Sync on change** — при изменении требований поддерживаешь спецификацию, код и тесты в согласованном состоянии (spec и код в одном PR, если меняется «done when»).
 
-SDD дополняет [SDLC & Agile](./7_special_sdlc.md): Agile задаёт _ритм_; SDD задаёт, _что значит «готово»_, до того как агент напишет diff.
+SDD дополняет [SDLC & Agile](./7_special_sdlc.md): Agile задаёт _ритм_; SDD задаёт, _что значит «готово»_, до того как агент напишет diff. Для **мультиагентных** передач между этапами (spec → architecture → code → test) см. [Agentic SDLC](./0_ai_agentic_sdlc.md).
 
 **When to use:** Новые фичи, изменения API, темы handbook, рефакторинг с переносом поведения — любая работа, которую ты отдал бы другому инженеру с тикетом. Только тривиальные фиксы можно без формальной спеки.
 
