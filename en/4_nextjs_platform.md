@@ -250,6 +250,149 @@ export default nextConfig;
 </details>
 
 <details>
+  <summary>CORS in Next.js</summary>
+
+<a name="cors-in-nextjs"></a>
+
+### CORS in Next.js
+
+**Definition:**
+
+**CORS** (Cross-Origin Resource Sharing) applies when **browser JavaScript** on one origin calls **your Next.js HTTP surface** on another (different scheme, host, or port). The browser enforces the [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/SAME-origin_policy); your app must return the right `Access-Control-*` headers so the client may read the response.
+
+CORS is **not** involved when:
+
+- A **Server Component**, Server Action, or server `fetch` calls your API or a backend (server-to-server).
+- The browser calls **same-origin** Route Handlers (`fetch("/api/...")` from your Next.js pages).
+- You serve only **HTML/RSC** to the browser and all API traffic stays on the same site (BFF on the same host).
+
+**How it works:**
+
+| Surface                                    | Role                                                                                                                                                   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Route Handler** (`app/api/.../route.ts`) | Set CORS headers on each `Response`. Export **`OPTIONS`** for preflight, or rely on Next.js adding `OPTIONS` when other methods exist (see BFF guide). |
+| **`next.config` `headers()`**              | Static CORS headers for path patterns (e.g. `/api/:path*`) — good when allowlist/methods are fixed.                                                    |
+| **`proxy.ts`**                             | Dynamic allowlist from `Origin`, attach headers to `NextResponse.next()`, short-circuit **`OPTIONS`** preflights.                                      |
+| **Same-origin BFF**                        | Browser hits your Route Handler only; handler calls the real backend with server credentials — **no CORS** for the browser.                            |
+| **Edge / CDN / reverse proxy**             | Vercel, nginx, Cloudflare can add CORS before Next.js — same header names, different config file.                                                      |
+
+Preflight: non-simple cross-origin requests send **`OPTIONS`** first. Respond with `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, and optionally `Access-Control-Max-Age`. With cookies, use a **specific origin** (not `*`) and `Access-Control-Allow-Credentials: true`.
+
+**When to use:**
+
+- Public or partner **REST/GraphQL** on Route Handlers consumed from another web app.
+- SPA on `app.example.com` calling API on `api.example.com` (different origins).
+- Embeds, Chrome extensions, or local dev (`localhost:3001` → `localhost:3000`).
+
+**When not to use:**
+
+- “Security” instead of auth — CORS only relaxes **browser read** rules; curl/Postman ignore it.
+- `Access-Control-Allow-Origin: *` with **`credentials: 'include'`** — browsers reject that combination.
+- CORS on every route when a **same-origin BFF** or Server Component fetch is enough.
+
+**Pluses and minuses:**
+
+| +                                                  | −                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------- |
+| Route Handler — full control per endpoint          | Repetitive if many handlers share one policy                  |
+| `headers()` — one config block for `/api/*`        | Static config — hard to reflect per-request origin allowlists |
+| `proxy.ts` — central dynamic allowlist + preflight | Wrong `matcher` → APIs without headers or broken preflight    |
+| BFF — simplest browser story (same origin)         | Extra hop and server work vs direct third-party API           |
+
+**Examples:**
+
+```ts
+// app/api/public/route.ts — per-handler CORS
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://partner.example",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
+export async function GET() {
+  return Response.json({ ok: true }, { headers: corsHeaders });
+}
+```
+
+```ts
+// next.config.ts — pattern-wide headers
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://partner.example",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+```ts
+// proxy.ts — dynamic origin allowlist (matcher limits scope)
+import { NextRequest, NextResponse } from "next/server";
+
+const allowedOrigins = ["https://acme.com", "https://my-app.org"];
+
+const corsOptions = {
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export function proxy(request: NextRequest) {
+  const origin = request.headers.get("origin") ?? "";
+  const isAllowed = allowedOrigins.includes(origin);
+
+  if (request.method === "OPTIONS") {
+    const headers: Record<string, string> = { ...corsOptions };
+    if (isAllowed) headers["Access-Control-Allow-Origin"] = origin;
+    return NextResponse.json({}, { headers });
+  }
+
+  const response = NextResponse.next();
+  if (isAllowed) response.headers.set("Access-Control-Allow-Origin", origin);
+  for (const [key, value] of Object.entries(corsOptions)) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
+export const config = { matcher: "/api/:path*" };
+```
+
+**Thoughts:**
+
+- Prefer **allowlist** origins in production; echo the request `Origin` only when it matches. Use `Vary: Origin` when the response varies by origin.
+- **Auth** stays in cookies, Bearer tokens, or API keys validated in the handler — CORS does not replace them.
+- Browser CORS theory (preflight, credentials, SOP vs CORS): [Web API — CORS](./6_web_api_security.md#cors) · [CORS and same-origin policy](./3_js_browser_extra.md#cors-same-origin).
+- Route Handlers used as a **BFF** for your own UI avoid CORS entirely; see [Handling CORS in Next.js](./4_nextjs_data.md#handling-cors-in-nextjs) · [Route Handlers](./4_nextjs_data.md#route-handlers).
+
+**Sources:** [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route) · [nextjs.org/docs/app/api-reference/config/next-config-js/headers](https://nextjs.org/docs/app/api-reference/config/next-config-js/headers) · [nextjs.org/docs/app/api-reference/file-conventions/proxy](https://nextjs.org/docs/app/api-reference/file-conventions/proxy) · [nextjs.org/docs/app/guides/backend-for-frontend](https://nextjs.org/docs/app/guides/backend-for-frontend) · [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
+
+</details>
+
+<details>
   <summary>output modes</summary>
 
 ### output modes

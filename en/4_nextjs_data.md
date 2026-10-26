@@ -87,13 +87,13 @@ export default async function ProductsPage() {
 
 **How it works:**
 
-| Question                                                     | If yes →          | Typical pattern                                                     |
-| ------------------------------------------------------------ | ----------------- | ------------------------------------------------------------------- |
-| Is the data owned by a **vendor** (CMS, Stripe, maps)?       | Remote HTTP API   | `fetch` or SDK in **Server Component** with env secrets             |
-| Is the data in **your DB** in the same repo/deploy?          | Colocated backend | `lib/` + ORM in **Server Component** — no self-`fetch` to `/api`    |
-| Is the data behind **another team’s service** you host?      | Separate backend  | Server `fetch(API_URL)`; browser uses **Route Handler** proxy       |
-| Must the UI **update every few seconds** without navigation? | Client read       | `fetch('/api/...')`, SWR, or TanStack Query in **Client Component** |
-| Is it a **form submit / mutation**?                          | Server write      | **Server Action** or `POST` Route Handler — not `useEffect` fetch   |
+| Question                                                     | If yes →          | Typical pattern                                                                        |
+| ------------------------------------------------------------ | ----------------- | -------------------------------------------------------------------------------------- |
+| Is the data owned by a **vendor** (CMS, Stripe, maps)?       | Remote HTTP API   | `fetch` or SDK in **Server Component** with env secrets                                |
+| Is the data in **your DB** in the same repo/deploy?          | Colocated backend | `lib/` + ORM in **Server Component** — no self-`fetch` to `/api`                       |
+| Is the data behind **another team’s service** you host?      | Separate backend  | Server `fetch(API_URL)`; browser uses **Route Handler** proxy                          |
+| Must the UI **update every few seconds** without navigation? | Client read       | `fetch('/api/...')`, SWR, or TanStack Query in **Client Component**                    |
+| Is it a **form submit / mutation**?                          | Server write      | [Handling mutations in Next.js](#handling-mutations-in-nextjs) — not `useEffect` fetch |
 
 **Layer rules (App Router):**
 
@@ -204,14 +204,14 @@ async function getPosts() {
 **Examples:**
 
 ```tsx
-// lib/products.ts
+// File: lib/products.ts — server-only module (never import from "use client")
 import { db } from "@/lib/db";
 
 export async function listProducts() {
   return db.product.findMany({ orderBy: { createdAt: "desc" } });
 }
 
-// app/products/page.tsx
+// File: app/products/page.tsx  →  URL: /products (Server Component read — no /api hop)
 import { listProducts } from "@/lib/products";
 
 export default async function ProductsPage() {
@@ -271,6 +271,7 @@ export default async function ProductsPage() {
 **Examples:**
 
 ```tsx
+// File: lib/orders.ts — server-only; called from Server Components or Route Handlers
 async function getOrders(userId: string) {
   const res = await fetch(`${process.env.API_URL}/v1/users/${userId}/orders`, {
     headers: { Authorization: `Bearer ${process.env.API_SERVICE_TOKEN}` },
@@ -282,7 +283,8 @@ async function getOrders(userId: string) {
 ```
 
 ```tsx
-// app/api/orders/route.ts — browser-safe proxy
+// File: app/api/orders/route.ts  →  URL: GET /api/orders
+// Client: fetch("/api/orders") — no API_SERVICE_TOKEN in browser
 import { auth } from "@/lib/auth";
 
 export async function GET() {
@@ -833,24 +835,180 @@ APIs removed or changed in Next.js 16 and their recommended replacements.
 _Topics follow: Definition → Pros / Cons → When to use → Example → Notes → Source ([template](./4_nextjs_core.md#topic-template))._
 
 <details>
-  <summary>Server Actions</summary>
+  <summary>Handling mutations in Next.js</summary>
 
-### Server Actions
+<a name="handling-mutations-in-nextjs"></a>
 
-**Definition:** Async **Server Functions** (`"use server"`) that Next.js exposes to the client as **server references**. Invocations become **POST** requests with an encrypted action ID — an RPC bridge for **mutations**, not a general read API.
+### Handling mutations in Next.js
+
+**Definition:** A repeatable way to **create, update, or delete** data in the App Router: pick the right surface ([Server Actions](#server-actions) vs [Route Handlers](#route-handlers)), run the same server steps on every write, then **refresh caches** so lists and detail pages show new data.
 
 **How it works:**
 
-| Placement  | Pattern                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------- |
-| **Module** | Top of `actions.ts` (or `lib/actions/*.ts`) — export functions imported by Client Components            |
-| **Inline** | `async function save() { "use server"; … }` inside a Server Component, passed to `<form action={save}>` |
+| Step                  | What to do                                                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Choose surface** | Next.js UI form/button → **Server Action** (default). Webhook, mobile app, or public REST URL → **Route Handler**.                     |
+| **2. Auth**           | Inside the action/handler: session + permission check (not layout-only).                                                               |
+| **3. Validate**       | Parse `FormData` or JSON; return field errors (`useActionState`) or `4xx` (handlers).                                                  |
+| **4. Write**          | One call: `lib/db`, ORM, or single `fetch(API_URL)` — avoid long chains.                                                               |
+| **5. Revalidate**     | `revalidatePath` / `revalidateTag` / `updateTag` for pages the UI reads ([stale UI pitfall](#common-pitfall-stale-ui-after-mutation)). |
+| **6. Respond**        | Return serializable state, `redirect()`, or `Response.json` — details in **Examples**.                                                 |
 
-1. Client calls `action` on `<form>` or imports the reference and runs it inside `startTransition` / `useActionState`.
-2. Next.js POSTs to the app with the action ID + **serializable** arguments (`FormData`, strings, plain objects — not functions, `Date`, or class instances unless plain).
-3. The function runs **only on the server** (DB, secrets, `cookies()` / `headers()` — **await** them in Next.js 15+).
+| Who calls the write?                        | Use                                                             |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| Your `<form>` / button in this Next app     | [Server Actions](#server-actions)                               |
+| Stripe, GitHub, partner `POST` to a URL     | [Webhooks in Route Handlers](#webhooks-in-route-handlers)       |
+| Browser `fetch` after hydration (dashboard) | [BFF Route Handler](#bff-route-handler) or action               |
+| Server Component on first paint             | **No mutation** — read in render; write only via action/handler |
+
+**When to use:** Any feature that saves settings, creates a row, deletes a comment, or syncs cart state.
+
+**When not to use:** Loading data for SSR ([Server Component fetching](#server-component-fetching)); fire-and-forget jobs (use a queue).
+
+**Pluses and minuses:**
+
+| +                                      | −                                             |
+| -------------------------------------- | --------------------------------------------- |
+| One checklist for every feature team   | Easy to skip step 5 and ship stale UI         |
+| Actions + revalidate fit forms and RSC | Handlers need your own CSRF for browser POSTs |
+
+**Examples:**
+
+```tsx
+// File: app/actions/todos.ts — typical Server Action workflow (steps 2–6)
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+const schema = z.object({ title: z.string().min(1).max(200) });
+
+export async function createTodo(
+  _prev: { error?: string },
+  formData: FormData,
+) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const parsed = schema.safeParse({ title: formData.get("title") });
+  if (!parsed.success) return { error: "Invalid title" };
+
+  await db.todo.create({
+    data: { title: parsed.data.title, userId: session.user.id },
+  });
+
+  revalidatePath("/todos");
+  return { error: undefined };
+}
+```
+
+```tsx
+// File: app/todos/TodoForm.tsx — wire action to UI ("use client" + useActionState)
+"use client";
+
+import { useActionState } from "react";
+import { createTodo } from "@/app/actions/todos";
+
+export function TodoForm() {
+  const [state, action, pending] = useActionState(createTodo, {
+    error: undefined,
+  });
+
+  return (
+    <form action={action}>
+      <input name="title" required />
+      {state.error && <p role="alert">{state.error}</p>}
+      <button disabled={pending}>Add</button>
+    </form>
+  );
+}
+```
+
+```tsx
+// File: app/api/todos/route.ts  →  URL: POST /api/todos
+// Use when a non-Next client needs HTTP JSON (mobile, partner) — same steps 2–4, return Response
+import { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
+
+export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json();
+  const title = String(body.title ?? "").trim();
+  if (!title) return Response.json({ error: "Invalid title" }, { status: 400 });
+
+  await db.todo.create({ data: { title, userId: session.user.id } });
+  return Response.json({ ok: true }, { status: 201 });
+}
+```
+
+```tsx
+// File: app/actions/orders.ts — separate backend: one server fetch inside the action
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
+
+export async function cancelOrder(formData: FormData) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
+  const orderId = String(formData.get("orderId"));
+  const res = await fetch(`${process.env.API_URL}/orders/${orderId}/cancel`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${process.env.API_SERVICE_TOKEN}` },
+  });
+  if (!res.ok) throw new Error("Cancel failed");
+
+  revalidatePath("/orders");
+  revalidatePath(`/orders/${orderId}`);
+}
+```
+
+**Thoughts:** Default path for product UI: **action + `revalidatePath`**. Compare surfaces: [Comparison table](#comparison-table). Reads stay in RSC — [Choosing a data fetch path](#choosing-a-data-fetch-path).
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/updating-data](https://nextjs.org/docs/app/getting-started/updating-data)
+- [nextjs.org/docs/app/getting-started/mutating-data](https://nextjs.org/docs/app/getting-started/mutating-data)
+
+</details>
+
+<details>
+  <summary>Server Actions</summary>
+
+<a name="server-actions"></a>
+
+### Server Actions
+
+**Definition:** An `async` function marked with `"use server"` that **mutates data on the server** (create, update, delete). It can use the DB, secrets, and `cookies()` — that code never ships to the browser. Wiring, transport, and file patterns are in **Examples** (comments).
+
+**Use Server Actions for:** saving forms, deleting a row, toggling state — **writes** from your Next.js UI. **Do not use them for:** loading a product list or article body ([Server Component fetching](#server-component-fetching)); public APIs for mobile apps or webhooks ([Route Handlers](#route-handlers)).
+
+**Security (important):** Anyone who can load your site can **try** to call an exported action (like calling a POST API). Check “is this user logged in?” and “may they do this?” **inside every action**, not only in a layout or middleware. Details: [CSRF with Server Actions](#csrf-with-server-actions) · [Server Functions](./4_react_rsc.md#server-functions).
+
+**How it works:**
+
+| Placement  | Pattern                                                 |
+| ---------- | ------------------------------------------------------- |
+| **Module** | `'use server'` file — see first **Example**             |
+| **Inline** | Action inside Server Component — see second **Example** |
+
+| Wire protocol | Behavior                                                                                                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Method**    | `POST` to the page route that registered the action (or the current segment during navigation)                                                                                     |
+| **Headers**   | `Next-Action` carries the opaque action ID; browser sends cookies for same-origin session auth                                                                                     |
+| **Body**      | `multipart/form-data` for `<form>` submits; serialized args for programmatic calls — default cap **1 MB** ([`serverActions.bodySizeLimit`](./4_nextjs_platform.md#next-config-ts)) |
+
+1. Client calls `action` on `<form>`, `formAction` on a button, or imports the reference and runs it inside `startTransition` / `useActionState` — see [formAction and programmatic invocation](#formaction-and-programmatic-invocation).
+2. Next.js POSTs with the action ID + **serializable** arguments — rules in [Serialization and return values](#serialization-and-return-values).
+3. The function runs **only on the server** (DB, secrets, `cookies()` / `headers()` — **await** them in Next.js 15+) — [Cookies and headers in Server Actions](#cookies-and-headers-in-server-actions).
 4. After a successful write, invalidate caches the UI depends on (`revalidatePath`, `revalidateTag`, `updateTag`) — see [Common pitfall: stale UI after mutation](#common-pitfall-stale-ui-after-mutation).
 5. Optional `redirect()` navigates after mutate; it **throws** — call it **outside** `try/catch` and typically **after** revalidation.
+6. Extra IDs from the UI (e.g. `userId`) — prefer `action.bind(null, id)` over hidden inputs when possible — [Server Action arguments (bind)](#server-action-arguments-bind).
 
 React-level model (directives, serialization): [Server Functions](./4_react_rsc.md#server-functions) · ['use server'](./4_react_rsc.md#use-server).
 
@@ -887,7 +1045,10 @@ React-level model (directives, serialization): [Server Functions](./4_react_rsc.
 **Examples:**
 
 ```tsx
-// app/actions.ts — shared module
+// File: app/actions.ts — module pattern ('use server' at top; all exports are actions)
+// Called from: import { createTodo } → <form action={createTodo}> (Server or Client Component)
+// Transport: POST + opaque action id (not a REST path like /api/todos)
+// Arg: FormData — <input name="title"> → formData.get("title")
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -911,7 +1072,8 @@ export async function createTodo(formData: FormData) {
 ```
 
 ```tsx
-// app/todos/new/page.tsx — Server Component + inline action
+// File: app/todos/new/page.tsx — inline pattern (Server Component; no "use client")
+// Scoped to this page only; <form action={create}> works without JavaScript
 export default function NewTodoPage() {
   async function create(formData: FormData) {
     "use server";
@@ -930,7 +1092,7 @@ export default function NewTodoPage() {
 ```
 
 ```tsx
-// app/actions.ts — shape for useActionState (prevState, FormData)
+// File: app/actions.ts — useActionState action signature: (prevState, formData) => nextState
 export async function createTodoWithState(
   _prev: { error?: string },
   formData: FormData,
@@ -944,6 +1106,7 @@ export async function createTodoWithState(
 ```
 
 ```tsx
+// File: app/todos/TodoForm.tsx — "use client"; pending + field errors from returned state
 "use client";
 
 import { useActionState } from "react";
@@ -980,32 +1143,774 @@ export function TodoForm() {
 </details>
 
 <details>
-  <summary>Route Handlers</summary>
+  <summary>Server Action arguments (bind)</summary>
 
-### Route Handlers
+<a name="server-action-arguments-bind"></a>
 
-**Definition:** `route.ts` files exporting HTTP method functions. Standard Web Request/Response API.
+### Server Action arguments (bind)
+
+**Definition:** Pass **extra arguments** to a Server Action beyond `FormData` by creating a bound server reference with `Function.prototype.bind`.
+
+**How it works:**
+
+- Signature stays `(id, formData)` or `(id, prevState, formData)` when paired with `useActionState`.
+- `updateUser.bind(null, userId)` fixes the first argument; the form still supplies fields via `FormData`.
+- Works from Client or Server Components; `<form action={boundAction}>` keeps progressive enhancement.
+- **Validate** bound IDs on the server (format, ownership) — treat them like any untrusted input.
+
+**When to use:**
+
+- One action module, many rows (`deleteTodo.bind(null, todo.id)` per list item).
+- Passing enum-like constants that are not user-editable fields.
+
+**When not to use:**
+
+- Large or sensitive blobs — bound args travel with the action reference; prefer server-side lookup by ID from session.
+- Secrets — never bind API keys; read from env on the server.
 
 **Pluses and minuses:**
 
-| +                                 | −                                             |
-| --------------------------------- | --------------------------------------------- |
-| Real HTTP — webhooks, public APIs | No progressive enhancement                    |
-| Any HTTP method                   | Cannot coexist with `page.tsx` in same folder |
+| +                                                  | −                                                      |
+| -------------------------------------------------- | ------------------------------------------------------ |
+| Avoids tamper-prone hidden `<input>` for IDs       | Bound values must stay serializable                    |
+| Same pattern for `formAction` and `useActionState` | Easy to forget server-side authZ check on the bound ID |
 
 **Examples:**
 
 ```tsx
-// app/api/webhook/route.ts
-import { NextRequest } from "next/server";
+// File: app/actions.ts — bind fills 1st arg (userId); form submit fills FormData as 2nd
+"use server";
 
-export async function POST(request: NextRequest) {
-  const body = await request.json();
-  return Response.json({ received: true });
+export async function updateUser(userId: string, formData: FormData) {
+  const session = await getSession();
+  if (!session || session.userId !== userId) throw new Error("Forbidden");
+
+  const name = String(formData.get("name") ?? "");
+  await db.user.update({ where: { id: userId }, data: { name } });
+  revalidatePath(`/users/${userId}`);
 }
 ```
 
-**Sources:** [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
+```tsx
+// File: app/users/[id]/UserProfile.tsx — "use client"
+// updateUser.bind(null, userId) — still validate userId against session in the action
+"use client";
+
+import { updateUser } from "@/app/actions";
+
+export function UserProfile({ userId }: { userId: string }) {
+  const updateUserWithId = updateUser.bind(null, userId);
+
+  return (
+    <form action={updateUserWithId}>
+      <input name="name" />
+      <button type="submit">Save</button>
+    </form>
+  );
+}
+```
+
+**Thoughts:** Hidden fields are fine for CSRF-safe same-origin forms, but **authorization** must not depend on a client-supplied `userId` without matching the session.
+
+**Sources:** [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+
+</details>
+
+<details>
+  <summary>Closures and encryption</summary>
+
+<a name="closures-and-encryption"></a>
+
+### Closures and encryption
+
+**Definition:** **Inline** Server Actions defined inside a Server Component **close over** variables from the render pass (e.g. a version string, feature flag, or draft ID snapshot).
+
+**How it works:**
+
+- Captured variables are sent to the client as part of the server reference payload and posted back when the action runs.
+- Next.js **encrypts** closed-over values so casual inspection of the client bundle does not expose raw server data.
+- Encryption keys are **per-build** — actions from an old deployment cannot be replayed against a new build after redeploy.
+- Do **not** close over secrets (DB URLs, private keys); read those from `process.env` inside the action body instead.
+
+**When to use:**
+
+- Optimistic concurrency: snapshot `publishVersion` at render, re-check in `publish()` before writing.
+- Feature gating snapshot when the action must match what the user saw when the form rendered.
+
+**Pluses and minuses:**
+
+| +                                       | −                                                     |
+| --------------------------------------- | ----------------------------------------------------- |
+| No extra round trip to re-fetch context | Payload size grows with captured data                 |
+| Encrypted on the wire                   | Still not a substitute for authZ — validate on invoke |
+
+**Examples:**
+
+```tsx
+// File: app/editor/page.tsx — Server Component
+// publishVersion is closed over at render; Next.js encrypts it in the action payload
+export default async function EditorPage() {
+  const publishVersion = await getLatestVersion();
+
+  async function publish() {
+    "use server";
+    if (publishVersion !== (await getLatestVersion())) {
+      throw new Error("Version changed — refresh and try again");
+    }
+    await saveDraft();
+    revalidatePath("/editor");
+  }
+
+  return (
+    <form>
+      <button formAction={publish}>Publish</button>
+    </form>
+  );
+}
+```
+
+**Thoughts:** Prefer loading authoritative IDs from DB inside the action when tampering matters; closures are for **snapshots**, not trust boundaries.
+
+**Sources:** [nextjs.org/docs/app/guides/data-security](https://nextjs.org/docs/app/guides/data-security)
+
+</details>
+
+<details>
+  <summary>Serialization and return values</summary>
+
+<a name="serialization-and-return-values"></a>
+
+### Serialization and return values
+
+**Definition:** Server Actions accept and return only **React-serializable** values across the server boundary.
+
+**How it works:**
+
+| Direction  | Allowed (typical)                                                                 | Avoid                                                                          |
+| ---------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Args**   | `FormData`, strings, numbers, booleans, plain objects/arrays, `null`, `undefined` | Functions, symbols, most class instances, `Date` (use ISO string), `Map`/`Set` |
+| **Return** | Same as args; use for field-level errors with `useActionState`                    | Throwing for **expected** validation errors — return `{ error: "…" }` instead  |
+
+- **Expected errors** (validation, business rules) → return serializable state; display via `useActionState` `state`.
+- **Unexpected errors** → `throw` or let the nearest `error.tsx` handle; use `unauthorized()` / `forbidden()` for auth failures when `authInterrupts` is enabled.
+- Programmatic calls from event handlers should wrap in `startTransition` to avoid blocking the UI.
+
+**When to use:**
+
+- `useActionState` when the form needs inline error text and pending state without full-page navigation.
+- `redirect()` / `throw` when the outcome is a different page or hard failure.
+
+**Pluses and minuses:**
+
+| +                                          | −                                                 |
+| ------------------------------------------ | ------------------------------------------------- |
+| Typed return shapes for form UX            | Easy to accidentally return non-serializable data |
+| Clear split: expected vs unexpected errors | `redirect()` throws — do not catch as validation  |
+
+**Examples:**
+
+```tsx
+// File: app/actions.ts — return { message } for validation; unauthorized() for auth failure
+"use server";
+
+import { unauthorized } from "next/navigation";
+
+export async function updateProfile(
+  _prev: { message?: string },
+  formData: FormData,
+) {
+  const session = await verifySession();
+  if (!session) unauthorized();
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { message: "Title is required" };
+
+  await db.post.create({ data: { title, userId: session.userId } });
+  revalidatePath("/posts");
+  return { message: "" };
+}
+```
+
+**Thoughts:** Model mutations like API handlers: validate → authorize → write → revalidate → return or redirect.
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/10-error-handling](https://nextjs.org/docs/app/getting-started/error-handling)
+- [nextjs.org/docs/app/api-reference/functions/unauthorized](https://nextjs.org/docs/app/api-reference/functions/unauthorized)
+
+</details>
+
+<details>
+  <summary>Cookies and headers in Server Actions</summary>
+
+<a name="cookies-and-headers-in-server-actions"></a>
+
+### Cookies and headers in Server Actions
+
+**Definition:** Server Actions run in a **request context** and may read or mutate **cookies** and read **headers** via `next/headers`.
+
+**How it works:**
+
+- `const cookieStore = await cookies()` in Next.js 15+ (async).
+- `cookieStore.set` / `delete` triggers a **server re-render** of the current route tree so UI reflects cookie changes (e.g. locale, cart id).
+- `headers()` exposes incoming request headers (user-agent, custom proxy headers) — read-only for inspection; prefer `cookies()` for session tokens your app sets.
+- Setting cookies in an action does **not** replace auth checks — still verify session inside the action.
+
+**When to use:**
+
+- Login/logout mutations that set session cookies.
+- Preference toggles persisted in cookies without a separate Route Handler.
+
+**Pluses and minuses:**
+
+| +                                   | −                                                          |
+| ----------------------------------- | ---------------------------------------------------------- |
+| One mutation path for form + cookie | Cookie mutations force RSC refresh — plan UX               |
+| Same APIs as Route Handlers         | `headers()` is dynamic — opts route into dynamic rendering |
+
+**Examples:**
+
+```tsx
+// File: app/actions.ts — <select name="locale"> in <form action={setLocale}>
+// cookies().set → server re-renders layout so UI picks up new locale
+"use server";
+
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+
+export async function setLocale(formData: FormData) {
+  const locale = String(formData.get("locale") ?? "en");
+  const cookieStore = await cookies();
+  cookieStore.set("locale", locale, { path: "/", maxAge: 60 * 60 * 24 * 365 });
+  revalidatePath("/", "layout");
+}
+```
+
+**Thoughts:** For auth libraries (Better Auth, NextAuth adapters), use their server helpers inside actions — see [auth](./4_nextjs_platform.md#rsc-security).
+
+**Sources:** [nextjs.org/docs/app/getting-started/updating-data](https://nextjs.org/docs/app/getting-started/updating-data)
+
+</details>
+
+<details>
+  <summary>formAction and programmatic invocation</summary>
+
+<a name="formaction-and-programmatic-invocation"></a>
+
+### formAction and programmatic invocation
+
+**Definition:** Invoke Server Actions from **forms** (`action`, `formAction`) or **directly** from client event handlers.
+
+**How it works:**
+
+| Pattern             | API                                                                 | Progressive enhancement |
+| ------------------- | ------------------------------------------------------------------- | ----------------------- |
+| Whole form submit   | `<form action={action}>`                                            | Yes — works without JS  |
+| Per-button submit   | `<button formAction={saveDraft}>Draft</button>` inside one `<form>` | Yes                     |
+| Client-only button  | `<button formAction={createPost}>` in `"use client"` tree           | Yes if rendered in form |
+| Click / custom flow | `startTransition(() => action(arg))`                                | No — requires JS        |
+
+- Multiple actions in one form: different buttons with different `formAction` values (publish vs save draft).
+- Import actions only into Client Components from a `"use server"` module — do not define secrets in the client file.
+
+**When to use:**
+
+- `formAction` when one form has multiple mutation types.
+- Programmatic calls for delete buttons, toggles, or wizard steps that are not native `<form>` submits.
+
+**Pluses and minuses:**
+
+| +                                     | −                                                                    |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| Native HTML multi-submit              | Programmatic path skips form validation attributes unless duplicated |
+| `startTransition` keeps UI responsive | Must handle pending/error state manually without `useActionState`    |
+
+**Examples:**
+
+```tsx
+// File: components/DeleteButton.tsx — "use client"
+// Programmatic call (no <form>); requires JS; import deleteTodo from app/actions.ts
+"use client";
+
+import { startTransition } from "react";
+import { deleteTodo } from "@/app/actions";
+
+export function DeleteButton({ id }: { id: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        startTransition(() => {
+          void deleteTodo(id);
+        });
+      }}
+    >
+      Delete
+    </button>
+  );
+}
+```
+
+```tsx
+// File: app/posts/edit/page.tsx — Server Component (publish + saveDraft are Server Actions)
+// Default submit → publish; second button → saveDraft via formAction
+<form action={publish}>
+  <textarea name="body" required />
+  <button type="submit">Publish</button>
+  <button type="submit" formAction={saveDraft}>
+    Save draft
+  </button>
+</form>
+```
+
+**Thoughts:** Prefer `<form>` + `useActionState` for accessible error text; use programmatic calls for small non-form interactions.
+
+**Sources:**
+
+- [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+- [nextjs.org/docs/app/getting-started/updating-data](https://nextjs.org/docs/app/getting-started/updating-data)
+
+</details>
+
+<details>
+  <summary>Optimistic UI with Server Actions</summary>
+
+<a name="optimistic-ui-with-server-actions"></a>
+
+### Optimistic UI with Server Actions
+
+**Definition:** Show **immediate** UI feedback while a Server Action runs, then reconcile when the server responds.
+
+**How it works:**
+
+- `useOptimistic(baseState, reducer)` holds temporary state on the client.
+- In a client `form action` wrapper: call `addOptimistic(...)` then `await serverAction(...)`.
+- On failure, revert by re-fetching (`router.refresh()`), resetting optimistic state, or showing an error — optimistic state does not auto-roll back.
+- Pair with `revalidatePath` inside the action so the next RSC payload matches the optimistic view.
+
+**When to use:**
+
+- Chat messages, likes, checklist toggles where latency is noticeable.
+- Not a substitute for `useActionState` field errors — combine when needed.
+
+**Pluses and minuses:**
+
+| +                       | −                                            |
+| ----------------------- | -------------------------------------------- |
+| Snappy UX               | Must handle action failure explicitly        |
+| Works with form actions | Duplicate logic if optimistic ≠ server shape |
+
+**Examples:**
+
+```tsx
+// File: app/chat/Thread.tsx — "use client"
+// Client form action: addOptimistic first, then await sendMessage() from ./actions.ts
+"use client";
+
+import { useOptimistic } from "react";
+import { sendMessage } from "./actions";
+
+type Message = { id: string; text: string };
+
+export function Thread({ messages }: { messages: Message[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    messages,
+    (state, text: string) => [...state, { id: `tmp-${state.length}`, text }],
+  );
+
+  async function onSubmit(formData: FormData) {
+    const text = String(formData.get("text") ?? "");
+    addOptimistic(text);
+    await sendMessage(text);
+  }
+
+  return (
+    <div>
+      {optimistic.map((m) => (
+        <p key={m.id}>{m.text}</p>
+      ))}
+      <form action={onSubmit}>
+        <input name="text" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
+}
+```
+
+**Thoughts:** Keep optimistic items distinguishable (temp IDs) until the action returns persisted IDs via revalidation.
+
+**Sources:** [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+
+</details>
+
+<details>
+  <summary>Route Handlers</summary>
+
+<a name="route-handlers"></a>
+
+### Route Handlers
+
+**Definition:** A **Route Handler** is a server file `route.ts` (or `route.js`) in the `app/` folder that answers **real HTTP requests** at a URL path — like a small API endpoint inside your Next.js app. You export functions named after HTTP methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`. Each function receives a standard **`Request`** (or `NextRequest`) and returns a **`Response`** (often `Response.json({ ... })`).
+
+**Use Route Handlers when** something **outside** your React UI needs HTTP: Stripe/GitHub **webhooks**, a **mobile app**, a **browser on another domain** (with CORS), or a **Client Component** that polls `fetch("/api/metrics")` after load. **Do not use them** as the main way for **Server Components** to read your own database — call `lib/db` directly ([Colocated backend](#colocated-backend-in-nextjs)). For form submits from your own Next.js pages, prefer [Server Actions](#server-actions) unless you need a stable public URL.
+
+**Security:** A Route Handler is a **public URL**. Verify API keys, webhook signatures, and user sessions **inside the handler**. Same-origin `fetch("/api/...")` from your app still needs auth checks — cookies can be sent, but anyone can call the URL with curl.
+
+**How it works:**
+
+| Piece       | Rule                                                                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **File**    | `route.ts` only under `app/` (not `pages/api` — that is Pages Router)                                                                                  |
+| **URL**     | Folder path under `app/` = URL path — see **Examples** comments                                                                                        |
+| **Methods** | Export only the verbs you support; unknown methods → **405**                                                                                           |
+| **Body**    | `await request.json()`, `request.text()`, or `request.formData()` — no Pages Router `bodyParser` config                                                |
+| **Cookies** | `request.cookies` on `NextRequest`; set on the `Response` you return                                                                                   |
+| **Config**  | Same segment options as pages: `dynamic`, `revalidate`, `runtime` (`nodejs` vs `edge`) — see [Caching GET Route Handlers](#caching-get-route-handlers) |
+
+**When to use:**
+
+- Webhooks and third-party callbacks ([Webhooks](#webhooks-in-route-handlers)).
+- BFF endpoints for the browser (`/api/...`) that hide service tokens ([BFF Route Handler](#bff-route-handler)).
+- Public REST/JSON for non-Next clients.
+
+**When not to use:**
+
+- Default **read** path for RSC pages — use Server Components + `fetch` / DB.
+- In-app **form mutations** that only your UI needs — [Server Actions](#server-actions).
+
+**Pluses and minuses:**
+
+| +                                 | −                                          |
+| --------------------------------- | ------------------------------------------ |
+| Real HTTP — any client, any verb  | No `<form action>` progressive enhancement |
+| Stable URL you can document       | You own CORS, CSRF, rate limits, auth      |
+| Works with webhooks and mobile    | Extra hop if RSC fetches your own `/api`   |
+| `GET` can be cached (with config) | Cannot share folder with `page.tsx`        |
+
+**Examples:**
+
+```tsx
+// File: app/api/users/route.ts
+// URL:  GET/POST … https://your-site.com/api/users
+// Rule: this folder must NOT also contain page.tsx — segment is page OR route.ts, not both
+export async function GET() {
+  const users = await db.user.findMany();
+  return Response.json(users);
+}
+```
+
+```tsx
+// File: app/api/health/route.ts  →  URL: /api/health
+export async function GET() {
+  return Response.json({ ok: true });
+}
+```
+
+```tsx
+// File: app/api/posts/[id]/route.ts
+// URL:  GET https://your-site.com/api/posts/123  →  params.id === "123"
+// Next.js 15+: params is a Promise — await it before use
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const post = await db.post.findUnique({ where: { id } });
+  if (!post) return Response.json({ error: "Not found" }, { status: 404 });
+  return Response.json(post);
+}
+```
+
+```tsx
+// File: app/api/webhook/route.ts  →  URL: POST /api/webhook
+export async function POST(request: Request) {
+  const raw = await request.text();
+  // verify signature on raw body, then process
+  return new Response("ok", { status: 200 });
+}
+```
+
+**Thoughts:** Cross-origin browser calls → [Handling CORS in Next.js](#handling-cors-in-nextjs). Same-origin `fetch("/api/...")` needs no CORS. Compare with [Server Actions](#server-actions) in the [Comparison table](#comparison-table).
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
+- [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+
+</details>
+
+<details>
+  <summary>BFF Route Handler</summary>
+
+<a name="bff-route-handler"></a>
+
+### BFF Route Handler
+
+**Definition:** A Route Handler that sits **between the browser and your backend** — the UI calls **your** `/api/...` URL; the handler checks the user session, adds a **service token**, and forwards to another API or database.
+
+**How it works:** Browser calls your `/api/...` URL; handler forwards to the real backend with server-only credentials — see **Examples** comments. Server Components usually skip this hop ([Fetching from a separate backend](#fetching-from-a-separate-backend)).
+
+**When to use:**
+
+- Dashboards that poll or mutate after hydration ([Client-side fetching](#client-side-fetching)).
+- Hiding tokens from the client while still using browser `fetch`.
+
+**Pluses and minuses:**
+
+| +                          | −                                    |
+| -------------------------- | ------------------------------------ |
+| Clear HTTP contract for UI | Latency vs direct server `fetch`     |
+| Central place for authZ    | Easy to duplicate logic with actions |
+
+**Examples:**
+
+```tsx
+// File: app/api/orders/route.ts  →  URL: GET /api/orders
+// Client: fetch("/api/orders") — same origin, session cookie in browser
+// Server: fetch(API_URL/orders) with service token — token never in NEXT_PUBLIC_*
+import { NextRequest } from "next/server";
+import { getSession } from "@/lib/auth";
+
+export async function GET(_request: NextRequest) {
+  const session = await getSession();
+  if (!session)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const res = await fetch(`${process.env.API_URL}/orders`, {
+    headers: { Authorization: `Bearer ${session.accessToken}` },
+  });
+  const data = await res.json();
+  return Response.json(data, { status: res.status });
+}
+```
+
+**Thoughts:** Same-origin BFF **avoids browser CORS** — prefer this when the only client is your Next app. If a partner SPA must call your API on another host, see [Handling CORS in Next.js](#handling-cors-in-nextjs). Cache short-lived GETs — [Vercel CDN cache headers](#vercel-cdn-cache-headers).
+
+**Sources:** [nextjs.org/docs/app/guides/backend-for-frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+
+</details>
+
+<details>
+  <summary>Handling CORS in Next.js</summary>
+
+<a name="handling-cors-in-nextjs"></a>
+
+### Handling CORS in Next.js
+
+**Definition:** **CORS** is a **browser** rule: JavaScript on `https://app.example.com` may only read responses from `https://api.example.com` if your Next.js API returns `Access-Control-*` headers (and answers **`OPTIONS`** preflights when needed). Server Components, Server Actions, and server-side `fetch` **do not** use CORS — only cross-origin **browser** `fetch` / XHR does.
+
+**How it works:**
+
+| Step                  | What to do                                                                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Need CORS?**     | If the caller is your Next app on the **same origin** (`fetch("/api/...")`) → **no CORS**. If another site or port calls your Route Handler → **yes**. |
+| **2. Prefer no CORS** | [BFF Route Handler](#bff-route-handler): browser hits your domain; server calls the real API with secrets.                                             |
+| **3. Pick layer**     | One public API → headers on that `route.ts`. Many `/api/*` routes → `next.config` `headers()` or `proxy.ts` allowlist.                                 |
+| **4. Preflight**      | Non-simple cross-origin requests send **`OPTIONS` first** — export `OPTIONS` or handle in `proxy.ts`.                                                  |
+| **5. Credentials**    | With cookies/`credentials: 'include'`: echo a **specific** allowed `Origin` (not `*`) and set `Access-Control-Allow-Credentials: true`.                |
+| **6. Auth**           | CORS is **not** security — still validate tokens/session in the handler.                                                                               |
+
+| Approach                      | When                                          |
+| ----------------------------- | --------------------------------------------- |
+| **Route Handler headers**     | One partner endpoint, custom policy per route |
+| **`next.config` `headers()`** | Fixed allowlist for `/api/:path*`             |
+| **`proxy.ts`**                | Dynamic origin check + shared preflight       |
+| **BFF (same origin)**         | Your UI only — skip CORS                      |
+
+**When to use:** Partner SPA, `localhost:3001` → `localhost:3000` dev, extension calling your API.
+
+**When not to use:** Replacing auth; `Allow-Origin: *` with credentialed requests; CORS on routes your own pages already call same-origin.
+
+**Pluses and minuses:**
+
+| +                                        | −                                 |
+| ---------------------------------------- | --------------------------------- |
+| Route Handler — full control per URL     | Easy to forget `OPTIONS`          |
+| `headers()` / `proxy` — DRY for `/api/*` | Misconfigured matcher breaks APIs |
+| BFF — simplest for your own frontend     | Extra server hop                  |
+
+**Examples:**
+
+```ts
+// File: app/api/public/health/route.ts  →  URL: GET /api/public/health
+// Caller: https://partner.example (cross-origin) — attach same headers on GET and OPTIONS
+const cors = {
+  "Access-Control-Allow-Origin": "https://partner.example",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: cors });
+}
+
+export async function GET() {
+  return Response.json({ ok: true }, { headers: cors });
+}
+```
+
+```ts
+// File: next.config.ts — same CORS policy for all /api/* (static allowlist)
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://partner.example",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+```ts
+// File: proxy.ts — matcher: /api/:path* — dynamic Origin allowlist + OPTIONS preflight
+import { NextRequest, NextResponse } from "next/server";
+
+const allowedOrigins = ["https://acme.com", "http://localhost:3001"];
+
+export function proxy(request: NextRequest) {
+  const origin = request.headers.get("origin") ?? "";
+  const allowed = allowedOrigins.includes(origin);
+
+  if (request.method === "OPTIONS") {
+    const headers: Record<string, string> = {
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    };
+    if (allowed) headers["Access-Control-Allow-Origin"] = origin;
+    return NextResponse.json({}, { headers });
+  }
+
+  const response = NextResponse.next();
+  if (allowed) response.headers.set("Access-Control-Allow-Origin", origin);
+  return response;
+}
+
+export const config = { matcher: "/api/:path*" };
+```
+
+**Thoughts:** Deep dive (preflight, `Vary: Origin`, CDN): [CORS in Next.js](./4_nextjs_platform.md#cors-in-nextjs). Theory: [Web API — CORS](./6_web_api_security.md#cors). [Server Actions](#server-actions) use framework CSRF checks, not CORS, for same-origin forms.
+
+**Sources:**
+
+- [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+- [nextjs.org/docs/app/api-reference/config/next-config-js/headers](https://nextjs.org/docs/app/api-reference/config/next-config-js/headers)
+- [nextjs.org/docs/app/guides/backend-for-frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+
+</details>
+
+<details>
+  <summary>Webhooks in Route Handlers</summary>
+
+<a name="webhooks-in-route-handlers"></a>
+
+### Webhooks in Route Handlers
+
+**Definition:** An HTTP **POST** (sometimes GET) endpoint that **external services** call when an event happens — payment succeeded, PR merged, email delivered.
+
+**How it works:** Stable public POST URL, raw body for signature verification, return 2xx quickly, dedupe event ids — see **Examples** comments.
+
+**When to use:**
+
+- Any vendor that documents “send webhook to your URL” — not [Server Actions](#server-actions) (they are not arbitrary public POST URLs for third parties).
+
+**Pluses and minuses:**
+
+| +                    | −                               |
+| -------------------- | ------------------------------- |
+| Standard integration | Must verify signatures yourself |
+| Works on Vercel/host | Replay / duplicate events       |
+
+**Examples:**
+
+```tsx
+// File: app/api/stripe/webhook/route.ts  →  URL: POST /api/stripe/webhook
+// Caller: Stripe servers (not your React app) — configure this URL in Stripe dashboard
+// Use request.text() before JSON.parse when verifying Stripe-Signature on raw bytes
+export async function POST(request: Request) {
+  try {
+    const payload = await request.text();
+    const sig = request.headers.get("stripe-signature");
+    // stripe.webhooks.constructEvent(payload, sig, webhookSecret)
+    return new Response("ok", { status: 200 });
+  } catch (err) {
+    return new Response("Webhook error", { status: 400 });
+  }
+}
+```
+
+**Thoughts:** Disable body size limits only if the platform allows; validate content-type. For browser-facing POSTs from your site, use CSRF protection — webhooks use **shared secrets**, not cookies.
+
+**Sources:** [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+
+</details>
+
+<details>
+  <summary>Caching GET Route Handlers</summary>
+
+<a name="caching-get-route-handlers"></a>
+
+### Caching GET Route Handlers
+
+**Definition:** How **`GET`** Route Handlers interact with Next.js caching and CDN headers — separate from RSC `fetch` cache.
+
+**How it works:**
+
+- Recent Next.js versions treat **`GET` Route Handlers as dynamic by default** (not cached like old behavior) unless you opt in.
+- Export segment config on the route file, e.g. `export const dynamic = 'force-static'` when the response is safe to cache at build time.
+- Use `revalidate` export or `Cache-Control` on the `Response` for HTTP/CDN caching ([Vercel CDN cache headers](#vercel-cdn-cache-headers)).
+- `POST`/`PUT` handlers are not statically cached — design mutations explicitly.
+
+**When to use:**
+
+- Public read-only JSON feeds (`GET /api/public/stats`) with known TTL.
+- Not for personalized `GET` without checking auth and setting `private, no-store`.
+
+**Pluses and minuses:**
+
+| +                    | −                                                        |
+| -------------------- | -------------------------------------------------------- |
+| Edge/CDN friendly    | Stale data if TTL too long                               |
+| Same config as pages | Easy to leak cached private data without `Cache-Control` |
+
+**Examples:**
+
+```tsx
+// File: app/api/public/config/route.ts  →  URL: GET /api/public/config
+// dynamic = 'force-static' — opt in to cached GET (dynamic by default in recent Next.js)
+export const dynamic = "force-static";
+
+export async function GET() {
+  const data = await getPublicConfig();
+  return Response.json(data);
+}
+```
+
+**Thoughts:** Personalized APIs → `Cache-Control: private, no-store` and session checks on every request.
+
+**Sources:**
+
+- [nextjs.org/docs/app/guides/upgrading/version-15](https://nextjs.org/docs/app/guides/upgrading/version-15)
+- [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
 
 </details>
 
@@ -1067,7 +1972,7 @@ Server Actions are invoked via **POST** with a server-generated action ID. Next.
 **Examples:**
 
 ```ts
-// next.config.ts — allow preview domain to invoke actions
+// File: next.config.ts — preview host may POST Server Actions from another origin
 const nextConfig = {
   experimental: {
     serverActions: {
@@ -1078,6 +1983,7 @@ const nextConfig = {
 ```
 
 ```tsx
+// File: app/actions.ts — CSRF handled by framework for same-origin forms; authZ is still yours
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -1089,7 +1995,7 @@ export async function createTodo(formData: FormData) {
   const parsed = schema.safeParse({ title: formData.get("title") });
   if (!parsed.success) return { error: "Invalid title" };
 
-  const session = await getSession(); // always re-validate auth in action
+  const session = await getSession();
   if (!session) throw new Error("Unauthorized");
 
   await db.todo.create({

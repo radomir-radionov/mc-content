@@ -250,6 +250,149 @@ export default nextConfig;
 </details>
 
 <details>
+  <summary>CORS in Next.js</summary>
+
+<a name="cors-in-nextjs"></a>
+
+### CORS in Next.js
+
+**Definition:**
+
+**CORS** (Cross-Origin Resource Sharing) нужен, когда **JavaScript в браузере** на одном origin обращается к **HTTP-API вашего Next.js** на другом (другая схема, хост или порт). Браузер применяет [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/SAME-origin_policy); приложение должно вернуть корректные заголовки `Access-Control-*`, чтобы клиент мог прочитать ответ.
+
+CORS **не участвует**, когда:
+
+- **Server Component**, Server Action или серверный `fetch` вызывают API или бэкенд (server-to-server).
+- Браузер бьёт в **same-origin** Route Handlers (`fetch("/api/...")` со страниц того же сайта).
+- Браузер получает только **HTML/RSC**, а весь API-трафик идёт с того же хоста (BFF на том же origin).
+
+**How it works:**
+
+| Поверхность                                | Роль                                                                                                                                                                 |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Route Handler** (`app/api/.../route.ts`) | CORS-заголовки на каждом `Response`. Явный **`OPTIONS`** для preflight или опора на то, что Next.js добавит `OPTIONS`, если объявлены другие методы (см. BFF guide). |
+| **`next.config` `headers()`**              | Статические CORS-заголовки по шаблону пути (например `/api/:path*`) — когда allowlist и методы фиксированы.                                                          |
+| **`proxy.ts`**                             | Динамический allowlist по `Origin`, заголовки на `NextResponse.next()`, отдельная обработка preflight **`OPTIONS`**.                                                 |
+| **Same-origin BFF**                        | Браузер ходит только в ваш Route Handler; handler вызывает реальный бэкенд с серверными credentials — для браузера **CORS не нужен**.                                |
+| **Edge / CDN / reverse proxy**             | Vercel, nginx, Cloudflare могут выставить CORS до Next.js — те же имена заголовков, другой конфиг.                                                                   |
+
+Preflight: non-simple cross-origin запросы сначала шлют **`OPTIONS`**. Ответ: `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, при необходимости `Access-Control-Max-Age`. С cookies — **конкретный origin** (не `*`) и `Access-Control-Allow-Credentials: true`.
+
+**When to use:**
+
+- Публичный или партнёрский **REST/GraphQL** на Route Handlers из другого веб-приложения.
+- SPA на `app.example.com`, API на `api.example.com` (разные origins).
+- Виджеты, расширения Chrome, локальная разработка (`localhost:3001` → `localhost:3000`).
+
+**When not to use:**
+
+- Вместо авторизации — CORS ослабляет только **правила чтения в браузере**; curl/Postman его игнорируют.
+- `Access-Control-Allow-Origin: *` вместе с **`credentials: 'include'`** — браузеры отклоняют.
+- CORS на всех маршрутах, когда хватает **same-origin BFF** или fetch из Server Component.
+
+**Pluses and minuses:**
+
+| +                                              | −                                                               |
+| ---------------------------------------------- | --------------------------------------------------------------- |
+| Route Handler — полный контроль на endpoint    | Дублирование, если много handlers с одной политикой             |
+| `headers()` — один блок для `/api/*`           | Статика — сложно отражать allowlist origin по запросу           |
+| `proxy.ts` — центральный allowlist + preflight | Неверный `matcher` → API без заголовков или сломанный preflight |
+| BFF — проще всего для браузера (same origin)   | Лишний hop и нагрузка на сервер vs прямой вызов API             |
+
+**Examples:**
+
+```ts
+// app/api/public/route.ts — per-handler CORS
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://partner.example",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
+export async function GET() {
+  return Response.json({ ok: true }, { headers: corsHeaders });
+}
+```
+
+```ts
+// next.config.ts — pattern-wide headers
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://partner.example",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+```ts
+// proxy.ts — dynamic origin allowlist (matcher limits scope)
+import { NextRequest, NextResponse } from "next/server";
+
+const allowedOrigins = ["https://acme.com", "https://my-app.org"];
+
+const corsOptions = {
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export function proxy(request: NextRequest) {
+  const origin = request.headers.get("origin") ?? "";
+  const isAllowed = allowedOrigins.includes(origin);
+
+  if (request.method === "OPTIONS") {
+    const headers: Record<string, string> = { ...corsOptions };
+    if (isAllowed) headers["Access-Control-Allow-Origin"] = origin;
+    return NextResponse.json({}, { headers });
+  }
+
+  const response = NextResponse.next();
+  if (isAllowed) response.headers.set("Access-Control-Allow-Origin", origin);
+  for (const [key, value] of Object.entries(corsOptions)) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
+export const config = { matcher: "/api/:path*" };
+```
+
+**Thoughts:**
+
+- В production — **allowlist** origins; echo `Origin` только при совпадении. При разных ответах по origin добавляйте `Vary: Origin`.
+- **Auth** — cookies, Bearer, API keys в handler; CORS их не заменяет.
+- Теория CORS в браузере: [Web API — CORS](./6_web_api_security.md#cors) · [CORS and same-origin policy](./3_js_browser_extra.md#cors-same-origin).
+- Route Handlers как **BFF** для своего UI избавляют от CORS; см. [Handling CORS in Next.js](./4_nextjs_data.md#handling-cors-in-nextjs) · [Route Handlers](./4_nextjs_data.md#route-handlers).
+
+**Sources:** [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route) · [nextjs.org/docs/app/api-reference/config/next-config-js/headers](https://nextjs.org/docs/app/api-reference/config/next-config-js/headers) · [nextjs.org/docs/app/api-reference/file-conventions/proxy](https://nextjs.org/docs/app/api-reference/file-conventions/proxy) · [nextjs.org/docs/app/guides/backend-for-frontend](https://nextjs.org/docs/app/guides/backend-for-frontend) · [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
+
+</details>
+
+<details>
   <summary>output modes</summary>
 
 ### output modes
@@ -328,7 +471,7 @@ const nextConfig = { output: "export", images: { unoptimized: true } };
 Next.js может прокладывать маршрут на **`nodejs`** (по умолчанию, полные API-интерфейсы узла) или **среда выполнения Edge** (изолированная версия V8, веб-API). Для **новых приложений не выбирайте Edge для SSR**. Документы Next.js `export const runtime = 'edge'` как **устарело** — удалите; Узел используется по умолчанию.
 
 |                       | среда выполнения Node.js                                  | Среда выполнения Edge                                                                                               |
-|  ---------------------  |  ---------------------------------------------------------  |
+| --------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **Статус**            | По умолчанию. Рекомендуется для SSR + БД                  | Устарело для нового рендеринга маршрутов                                                                            |
 | **API**               | `fs`, `crypto`, полный `node:*`                           | Веб-стандарт (`fetch`, `Request`, `crypto.subtle`)                                                                  |
 | **Драйверы БД**       | Призма, `pg`, большинство ORM                             | Только на основе HTTP (бессерверная технология Neon, Turso HTTP)                                                    |
@@ -485,12 +628,12 @@ NEXT_PUBLIC_API_URL=https://api.example.com
 
 Ограничения времени выполнения для Vercel/бессерверной версии — отсутствие постоянной памяти, тайм-аутов, холодного запуска и пула подключений к БД.
 
-| Ограничение                         | Значение                                                         |
-|  -----------------------------------  |  ----------------------------------------------------------------  |
-| Нет постоянной памяти процесса      | Внутрипроцессные кэши LRU бесполезны — используйте Runtime Cache |
-| Тайм-аут функции (зависит от плана) | Длинные задания → фоновая очередь (Inngest, Trigger.dev)         |
-| Холодный старт                      | Минимизируйте размер пакета; использовать Fluid Compute |
-| Ограничения на подключение к БД | Использовать пул соединений (PgBouncer, бессерверный драйвер Neon) |
+| Ограничение                         | Значение                                                           |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| Нет постоянной памяти процесса      | Внутрипроцессные кэши LRU бесполезны — используйте Runtime Cache   |
+| Тайм-аут функции (зависит от плана) | Длинные задания → фоновая очередь (Inngest, Trigger.dev)           |
+| Холодный старт                      | Минимизируйте размер пакета; использовать Fluid Compute            |
+| Ограничения на подключение к БД     | Использовать пул соединений (PgBouncer, бессерверный драйвер Neon) |
 
 **How it works:** `'use cache: remote'`, Vercel Runtime Cache или внешний Redis.
 

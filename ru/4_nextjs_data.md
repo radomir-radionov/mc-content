@@ -87,13 +87,13 @@ export default async function ProductsPage() {
 
 **How it works:**
 
-| Вопрос                                  | Если да →          | Паттерн                                                     |
-| --------------------------------------- | ------------------ | ----------------------------------------------------------- |
-| Данные у **вендора** (CMS, Stripe)?     | Удалённый HTTP API | `fetch`/SDK в **Server Component**, секреты в env           |
-| Данные в **вашей БД** в том же деплое?  | Colocated backend  | `lib/` + ORM в RSC, без self-`fetch` на `/api`              |
-| Данные за **другим вашим сервисом**?    | Отдельный backend  | `fetch(API_URL)` на сервере; браузер — **Route Handler**    |
-| UI **часто обновляется** без навигации? | Клиентское чтение  | `fetch('/api/...')`, SWR, TanStack Query в Client Component |
-| Это **мутация** (форма)?                | Запись на сервер   | **Server Action** или `POST` Route Handler                  |
+| Вопрос                                  | Если да →          | Паттерн                                                        |
+| --------------------------------------- | ------------------ | -------------------------------------------------------------- |
+| Данные у **вендора** (CMS, Stripe)?     | Удалённый HTTP API | `fetch`/SDK в **Server Component**, секреты в env              |
+| Данные в **вашей БД** в том же деплое?  | Colocated backend  | `lib/` + ORM в RSC, без self-`fetch` на `/api`                 |
+| Данные за **другим вашим сервисом**?    | Отдельный backend  | `fetch(API_URL)` на сервере; браузер — **Route Handler**       |
+| UI **часто обновляется** без навигации? | Клиентское чтение  | `fetch('/api/...')`, SWR, TanStack Query в Client Component    |
+| Это **мутация** (форма)?                | Запись на сервер   | [Handling mutations in Next.js](#handling-mutations-in-nextjs) |
 
 **Layer rules:** RSC — read при render; Route Handler — HTTP для браузера/webhook; Server Action — мутации, не read API; Client fetch — после hydration.
 
@@ -199,14 +199,14 @@ async function getPosts() {
 **Examples:**
 
 ```tsx
-// lib/products.ts
+// File: lib/products.ts — только сервер (не импортировать из "use client")
 import { db } from "@/lib/db";
 
 export async function listProducts() {
   return db.product.findMany({ orderBy: { createdAt: "desc" } });
 }
 
-// app/products/page.tsx
+// File: app/products/page.tsx  →  URL: /products (чтение в RSC, без /api)
 import { listProducts } from "@/lib/products";
 
 export default async function ProductsPage() {
@@ -266,6 +266,7 @@ export default async function ProductsPage() {
 **Examples:**
 
 ```tsx
+// File: lib/orders.ts — только сервер; вызов из RSC или Route Handlers
 async function getOrders(userId: string) {
   const res = await fetch(`${process.env.API_URL}/v1/users/${userId}/orders`, {
     headers: { Authorization: `Bearer ${process.env.API_SERVICE_TOKEN}` },
@@ -277,7 +278,8 @@ async function getOrders(userId: string) {
 ```
 
 ```tsx
-// app/api/orders/route.ts
+// File: app/api/orders/route.ts  →  URL: GET /api/orders
+// Client: fetch("/api/orders") — без API_SERVICE_TOKEN в браузере
 import { auth } from "@/lib/auth";
 
 export async function GET() {
@@ -828,24 +830,180 @@ API-интерфейсы, удаленные или измененные в Next
 _Темы следующие: Определение → Плюсы и минусы → Когда использовать → Пример → Примечания → Источник ([шаблон](./4_nextjs_core.md#topic-template))._
 
 <details>
-  <summary>Server Actions</summary>
+  <summary>Handling mutations in Next.js</summary>
 
-### Server Actions
+<a name="handling-mutations-in-nextjs"></a>
 
-**Definition:** Асинхронные **Server Functions** (`"use server"`), которые Next.js отдаёт клиенту как **server references**. Вызов превращается в **POST** с зашифрованным action ID — RPC-мост для **мутаций**, а не общий read API.
+### Handling mutations in Next.js
+
+**Definition:** Повторяемый способ **создать, обновить или удалить** данные в App Router: выбрать поверхность ([Server Actions](#server-actions) или [Route Handlers](#route-handlers)), выполнить одни и те же шаги на сервере, затем **обновить кэши**, чтобы списки и детали показывали новые данные.
 
 **How it works:**
 
-| Placement  | Pattern                                                                                             |
-| ---------- | --------------------------------------------------------------------------------------------------- |
-| **Module** | В начале `actions.ts` (или `lib/actions/*.ts`) — экспорт для импорта в Client Components            |
-| **Inline** | `async function save() { "use server"; … }` в Server Component, передаётся в `<form action={save}>` |
+| Step                  | What to do                                                                                                                                    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Choose surface** | Форма/кнопка в Next UI → **Server Action** (по умолчанию). Webhook, мобилка, публичный REST → **Route Handler**.                              |
+| **2. Auth**           | Внутри action/handler: сессия и права (не только layout).                                                                                     |
+| **3. Validate**       | `FormData` или JSON; ошибки полей (`useActionState`) или `4xx` (handlers).                                                                    |
+| **4. Write**          | Один вызов: `lib/db`, ORM или один `fetch(API_URL)` — без длинных цепочек.                                                                    |
+| **5. Revalidate**     | `revalidatePath` / `revalidateTag` / `updateTag` для страниц, откуда UI читает ([stale UI pitfall](#common-pitfall-stale-ui-after-mutation)). |
+| **6. Respond**        | Сериализуемый state, `redirect()` или `Response.json` — см. **Examples**.                                                                     |
 
-1. Клиент вызывает `action` на `<form>` или импортирует reference и запускает в `startTransition` / `useActionState`.
-2. Next.js POSTит в приложение с action ID и **сериализуемыми** аргументами (`FormData`, строки, plain objects — не функции, `Date`, классы без plain-формы).
-3. Код выполняется **только на сервере** (БД, секреты, `cookies()` / `headers()` — в Next.js 15+ **await**).
+| Who calls the write?                         | Use                                                                   |
+| -------------------------------------------- | --------------------------------------------------------------------- |
+| Ваш `<form>` / кнопка в этом Next-приложении | [Server Actions](#server-actions)                                     |
+| Stripe, GitHub, партнёрский `POST` на URL    | [Webhooks in Route Handlers](#webhooks-in-route-handlers)             |
+| Browser `fetch` после hydration (дашборд)    | [BFF Route Handler](#bff-route-handler) или action                    |
+| Server Component при первом paint            | **Без мутации** — чтение в render; запись только через action/handler |
+
+**When to use:** Сохранение настроек, создание строки, удаление комментария, корзина.
+
+**When not to use:** Загрузка для SSR ([Server Component fetching](#server-component-fetching)); фоновые задачи (очередь).
+
+**Pluses and minuses:**
+
+| +                                   | −                                      |
+| ----------------------------------- | -------------------------------------- |
+| Один чеклист для команды            | Легко пропустить шаг 5 — устаревший UI |
+| Actions + revalidate для форм и RSC | У handlers свой CSRF для browser POST  |
+
+**Examples:**
+
+```tsx
+// File: app/actions/todos.ts — типичный workflow Server Action (шаги 2–6)
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+const schema = z.object({ title: z.string().min(1).max(200) });
+
+export async function createTodo(
+  _prev: { error?: string },
+  formData: FormData,
+) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const parsed = schema.safeParse({ title: formData.get("title") });
+  if (!parsed.success) return { error: "Invalid title" };
+
+  await db.todo.create({
+    data: { title: parsed.data.title, userId: session.user.id },
+  });
+
+  revalidatePath("/todos");
+  return { error: undefined };
+}
+```
+
+```tsx
+// File: app/todos/TodoForm.tsx — UI + useActionState ("use client")
+"use client";
+
+import { useActionState } from "react";
+import { createTodo } from "@/app/actions/todos";
+
+export function TodoForm() {
+  const [state, action, pending] = useActionState(createTodo, {
+    error: undefined,
+  });
+
+  return (
+    <form action={action}>
+      <input name="title" required />
+      {state.error && <p role="alert">{state.error}</p>}
+      <button disabled={pending}>Add</button>
+    </form>
+  );
+}
+```
+
+```tsx
+// File: app/api/todos/route.ts  →  URL: POST /api/todos
+// Когда нужен HTTP JSON для не-Next клиента — те же шаги 2–4, ответ Response
+import { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
+
+export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json();
+  const title = String(body.title ?? "").trim();
+  if (!title) return Response.json({ error: "Invalid title" }, { status: 400 });
+
+  await db.todo.create({ data: { title, userId: session.user.id } });
+  return Response.json({ ok: true }, { status: 201 });
+}
+```
+
+```tsx
+// File: app/actions/orders.ts — отдельный backend: один fetch внутри action
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
+
+export async function cancelOrder(formData: FormData) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
+  const orderId = String(formData.get("orderId"));
+  const res = await fetch(`${process.env.API_URL}/orders/${orderId}/cancel`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${process.env.API_SERVICE_TOKEN}` },
+  });
+  if (!res.ok) throw new Error("Cancel failed");
+
+  revalidatePath("/orders");
+  revalidatePath(`/orders/${orderId}`);
+}
+```
+
+**Thoughts:** Для UI по умолчанию: **action + `revalidatePath`**. Сравнение: [Comparison table](#comparison-table). Чтение — RSC, [Choosing a data fetch path](#choosing-a-data-fetch-path).
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/updating-data](https://nextjs.org/docs/app/getting-started/updating-data)
+- [nextjs.org/docs/app/getting-started/mutating-data](https://nextjs.org/docs/app/getting-started/mutating-data)
+
+</details>
+
+<details>
+  <summary>Server Actions</summary>
+
+<a name="server-actions"></a>
+
+### Server Actions
+
+**Definition:** `async`-функция с `"use server"`, которая **меняет данные на сервере** (создать, обновить, удалить). Доступны БД, секреты, `cookies()` — код не уходит в браузер. Файлы, вызов и transport — в комментариях к **Examples**.
+
+**Server Actions — для:** сохранения форм, удаления строки, переключения состояния — **запись** из UI Next.js. **Не для:** загрузки списка товаров или текста статьи ([Server Component fetching](#server-component-fetching)); публичных API для мобилок или webhooks ([Route Handlers](#route-handlers)).
+
+**Безопасность (важно):** любой, кто открыл сайт, может **попытаться** вызвать экспортированный action (как POST API). Проверяйте «залогинен ли пользователь?» и «можно ли ему это?» **внутри каждого action**, а не только в layout или middleware. Подробнее: [CSRF with Server Actions](#csrf-with-server-actions) · [Server Functions](./4_react_rsc.md#server-functions).
+
+**How it works:**
+
+| Placement  | Pattern                                        |
+| ---------- | ---------------------------------------------- |
+| **Module** | файл с `'use server'` — первый **Example**     |
+| **Inline** | action в Server Component — второй **Example** |
+
+| Wire protocol | Behavior                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Method**    | `POST` на маршрут страницы, зарегистрировавшей action (или текущий сегмент при навигации)                                                                                                   |
+| **Headers**   | `Next-Action` — opaque action ID; браузер шлёт cookies для same-origin сессии                                                                                                               |
+| **Body**      | `multipart/form-data` для `<form>`; сериализованные аргументы при программном вызове — лимит по умолчанию **1 MB** ([`serverActions.bodySizeLimit`](./4_nextjs_platform.md#next-config-ts)) |
+
+1. Клиент вызывает `action` на `<form>`, `formAction` на кнопке или импортирует reference в `startTransition` / `useActionState` — см. [formAction and programmatic invocation](#formaction-and-programmatic-invocation).
+2. Next.js POSTит с action ID и **сериализуемыми** аргументами — правила в [Serialization and return values](#serialization-and-return-values).
+3. Код только на сервере (БД, секреты, `cookies()` / `headers()` — в Next.js 15+ **await**) — [Cookies and headers in Server Actions](#cookies-and-headers-in-server-actions).
 4. После успешной записи сбросьте кэши UI (`revalidatePath`, `revalidateTag`, `updateTag`) — см. [Common pitfall: stale UI after mutation](#common-pitfall-stale-ui-after-mutation).
-5. Опционально `redirect()` после мутации; он **бросает** — вызывайте **вне** `try/catch`, обычно **после** revalidation.
+5. Опционально `redirect()` после мутации; он **бросает** — **вне** `try/catch`, обычно **после** revalidation.
+6. Доп. ID из UI (например `userId`) — предпочитайте `action.bind(null, id)` скрытым полям — [Server Action arguments (bind)](#server-action-arguments-bind).
 
 Модель React (директивы, сериализация): [Server Functions](./4_react_rsc.md#server-functions) · ['use server'](./4_react_rsc.md#use-server).
 
@@ -882,7 +1040,10 @@ _Темы следующие: Определение → Плюсы и мину�
 **Examples:**
 
 ```tsx
-// app/actions.ts — shared module
+// File: app/actions.ts — module pattern ('use server' в начале файла)
+// Called from: import { createTodo } → <form action={createTodo}>
+// Transport: POST + action id (не REST-путь /api/todos)
+// Arg: FormData — <input name="title"> → formData.get("title")
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -906,7 +1067,8 @@ export async function createTodo(formData: FormData) {
 ```
 
 ```tsx
-// app/todos/new/page.tsx — Server Component + inline action
+// File: app/todos/new/page.tsx — inline pattern (Server Component; без "use client")
+// Только эта страница; <form action={create}> работает без JS
 export default function NewTodoPage() {
   async function create(formData: FormData) {
     "use server";
@@ -925,7 +1087,7 @@ export default function NewTodoPage() {
 ```
 
 ```tsx
-// app/actions.ts — сигнатура для useActionState (prevState, FormData)
+// File: app/actions.ts — useActionState: (prevState, formData) => nextState
 export async function createTodoWithState(
   _prev: { error?: string },
   formData: FormData,
@@ -939,6 +1101,7 @@ export async function createTodoWithState(
 ```
 
 ```tsx
+// File: app/todos/TodoForm.tsx — "use client"; pending и ошибки из return state
 "use client";
 
 import { useActionState } from "react";
@@ -975,32 +1138,774 @@ export function TodoForm() {
 </details>
 
 <details>
-  <summary>Route Handlers</summary>
+  <summary>Server Action arguments (bind)</summary>
 
-### Route Handlers
+<a name="server-action-arguments-bind"></a>
 
-**Definition:** `route.ts` файлы, экспортирующие функции метода HTTP. Стандартный API веб-запросов/ответов.
+### Server Action arguments (bind)
+
+**Definition:** Передача **дополнительных аргументов** в Server Action помимо `FormData` через bound server reference: `Function.prototype.bind`.
+
+**How it works:**
+
+- Сигнатура: `(id, formData)` или `(id, prevState, formData)` с `useActionState`.
+- `updateUser.bind(null, userId)` фиксирует первый аргумент; поля формы — в `FormData`.
+- Работает из Client и Server Components; `<form action={boundAction}>` сохраняет progressive enhancement.
+- **Валидируйте** bound ID на сервере (формат, владелец) — как любой недоверенный ввод.
+
+**When to use:**
+
+- Один модуль actions, много строк (`deleteTodo.bind(null, todo.id)`).
+- Константы/enum, которые не должны быть редактируемыми полями.
+
+**When not to use:**
+
+- Большие или чувствительные данные — bound args уходят с reference; лучше lookup по ID из сессии.
+- Секреты — только `process.env` на сервере.
 
 **Pluses and minuses:**
 
-| +                                                    | −                                                   |
-| ---------------------------------------------------- | --------------------------------------------------- |
-| Настоящий HTTP — веб-перехватчики, общедоступные API | Нет прогрессивного улучшения                        |
-| Любой метод HTTP                                     | Не может сосуществовать с `page.tsx` в той же папке |
+| +                                                | −                                     |
+| ------------------------------------------------ | ------------------------------------- |
+| Меньше подделываемых hidden `<input>` для ID     | Bound values должны быть сериализуемы |
+| Один паттерн для `formAction` и `useActionState` | Легко забыть authZ для bound ID       |
 
 **Examples:**
 
 ```tsx
-// app/api/webhook/route.ts
-import { NextRequest } from "next/server";
+// File: app/actions.ts — bind задаёт 1-й аргумент (userId); FormData — 2-й при submit
+"use server";
 
-export async function POST(request: NextRequest) {
-  const body = await request.json();
-  return Response.json({ received: true });
+export async function updateUser(userId: string, formData: FormData) {
+  const session = await getSession();
+  if (!session || session.userId !== userId) throw new Error("Forbidden");
+
+  const name = String(formData.get("name") ?? "");
+  await db.user.update({ where: { id: userId }, data: { name } });
+  revalidatePath(`/users/${userId}`);
 }
 ```
 
-**Sources:** [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
+```tsx
+// File: app/users/[id]/UserProfile.tsx — "use client"
+// bind(null, userId) — всё равно сверяйте userId с сессией в action
+"use client";
+
+import { updateUser } from "@/app/actions";
+
+export function UserProfile({ userId }: { userId: string }) {
+  const updateUserWithId = updateUser.bind(null, userId);
+
+  return (
+    <form action={updateUserWithId}>
+      <input name="name" />
+      <button type="submit">Save</button>
+    </form>
+  );
+}
+```
+
+**Thoughts:** Hidden fields допустимы для same-origin форм, но **авторизация** не должна опираться на `userId` с клиента без проверки сессии.
+
+**Sources:** [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+
+</details>
+
+<details>
+  <summary>Closures and encryption</summary>
+
+<a name="closures-and-encryption"></a>
+
+### Closures and encryption
+
+**Definition:** **Inline** Server Actions внутри Server Component **замыкают** переменные render-прохода (версия, флаг, snapshot draft ID).
+
+**How it works:**
+
+- Захваченные значения уходят клиенту с server reference и возвращаются при вызове action.
+- Next.js **шифрует** closed-over values, чтобы сырой серверный контекст не светился в бандле.
+- Ключи **на билд** — action со старого деплоя не воспроизвести на новом после redeploy.
+- Не замыкайте секреты (URL БД, ключи) — читайте из `process.env` в теле action.
+
+**When to use:**
+
+- Оптимистичная конкуренция: snapshot `publishVersion` при render, повторная проверка в `publish()`.
+- Snapshot feature flag, когда action должен соответствовать тому, что пользователь видел при render.
+
+**Pluses and minuses:**
+
+| +                                  | −                                      |
+| ---------------------------------- | -------------------------------------- |
+| Без лишнего round-trip за контекст | Растёт payload при больших capture     |
+| Шифрование на проводе              | Не замена authZ — проверять при invoke |
+
+**Examples:**
+
+```tsx
+// File: app/editor/page.tsx — Server Component
+// publishVersion замыкается при render; Next.js шифрует в payload action
+export default async function EditorPage() {
+  const publishVersion = await getLatestVersion();
+
+  async function publish() {
+    "use server";
+    if (publishVersion !== (await getLatestVersion())) {
+      throw new Error("Version changed — refresh and try again");
+    }
+    await saveDraft();
+    revalidatePath("/editor");
+  }
+
+  return (
+    <form>
+      <button formAction={publish}>Publish</button>
+    </form>
+  );
+}
+```
+
+**Thoughts:** Авторитетные ID лучше читать из БД в action; closures — для **snapshot**, не для trust boundary.
+
+**Sources:** [nextjs.org/docs/app/guides/data-security](https://nextjs.org/docs/app/guides/data-security)
+
+</details>
+
+<details>
+  <summary>Serialization and return values</summary>
+
+<a name="serialization-and-return-values"></a>
+
+### Serialization and return values
+
+**Definition:** Server Actions принимают и возвращают только **React-сериализуемые** значения через server boundary.
+
+**How it works:**
+
+| Direction  | Allowed (typical)                                                             | Avoid                                                                           |
+| ---------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Args**   | `FormData`, строки, числа, boolean, plain objects/arrays, `null`, `undefined` | Функции, symbols, большинство class instances, `Date` (ISO string), `Map`/`Set` |
+| **Return** | То же; ошибки полей для `useActionState`                                      | `throw` для **ожидаемой** валидации — лучше `{ error: "…" }`                    |
+
+- **Ожидаемые ошибки** → сериализуемый state + `useActionState`.
+- **Неожиданные** → `throw` / `error.tsx`; для auth — `unauthorized()` / `forbidden()` при `authInterrupts`.
+- Программный вызов из handlers — оборачивать в `startTransition`.
+
+**When to use:**
+
+- `useActionState` для inline ошибок и pending без полной навигации.
+- `redirect()` / `throw` для другой страницы или жёсткого сбоя.
+
+**Pluses and minuses:**
+
+| +                                | −                                               |
+| -------------------------------- | ----------------------------------------------- |
+| Типизируемый return для форм     | Легко вернуть несериализуемое                   |
+| Разделение expected / unexpected | `redirect()` бросает — не ловить как validation |
+
+**Examples:**
+
+```tsx
+// File: app/actions.ts — return { message } для валидации; unauthorized() для auth
+"use server";
+
+import { unauthorized } from "next/navigation";
+
+export async function updateProfile(
+  _prev: { message?: string },
+  formData: FormData,
+) {
+  const session = await verifySession();
+  if (!session) unauthorized();
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return { message: "Title is required" };
+
+  await db.post.create({ data: { title, userId: session.userId } });
+  revalidatePath("/posts");
+  return { message: "" };
+}
+```
+
+**Thoughts:** Как API handler: validate → authorize → write → revalidate → return или redirect.
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/10-error-handling](https://nextjs.org/docs/app/getting-started/error-handling)
+- [nextjs.org/docs/app/api-reference/functions/unauthorized](https://nextjs.org/docs/app/api-reference/functions/unauthorized)
+
+</details>
+
+<details>
+  <summary>Cookies and headers in Server Actions</summary>
+
+<a name="cookies-and-headers-in-server-actions"></a>
+
+### Cookies and headers in Server Actions
+
+**Definition:** Server Actions выполняются в **контексте запроса** и могут читать/менять **cookies** и читать **headers** через `next/headers`.
+
+**How it works:**
+
+- `const cookieStore = await cookies()` в Next.js 15+.
+- `cookieStore.set` / `delete` вызывает **server re-render** текущего дерева маршрутов (locale, cart id и т.д.).
+- `headers()` — входящие заголовки (user-agent, proxy); для сессии предпочитайте `cookies()`.
+- Установка cookie не заменяет проверку auth в action.
+
+**When to use:**
+
+- Login/logout с session cookie.
+- Настройки в cookie без отдельного Route Handler.
+
+**Pluses and minuses:**
+
+| +                               | −                                             |
+| ------------------------------- | --------------------------------------------- |
+| Одна мутация для формы + cookie | Cookie mutation → RSC refresh — продумайте UX |
+| Те же API, что у Route Handlers | `headers()` → dynamic rendering               |
+
+**Examples:**
+
+```tsx
+// File: app/actions.ts — <form action={setLocale}> с полем name="locale"
+// cookies().set → re-render layout с новой локалью
+"use server";
+
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+
+export async function setLocale(formData: FormData) {
+  const locale = String(formData.get("locale") ?? "en");
+  const cookieStore = await cookies();
+  cookieStore.set("locale", locale, { path: "/", maxAge: 60 * 60 * 24 * 365 });
+  revalidatePath("/", "layout");
+}
+```
+
+**Thoughts:** Auth-библиотеки — их server helpers внутри actions; см. [auth](./4_nextjs_platform.md#rsc-security).
+
+**Sources:** [nextjs.org/docs/app/getting-started/updating-data](https://nextjs.org/docs/app/getting-started/updating-data)
+
+</details>
+
+<details>
+  <summary>formAction and programmatic invocation</summary>
+
+<a name="formaction-and-programmatic-invocation"></a>
+
+### formAction and programmatic invocation
+
+**Definition:** Вызов Server Actions из **форм** (`action`, `formAction`) или **напрямую** из client event handlers.
+
+**How it works:**
+
+| Pattern              | API                                             | Progressive enhancement  |
+| -------------------- | ----------------------------------------------- | ------------------------ |
+| Submit всей формы    | `<form action={action}>`                        | Да                       |
+| Кнопка в форме       | `<button formAction={saveDraft}>Draft</button>` | Да                       |
+| Кнопка в client tree | `<button formAction={createPost}>`              | Да, если внутри `<form>` |
+| Click / custom       | `startTransition(() => action(arg))`            | Нет — нужен JS           |
+
+- Несколько actions в одной форме — разные `formAction` (publish vs draft).
+- Импорт actions в Client только из модуля `"use server"`.
+
+**When to use:**
+
+- `formAction` — несколько типов мутации в одной форме.
+- Программный вызов — delete, toggle, шаги wizard без native submit.
+
+**Pluses and minuses:**
+
+| +                                 | −                                           |
+| --------------------------------- | ------------------------------------------- |
+| HTML multi-submit                 | Программный путь без HTML validation        |
+| `startTransition` — отзывчивый UI | Pending/errors вручную без `useActionState` |
+
+**Examples:**
+
+```tsx
+// File: components/DeleteButton.tsx — "use client"
+// Programmatic (без <form>); deleteTodo из app/actions.ts
+"use client";
+
+import { startTransition } from "react";
+import { deleteTodo } from "@/app/actions";
+
+export function DeleteButton({ id }: { id: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        startTransition(() => {
+          void deleteTodo(id);
+        });
+      }}
+    >
+      Delete
+    </button>
+  );
+}
+```
+
+```tsx
+// File: app/posts/edit/page.tsx — Server Component; publish и saveDraft — Server Actions
+// Submit по умолчанию → publish; вторая кнопка → saveDraft через formAction
+<form action={publish}>
+  <textarea name="body" required />
+  <button type="submit">Publish</button>
+  <button type="submit" formAction={saveDraft}>
+    Save draft
+  </button>
+</form>
+```
+
+**Thoughts:** Формы + `useActionState` для a11y ошибок; programmatic — для мелких не-form взаимодействий.
+
+**Sources:**
+
+- [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+- [nextjs.org/docs/app/getting-started/updating-data](https://nextjs.org/docs/app/getting-started/updating-data)
+
+</details>
+
+<details>
+  <summary>Optimistic UI with Server Actions</summary>
+
+<a name="optimistic-ui-with-server-actions"></a>
+
+### Optimistic UI with Server Actions
+
+**Definition:** **Мгновенный** отклик UI, пока Server Action выполняется, с согласованием после ответа сервера.
+
+**How it works:**
+
+- `useOptimistic(baseState, reducer)` — временное client state.
+- В client `form action`: `addOptimistic(...)`, затем `await serverAction(...)`.
+- При ошибке — `router.refresh()`, сброс optimistic или сообщение; auto-rollback нет.
+- `revalidatePath` в action, чтобы RSC совпал с optimistic view.
+
+**When to use:**
+
+- Чат, лайки, чеклисты при заметной задержке.
+- Не замена `useActionState` — можно комбинировать.
+
+**Pluses and minuses:**
+
+| +              | −                                      |
+| -------------- | -------------------------------------- |
+| Быстрый UX     | Явная обработка ошибки action          |
+| С form actions | Дублирование, если optimistic ≠ server |
+
+**Examples:**
+
+```tsx
+// File: app/chat/Thread.tsx — "use client"
+// Client form action: addOptimistic, затем await sendMessage() из ./actions.ts
+"use client";
+
+import { useOptimistic } from "react";
+import { sendMessage } from "./actions";
+
+type Message = { id: string; text: string };
+
+export function Thread({ messages }: { messages: Message[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    messages,
+    (state, text: string) => [...state, { id: `tmp-${state.length}`, text }],
+  );
+
+  async function onSubmit(formData: FormData) {
+    const text = String(formData.get("text") ?? "");
+    addOptimistic(text);
+    await sendMessage(text);
+  }
+
+  return (
+    <div>
+      {optimistic.map((m) => (
+        <p key={m.id}>{m.text}</p>
+      ))}
+      <form action={onSubmit}>
+        <input name="text" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
+}
+```
+
+**Thoughts:** Временные ID до revalidation с реальными ID из БД.
+
+**Sources:** [nextjs.org/docs/app/guides/forms](https://nextjs.org/docs/app/guides/forms)
+
+</details>
+
+<details>
+  <summary>Route Handlers</summary>
+
+<a name="route-handlers"></a>
+
+### Route Handlers
+
+**Definition:** **Route Handler** — серверный файл `route.ts` (или `route.js`) в папке `app/`, который отвечает на **настоящие HTTP-запросы** по URL, как небольшой API внутри Next.js. Экспортируете функции с именами методов: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`. Функция получает **`Request`** (или `NextRequest`) и возвращает **`Response`** (часто `Response.json({ ... })`).
+
+**Route Handlers — когда** HTTP нужен **вне** React UI: **webhooks** Stripe/GitHub, **мобильное приложение**, **браузер с другого домена** (CORS), **Client Component** с `fetch("/api/metrics")` после загрузки. **Не используйте** как основной способ чтения БД для **Server Components** — вызывайте `lib/db` напрямую ([Colocated backend](#colocated-backend-in-nextjs)). Для форм только вашего Next UI — чаще [Server Actions](#server-actions), если не нужен стабильный публичный URL.
+
+**Безопасность:** handler — **публичный URL**. Проверяйте API-ключи, подписи webhook и сессию **внутри handler**. Same-origin `fetch("/api/...")` всё равно требует auth — cookies можно отправить, но URL доступен и через curl.
+
+**How it works:**
+
+| Piece       | Rule                                                                                                                                   |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **File**    | только `route.ts` под `app/` (не `pages/api` — это Pages Router)                                                                       |
+| **URL**     | путь папки под `app/` = URL — см. комментарии в **Examples**                                                                           |
+| **Methods** | экспортируйте только нужные методы; остальные → **405**                                                                                |
+| **Body**    | `await request.json()`, `request.text()`, `request.formData()` — без `bodyParser` из Pages Router                                      |
+| **Cookies** | `request.cookies` на `NextRequest`; установка — на возвращаемом `Response`                                                             |
+| **Config**  | те же segment options, что у pages: `dynamic`, `revalidate`, `runtime` — см. [Caching GET Route Handlers](#caching-get-route-handlers) |
+
+**When to use:**
+
+- Webhooks и колбэки ([Webhooks](#webhooks-in-route-handlers)).
+- BFF для браузера (`/api/...`) без service token в клиенте ([BFF Route Handler](#bff-route-handler)).
+- Публичный REST/JSON для не-Next клиентов.
+
+**When not to use:**
+
+- Обычное **чтение** для RSC — Server Components + `fetch` / БД.
+- **Мутации форм** только для вашего UI — [Server Actions](#server-actions).
+
+**Pluses and minuses:**
+
+| +                                 | −                                          |
+| --------------------------------- | ------------------------------------------ |
+| Настоящий HTTP — любой клиент     | Нет progressive enhancement через `<form>` |
+| Стабильный документируемый URL    | CORS, CSRF, rate limit, auth — на вас      |
+| Webhooks и мобильные клиенты      | Лишний hop, если RSC дергает свой `/api`   |
+| `GET` можно кэшировать (с config) | Нельзя `page.tsx` в той же папке           |
+
+**Examples:**
+
+```tsx
+// File: app/api/users/route.ts
+// URL:  GET/POST … https://your-site.com/api/users
+// Rule: в этой папке НЕ должно быть page.tsx — сегмент: либо страница, либо route.ts
+export async function GET() {
+  const users = await db.user.findMany();
+  return Response.json(users);
+}
+```
+
+```tsx
+// File: app/api/health/route.ts  →  URL: /api/health
+export async function GET() {
+  return Response.json({ ok: true });
+}
+```
+
+```tsx
+// File: app/api/posts/[id]/route.ts
+// URL:  GET https://your-site.com/api/posts/123  →  params.id === "123"
+// Next.js 15+: params — Promise, нужен await
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const post = await db.post.findUnique({ where: { id } });
+  if (!post) return Response.json({ error: "Not found" }, { status: 404 });
+  return Response.json(post);
+}
+```
+
+```tsx
+// File: app/api/webhook/route.ts  →  URL: POST /api/webhook
+export async function POST(request: Request) {
+  const raw = await request.text();
+  // verify signature on raw body
+  return new Response("ok", { status: 200 });
+}
+```
+
+**Thoughts:** Cross-origin в браузере → [Handling CORS in Next.js](#handling-cors-in-nextjs). Same-origin `fetch("/api/...")` — без CORS. Сравнение с [Server Actions](#server-actions) — [Comparison table](#comparison-table).
+
+**Sources:**
+
+- [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
+- [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+
+</details>
+
+<details>
+  <summary>BFF Route Handler</summary>
+
+<a name="bff-route-handler"></a>
+
+### BFF Route Handler
+
+**Definition:** Route Handler **между браузером и бэкендом**: UI вызывает **ваш** `/api/...`, handler проверяет сессию, подставляет **service token** и ходит дальше в API или БД.
+
+**How it works:** Браузер → ваш `/api/...`; handler → бэкенд с серверными credentials — см. комментарии в **Examples**. RSC обычно без hop ([Fetching from a separate backend](#fetching-from-a-separate-backend)).
+
+**When to use:**
+
+- Дашборды с poll/мутациями после hydration ([Client-side fetching](#client-side-fetching)).
+- Скрыть токены, но оставить browser `fetch`.
+
+**Pluses and minuses:**
+
+| +                          | −                                 |
+| -------------------------- | --------------------------------- |
+| Ясный HTTP-контракт для UI | Задержка vs прямой server `fetch` |
+| Единая точка authZ         | Дублирование с actions            |
+
+**Examples:**
+
+```tsx
+// File: app/api/orders/route.ts  →  URL: GET /api/orders
+// Client: fetch("/api/orders") — same origin, cookie сессии
+// Server: fetch(API_URL/orders) с service token — не в NEXT_PUBLIC_*
+import { NextRequest } from "next/server";
+import { getSession } from "@/lib/auth";
+
+export async function GET(_request: NextRequest) {
+  const session = await getSession();
+  if (!session)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const res = await fetch(`${process.env.API_URL}/orders`, {
+    headers: { Authorization: `Bearer ${session.accessToken}` },
+  });
+  const data = await res.json();
+  return Response.json(data, { status: res.status });
+}
+```
+
+**Thoughts:** Same-origin BFF **обходит CORS в браузере** — если клиент только ваш Next. Партнёрский SPA на другом host → [Handling CORS in Next.js](#handling-cors-in-nextjs). GET TTL — [Vercel CDN cache headers](#vercel-cdn-cache-headers).
+
+**Sources:** [nextjs.org/docs/app/guides/backend-for-frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+
+</details>
+
+<details>
+  <summary>Handling CORS in Next.js</summary>
+
+<a name="handling-cors-in-nextjs"></a>
+
+### Handling CORS in Next.js
+
+**Definition:** **CORS** — правило **браузера**: JS на `https://app.example.com` может читать ответ с `https://api.example.com` только если Route Handler отдаёт заголовки `Access-Control-*` (и отвечает на **`OPTIONS`**, когда нужен preflight). Server Components, Server Actions и server `fetch` **не** используют CORS — только cross-origin **browser** `fetch` / XHR.
+
+**How it works:**
+
+| Step                  | What to do                                                                                                     |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **1. Need CORS?**     | Ваш Next на **том же origin** (`fetch("/api/...")`) → **без CORS**. Другой сайт/порт → **да**.                 |
+| **2. Prefer no CORS** | [BFF Route Handler](#bff-route-handler): браузер бьёт в ваш домен; сервер ходит в API с секретами.             |
+| **3. Pick layer**     | Один публичный API → заголовки в `route.ts`. Много `/api/*` → `next.config` `headers()` или `proxy.ts`.        |
+| **4. Preflight**      | Cross-origin «непростые» запросы шлют **`OPTIONS`** — экспорт `OPTIONS` или обработка в `proxy.ts`.            |
+| **5. Credentials**    | С cookies / `credentials: 'include'`: конкретный `Origin` (не `*`) + `Access-Control-Allow-Credentials: true`. |
+| **6. Auth**           | CORS **не** заменяет auth — проверяйте токен/сессию в handler.                                                 |
+
+| Approach                      | When                                      |
+| ----------------------------- | ----------------------------------------- |
+| **Route Handler headers**     | Один endpoint партнёра, своя политика     |
+| **`next.config` `headers()`** | Фиксированный allowlist для `/api/:path*` |
+| **`proxy.ts`**                | Динамический Origin + общий preflight     |
+| **BFF (same origin)**         | Только ваш UI — CORS не нужен             |
+
+**When to use:** SPA партнёра, dev `localhost:3001` → `localhost:3000`, расширение, вызывающее API.
+
+**When not to use:** Вместо auth; `Allow-Origin: *` с credentials; CORS на routes, которые ваши страницы и так дергают same-origin.
+
+**Pluses and minuses:**
+
+| +                               | −                           |
+| ------------------------------- | --------------------------- |
+| Полный контроль на route        | Легко забыть `OPTIONS`      |
+| `headers()` / `proxy` — DRY     | Неверный matcher ломает API |
+| BFF — проще для своего frontend | Доп. hop на сервере         |
+
+**Examples:**
+
+```ts
+// File: app/api/public/health/route.ts  →  URL: GET /api/public/health
+// Caller: https://partner.example (cross-origin) — те же headers на GET и OPTIONS
+const cors = {
+  "Access-Control-Allow-Origin": "https://partner.example",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: cors });
+}
+
+export async function GET() {
+  return Response.json({ ok: true }, { headers: cors });
+}
+```
+
+```ts
+// File: next.config.ts — одна CORS-политика для всех /api/* (статический allowlist)
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://partner.example",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+```ts
+// File: proxy.ts — matcher: /api/:path* — динамический allowlist Origin + OPTIONS
+import { NextRequest, NextResponse } from "next/server";
+
+const allowedOrigins = ["https://acme.com", "http://localhost:3001"];
+
+export function proxy(request: NextRequest) {
+  const origin = request.headers.get("origin") ?? "";
+  const allowed = allowedOrigins.includes(origin);
+
+  if (request.method === "OPTIONS") {
+    const headers: Record<string, string> = {
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    };
+    if (allowed) headers["Access-Control-Allow-Origin"] = origin;
+    return NextResponse.json({}, { headers });
+  }
+
+  const response = NextResponse.next();
+  if (allowed) response.headers.set("Access-Control-Allow-Origin", origin);
+  return response;
+}
+
+export const config = { matcher: "/api/:path*" };
+```
+
+**Thoughts:** Подробнее: [CORS in Next.js](./4_nextjs_platform.md#cors-in-nextjs). Теория: [Web API — CORS](./6_web_api_security.md#cors). [Server Actions](#server-actions) — CSRF фреймворка для same-origin форм, не CORS.
+
+**Sources:**
+
+- [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+- [nextjs.org/docs/app/api-reference/config/next-config-js/headers](https://nextjs.org/docs/app/api-reference/config/next-config-js/headers)
+- [nextjs.org/docs/app/guides/backend-for-frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+
+</details>
+
+<details>
+  <summary>Webhooks in Route Handlers</summary>
+
+<a name="webhooks-in-route-handlers"></a>
+
+### Webhooks in Route Handlers
+
+**Definition:** HTTP **POST** (иногда GET), который **внешний сервис** вызывает при событии — оплата, merge PR, доставка письма.
+
+**How it works:** Публичный POST URL, raw body для подписи, быстрый 2xx, дедуп event id — см. комментарии в **Examples**.
+
+**When to use:**
+
+- Вендор пишет «webhook на ваш URL» — не [Server Actions](#server-actions).
+
+**Pluses and minuses:**
+
+| +                   | −                           |
+| ------------------- | --------------------------- |
+| Стандарт интеграций | Подписи проверяете сами     |
+| Работает на Vercel  | Повторы / дубликаты событий |
+
+**Examples:**
+
+```tsx
+// File: app/api/stripe/webhook/route.ts  →  URL: POST /api/stripe/webhook
+// Caller: серверы Stripe (не React) — URL в dashboard Stripe
+// request.text() до JSON.parse при проверке Stripe-Signature
+export async function POST(request: Request) {
+  try {
+    const payload = await request.text();
+    const sig = request.headers.get("stripe-signature");
+    // stripe.webhooks.constructEvent(payload, sig, webhookSecret)
+    return new Response("ok", { status: 200 });
+  } catch {
+    return new Response("Webhook error", { status: 400 });
+  }
+}
+```
+
+**Thoughts:** Browser POST с вашего сайта — CSRF; webhooks — **shared secret**, не cookies.
+
+**Sources:** [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+
+</details>
+
+<details>
+  <summary>Caching GET Route Handlers</summary>
+
+<a name="caching-get-route-handlers"></a>
+
+### Caching GET Route Handlers
+
+**Definition:** Как **`GET`** Route Handlers связаны с кэшем Next.js и CDN — отдельно от RSC `fetch` cache.
+
+**How it works:**
+
+- В новых версиях **`GET` handlers по умолчанию динамические** (не кэшируются автоматически), пока не включите явно.
+- Segment config в файле, например `export const dynamic = 'force-static'` для безопасного build-time кэша.
+- `revalidate` или `Cache-Control` на `Response` — [Vercel CDN cache headers](#vercel-cdn-cache-headers).
+- `POST`/`PUT` не кэшируются статически.
+
+**When to use:**
+
+- Публичный read-only JSON с известным TTL.
+- Не для персональных `GET` без `private, no-store` и проверки сессии.
+
+**Pluses and minuses:**
+
+| +                        | −                                             |
+| ------------------------ | --------------------------------------------- |
+| Edge/CDN                 | Устаревшие данные при долгом TTL              |
+| Те же options, что pages | Риск закэшировать private без `Cache-Control` |
+
+**Examples:**
+
+```tsx
+// File: app/api/public/config/route.ts  →  URL: GET /api/public/config
+// dynamic = 'force-static' — явное кэширование GET (по умолчанию dynamic в новых Next.js)
+export const dynamic = "force-static";
+
+export async function GET() {
+  const data = await getPublicConfig();
+  return Response.json(data);
+}
+```
+
+**Thoughts:** Персональные API → `Cache-Control: private, no-store` + auth на каждый запрос.
+
+**Sources:**
+
+- [nextjs.org/docs/app/guides/upgrading/version-15](https://nextjs.org/docs/app/guides/upgrading/version-15)
+- [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
 
 </details>
 
@@ -1011,14 +1916,14 @@ export async function POST(request: NextRequest) {
 
 **Definition:**
 
-Матрица решений для выбора действий сервера или обработчиков маршрутов на основе модели вызова и потребителей.
+Матрица решений для выбора Server Actions или Route Handlers по модели вызова и потребителям.
 
-| | Действия сервера | Обработчики маршрутов |
-| | -------------------------- | ------------------------- | ------------------------------------------------- |
-| | **Призыв** | РПК / `<form action>` | HTTP к URL |
-| | **Протокол** | ПОСТ (завернутый) | ПОЛУЧИТЬ, ОТПРАВИТЬ, ПОЛОЖИТЬ, ИСПРАВИТЬ, УДАЛИТЬ |
-| | **Потребители** | Только приложение Next.js | Любой HTTP-клиент |
-| | **Сценарий использования** | Мутации, формы | Вебхуки, общедоступные API |
+|                | Server Actions        | Route Handlers                |
+| -------------- | --------------------- | ----------------------------- |
+| **Invocation** | RPC / `<form action>` | HTTP to URL                   |
+| **Protocol**   | POST (wrapped)        | GET, POST, PUT, PATCH, DELETE |
+| **Consumers**  | Next.js app only      | Any HTTP client               |
+| **Use case**   | Mutations, forms      | Webhooks, public APIs         |
 
 **Thoughts:** Обработчики маршрутов присутствуют **только** в `app/`. Внешние системы используют обработчики маршрутов, а не действия сервера.
 
@@ -1062,7 +1967,7 @@ export async function POST(request: NextRequest) {
 **Examples:**
 
 ```ts
-// next.config.ts — allow preview domain to invoke actions
+// File: next.config.ts — preview host может вызывать actions с другого origin
 const nextConfig = {
   experimental: {
     serverActions: {
@@ -1073,6 +1978,7 @@ const nextConfig = {
 ```
 
 ```tsx
+// File: app/actions.ts — CSRF для same-origin форм на фреймворке; authZ — на вас
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -1084,7 +1990,7 @@ export async function createTodo(formData: FormData) {
   const parsed = schema.safeParse({ title: formData.get("title") });
   if (!parsed.success) return { error: "Invalid title" };
 
-  const session = await getSession(); // always re-validate auth in action
+  const session = await getSession();
   if (!session) throw new Error("Unauthorized");
 
   await db.todo.create({
