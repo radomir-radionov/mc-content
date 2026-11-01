@@ -143,6 +143,8 @@ Scenario: Successful login
   Then they see the dashboard
 ```
 
+#### Compared with TDD
+
 |          | TDD              | BDD                    |
 | -------- | ---------------- | ---------------------- |
 | Focus    | Code correctness | Behavior / user value  |
