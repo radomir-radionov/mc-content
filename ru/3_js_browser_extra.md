@@ -24,7 +24,7 @@
 - [Media queries](#media-queries-in-javascript)
 - [Browser APIs & UI patterns](#browser-apis--ui-patterns)
 - [Debounce](#debounce) · [Throttle](#throttle) · [requestIdleCallback](#request-idle-callback)
-- [Browser storage](#browser-storage) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams)
+- [Browser storage](#browser-storage) · [Web Locks](#web-locks) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams)
 - [Interview](./3_js_interview.md)
 
 ---
@@ -319,6 +319,50 @@ const fromForage = await localforage.getItem("user");
 **Thoughts:** Cookies for what the **server** needs on the next request; Web Storage for small client prefs; IndexedDB (or localForage) for large/async data.
 
 **Sources:** [javascript.info/cookie](https://javascript.info/cookie) · [javascript.info/localstorage](https://javascript.info/localstorage) · [javascript.info/indexeddb](https://javascript.info/indexeddb) · [MDN — Web Storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) · [MDN — quotas & eviction](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria) · [MDN — cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies) · [MDN — IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) · [localForage](https://github.com/localForage/localForage)
+
+</details>
+
+<a name="web-locks"></a>
+
+<details>
+  <summary>Web Locks API</summary>
+
+### Web Locks API
+
+**Definition:** Web Locks API даёт вкладке или воркеру взять именованный замок, держать его, пока идёт работа, и отпустить, чтобы другие скрипты того же origin не делали эту работу одновременно.
+
+**How it works:**
+
+- Имя замка выбирает приложение. Оно называет ресурс (например одну синхронизацию IndexedDB), а не объект браузера.
+- `navigator.locks.request(name, callback)` держит замок, пока промис из `callback` не завершится, затем отпускает его.
+- Режим `exclusive` (по умолчанию) — один держатель. Режим `shared` пускает других shared-держателей того же имени и блокирует exclusive. Это схема читатели/писатель: много читателей, один писатель.
+- Гарантия только в пределах origin (вкладки и воркеры этого origin). Это не замок между серверами или разными браузерами.
+- Если вкладка закроется с замком, браузер его отпускает.
+
+**When to use:** Одна вкладка синхронизирует, мигрирует или пишет локальное хранилище, остальные ждут. Это не граница безопасности.
+
+**Pluses and minuses:**
+
+| +                                            | −                                      |
+| -------------------------------------------- | -------------------------------------- |
+| Согласует вкладки без сервера                | Только тот же origin                   |
+| Отпускается, когда промис callback завершён  | Зависший промис держит замок           |
+
+**Examples:**
+
+```js
+await navigator.locks.request("net-db-sync", async () => {
+  await syncIndexedDb();
+});
+
+await navigator.locks.request(
+  "cache",
+  { mode: "shared" },
+  async () => readCache(),
+);
+```
+
+**Sources:** [MDN Web Locks API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API) · [MDN LockManager.request](https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request)
 
 </details>
 

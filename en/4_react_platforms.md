@@ -143,10 +143,14 @@ Request → server renders HTML + payload → browser hydrates → SPA-like navi
 | **WebView wrapper**     | High reuse of web SPA         | Performance, UX gaps           |
 | **Fully native**        | API contracts only            | Best platform UX, two teams    |
 
-**When to use:** **React Native** when team knows React and needs iOS+Android with near-native feel; share **API client** layer ([REST client](./4_react_api_client.md)) and design tokens where possible.
+The **New Architecture** (Fabric renderer, JSI) is the current React Native core. It replaces the old asynchronous bridge so JS can call native synchronously. It has been enabled by default since React Native 0.76.
+
+**Expo Router** is file-based navigation for React Native and web. A file under `app/` becomes a route, the same idea as file-system routers on the web.
+
+**When to use:** **React Native** when the team knows React and needs iOS+Android with near-native feel; share the **API client** layer ([REST client](./4_react_api_client.md)) and design tokens where possible. Use Expo Router when the app should share route files across iOS, Android, and web.
 
 **Thoughts:** Deep mobile Q&A → [React Native interview](./4_react_native_interview.md); backend still **BFF/gateway** for mobile ([Backend integration](./4_react_backend_integration.md)).
 
-**Sources:** [reactnative.dev](https://reactnative.dev/)
+**Sources:** [reactnative.dev](https://reactnative.dev/) · [New Architecture](https://reactnative.dev/architecture/landing-page) · [Expo Router](https://docs.expo.dev/router/introduction/)
 
 </details>

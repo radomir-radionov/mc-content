@@ -124,7 +124,7 @@ export async function GET() {
 }
 ```
 
-**Thoughts:** Deep dives on dynamic, parallel, and intercepting routes live in [Next.js — Routing](./4_nextjs_routing.md). Rendering strategies and streaming: [Next.js — Rendering](./4_nextjs_rendering.md). Caching, `fetch` options, and Server Actions: [Next.js — Data](./4_nextjs_data.md). Interview framing: **RSC + static by default**; `"use client"` is the opt-in for interactivity; App Router wins URL conflicts over `pages/`.
+**Thoughts:** Deep dives on dynamic, parallel, and intercepting routes live in [Next.js — Routing](./4_nextjs_routing.md). Rendering strategies and streaming: [Next.js — Rendering](./4_nextjs_rendering.md). Caching, `fetch` options, and Server Actions: [Next.js — Data](./4_nextjs_data.md). HTTP methods, query params, redirects, cookies, and response headers in Route Handlers: [Route Handlers](./4_nextjs_data.md#route-handlers). Interview framing: **RSC + static by default**; `"use client"` is the opt-in for interactivity; App Router wins URL conflicts over `pages/`.
 
 **Sources:** [Project structure](https://nextjs.org/docs/app/getting-started/project-structure) · [Layouts and pages](https://nextjs.org/docs/app/getting-started/layouts-and-pages) · [Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
 

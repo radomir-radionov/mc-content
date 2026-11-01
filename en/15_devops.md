@@ -217,6 +217,47 @@ spec:
 
 </details>
 
+<details>
+  <summary>Liveness, readiness, startup probes</summary>
+
+### Liveness, readiness, startup probes
+
+**Definition:** Probes are checks the kubelet runs against a container. They decide whether to restart it and whether a Service should send it traffic.
+
+**How it works:**
+
+- **Liveness** — if it fails past the failure threshold, the kubelet kills the container and the restart policy applies. Use it for a process that is up but stuck (deadlock), not for “still booting”.
+- **Readiness** — if it fails, the EndpointSlice controller removes the Pod IP from Services that select the Pod. The container is not restarted. Traffic waits until the probe succeeds again.
+- **Startup** — while it is failing, Kubernetes does not run liveness or readiness. If the startup probe itself fails past its threshold, the kubelet kills the container. Use it for slow first boot so liveness does not restart a process that is still initializing.
+- A probe can be HTTP, TCP, gRPC, or a command.
+
+**When to use:** HTTP services that should leave the load balancer while they cannot serve, and slow starters that need a startup probe before liveness.
+
+**Pluses and minuses:**
+
+| +                                      | −                                              |
+| -------------------------------------- | ---------------------------------------------- |
+| Stuck processes restart without SSH    | A strict liveness probe restarts a healthy-but-slow app |
+| Unready Pods drop out of the Service   | Readiness does not fix a bad deploy by itself  |
+
+**Examples:**
+
+```yaml
+livenessProbe:
+  httpGet: { path: /healthz, port: 3000 }
+  periodSeconds: 10
+readinessProbe:
+  httpGet: { path: /ready, port: 3000 }
+startupProbe:
+  httpGet: { path: /healthz, port: 3000 }
+  failureThreshold: 30
+  periodSeconds: 5
+```
+
+**Sources:** [kubernetes.io — Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)
+
+</details>
+
 ---
 
 ## Observability

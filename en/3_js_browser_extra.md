@@ -24,7 +24,7 @@ Storage, CORS, observers, History, URL helpers, and UI timing. Windows, files, n
 - [Media queries](#media-queries-in-javascript)
 - [Browser APIs & UI patterns](#browser-apis--ui-patterns)
 - [Debounce](#debounce) · [Throttle](#throttle) · [requestIdleCallback](#request-idle-callback)
-- [Browser storage](#browser-storage) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams)
+- [Browser storage](#browser-storage) · [Web Locks](#web-locks) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams)
 - [Interview](./3_js_interview.md)
 
 ---
@@ -319,6 +319,50 @@ const fromForage = await localforage.getItem("user");
 **Thoughts:** Cookies for what the **server** needs on the next request; Web Storage for small client prefs; IndexedDB (or localForage) for large/async data.
 
 **Sources:** [javascript.info/cookie](https://javascript.info/cookie) · [javascript.info/localstorage](https://javascript.info/localstorage) · [javascript.info/indexeddb](https://javascript.info/indexeddb) · [MDN — Web Storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) · [MDN — quotas & eviction](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria) · [MDN — cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies) · [MDN — IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) · [localForage](https://github.com/localForage/localForage)
+
+</details>
+
+<a name="web-locks"></a>
+
+<details>
+  <summary>Web Locks API</summary>
+
+### Web Locks API
+
+**Definition:** The Web Locks API lets a tab or worker acquire a named lock, hold it while work runs, and release it so other same-origin scripts do not do that work at the same time.
+
+**How it works:**
+
+- A lock name is chosen by the app. It names a resource (for example one IndexedDB sync), not a browser object.
+- `navigator.locks.request(name, callback)` holds the lock until the promise returned by `callback` settles, then releases it.
+- Mode `exclusive` (the default) allows only one holder. Mode `shared` allows other shared holders of the same name, and blocks exclusive requests. That is the reader/writer pattern: many readers, one writer.
+- The guarantee is same-origin only (tabs and workers of this origin). It is not a lock across servers or other browsers.
+- If the tab closes while holding the lock, the browser releases it.
+
+**When to use:** One tab should sync, migrate, or write a local store while others wait. Do not use it as a security boundary.
+
+**Pluses and minuses:**
+
+| +                                            | −                                      |
+| -------------------------------------------- | -------------------------------------- |
+| Coordinates tabs without a server            | Same-origin only                       |
+| Released when the callback promise settles   | A stuck promise holds the lock         |
+
+**Examples:**
+
+```js
+await navigator.locks.request("net-db-sync", async () => {
+  await syncIndexedDb();
+});
+
+await navigator.locks.request(
+  "cache",
+  { mode: "shared" },
+  async () => readCache(),
+);
+```
+
+**Sources:** [MDN Web Locks API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API) · [MDN LockManager.request](https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request)
 
 </details>
 

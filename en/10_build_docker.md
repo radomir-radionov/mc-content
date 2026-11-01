@@ -682,6 +682,7 @@ Local full stack (app + DB + Redis), integration tests, small VPS / staging. Pro
 - Putting `version: "3.9"` thinking it selects a schema — it is ignored.
 - Assuming `deploy.replicas` scales `docker compose up`.
 - `depends_on` without `healthcheck` / `condition: service_healthy` — app starts before MySQL accepts connections.
+- A service with `profiles: [debug]` does not start on plain `docker compose up`. Start it with `docker compose --profile debug up`. Services with no profile always start. `depends_on` does not turn a profile on.
 - Binding DB data as a host folder on Docker Desktop can be slower/permission-awkward vs a named volume.
 
 **Pluses and minuses:**

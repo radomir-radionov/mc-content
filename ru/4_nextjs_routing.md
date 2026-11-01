@@ -124,7 +124,7 @@ export async function GET() {
 }
 ```
 
-**Thoughts:** Динамические, parallel и intercepting routes — в [Next.js — Routing](./4_nextjs_routing.md). Кэширование, опции `fetch` и Server Actions — в [Next.js — Data](./4_nextjs_data.md). На интервью: **RSC + static by default**; `"use client"` — opt-in для интерактивности; при конфликте URL побеждает App Router над `pages/`.
+**Thoughts:** Динамические, parallel и intercepting routes — в [Next.js — Routing](./4_nextjs_routing.md). Кэширование, опции `fetch` и Server Actions — в [Next.js — Data](./4_nextjs_data.md). HTTP-методы, query params, редиректы, cookies и заголовки ответа в Route Handlers — [Route Handlers](./4_nextjs_data.md#route-handlers). На интервью: **RSC + static by default**; `"use client"` — opt-in для интерактивности; при конфликте URL побеждает App Router над `pages/`.
 
 **Sources:** [Project structure](https://nextjs.org/docs/app/getting-started/project-structure) · [Layouts and pages](https://nextjs.org/docs/app/getting-started/layouts-and-pages) · [Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
 

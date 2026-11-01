@@ -644,6 +644,9 @@ Prefer **CSS classes** over inline styles. Use `style` only for values computed 
 | `elem.style.prop`                      | inline style only (camelCase: `backgroundColor`)                    |
 | `elem.style.cssText`                   | rewrite entire inline style string                                  |
 | `getComputedStyle(elem)`               | resolved styles after cascade (read-only; geometry usually in `px`) |
+| `style.getPropertyValue(name)`         | inline value by hyphen-case name; `""` if that inline property is unset |
+| `style.setProperty(name, value, priority?)` | set an inline property (`priority` may be `"important"`)       |
+| `style.removeProperty(name)`           | remove one inline property                                          |
 
 **When to use:**
 
@@ -660,12 +663,15 @@ el.classList.add("active");
 el.classList.toggle("hidden");
 el.style.left = `${x}px`;
 el.style.display = "";
-getComputedStyle(el).marginTop;
+el.style.setProperty("background-color", "red");
+el.style.getPropertyValue("background-color"); // "red"
+el.style.removeProperty("background-color");
+getComputedStyle(el).getPropertyValue("margin-top");
 ```
 
 **See also:** [Element size and scroll](#element-size-and-scroll) · [Coordinates](#coordinates)
 
-**Sources:** [javascript.info/styles-and-classes](https://javascript.info/styles-and-classes)
+**Sources:** [javascript.info/styles-and-classes](https://javascript.info/styles-and-classes) · [MDN CSSStyleDeclaration.getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue) · [MDN CSSStyleDeclaration.removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
 
 </details>
 

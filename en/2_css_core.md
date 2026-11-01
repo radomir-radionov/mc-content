@@ -606,11 +606,12 @@ Pseudo-classes select elements in a particular state or structural position (`:h
 | Category | Selectors | Use case |
 |----------|-----------|----------|
 | **Interaction** | `:hover`, `:active` | Pointer feedback |
+| **History** | `:link`, `:visited` | Unvisited vs visited links. Only `<a>` and `<area>` with `href`. Privacy limit: only color properties (`color`, `background-color`, `border-*-color`, `outline-color`, `text-decoration-color`, `column-rule-color`, `text-emphasis-color`) and SVG `fill` / `stroke`. Alpha is ignored. Put `:link` then `:visited` then `:hover` then `:active` (LVHA) |
 | **Focus** | `:focus`, `:focus-visible`, `:focus-within` | Keyboard vs mouse focus; parent when child focused |
 | **Structure** | `:first-child`, `:last-child`, `:nth-child(n)`, `:only-child` | Position among all siblings |
 | **Type structure** | `:first-of-type`, `:nth-of-type(n)` | Position among same tag siblings only |
 | **Negation** | `:not(.disabled)` | Exclude matches |
-| **Form state** | `:checked`, `:disabled`, `:invalid`, `:valid`, `:placeholder-shown`, `:required` | Native validation styling |
+| **Form state** | `:checked`, `:indeterminate`, `:disabled`, `:invalid`, `:valid`, `:placeholder-shown`, `:required` | Native validation styling. `:indeterminate` matches a checkbox whose `indeterminate` property was set in JS, a radio group where none are checked, and `<progress>` with no `value` |
 | **Navigation** | `:target` | URL fragment highlight |
 | **Parent** | `:has(.error)` | Style parent based on descendant |
 

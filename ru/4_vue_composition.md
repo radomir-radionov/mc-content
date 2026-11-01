@@ -292,7 +292,7 @@ Lifecycle hooks
 | `onBeforeUpdate`     | `beforeUpdate`     | До re-render                  |
 | `onUpdated`          | `updated`          | После patch DOM               |
 | `onBeforeUnmount`    | `beforeDestroy`    | До teardown                   |
-| `onUnmounted`        | `unmounted`        | После удаления                |
+| `onUnmounted`        | `unmounted` (Vue 2: `destroyed`) | После удаления                |
 | `onErrorCaptured`    | `errorCaptured`    | Проброс ошибки child          |
 | `onActivated`        | `activated`        | KeepAlive компонент показан   |
 | `onDeactivated`      | `deactivated`      | KeepAlive компонент скрыт     |
@@ -313,6 +313,49 @@ onUnmounted(() => window.removeEventListener('resize', onResize))
 [vuejs.org/api/composition-api-lifecycle.html](https://vuejs.org/api/composition-api-lifecycle.html)
 
 Reactivity utilities
+
+</details>
+
+<details>
+  <summary>nextTick</summary>
+
+### nextTick
+
+**Definition:** `nextTick` ждёт, пока Vue сбросит в DOM накопленные обновления от текущих изменений состояния.
+
+**How it works:**
+
+- Смена реактивного состояния не патчит DOM сразу. Vue копит обновления, чтобы компонент отрисовался один раз за тик, даже если изменилось несколько ref.
+- `await nextTick()` (или callback) резолвится после этого сброса. Чтение DOM до него показывает старую разметку.
+- Импорт из `vue`. Возвращает `Promise<void>`.
+
+**When to use:** Состояние уже изменено, и следующая строка должна измерить или сфокусировать обновлённый элемент. Это не ожидание ответа сервера.
+
+**Pluses and minuses:**
+
+| +                                      | −                                              |
+| -------------------------------------- | ---------------------------------------------- |
+| Чтение DOM после патча                 | Легко раскидать по коду, где нужен watcher     |
+| Один сброс на много изменений          | Не ждёт асинхронный setup дочерних компонентов |
+
+**Examples:**
+
+```vue
+<script setup>
+import { ref, nextTick } from "vue";
+
+const count = ref(0);
+
+async function increment() {
+  count.value++;
+  // DOM ещё со старым текстом
+  await nextTick();
+  // текст #counter уже обновлён
+}
+</script>
+```
+
+**Sources:** [vuejs.org nextTick](https://vuejs.org/api/general.html#nexttick)
 
 </details>
 

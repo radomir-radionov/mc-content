@@ -315,7 +315,10 @@ Number(1n) + 2; // 3
 
 **How it works:**
 
-- Common methods: `slice`, `includes`, `startsWith`, `trim`, `split`, `replace`, `replaceAll`.
+- Common methods: `slice`, `includes`, `startsWith`, `endsWith`, `trim`, `split`, `replace`, `replaceAll`.
+- `padStart(targetLength, padString)` and `padEnd` repeat `padString` until the UTF-16 length reaches `targetLength`. A string that is already longer is returned unchanged.
+- `substring(start, end)` swaps the indexes when `start > end` and treats negatives as `0`. Prefer `slice`: it keeps negative indexes (from the end) and does not swap.
+- `matchAll(regexp)` returns an iterator of every match, including groups. A real `RegExp` must have the `g` flag, or `matchAll` throws `TypeError`.
 - Strings are **iterable** (`for...of` / `Array.from`) and handle surrogate pairs correctly — index/`length` still count UTF-16 code units.
 - Surrogate pairs (emoji, many CJK): `'😂'.length === 2`; use `codePointAt` / `fromCodePoint` / `for...of`, not `charAt` / `charCodeAt` alone.
 - Visually identical strings may differ by mark order — `str.normalize()` (NFC) before compare/store.
@@ -337,6 +340,11 @@ Number(1n) + 2; // 3
 "a-b-c".split("-"); // ['a','b','c']
 ["a", "b"].join("-"); // 'a-b'
 "hello".includes("ell"); // true
+"hello".endsWith("lo"); // true
+"5".padStart(2, "0"); // "05"
+"Mozilla".substring(3, 1); // "oz" — arguments swapped
+"Mozilla".slice(-3); // "lla"
+[..."test1test2".matchAll(/t(e)(st(\d?))/g)].length; // 2
 "hello".replaceAll("l", "L"); // 'heLLo'
 [..."𝒳😂"]; // ['𝒳', '😂']
 "S\u0307\u0323".normalize() === "S\u0323\u0307".normalize(); // true
@@ -345,7 +353,7 @@ Number(1n) + 2; // 3
 
 Interpolation and multiline text → [Template literals](#template-literals).
 
-**Sources:** [javascript.info/string](https://javascript.info/string) · [javascript.info/unicode](https://javascript.info/unicode) · [javascript.info/primitives-methods](https://javascript.info/primitives-methods)
+**Sources:** [javascript.info/string](https://javascript.info/string) · [javascript.info/unicode](https://javascript.info/unicode) · [MDN String.prototype.padStart](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart) · [MDN String.prototype.substring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) · [MDN String.prototype.matchAll](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll)
 
 </details>
 

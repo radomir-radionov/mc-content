@@ -372,17 +372,20 @@ document.addEventListener("keydown", (e) => {
 
 ### Scrolling
 
-**Definition:** The `scroll` event fires on scrollable elements and the document **after** the scroll position changes.
+**Definition:** Событие `scroll` срабатывает на прокручиваемом элементе и на документе **после** смены позиции прокрутки.
 
 **How it works:**
 
-- You cannot `preventDefault()` on `scroll` — block scrolling with CSS (`overflow: hidden`) or cancel the causing key/gesture earlier.
-- Read position with `element.scrollTop` / `window.scrollY`. Geometry: [Element size and scroll](./3_js_browser.md#element-size-and-scroll).
-- Throttle heavy scroll handlers; consider `IntersectionObserver` instead of scroll listeners for visibility.
+- `preventDefault()` на `scroll` не работает. Прокрутку блокируют CSS (`overflow: hidden`) или отменяют жест/клавишу раньше.
+- `wheel` срабатывает, когда крутят колесо мыши или жест тачпада. Это не `scroll`: колесо над элементом, который не прокручивается, всё равно даёт `wheel`, а прокрутка с клавиатуры или из скрипта даёт `scroll` без `wheel`. Жест масштабирования даёт `wheel` с `ctrlKey`.
+- `deltaX` / `deltaY` — не всегда пиксели. Смотрите `deltaMode`: `WheelEvent.DOM_DELTA_PIXEL`, `DOM_DELTA_LINE` или `DOM_DELTA_PAGE`.
+- Слушатели `wheel` на документе часто passive, поэтому `preventDefault()` может не отменить прокрутку.
+- Позиция: `element.scrollTop` / `window.scrollY`. Геометрия: [Element size and scroll](./3_js_browser.md#element-size-and-scroll).
+- Тяжёлые обработчики `scroll` стоит тормозить; для видимости лучше `IntersectionObserver`, а не слушатель прокрутки.
 
-**When to use:** Sticky headers, infinite scroll, scroll progress. Not for blocking scroll at the last moment.
+**When to use:** Липкая шапка, бесконечная лента, прогресс прокрутки. Не для того, чтобы в последний момент запретить скролл.
 
-**Sources:** [javascript.info/onscroll](https://javascript.info/onscroll)
+**Sources:** [javascript.info/onscroll](https://javascript.info/onscroll) · [MDN Element wheel event](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)
 
 </details>
 

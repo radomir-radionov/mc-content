@@ -1549,94 +1549,301 @@ export function Thread({ messages }: { messages: Message[] }) {
 
 <a name="route-handlers"></a>
 
-### Route Handlers
+<!-- concept-depth:optional -->
 
-**Definition:** A **Route Handler** is a server file `route.ts` (or `route.js`) in the `app/` folder that answers **real HTTP requests** at a URL path — like a small API endpoint inside your Next.js app. You export functions named after HTTP methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`. Each function receives a standard **`Request`** (or `NextRequest`) and returns a **`Response`** (often `Response.json({ ... })`).
+**Definition:** A **Route Handler** is a **`route.ts`** (or **`route.js`**) file under **`app/`** that exposes a **public HTTP endpoint** in your Next.js app. It replaces **`pages/api`** API Routes from the Pages Router. Handlers use standard Web **`Request`** / **`Response`** (plus Next **`NextRequest`** / **`NextResponse`**) so logic stays portable. Export named functions per verb — **`GET`**, **`POST`**, **`PUT`**, **`PATCH`**, **`DELETE`**, **`HEAD`**, **`OPTIONS`**. Unlike **Server Components**, handlers answer at a real URL any client can call: browser, mobile app, or vendor webhook. Typical jobs: JSON/XML/files, form uploads, **proxy** to third-party APIs (hide keys), and [Webhooks](#webhooks-in-route-handlers). They also form an **internal server boundary** for same-origin **`fetch("/api/...")`** — normalize payloads, map errors, keep **env** server-side ([BFF Route Handler](#bff-route-handler)).
 
-**Use Route Handlers when** something **outside** your React UI needs HTTP: Stripe/GitHub **webhooks**, a **mobile app**, a **browser on another domain** (with CORS), or a **Client Component** that polls `fetch("/api/metrics")` after load. **Do not use them** as the main way for **Server Components** to read your own database — call `lib/db` directly ([Colocated backend](#colocated-backend-in-nextjs)). For form submits from your own Next.js pages, prefer [Server Actions](#server-actions) unless you need a stable public URL.
-
-**Security:** A Route Handler is a **public URL**. Verify API keys, webhook signatures, and user sessions **inside the handler**. Same-origin `fetch("/api/...")` from your app still needs auth checks — cookies can be sent, but anyone can call the URL with curl.
+In short: **`route.ts` = a real URL on your server** that any HTTP client can hit. You do not use it for data that only Server Components need on first paint — call **`lib/`** directly instead.
 
 **How it works:**
 
-| Piece       | Rule                                                                                                                                                   |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **File**    | `route.ts` only under `app/` (not `pages/api` — that is Pages Router)                                                                                  |
-| **URL**     | Folder path under `app/` = URL path — see **Examples** comments                                                                                        |
-| **Methods** | Export only the verbs you support; unknown methods → **405**                                                                                           |
-| **Body**    | `await request.json()`, `request.text()`, or `request.formData()` — no Pages Router `bodyParser` config                                                |
-| **Cookies** | `request.cookies` on `NextRequest`; set on the `Response` you return                                                                                   |
-| **Config**  | Same segment options as pages: `dynamic`, `revalidate`, `runtime` (`nodejs` vs `edge`) — see [Caching GET Route Handlers](#caching-get-route-handlers) |
+Follow these steps in order when you add an endpoint.
+
+| Step                        | Do this                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Pick the URL**         | Folder path under `app/` = URL path. Example: `app/api/users/route.ts` → **`/api/users`**.                                                                                                                                                                                                                                                                                                                                                                                |
+| **2. Create `route.ts`**    | One `route.ts` per URL segment. **Do not** put `route.ts` in the same folder as **`page.tsx`** (pick UI **or** API for that folder).                                                                                                                                                                                                                                                                                                                                      |
+| **3. Export HTTP methods**  | Export `async function GET()`, `POST()`, … only for verbs you support. Any other verb → **405 Method Not Allowed**.                                                                                                                                                                                                                                                                                                                                                       |
+| **4. Read the request**     | **Query string:** on **`NextRequest`**, use **`request.nextUrl.searchParams.get('key')`** (and **`.getAll()`** for repeated keys). Alternative: **`new URL(request.url).searchParams`**. Parse numbers with **`Number(...)`** and defaults (`?? '1'`). Return **400** if a required query param is missing. **JSON body:** `await request.json()`. **Form / files:** `await request.formData()`. Body is **read once** — use `request.clone()` if you must log and parse. |
+| **5. Return a response**    | **`Response.json(data)`** for JSON. **`new Response(null, { status: 204 })`** for empty success. Set **`status`** (201 create, 404 not found, 401 unauthorized).                                                                                                                                                                                                                                                                                                          |
+| **6. Dynamic URL segments** | Folder **`[id]`** → `/api/users/42`. Second argument: `ctx: RouteContext<'/api/users/[id]'>` then **`const { id } = await ctx.params`**. Catch-all **`[...path]`** → `path` is **`string[]`**.                                                                                                                                                                                                                                                                            |
+
+**Detailed:**
+
+1. —
+
+**Further steps:**
+
+| Step                         | Do this                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **7. Cookies and redirects** | Return **`NextResponse.redirect(url, status)`** when the outcome is **navigation** (`301`/`308` permanent, **`302`/`307`/`303`** temporary — **`303`** common after **`POST`**). Set **`response.cookies`** on that same response when needed. **`redirect()`** from `next/navigation` works in handlers but **`NextResponse`** is better when combining **redirect + cookies**. |
+| **8. Errors**                | Wrap DB/API calls in **`try/catch`**. Return a generic **500** to the client; log details on the server only.                                                                                                                                                                                                                                                                    |
+| **9. Choose the right tool** | **RSC / `lib/`** — read data for pages (no `fetch('/api/...')` from your own Server Component). **Server Actions** — form mutations inside your app. **Route Handler** — public URL, webhook, proxy with **`process.env`** secrets ([BFF Route Handler](#bff-route-handler)).                                                                                                    |
+| **10. Caching (GET only)**   | Handlers are **dynamic by default**. Opt in via segment config or `Cache-Control` — [Caching GET Route Handlers](#caching-get-route-handlers).                                                                                                                                                                                                                                   |
+
+**Quick reference (after you know the steps):**
+
+| Piece         | Rule                                                                        |
+| ------------- | --------------------------------------------------------------------------- |
+| File          | `app/api/.../route.ts`                                                      |
+| vs `page.tsx` | Same folder → conflict                                                      |
+| Request       | `NextRequest` + `nextUrl.searchParams`; body `.json()` / `.formData()` once |
+| Response      | `Response.json` or `NextResponse` + cookies / redirect                      |
+| Params        | `await ctx.params` (Next.js 15+)                                            |
 
 **When to use:**
 
-- Webhooks and third-party callbacks ([Webhooks](#webhooks-in-route-handlers)).
-- BFF endpoints for the browser (`/api/...`) that hide service tokens ([BFF Route Handler](#bff-route-handler)).
-- Public REST/JSON for non-Next clients.
+- **Webhooks** — an external service (Stripe, GitHub, a payment provider) must **POST to a fixed URL** when an event happens. Verify **signature headers** and the **raw body**, then return **2xx** quickly ([Webhooks in Route Handlers](#webhooks-in-route-handlers)).
+- **Mobile or partner REST** — a native app or another team’s backend needs **your** HTTP API: **`GET`/`POST`/`PATCH`/`DELETE`**, JSON, stable **401/404/500**, including **`/api/items/[id]`** dynamic paths (step 6).
+- **Non-HTML responses** — anything that is **not** a React page: JSON feeds, XML/RSS, **file download**, PDF/stream, **`GET /api/health`** for probes. Return **`Response`** / **`Response.json`** with the right **`Content-Type`**, not `page.tsx`.
+- **Proxy to an external API (hide keys)** — the client must not see vendor URLs or secrets. Your handler reads **`process.env`**, calls upstream, normalizes errors ([BFF Route Handler](#bff-route-handler)).
+- **Client Component `fetch("/api/...")` after load** — charts, polling, infinite scroll, or “refresh” **after hydration**; same-origin BFF avoids browser CORS and leaked tokens.
+- **Query parameters (`searchParams`)** — **`GET`** handlers that **filter, sort, paginate, or search** via the URL: **`/api/search?query=typescript&category=tutorials&page=2`**. Use when the caller is **`fetch`**, mobile, or a partner (HTTP contract), not when only a **Server Component page** needs data — then use the page’s **`searchParams`** prop and **`lib/`** instead. Read params in the handler, validate (**400** if `query` is required), then query DB or upstream.
+- **FormData and file uploads** — **`POST`** with **`multipart/form-data`**: `await request.formData()`, **`File`**, storage; JSON response for **`fetch`**, or redirect after save (see **Redirects** below).
+- **Redirects (HTTP `Location`)** — the handler’s job is to **send the client to another URL**, not return JSON/HTML inline. Examples: **OAuth/OIDC callback** (`?code=` → exchange → **`NextResponse.redirect('/dashboard')`** + session cookie); **legacy or short links** (`GET /api/go/old` → **301/308** to new path); **gate with redirect** (no session → **`/login`**); **POST then redirect** (**303** PRG after form handling). Use **`NextResponse.redirect(new URL(path, request.url), status)`** so **`Location`** is on the HTTP response; **`307`/`308`** keep method, **`303`** is typical after **`POST`**. Prefer this over RSC **`redirect()`** when the entry point is a **public HTTP URL** (callback, bookmarked API path) or you must **set cookies on the redirect response** (step 7).
+- **Cookies and request headers on the HTTP boundary** — **read** session cookie or **`Authorization`** to protect **`GET /api/me`**; **set** **`httpOnly`** cookies on login **`POST`**. Use a handler when the **caller sends HTTP cookies/headers** (browser `fetch`, mobile, partner); for auth **only inside RSC/Actions** on your app, **`cookies()`** in Server Components/Actions is often enough without a public `/api` route.
 
 **When not to use:**
 
-- Default **read** path for RSC pages — use Server Components + `fetch` / DB.
-- In-app **form mutations** that only your UI needs — [Server Actions](#server-actions).
+- **Server Component first paint** — load data in **`lib/`** / DB / server **`fetch`** ([Colocated backend](#colocated-backend-in-nextjs)). **Do not** `fetch('http://…/api/…')` from your own RSC (needless self round-trip).
+- **Simple in-app form mutations** — [Server Actions](#server-actions) unless you need a documented public URL or non-Next callers.
+- **Auth check only for rendering a page** — if no external HTTP client hits the URL, validate session in **layout/page Server Components** or Actions, not a extra `/api` route.
+- **Replacing CORS with “public API” for your own UI** — prefer same-origin **`fetch("/api/…")`** BFF; full public CORS only for **partner origins** ([Handling CORS in Next.js](#handling-cors-in-nextjs)).
+- **Caching policy alone** — prefer RSC **`fetch` cache** / **`use cache`** for page data; use handler **`Cache-Control`** or segment config only when the **HTTP endpoint** itself should be cached ([Caching GET Route Handlers](#caching-get-route-handlers)).
 
 **Pluses and minuses:**
 
-| +                                 | −                                          |
-| --------------------------------- | ------------------------------------------ |
-| Real HTTP — any client, any verb  | No `<form action>` progressive enhancement |
-| Stable URL you can document       | You own CORS, CSRF, rate limits, auth      |
-| Works with webhooks and mobile    | Extra hop if RSC fetches your own `/api`   |
-| `GET` can be cached (with config) | Cannot share folder with `page.tsx`        |
+| +                        | −                                               |
+| ------------------------ | ----------------------------------------------- |
+| Real HTTP for any client | Public URL — auth and validation in the handler |
+| Hide secrets in env      | No shared layout like `page.tsx`                |
+| JSON, files, webhooks    | Extra hop if misused from RSC                   |
 
 **Examples:**
 
+_Work through steps 1–5 — minimal handler._
+
 ```tsx
-// File: app/api/users/route.ts
-// URL:  GET/POST … https://your-site.com/api/users
-// Rule: this folder must NOT also contain page.tsx — segment is page OR route.ts, not both
+// Step 1–3: app/api/hello/route.ts  →  GET /api/hello
 export async function GET() {
-  const users = await db.user.findMany();
-  return Response.json(users);
+  return Response.json({ message: "Hello" });
+}
+```
+
+_Step 4–5 — query string + JSON body + status codes._
+
+```tsx
+// app/api/products/route.ts  →  GET /api/products?page=1  and  POST /api/products
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const page = Number(request.nextUrl.searchParams.get("page") ?? "1");
+  const products = await db.products.findPage(page);
+  return Response.json(products);
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const product = await db.products.create(body);
+    return Response.json(product, { status: 201 });
+  } catch {
+    return new Response("Internal server error", { status: 500 });
+  }
+}
+```
+
+_Query parameters — pagination, filters, validation._
+
+```tsx
+// GET /api/items?page=2&limit=10
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  const page = Number(searchParams.get("page") ?? "1");
+  const limit = Number(searchParams.get("limit") ?? "10");
+  return NextResponse.json({ pathname, page, limit });
 }
 ```
 
 ```tsx
-// File: app/api/health/route.ts  →  URL: /api/health
-export async function GET() {
-  return Response.json({ ok: true });
+// GET /api/search?query=typescript&category=tutorials&page=2
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const query = request.nextUrl.searchParams.get("query");
+  const category = request.nextUrl.searchParams.get("category");
+  const page = Number(request.nextUrl.searchParams.get("page") ?? 1);
+
+  if (!query) {
+    return Response.json({ error: "query is required" }, { status: 400 });
+  }
+
+  const results = await searchService.find({ query, category, page });
+  return Response.json(results);
 }
 ```
 
 ```tsx
-// File: app/api/posts/[id]/route.ts
-// URL:  GET https://your-site.com/api/posts/123  →  params.id === "123"
-// Next.js 15+: params is a Promise — await it before use
+// Same query string without NextRequest — Web API only
+export async function GET(request: Request) {
+  const id = new URL(request.url).searchParams.get("id");
+  return Response.json({ id });
+}
+```
+
+_Step 6 — dynamic `[id]`._
+
+```tsx
+// app/api/users/[id]/route.ts  →  GET /api/users/42  ,  DELETE /api/users/42
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  ctx: RouteContext<"/api/users/[id]">,
 ) {
-  const { id } = await params;
-  const post = await db.post.findUnique({ where: { id } });
-  if (!post) return Response.json({ error: "Not found" }, { status: 404 });
-  return Response.json(post);
+  const { id } = await ctx.params;
+  const user = await db.users.findById(id);
+  if (!user) return Response.json({ error: "Not found" }, { status: 404 });
+  return Response.json(user);
+}
+
+export async function DELETE(
+  _request: Request,
+  ctx: RouteContext<"/api/users/[id]">,
+) {
+  const { id } = await ctx.params;
+  await db.users.deleteById(id);
+  return new Response(null, { status: 204 });
+}
+```
+
+_Step 7 — redirects (OAuth callback, auth gate, legacy URL)._
+
+```tsx
+// app/api/oauth/callback/route.ts — redirect after ?code=
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const code = request.nextUrl.searchParams.get("code");
+  if (!code) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  const token = await exchangeCodeForToken(code);
+  const response = NextResponse.redirect(new URL("/dashboard", request.url));
+  response.cookies.set("session", token, { httpOnly: true, path: "/" });
+  return response;
 }
 ```
 
 ```tsx
-// File: app/api/webhook/route.ts  →  URL: POST /api/webhook
-export async function POST(request: Request) {
-  const raw = await request.text();
-  // verify signature on raw body, then process
-  return new Response("ok", { status: 200 });
+// app/api/legacy-docs/route.ts — permanent redirect (bookmark / old integration URL)
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  return NextResponse.redirect(new URL("/docs", request.url), 308);
 }
 ```
 
-**Thoughts:** Cross-origin browser calls → [Handling CORS in Next.js](#handling-cors-in-nextjs). Same-origin `fetch("/api/...")` needs no CORS. Compare with [Server Actions](#server-actions) in the [Comparison table](#comparison-table).
+```tsx
+// app/api/session-check/route.ts — conditional redirect (not JSON)
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const loggedIn = await checkAuth(request);
+  if (!loggedIn) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  return NextResponse.redirect(new URL("/app", request.url));
+}
+```
+
+_Headers and cookies — read incoming headers; read cookies on GET; set cookies on POST login._
+
+```tsx
+// app/api/me/route.ts — read headers (headers() or request.headers)
+import { headers } from "next/headers";
+
+export async function GET(request: Request) {
+  const headersList = await headers();
+  const authorization = headersList.get("authorization");
+  const contentType = request.headers.get("content-type");
+  return Response.json({ authorization, contentType });
+}
+```
+
+```tsx
+// app/api/auth/login/route.ts — read cookies; set auth_token on login
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  if (!token) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  return Response.json({ authenticated: true });
+}
+
+export async function POST(request: Request) {
+  const { username, password } = await request.json();
+  const token = await authService.login(username, password);
+  const response = NextResponse.json({ success: true });
+  response.cookies.set("auth_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+  return response;
+}
+```
+
+_FormData — multipart forms and file uploads (`await request.formData()`)._
+
+```tsx
+// app/api/upload/route.ts
+export async function POST(request: Request) {
+  const formData = await request.formData();
+  const title = formData.get("title") as string;
+  const file = formData.get("file") as File;
+  if (!file || file.size === 0) {
+    return Response.json({ error: "File is required" }, { status: 400 });
+  }
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const url = await storage.upload(buffer, file.name);
+  return Response.json({ title, url }, { status: 201 });
+}
+```
+
+_Form POST + redirect (PRG) — HTML form navigates to handler; handler reads FormData, then redirects (no body on redirect)._
+
+```tsx
+// app/api/upload/route.ts — <form action="/api/upload" method="POST" encType="multipart/form-data">
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const formData = await request.formData();
+  const file = formData.get("file") as File;
+  if (!file?.size) {
+    return NextResponse.redirect(new URL("/upload?error=missing", request.url));
+  }
+  await storage.upload(Buffer.from(await file.arrayBuffer()), file.name);
+  return NextResponse.redirect(new URL("/upload/success", request.url), 303);
+}
+```
+
+_Related patterns:_ **webhooks** — `await request.text()` then verify signature ([Webhooks in Route Handlers](#webhooks-in-route-handlers)); **proxy** — [BFF Route Handler](#bff-route-handler).
+
+**Thoughts:** Learn the **10 steps** first; use the quick-reference table when you forget syntax. Handlers are a **server boundary** for external APIs (normalize JSON, map errors, keep env on the server) — good for tutorials and small apps. CORS: [Handling CORS in Next.js](#handling-cors-in-nextjs). Compare [Server Actions](#server-actions) — [Comparison table](#comparison-table).
 
 **Sources:**
 
 - [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
 - [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+- [nextjs.org/docs/app/api-reference/functions/next-request](https://nextjs.org/docs/app/api-reference/functions/next-request)
+- [nextjs.org/docs/app/api-reference/functions/next-response](https://nextjs.org/docs/app/api-reference/functions/next-response)
+- [MDN — Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) · [MDN — Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
 
 </details>
 
@@ -1844,21 +2051,50 @@ export const config = { matcher: "/api/:path*" };
 
 ```tsx
 // File: app/api/stripe/webhook/route.ts  →  URL: POST /api/stripe/webhook
-// Caller: Stripe servers (not your React app) — configure this URL in Stripe dashboard
-// Use request.text() before JSON.parse when verifying Stripe-Signature on raw bytes
+// Caller: Stripe servers — use request.text() before JSON.parse for signature verification
 export async function POST(request: Request) {
   try {
     const payload = await request.text();
     const sig = request.headers.get("stripe-signature");
     // stripe.webhooks.constructEvent(payload, sig, webhookSecret)
     return new Response("ok", { status: 200 });
-  } catch (err) {
+  } catch {
     return new Response("Webhook error", { status: 400 });
   }
 }
 ```
 
-**Thoughts:** Disable body size limits only if the platform allows; validate content-type. For browser-facing POSTs from your site, use CSRF protection — webhooks use **shared secrets**, not cookies.
+```tsx
+// File: app/api/webhooks/payment/route.ts — generic payment webhook pattern
+import { NextRequest } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const signature = request.headers.get("x-webhook-signature");
+  const body = await request.text();
+
+  const isValid = verifyWebhookSignature(
+    body,
+    signature,
+    process.env.WEBHOOK_SECRET!,
+  );
+  if (!isValid) {
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
+  }
+
+  const event = JSON.parse(body);
+  switch (event.type) {
+    case "payment.succeeded":
+      await ordersService.markAsPaid(event.data.orderId);
+      break;
+    case "payment.failed":
+      await ordersService.markAsFailed(event.data.orderId);
+      break;
+  }
+  return new Response(null, { status: 204 });
+}
+```
+
+**Thoughts:** Disable body size limits only if the platform allows; validate content-type. For browser-facing POSTs from your site, use CSRF protection — webhooks use **shared secrets**, not cookies. Return **2xx quickly**; heavy work can be queued after ack.
 
 **Sources:** [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
 
@@ -1871,14 +2107,15 @@ export async function POST(request: Request) {
 
 ### Caching GET Route Handlers
 
-**Definition:** How **`GET`** Route Handlers interact with Next.js caching and CDN headers — separate from RSC `fetch` cache.
+**Definition:** How **`GET`** Route Handlers interact with Next.js caching, **Cache Components**, and CDN headers — separate from RSC `fetch` cache.
 
 **How it works:**
 
-- Recent Next.js versions treat **`GET` Route Handlers as dynamic by default** (not cached like old behavior) unless you opt in.
-- Export segment config on the route file, e.g. `export const dynamic = 'force-static'` when the response is safe to cache at build time.
-- Use `revalidate` export or `Cache-Control` on the `Response` for HTTP/CDN caching ([Vercel CDN cache headers](#vercel-cdn-cache-headers)).
-- `POST`/`PUT` handlers are not statically cached — design mutations explicitly.
+- Route Handlers are **not cached by default**. Opt **`GET`** into caching with segment config such as `export const dynamic = 'force-static'` on the handler file.
+- **`POST`**, **`PUT`**, and other supported methods are **never cached**, even if a cached **`GET`** lives in the **same** `route.ts`.
+- With **Cache Components** enabled, **`GET`** handlers follow the same model as UI routes: **request time by default**, **prerender at build** when the handler does not touch uncached or runtime data, and **`use cache`** in a **helper** (not directly in the handler body) to include otherwise-uncached data in a static response.
+- Prerendering **stops** (handler runs at request time) when the **`GET`** uses network I/O, DB queries, async file I/O, **`request`** properties (`url`, `headers`, `cookies`, `body`), runtime APIs (`cookies()`, `headers()`, `connection()`), or non-deterministic work (e.g. `Math.random()`).
+- Cached helper data revalidates per **`cacheLife`** when a new request arrives. Use `revalidate` export or `Cache-Control` on the `Response` for HTTP/CDN caching ([Vercel CDN cache headers](#vercel-cdn-cache-headers)).
 
 **When to use:**
 
@@ -1891,25 +2128,51 @@ export async function POST(request: Request) {
 | -------------------- | -------------------------------------------------------- |
 | Edge/CDN friendly    | Stale data if TTL too long                               |
 | Same config as pages | Easy to leak cached private data without `Cache-Control` |
+| `use cache` helpers  | Cannot put `'use cache'` directly in the handler body    |
 
 **Examples:**
 
 ```tsx
 // File: app/api/public/config/route.ts  →  URL: GET /api/public/config
-// dynamic = 'force-static' — opt in to cached GET (dynamic by default in recent Next.js)
+// Opt in: Route Handlers are dynamic/uncached by default
 export const dynamic = "force-static";
 
 export async function GET() {
-  const data = await getPublicConfig();
-  return Response.json(data);
+  const res = await fetch("https://data.example.com/config", {
+    headers: { Authorization: `Bearer ${process.env.DATA_API_KEY}` },
+  });
+  return Response.json(await res.json());
 }
 ```
 
-**Thoughts:** Personalized APIs → `Cache-Control: private, no-store` and session checks on every request.
+```tsx
+// File: app/api/products/route.ts — static JSON (no runtime/uncached access)
+export async function GET() {
+  return Response.json({ projectName: "Next.js" });
+}
+```
+
+```tsx
+// File: app/api/products/route.ts — DB via cached helper (Cache Components)
+import { cacheLife } from "next/cache";
+
+export async function GET() {
+  const products = await getProducts();
+  return Response.json(products);
+}
+
+async function getProducts() {
+  "use cache";
+  cacheLife("hours");
+  return db.query("SELECT * FROM products");
+}
+```
+
+**Thoughts:** Personalized APIs → `Cache-Control: private, no-store` and session checks on every request. Dynamic **`GET`** that reads `headers()` is valid but opts the route into request-time execution — same idea as dynamic UI routes.
 
 **Sources:**
 
-- [nextjs.org/docs/app/guides/upgrading/version-15](https://nextjs.org/docs/app/guides/upgrading/version-15)
+- [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
 - [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
 
 </details>

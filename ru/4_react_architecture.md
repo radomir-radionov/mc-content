@@ -21,7 +21,7 @@
 | [Modular monolith (feature folders)](#modular-monolith-feature-folders) | Лёгкая раскладка `features/`                      |
 | [Vertical slice architecture](#vertical-slice-architecture)             | Вертикальный срез на use case                     |
 | [Feature-Sliced Design (FSD)](#feature-sliced-design-fsd)               | Слои папок и правила импортов                     |
-| [Bulletproof React](#bulletproof-react)                                 | Строго заданное дерево `src/` (features-first)  |
+| [Bulletproof React](#bulletproof-react)                                 | Строго заданное дерево `src/` (features-first)    |
 | [Screaming Architecture](#screaming-architecture)                       | Папки по домену, а не по типу файла               |
 | [Micro-frontends (MFE)](#micro-frontends-mfe)                           | Границы команд, Module Federation                 |
 | [Monorepo packages](#monorepo-packages)                                 | Apps + shared packages в одном репозитории        |
@@ -50,17 +50,17 @@
 
 **How it works:**
 
-| Model | Unit of organization | Best when |
-| ----- | -------------------- | --------- |
-| **Atomic Design** | Гранулярность UI (atom → page) | Design systems, Storybook |
-| **Container / Presentational** | Data/effects vs чистый UI в компонентах | Переиспользование UI, тесты presentation |
-| **Modular monolith / feature folders** | `features/<name>/` | Одна команда, один deploy |
-| **Vertical slice** | Одна папка = UI + hooks + API для flow | Меньше прыжков между папками на feature |
-| **Feature-Sliced Design (FSD)** | Строгие слои + public API slice | Крупный SPA, жёсткие правила импортов |
-| **Bulletproof React** | Документированная раскладка `src/` (features, shared) | Greenfield SPA, шаблон команды |
-| **Screaming Architecture** | Верхний уровень папок = business domains | Домен виден из дерева |
-| **Micro-frontends (MFE)** | Несколько деплоящихся frontends | Много команд, независимый release |
-| **Monorepo packages** | `apps/web` + `packages/ui` | Общий kit между приложениями |
+| Model                                  | Unit of organization                                  | Best when                                |
+| -------------------------------------- | ----------------------------------------------------- | ---------------------------------------- |
+| **Atomic Design**                      | Гранулярность UI (atom → page)                        | Design systems, Storybook                |
+| **Container / Presentational**         | Data/effects vs чистый UI в компонентах               | Переиспользование UI, тесты presentation |
+| **Modular monolith / feature folders** | `features/<name>/`                                    | Одна команда, один deploy                |
+| **Vertical slice**                     | Одна папка = UI + hooks + API для flow                | Меньше прыжков между папками на feature  |
+| **Feature-Sliced Design (FSD)**        | Строгие слои + public API slice                       | Крупный SPA, жёсткие правила импортов    |
+| **Bulletproof React**                  | Документированная раскладка `src/` (features, shared) | Greenfield SPA, шаблон команды           |
+| **Screaming Architecture**             | Верхний уровень папок = business domains              | Домен виден из дерева                    |
+| **Micro-frontends (MFE)**              | Несколько деплоящихся frontends                       | Много команд, независимый release        |
+| **Monorepo packages**                  | `apps/web` + `packages/ui`                            | Общий kit между приложениями             |
 
 **When to use:** Сочетайте **Atomic** (UI kit) с **feature folders** или **FSD** (код приложения). **Container/Presentational** — внутри features. **Bulletproof React** и **Screaming Architecture** — соглашения об именах/раскладке; совместимы с FSD. **MFE** — только когда deploy boundaries этого требуют.
 
@@ -68,11 +68,11 @@
 
 **Pluses and minuses:**
 
-|             | Pluses                                       | Minuses                                          |
-| ----------- | -------------------------------------------- | ------------------------------------------------ |
-| Atomic + DS | Переиспользуемые примитивы, понятные Storybook stories | Не заменяет правила папок для business logic |
-| FSD         | Задаёт направление зависимостей              | Церемония для крошечных приложений               |
-| MFE         | Автономные команды                           | Интеграция, общая версия React, drift дизайна      |
+|             | Pluses                                                 | Minuses                                       |
+| ----------- | ------------------------------------------------------ | --------------------------------------------- |
+| Atomic + DS | Переиспользуемые примитивы, понятные Storybook stories | Не заменяет правила папок для business logic  |
+| FSD         | Задаёт направление зависимостей                        | Церемония для крошечных приложений            |
+| MFE         | Автономные команды                                     | Интеграция, общая версия React, drift дизайна |
 
 **Thoughts:** В вакансиях «MFA» часто имеют в виду **MFE**. Routing → [Client routing](./4_react_ecosystem.md#client-routing); rendering → [SPA vs SSR vs RSC](./4_react_server.md#spa-vs-ssr-vs-rsc).
 
@@ -91,21 +91,21 @@
 
 **How it works:**
 
-| Level         | React role                           | Examples                                                            |
-| ------------- | ------------------------------------ | ------------------------------------------------------------------- |
-| **Atoms**     | Мельчайшие UI-единицы без business logic | `Button`, `Input`, `Label`, обёртка иконки                            |
+| Level         | React role                               | Examples                                                            |
+| ------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **Atoms**     | Мельчайшие UI-единицы без business logic | `Button`, `Input`, `Label`, обёртка иконки                          |
 | **Molecules** | Составные atoms с одной задачей          | `SearchField` (input + button), `FormField` (label + input + error) |
-| **Organisms** | Заметные секции интерфейса       | `Header`, `ProductCard`, `LoginForm`                                |
-| **Templates** | Layout страницы без реальных данных        | `DashboardTemplate` со slots/props                                |
-| **Pages**     | Templates + реальный контент/state       | `DashboardPage`, подключённая к данным                                       |
+| **Organisms** | Заметные секции интерфейса               | `Header`, `ProductCard`, `LoginForm`                                |
+| **Templates** | Layout страницы без реальных данных      | `DashboardTemplate` со slots/props                                  |
+| **Pages**     | Templates + реальный контент/state       | `DashboardPage`, подключённая к данным                              |
 
 **When to use:** Документируйте компоненты в **Storybook**; обеспечивайте единообразие через shared kit (часто под `shared/ui` в FSD или `components/ui` в простых репозиториях).
 
 **Pluses and minuses:**
 
-| +                                 | −                                                             |
-| --------------------------------- | ------------------------------------------------------------- |
-| Общий словарь с дизайном     | Названия уровней субъективны — зафиксируйте правила команды              |
+| +                                  | −                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| Общий словарь с дизайном           | Названия уровней субъективны — зафиксируйте правила команды        |
 | Поощряет мелкие, тестируемые части | Atoms могут стать «god components», если в них запихнуть все props |
 
 **Examples:**
@@ -158,10 +158,10 @@ export function SearchField({ onSubmit }: { onSubmit: (q: string) => void }) {
 
 **How it works:**
 
-| Role | Responsibility | Typical hooks |
-| ---- | -------------- | ------------- |
-| **Container** | Fetch/subscribe, маппинг state в props | `useQuery`, `useSelector`, `useEffect` |
-| **Presentational** | Рендер UI из props; без global store | Только локальный UI state при необходимости |
+| Role               | Responsibility                         | Typical hooks                               |
+| ------------------ | -------------------------------------- | ------------------------------------------- |
+| **Container**      | Fetch/subscribe, маппинг state в props | `useQuery`, `useSelector`, `useEffect`      |
+| **Presentational** | Рендер UI из props; без global store   | Только локальный UI state при необходимости |
 
 **When to use:** Один и тот же UI с разными источниками данных; snapshot-тесты presentational-деревьев.
 
@@ -221,20 +221,20 @@ src/
   pages/        # optional route entry components
 ```
 
-| Practice                                          | Why                                       |
-| ------------------------------------------------- | ----------------------------------------- |
-| Colocate hooks + components + api для одной feature | Изменения остаются локальными                        |
-| `shared/ui` для примитивов уровня Atomic           | Не дублируйте Button в каждой feature |
+| Practice                                            | Why                                          |
+| --------------------------------------------------- | -------------------------------------------- |
+| Colocate hooks + components + api для одной feature | Изменения остаются локальными                |
+| `shared/ui` для примитивов уровня Atomic            | Не дублируйте Button в каждой feature        |
 | Тонкий `pages/`                                     | Только compose features — без business logic |
 
 **When to use:** Одна команда или общий релиз; ступень перед полными правилами **FSD**.
 
 **Pluses and minuses:**
 
-| +                                | −                                                               |
-| -------------------------------- | --------------------------------------------------------------- |
-| Просто внедрить                  | Без правил импортов features могут импортировать друг друга по кругу |
-| Меньше boilerplate, чем FSD slices | Плоский `features/` может перерасти — миграция на слои FSD            |
+| +                                  | −                                                                    |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| Просто внедрить                    | Без правил импортов features могут импортировать друг друга по кругу |
+| Меньше boilerplate, чем FSD slices | Плоский `features/` может перерасти — миграция на слои FSD           |
 
 **Thoughts:** Server-state и auth boundaries тоже **архитектурны** — зафиксируйте, какая feature владеет session, а какая только потребляет `useUser()`. Data libraries → [Ecosystem — Data fetching](./4_react_ecosystem.md#data-fetching).
 
@@ -263,11 +263,11 @@ features/checkout/
   checkout.types.ts
 ```
 
-| Horizontal (layer-first) | Vertical (slice-first) |
-| ------------------------ | ------------------------ |
-| Все hooks в `hooks/` | Hook рядом с feature, которая его использует |
-| Общий god-модуль `api/` | Colocated `checkoutApi.ts` |
-| Изменение затрагивает много папок | Изменение остаётся в одной slice-папке |
+| Horizontal (layer-first)          | Vertical (slice-first)                       |
+| --------------------------------- | -------------------------------------------- |
+| Все hooks в `hooks/`              | Hook рядом с feature, которая его использует |
+| Общий god-модуль `api/`           | Colocated `checkoutApi.ts`                   |
+| Изменение затрагивает много папок | Изменение остаётся в одной slice-папке       |
 
 **When to use:** Те же плюсы, что у [modular monolith](#modular-monolith-feature-folders); акцент на **сквозном ownership** на user story (checkout, onboarding, admin export).
 
@@ -290,20 +290,20 @@ features/checkout/
 
 **How it works:**
 
-| Layer | React examples |
-| ----- | -------------- |
-| `app` | Providers, global styles, store setup |
-| `pages` | Композиции маршрутов — связывают widgets/features |
-| `widgets` | Header, sidebar, блоки dashboard |
-| `features` | Пользовательские сценарии: «add to cart», «edit profile» |
-| `entities` | Business-сущности: User, Product |
-| `shared` | UI kit ([Atomic Design](#atomic-design)), `api` client, lib |
+| Layer      | React examples                                              |
+| ---------- | ----------------------------------------------------------- |
+| `app`      | Providers, global styles, store setup                       |
+| `pages`    | Композиции маршрутов — связывают widgets/features           |
+| `widgets`  | Header, sidebar, блоки dashboard                            |
+| `features` | Пользовательские сценарии: «add to cart», «edit profile»    |
+| `entities` | Business-сущности: User, Product                            |
+| `shared`   | UI kit ([Atomic Design](#atomic-design)), `api` client, lib |
 
-Import rule: **нижние слои не импортируют из верхних**. Cross-slice imports — через **public API** slice (`index.ts`). Настройка router → [Ecosystem — Client routing](./4_react_ecosystem.md#client-routing).
+Import rule: **нижние слои не импортируют из верхних**. Слайс делится на **сегменты** (`ui`, `model`, `api`, `lib`). Другие слайсы импортируют только **public API** слайса (`index.ts`), а не файл внутри слайса. Настройка router → [Ecosystem — Client routing](./4_react_ecosystem.md#client-routing).
 
 **When to use:** Средние/крупные SPA; альтернатива [Micro-frontends (MFE)](#micro-frontends-mfe) при одном deploy.
 
-**Sources:** [feature-sliced.design](https://feature-sliced.design/) · [Frontend structure (canonical)](./7_special_architecture.md#frontend-structure)
+**Sources:** [feature-sliced.design](https://feature-sliced.design/) · [FSD layers](https://feature-sliced.design/docs/reference/layers) · [Frontend structure (canonical)](./7_special_architecture.md#frontend-structure)
 
 </details>
 
@@ -333,19 +333,19 @@ src/
   config/
 ```
 
-| Folder | Role |
-| ------ | ---- |
-| `features/*` | Business capabilities; внутри могут быть `components/`, `api/`, `hooks/` |
-| `components/` | App-wide UI, не привязанный к одной feature |
-| `lib/` | Cross-cutting infra (API client, env) |
+| Folder        | Role                                                                     |
+| ------------- | ------------------------------------------------------------------------ |
+| `features/*`  | Business capabilities; внутри могут быть `components/`, `api/`, `hooks/` |
+| `components/` | App-wide UI, не привязанный к одной feature                              |
+| `lib/`        | Cross-cutting infra (API client, env)                                    |
 
 **When to use:** Greenfield SPA, когда нужен **copy-paste шаблон**; совпадает с [modular monolith](#modular-monolith-feature-folders) и может эволюционировать в [FSD](#feature-sliced-design-fsd) через переименование слоёв.
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
-| Хорошо задокументирован, часто в интервью | Не официальный стандарт команды React |
+| +                                              | −                                                               |
+| ---------------------------------------------- | --------------------------------------------------------------- |
+| Хорошо задокументирован, часто в интервью      | Не официальный стандарт команды React                           |
 | Features-first совпадает с продуктовой моделью | `components/` vs `features/*/components` требует правил команды |
 
 **Thoughts:** Сочетайте с [Atomic Design](#atomic-design): shared `components/` как atoms/molecules. Data layer → [Ecosystem — Data fetching](./4_react_ecosystem.md#data-fetching).
@@ -365,9 +365,9 @@ src/
 
 **How it works:**
 
-| Screaming (domain-first) | Technical (layer-first) |
-| ------------------------ | ------------------------- |
-| `src/catalog/ProductList.tsx` | `src/components/ProductList.tsx` |
+| Screaming (domain-first)       | Technical (layer-first)                 |
+| ------------------------------ | --------------------------------------- |
+| `src/catalog/ProductList.tsx`  | `src/components/ProductList.tsx`        |
 | `src/billing/InvoiceTable.tsx` | `src/hooks/useInvoices.ts` далеко от UI |
 
 React mapping: каждая **domain-папка** содержит свои components, hooks и API helpers (как [vertical slice](#vertical-slice-architecture)); **shared/** — cross-domain UI и lib.
@@ -376,10 +376,10 @@ React mapping: каждая **domain-папка** содержит свои comp
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
-| Код совпадает с языком продукта | Домены пересекаются → нужны правила (помогают FSD slices) |
-| Сочетается с modular monolith / FSD | Неверные границы доменов тяжело переименовать |
+| +                                   | −                                                         |
+| ----------------------------------- | --------------------------------------------------------- |
+| Код совпадает с языком продукта     | Домены пересекаются → нужны правила (помогают FSD slices) |
+| Сочетается с modular monolith / FSD | Неверные границы доменов тяжело переименовать             |
 
 **Thoughts:** FSD **slices** (`features/add-to-cart`) — screaming architecture с принудительным направлением слоёв.
 
@@ -398,12 +398,12 @@ React mapping: каждая **domain-папка** содержит свои comp
 
 **How it works:**
 
-| Pattern                     | Integration                                  | Tradeoff                                                                             |
-| --------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------ |
-| **Build-time composition**  | Monorepo packages импортируются в один shell    | Общий release; проще всего                                                             |
-| **Module Federation**       | Host `remotes` + remote `exposes` в runtime | Независимые deploys; version skew                                                    |
-| **Iframe / Web Components** | Жёсткая изоляция                               | UX и styling cost                                                                  |
-| **Route-owned remotes**     | Shell загружает remote на URL prefix            | Ясное ownership (настройка routing → [Ecosystem](./4_react_ecosystem.md#client-routing)) |
+| Pattern                     | Integration                                  | Tradeoff                                                                                 |
+| --------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Build-time composition**  | Monorepo packages импортируются в один shell | Общий release; проще всего                                                               |
+| **Module Federation**       | Host `remotes` + remote `exposes` в runtime  | Независимые deploys; version skew                                                        |
+| **Iframe / Web Components** | Жёсткая изоляция                             | UX и styling cost                                                                        |
+| **Route-owned remotes**     | Shell загружает remote на URL prefix         | Ясное ownership (настройка routing → [Ecosystem](./4_react_ecosystem.md#client-routing)) |
 
 Shared `react` / `react-dom` должны быть **singletons** в Federation, чтобы не было двух React.
 
@@ -411,10 +411,10 @@ Shared `react` / `react-dom` должны быть **singletons** в Federation,
 
 **Pluses and minuses:**
 
-| +                           | −                                      |
-| --------------------------- | -------------------------------------- |
-| Автономия команд               | Design system и общее state сложнее |
-| Меньший blast radius deploy | Runtime integration bugs               |
+| +                           | −                                   |
+| --------------------------- | ----------------------------------- |
+| Автономия команд            | Design system и общее state сложнее |
+| Меньший blast radius deploy | Runtime integration bugs            |
 
 **Thoughts:** Code splitting внутри **одного** app — [Code splitting](./4_react_perf.md#code-splitting), не MFE.
 
@@ -445,19 +445,19 @@ packages/
   api-client/       # typed client generated from OpenAPI
 ```
 
-| Tooling | Role |
-| ------- | ---- |
+| Tooling                                  | Role                        |
+| ---------------------------------------- | --------------------------- |
 | **pnpm workspaces** / **npm workspaces** | Линковка локальных packages |
-| **Turborepo** / **Nx** | Кэш сборок, task graph |
+| **Turborepo** / **Nx**                   | Кэш сборок, task graph      |
 
 **When to use:** Один design system для web + admin; общие types с backend; **не** то же самое, что [MFE](#micro-frontends-mfe) — обычно один deploy на app, shared code на этапе сборки.
 
 **Pluses and minuses:**
 
-| + | − |
-| - | - |
-| Один PR обновляет app + kit | Размер репо и сложность CI |
-| Границы packages явные | Нужны правила [Module / package boundaries](./7_special_architecture.md#module--package-boundaries) |
+| +                           | −                                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------------- |
+| Один PR обновляет app + kit | Размер репо и сложность CI                                                                          |
+| Границы packages явные      | Нужны правила [Module / package boundaries](./7_special_architecture.md#module--package-boundaries) |
 
 **Thoughts:** Kit [Atomic Design](#atomic-design) часто живёт в `packages/ui`. TypeScript API types → [TypeScript — API contracts](./5_ts_api_contracts.md).
 

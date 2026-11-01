@@ -1,6 +1,6 @@
 # JS — Additional
 
-Intl, RegExp, Signals (TC39), and `eval`. Everyday language fundamentals live under Core → Language.
+Intl, RegExp, Signals (TC39), shared memory (`Atomics`), and `eval`. Everyday language fundamentals live under Core → Language.
 
 [← Back to JS hub](./3_js.md)
 
@@ -16,6 +16,7 @@ Intl, RegExp, Signals (TC39), and `eval`. Everyday language fundamentals live un
 | **Intl**    | Locale-aware formatting       |
 | **RegExp**  | Patterns and flags            |
 | **Signals** | TC39 reactive cells (Stage 1) |
+| **Shared**  | `Atomics` and `SharedArrayBuffer` |
 | **Avoid**   | `eval`                        |
 
 ### Sections
@@ -25,6 +26,7 @@ Intl, RegExp, Signals (TC39), and `eval`. Everyday language fundamentals live un
 - [Intl](#intl)
 - [RegExp](#regexp)
 - [Signals](#signals)
+- [Atomics](#atomics)
 - [Avoid](#avoid)
 - [Interview](./3_js_interview.md)
 
@@ -46,6 +48,7 @@ Sibling topics: [Modules](./3_js_modules.md) · [Export and Import](./3_js_impor
 - Create formatter once: `new Intl.NumberFormat(locale, options)`.
 - Call `.format(value)` per value — caches locale data internally.
 - `Intl.Collator` for locale-aware string sort; `Intl.DateTimeFormat` for dates.
+- `Intl.RelativeTimeFormat` formats a signed amount and a unit (`"day"`, `"hour"`, `"quarter"`, …). Negative values are in the past. `numeric: "auto"` can produce words like "yesterday" instead of "1 day ago".
 
 **When to use:** Currency display, date in user's locale, sorting names per language rules.
 
@@ -66,9 +69,13 @@ new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(
 // "99,90 €"
 
 new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date());
+
+const rtf = new Intl.RelativeTimeFormat("en", { style: "short" });
+rtf.format(-1, "day"); // "1 day ago"
+rtf.format(3, "quarter"); // "in 3 qtrs."
 ```
 
-**Sources:** [javascript.info/intl](https://javascript.info/intl)
+**Sources:** [javascript.info/intl](https://javascript.info/intl) · [MDN Intl.RelativeTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
 
 </details>
 
@@ -85,7 +92,9 @@ new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date());
 
 **How it works:**
 
-- Flags: `g` global, `i` case-insensitive, `m` multiline, `s` dotAll, `u` unicode.
+- Flags: `g` global, `i` case-insensitive, `m` multiline, `s` dotAll, `u` unicode, `d` indices, `v` unicode sets.
+- `d` does not change what matches. `exec` (and methods that call it) add an `indices` array of `[start, end]` for the full match and each group.
+- `v` is a Unicode mode and cannot be combined with `u`. It allows set notation inside classes, such as `\p{Lowercase}&&\p{Script=Greek}`. `u` and `v` interpret the same pattern differently.
 - Methods: `.test(str)`, `.exec(str)` (with capture groups), `str.match`, `str.replace`, `str.split`.
 - Capturing groups `(...)` and non-capturing `(?:...)`.
 
@@ -107,7 +116,7 @@ new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date());
 const m = /(\d+)-(\d+)/.exec("2024-07"); // groups
 ```
 
-**Sources:** [javascript.info/regular-expressions](https://javascript.info/regular-expressions)
+**Sources:** [javascript.info/regular-expressions](https://javascript.info/regular-expressions) · [MDN RegExp unicodeSets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/unicodeSets) · [MDN RegExp hasIndices](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/hasIndices)
 
 </details>
 
@@ -269,6 +278,47 @@ const total = new Signal.Computed(() => {
 **Thoughts:** `set()` only colors the graph; `get()` is the only place work happens; effects stay in frameworks because **when** to rerun is not one size.
 
 **Sources:** [proposal-signals README](https://github.com/proposal-signals/proposal-signals) · [signal-polyfill](https://github.com/proposal-signals/signal-polyfill) · Doka — Signals (Rusakov, 31 Aug 2026)
+
+</details>
+
+<a name="atomics"></a>
+
+## Atomics
+
+<details>
+  <summary>Atomics</summary>
+
+### Atomics
+
+**Definition:** `Atomics` is a namespace of static methods for atomic reads and writes on shared memory. It is not a constructor. Pair it with a `SharedArrayBuffer` viewed by a typed array.
+
+**How it works:**
+
+- `Atomics.load`, `store`, `add`, `sub`, `and`, `or`, `xor`, `exchange`, and `compareExchange` finish as a single step so another agent cannot observe a half-updated value.
+- `Atomics.wait` blocks until another agent calls `Atomics.notify`, or until a timeout. It only accepts an `Int32Array` or `BigInt64Array` over a `SharedArrayBuffer`, and it cannot run on the main thread. `Atomics.waitAsync` is the non-blocking form.
+- Sharing a buffer with a worker uses `postMessage`. Both agents get their own `SharedArrayBuffer` object, but they point at the same data block.
+- In browsers, `SharedArrayBuffer` is available only in a cross-origin-isolated document (`Cross-Origin-Opener-Policy` and `Cross-Origin-Embedder-Policy`).
+
+**When to use:** Worker coordination that needs a lock or a counter in shared memory. Prefer `postMessage` when you only need to pass a value.
+
+**Pluses and minuses:**
+
+| +                                      | −                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------- |
+| Predictable reads and writes on shared memory | `wait` blocks a worker and is forbidden on the main thread |
+| No extra copy of the data block        | Requires cross-origin isolation in browsers                       |
+
+**Examples:**
+
+```js
+const sab = new SharedArrayBuffer(4);
+const view = new Int32Array(sab);
+Atomics.store(view, 0, 1);
+Atomics.add(view, 0, 1);
+Atomics.load(view, 0); // 2
+```
+
+**Sources:** [MDN Atomics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics) · [MDN Atomics.wait](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait) · [MDN SharedArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)
 
 </details>
 

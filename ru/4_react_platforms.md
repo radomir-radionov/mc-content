@@ -10,13 +10,13 @@
 
 ### Main concepts
 
-| Topic | Covers |
-| ----- | ------ |
-| [Overview](#overview) | Типы клиентов и trade-offs |
-| [Web — SPA & MPA](#web--spa--mpa) | CSR, routing, SEO |
-| [Web — SSR & hybrid](#web--ssr--hybrid) | Next, Nuxt, RSC |
-| [PWA & installable web](#pwa--installable-web) | Offline, manifest, service worker |
-| [Mobile — native vs hybrid](#mobile--native-vs-hybrid) | RN, WebView, общий API layer |
+| Topic                                                  | Covers                            |
+| ------------------------------------------------------ | --------------------------------- |
+| [Overview](#overview)                                  | Типы клиентов и trade-offs        |
+| [Web — SPA & MPA](#web--spa--mpa)                      | CSR, routing, SEO                 |
+| [Web — SSR & hybrid](#web--ssr--hybrid)                | Next, Nuxt, RSC                   |
+| [PWA & installable web](#pwa--installable-web)         | Offline, manifest, service worker |
+| [Mobile — native vs hybrid](#mobile--native-vs-hybrid) | RN, WebView, общий API layer      |
 
 ### Sections
 
@@ -37,13 +37,13 @@
 
 **How it works:**
 
-| Platform | Runtime | Typical stack |
-| -------- | ------- | ------------- |
-| **Web SPA** | Только browser после первой загрузки | React + Vite + client router |
-| **Web SSR/SSG** | Server строит HTML + hydrate | Next.js, Remix, Nuxt |
-| **PWA** | Browser + service worker | SPA/SSR + manifest + SW |
-| **Mobile native** | OS SDK (Swift/Kotlin) | Отдельно от React web |
-| **Mobile hybrid** | JS на устройстве | **React Native**, Expo, Capacitor |
+| Platform          | Runtime                              | Typical stack                     |
+| ----------------- | ------------------------------------ | --------------------------------- |
+| **Web SPA**       | Только browser после первой загрузки | React + Vite + client router      |
+| **Web SSR/SSG**   | Server строит HTML + hydrate         | Next.js, Remix, Nuxt              |
+| **PWA**           | Browser + service worker             | SPA/SSR + manifest + SW           |
+| **Mobile native** | OS SDK (Swift/Kotlin)                | Отдельно от React web             |
+| **Mobile hybrid** | JS на устройстве                     | **React Native**, Expo, Capacitor |
 
 **When to use:** Интервью «SPA vs SSR vs mobile?» — сопоставьте продукт (SEO, offline, app store) с таблицей.
 
@@ -62,12 +62,12 @@
 
 **How it works:**
 
-| | SPA | MPA |
-| - | --- | --- |
-| Navigation | Client router (`react-router`) | Full page load |
-| First paint | Часто ждёт JS bundle | HTML может отрисоваться раньше |
-| SEO | Нужен SSR/prerender или meta strategy | Естественно per URL |
-| Backend | Обычно REST/GraphQL API | Может быть server templates |
+|             | SPA                                   | MPA                            |
+| ----------- | ------------------------------------- | ------------------------------ |
+| Navigation  | Client router (`react-router`)        | Full page load                 |
+| First paint | Часто ждёт JS bundle                  | HTML может отрисоваться раньше |
+| SEO         | Нужен SSR/prerender или meta strategy | Естественно per URL            |
+| Backend     | Обычно REST/GraphQL API               | Может быть server templates    |
 
 **When to use:** **SPA** для authenticated dashboards; **MPA** или **SSR framework** для marketing и SEO-critical сайтов.
 
@@ -92,12 +92,12 @@
 Request → server renders HTML + payload → browser hydrates → SPA-like navigation
 ```
 
-| Mode | Best for |
-| ---- | -------- |
+| Mode             | Best for                                   |
+| ---------------- | ------------------------------------------ |
 | **CSR-only SPA** | Internal tools, heavy client interactivity |
-| **SSR** | Персонализированный, свежий HTML |
-| **SSG/ISR** | Docs, catalog с periodic rebuild |
-| **RSC** | Меньше client JS; fetch на server |
+| **SSR**          | Персонализированный, свежий HTML           |
+| **SSG/ISR**      | Docs, catalog с periodic rebuild           |
+| **RSC**          | Меньше client JS; fetch на server          |
 
 **When to use:** Публичный контент + auth app в одном продукте → hybrid (marketing SSG + app SPA island).
 
@@ -137,16 +137,20 @@ Request → server renders HTML + payload → browser hydrates → SPA-like navi
 
 **How it works:**
 
-| Approach | Code sharing with React web | Trade-off |
-| -------- | --------------------------- | --------- |
+| Approach                | Code sharing with React web   | Trade-off                       |
+| ----------------------- | ----------------------------- | ------------------------------- |
 | **React Native / Expo** | Паттерны, часть logic; не DOM | Отдельные navigation/components |
-| **WebView wrapper** | Высокий reuse web SPA | Performance, UX gaps |
-| **Fully native** | Только API contracts | Лучший platform UX, две команды |
+| **WebView wrapper**     | Высокий reuse web SPA         | Performance, UX gaps            |
+| **Fully native**        | Только API contracts          | Лучший platform UX, две команды |
 
-**When to use:** **React Native**, когда команда знает React и нужны iOS+Android почти native; общий **API client** ([REST client](./4_react_api_client.md)) и design tokens где возможно.
+**New Architecture** (рендерер Fabric и JSI) — текущее ядро React Native. Она заменяет старый асинхронный bridge, и JS может вызывать native синхронно. С React Native 0.76 она включена по умолчанию.
+
+**Expo Router** — файловая навигация для React Native и web. Файл в каталоге `app/` становится маршрутом, как у файловых роутеров в вебе.
+
+**When to use:** **React Native**, когда команда знает React и нужны iOS+Android почти native; общий **API client** ([REST client](./4_react_api_client.md)) и design tokens где возможно. Expo Router — когда маршруты должны быть общими для iOS, Android и web.
 
 **Thoughts:** Mobile Q&A → [React Native interview](./4_react_native_interview.md); backend по-прежнему **BFF/gateway** для mobile ([Backend integration](./4_react_backend_integration.md)).
 
-**Sources:** [reactnative.dev](https://reactnative.dev/)
+**Sources:** [reactnative.dev](https://reactnative.dev/) · [New Architecture](https://reactnative.dev/architecture/landing-page) · [Expo Router](https://docs.expo.dev/router/introduction/)
 
 </details>

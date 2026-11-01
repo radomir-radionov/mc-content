@@ -231,21 +231,27 @@ const safe = arr.toSpliced(1, 0, "pear"); // new array, arr unchanged
 **How it works:**
 
 - Поиск: `find` / `findIndex` / `includes` / `indexOf` / `lastIndexOf`. `includes` — SameValueZero (`NaN` совпадает); `indexOf` — `===` (`NaN` не найдёт).
+- `at(index)` возвращает элемент по индексу. Отрицательный индекс считает с конца (`-1` — последний). За границей — `undefined`, `length` не меняется.
+- `findLast` / `findLastIndex` идут от наибольшего индекса вниз с тем же callback, что у `find` / `findIndex`. Нет совпадения — `undefined` / `-1`.
 - `sort(compareFn?)` мутирует и возвращает **тот же** массив. Без compare — строки (UTF-16), `[10, 2]` → `[10, 2]`. Для чисел — `(a, b) => a - b`.
 - `toSorted(compareFn?)` — новый отсортированный массив (ES2023).
 - `flat(depth = 1)` копирует и разворачивает вложенность; `flat(Infinity)` — полностью.
 
-| Method               | Returns                                 | Mutates?                        |
-| -------------------- | --------------------------------------- | ------------------------------- |
-| `find` / `findIndex` | элемент / индекс или `undefined` / `-1` | нет                             |
-| `sort`               | тот же массив                           | **да** — используйте `toSorted` |
-| `flat`               | новый плоский массив                    | нет                             |
+| Method                       | Returns                                 | Mutates?                        |
+| ---------------------------- | --------------------------------------- | ------------------------------- |
+| `at`                         | элемент или `undefined`                 | нет                             |
+| `find` / `findIndex`         | элемент / индекс или `undefined` / `-1` | нет                             |
+| `findLast` / `findLastIndex` | последнее совпадение или `undefined` / `-1` | нет                         |
+| `sort`                       | тот же массив                           | **да** — используйте `toSorted` |
+| `flat`                       | новый плоский массив                    | нет                             |
 
-**When to use:** `find` — первый подходящий объект; `includes` — примитивы и `NaN`. Для числовой или locale-сортировки всегда передавайте compare. `flatMap` вместо `map(...).flat()`, если шаг может дать несколько элементов.
+**When to use:** `find` — первое совпадение; `findLast` — когда нужно последнее (последняя ошибка, последний активный элемент). `at(-1)` вместо `arr[arr.length - 1]`. `includes` — примитивы и `NaN`. Для числовой или locale-сортировки всегда передавайте compare. `flatMap` вместо `map(...).flat()`, если шаг может дать несколько элементов.
 
 **Examples:**
 
 ```js
+["a", "b", "c"].at(-1); // "c"
+[5, 12, 50, 130, 44].findLast((n) => n > 45); // 130
 [10, 2, 1].toSorted((a, b) => a - b); // [1, 2, 10]
 [1, [2, [3]]].flat(2); // [1, 2, 3]
 [NaN].includes(NaN); // true
@@ -259,6 +265,6 @@ const safe = arr.toSpliced(1, 0, "pear"); // new array, arr unchanged
 | `toSorted` / `flat` без сюрпризной мутации | `sort` без compare — лексикографический   |
 | `includes` находит `NaN`                   | `shift` + sort на огромных списках дорого |
 
-**Sources:** [MDN Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) · [MDN Array.prototype.flat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat) · [MDN Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+**Sources:** [MDN Array.prototype.at](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at) · [MDN Array.prototype.findLast](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast) · [MDN Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) · [MDN Array.prototype.flat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat) · [MDN Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
 
 </details>

@@ -377,12 +377,15 @@ document.addEventListener("keydown", (e) => {
 **How it works:**
 
 - You cannot `preventDefault()` on `scroll` — block scrolling with CSS (`overflow: hidden`) or cancel the causing key/gesture earlier.
+- `wheel` fires when the user rotates a mouse wheel or uses a trackpad gesture. It is not `scroll`: a wheel over an element that cannot scroll still fires `wheel`, and keyboard or script scrolling fires `scroll` without `wheel`. Pinch-zoom fires `wheel` with `ctrlKey` set.
+- `deltaX` / `deltaY` are not always pixels. Check `deltaMode`: `WheelEvent.DOM_DELTA_PIXEL`, `DOM_DELTA_LINE`, or `DOM_DELTA_PAGE`.
+- Document `wheel` listeners are often passive, so `preventDefault()` may not cancel the scroll.
 - Read position with `element.scrollTop` / `window.scrollY`. Geometry: [Element size and scroll](./3_js_browser.md#element-size-and-scroll).
 - Throttle heavy scroll handlers; consider `IntersectionObserver` instead of scroll listeners for visibility.
 
 **When to use:** Sticky headers, infinite scroll, scroll progress. Not for blocking scroll at the last moment.
 
-**Sources:** [javascript.info/onscroll](https://javascript.info/onscroll)
+**Sources:** [javascript.info/onscroll](https://javascript.info/onscroll) · [MDN Element wheel event](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)
 
 </details>
 

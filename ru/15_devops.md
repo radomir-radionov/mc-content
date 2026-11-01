@@ -113,11 +113,11 @@ volumes:
 
 Бегун проверяет репозиторий, выполняет шаги, загружает артефакты. Секреты исходят из хранилища платформы, а не из репозитория. Matrix параллельно создает тестовые версии Node.
 
-| | Действия GitHub        | GitLab CI                             | КругCI                          |
+| | Действия GitHub | GitLab CI | КругCI |
 | | ---------------------- | ------------------------------------- | ------------------------------- | ------------------------------ |
-| | Конфигурация           | `.github/workflows/*.yml`             | `.gitlab-ci.yml`                | `.circleci/config.yml`         |
-| | Родной git             | PR-сообщения GitHub, окружающая среда | Конвейеры GitLab MR             | Сферы + GitHub/Bitbucket       |
-| | Типичное использование | Большинство JS OSS и стартапов        | Компании, размещенные на GitLab | Старые корпоративные настройки |
+| | Конфигурация | `.github/workflows/*.yml` | `.gitlab-ci.yml` | `.circleci/config.yml` |
+| | Родной git | PR-сообщения GitHub, окружающая среда | Конвейеры GitLab MR | Сферы + GitHub/Bitbucket |
+| | Типичное использование | Большинство JS OSS и стартапов | Компании, размещенные на GitLab | Старые корпоративные настройки |
 
 **When to use:** PR-проверки(`npm ci`, `tsc --noEmit`, тесты). Развертывание производства на `main` после тестов. Предпочитать `npm ci` над `npm install` в КИ.
 
@@ -214,6 +214,47 @@ spec:
 **Thoughts:** Развертывание = желаемые реплики + развертывание. Сервис = стабильный адрес. Стручки умирают.
 
 **Sources:** [kubernetes.io — Развертывания](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) · [Сервисы](https://kubernetes.io/docs/concepts/services-networking/service/)
+
+</details>
+
+<details>
+  <summary>Liveness, readiness, startup probes</summary>
+
+### Liveness, readiness, startup probes
+
+**Definition:** Пробы — проверки, которые kubelet выполняет у контейнера. От них зависит, перезапускать ли контейнер и должен ли Service слать ему трафик.
+
+**How it works:**
+
+- **Liveness** — если проба падает больше допустимого порога, kubelet убивает контейнер, и срабатывает restart policy. Это для процесса, который жив, но завис (deadlock), а не для «ещё загружается».
+- **Readiness** — при провале контроллер EndpointSlice убирает IP пода из Services, которые его выбирают. Контейнер не перезапускают. Трафик возвращается, когда проба снова успешна.
+- **Startup** — пока она не успешна, Kubernetes не запускает liveness и readiness. Если сама startup-проба падает сверх порога, kubelet убивает контейнер. Нужна медленному первому старту, чтобы liveness не перезапускал процесс, который ещё инициализируется.
+- Проба может быть HTTP, TCP, gRPC или командой.
+
+**When to use:** HTTP-сервисы, которые должны выйти из балансировки, пока не могут отвечать, и медленный старт, которому нужна startup-проба до liveness.
+
+**Pluses and minuses:**
+
+| +                                        | −                                                             |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| Зависший процесс перезапускается без SSH | Жёсткая liveness перезапускает медленное, но живое приложение |
+| Неготовые поды выпадают из Service       | Readiness сам по себе не чинит плохой деплой                  |
+
+**Examples:**
+
+```yaml
+livenessProbe:
+  httpGet: { path: /healthz, port: 3000 }
+  periodSeconds: 10
+readinessProbe:
+  httpGet: { path: /ready, port: 3000 }
+startupProbe:
+  httpGet: { path: /healthz, port: 3000 }
+  failureThreshold: 30
+  periodSeconds: 5
+```
+
+**Sources:** [kubernetes.io — Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)
 
 </details>
 

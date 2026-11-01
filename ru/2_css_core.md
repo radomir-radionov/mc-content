@@ -607,11 +607,12 @@ style="" attribute    →  1000 (inline)
 | Категория | Селекторы | Вариант использования |
 |----------|-----------|----------|
 | **Взаимодействие** | `:hover`, `:active` | Указатель обратной связи |
+| **История** | `:link`, `:visited` | Непосещённая и посещённая ссылка. Только `<a>` и `<area>` с `href`. Из соображений приватности можно менять лишь цвет (`color`, `background-color`, `border-*-color`, `outline-color`, `text-decoration-color`, `column-rule-color`, `text-emphasis-color`) и SVG `fill` / `stroke`. Альфа игнорируется. Порядок LVHA: `:link`, `:visited`, `:hover`, `:active` |
 | **Фокус** | `:focus`, `:focus-visible`, `:focus-within` | Фокус клавиатуры и мыши; родитель, когда ребенок сосредоточен |
 | **Структура** | `:first-child`, `:last-child`, `:nth-child(n)`, `:only-child` | Положение среди всех братьев и сестер |
 | **Структура типа** | `:first-of-type`, `:nth-of-type(n)` | Позиция только среди братьев и сестер с одинаковым тегом |
 | **Отрицание** | `:not(.disabled)` | Исключить совпадения |
-| **Состояние формы** | `:checked`, `:disabled`, `:invalid`, `:valid`, `:placeholder-shown`, `:required` | Собственный стиль проверки |
+| **Состояние формы** | `:checked`, `:indeterminate`, `:disabled`, `:invalid`, `:valid`, `:placeholder-shown`, `:required` | Стиль встроенной проверки. `:indeterminate` — чекбокс с `indeterminate`, заданным из JS, группа radio, где ничего не выбрано, и `<progress>` без `value` |
 | **Навигация** | `:target` | Выделение фрагмента URL |
 | **Родитель** | `:has(.error)` | Родительский стиль на основе потомка |
 

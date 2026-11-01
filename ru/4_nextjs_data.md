@@ -1544,94 +1544,303 @@ export function Thread({ messages }: { messages: Message[] }) {
 
 <a name="route-handlers"></a>
 
-### Route Handlers
+<!-- concept-depth:optional -->
 
-**Definition:** **Route Handler** — серверный файл `route.ts` (или `route.js`) в папке `app/`, который отвечает на **настоящие HTTP-запросы** по URL, как небольшой API внутри Next.js. Экспортируете функции с именами методов: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`. Функция получает **`Request`** (или `NextRequest`) и возвращает **`Response`** (часто `Response.json({ ... })`).
+**Definition:** **Route Handler** — файл **`route.ts`** (или **`route.js`**) в **`app/`**, который создаёт **публичный HTTP-эндпоинт** в Next.js. Заменяет API Routes в **`pages/api`**. Handlers используют Web **`Request`** / **`Response`** и расширения **`NextRequest`** / **`NextResponse`**. Экспортируйте функции по имени метода — **`GET`**, **`POST`**, **`PUT`**, **`PATCH`**, **`DELETE`**, **`HEAD`**, **`OPTIONS`**. В отличие от **Server Components**, handler отвечает по **реальному URL** для браузера, mobile или webhook. Типичные задачи: JSON/XML/файлы, загрузки форм, **прокси** к API (скрыть ключи), [Webhooks](#webhooks-in-route-handlers). Same-origin **`fetch("/api/...")`** — **внутренняя серверная граница**: нормализация, ошибки, **env** на сервере ([BFF Route Handler](#bff-route-handler)).
 
-**Route Handlers — когда** HTTP нужен **вне** React UI: **webhooks** Stripe/GitHub, **мобильное приложение**, **браузер с другого домена** (CORS), **Client Component** с `fetch("/api/metrics")` после загрузки. **Не используйте** как основной способ чтения БД для **Server Components** — вызывайте `lib/db` напрямую ([Colocated backend](#colocated-backend-in-nextjs)). Для форм только вашего Next UI — чаще [Server Actions](#server-actions), если не нужен стабильный публичный URL.
-
-**Безопасность:** handler — **публичный URL**. Проверяйте API-ключи, подписи webhook и сессию **внутри handler**. Same-origin `fetch("/api/...")` всё равно требует auth — cookies можно отправить, но URL доступен и через curl.
+Коротко: **`route.ts` = настоящий URL на сервере**, к которому может обратиться любой HTTP-клиент. Для данных только на first paint RSC — напрямую **`lib/`**, не свой `/api`.
 
 **How it works:**
 
-| Piece       | Rule                                                                                                                                   |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **File**    | только `route.ts` под `app/` (не `pages/api` — это Pages Router)                                                                       |
-| **URL**     | путь папки под `app/` = URL — см. комментарии в **Examples**                                                                           |
-| **Methods** | экспортируйте только нужные методы; остальные → **405**                                                                                |
-| **Body**    | `await request.json()`, `request.text()`, `request.formData()` — без `bodyParser` из Pages Router                                      |
-| **Cookies** | `request.cookies` на `NextRequest`; установка — на возвращаемом `Response`                                                             |
-| **Config**  | те же segment options, что у pages: `dynamic`, `revalidate`, `runtime` — см. [Caching GET Route Handlers](#caching-get-route-handlers) |
+Добавляйте эндпоинт **по шагам**, в этом порядке.
+
+| Step                    | Действие                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. URL**              | Путь папки под `app/` = URL. Пример: `app/api/users/route.ts` → **`/api/users`**.                                                                                                                                                                                                                                                                                                                               |
+| **2. Файл `route.ts`**  | Один `route.ts` на сегмент URL. **Нельзя** класть `route.ts` в одну папку с **`page.tsx`** — либо страница, либо API.                                                                                                                                                                                                                                                                                           |
+| **3. Методы HTTP**      | Экспорт `async function GET()`, `POST()`, … только для нужных методов. Иначе → **405 Method Not Allowed**.                                                                                                                                                                                                                                                                                                      |
+| **4. Чтение запроса**   | **Query string:** на **`NextRequest`** — **`request.nextUrl.searchParams.get('key')`**, **`.getAll()`** для повторяющихся ключей. Или **`new URL(request.url).searchParams`**. Числа — **`Number(...)`**, default через **`??`**. Обязательный param отсутствует → **400**. **JSON:** `await request.json()`. **FormData:** `await request.formData()`. Тело **один раз** — `request.clone()` для лога + parse. |
+| **5. Ответ**            | **`Response.json(data)`** для JSON. **`new Response(null, { status: 204 })`** без тела. Статусы: **201** создание, **404** не найдено, **401** нет доступа.                                                                                                                                                                                                                                                     |
+| **6. Динамический URL** | Папка **`[id]`** → `/api/users/42`. Второй аргумент: `ctx: RouteContext<'/api/users/[id]'>` → **`const { id } = await ctx.params`**. **`[...path]`** → `path: string[]`.                                                                                                                                                                                                                                        |
+
+**Detailed:**
+
+1. —
+
+**Further steps:**
+
+| Step                      | Действие                                                                                                                                                                                                                                                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **7. Cookies и redirect** | **`NextResponse.redirect(url, status)`**, когда результат — **переход** (`301`/`308` постоянный, **`302`/`307`/`303`** временный; **`303`** часто после **`POST`**). **`response.cookies`** на том же ответе. **`redirect()`** из `next/navigation` в handler можно, но **`NextResponse`** удобнее для **redirect + cookies**. |
+| **8. Ошибки**             | **`try/catch`** вокруг БД/API. Клиенту — общий **500**; детали только в логах сервера.                                                                                                                                                                                                                                         |
+| **9. Что выбрать**        | **RSC / `lib/`** — данные для страницы (не `fetch('/api/...')` из своего RSC). **Server Actions** — мутации из форм. **Route Handler** — публичный URL, webhook, прокси с **`process.env`** ([BFF Route Handler](#bff-route-handler)).                                                                                         |
+| **10. Кэш (только GET)**  | По умолчанию handler **динамический**. Opt-in — [Caching GET Route Handlers](#caching-get-route-handlers).                                                                                                                                                                                                                     |
+
+**Quick reference (когда шаги уже понятны):**
+
+| Piece         | Rule                                                    |
+| ------------- | ------------------------------------------------------- |
+| File          | `app/api/.../route.ts`                                  |
+| vs `page.tsx` | Одна папка — конфликт                                   |
+| Request       | `NextRequest` + `searchParams`; body один раз           |
+| Response      | `Response.json` или `NextResponse` + cookies / redirect |
+| Params        | `await ctx.params` (Next.js 15+)                        |
 
 **When to use:**
 
-- Webhooks и колбэки ([Webhooks](#webhooks-in-route-handlers)).
-- BFF для браузера (`/api/...`) без service token в клиенте ([BFF Route Handler](#bff-route-handler)).
-- Публичный REST/JSON для не-Next клиентов.
+- **Webhooks** — внешний сервис POST на **фиксированный URL**; проверка **заголовка подписи** и **raw body**, быстрый **2xx** ([Webhooks in Route Handlers](#webhooks-in-route-handlers)).
+- **Mobile или partner REST** — чужой клиент ходит в **ваш** API: методы HTTP, JSON, **401/404/500**, в т.ч. **`/api/items/[id]`** (шаг 6).
+- **Не-HTML ответы** — не React-страница: JSON, XML/RSS, **скачивание файла**, stream, **`GET /api/health`**. Ответ через **`Response`**, не `page.tsx`.
+- **Прокси к внешнему API (скрыть ключи)** — handler + **`process.env`**, нормализация ошибок ([BFF Route Handler](#bff-route-handler)).
+- **Client Component `fetch("/api/...")` после load** — poll, графики, infinite scroll после hydration; same-origin BFF.
+- **Query-параметры (`searchParams`)** — **`GET`** с **фильтрами, сортировкой, пагинацией, поиском** в URL: **`/api/search?query=typescript&category=tutorials&page=2`**. Когда клиент — **`fetch`**, mobile, партнёр (HTTP), а не только RSC-страница — тогда у страницы свой **`searchParams`** и **`lib/`**. В handler — прочитать params, валидация (**400** без обязательного `query`), запрос в БД/API.
+- **FormData и загрузка файлов** — **`POST`**, `request.formData()`, **`File`**; JSON для **`fetch`** или redirect после сохранения (см. **Redirects**).
+- **Redirects (HTTP `Location`)** — handler **отправляет клиента на другой URL**, а не отдаёт JSON/страницу. **OAuth callback** (`?code=` → redirect + cookie); **старые/короткие ссылки** (**301/308**); **редирект если нет сессии** → `/login`; **POST → 303** (PRG). **`NextResponse.redirect(new URL(path, request.url), status)`**; **`303`** после POST, **`307`/`308`** сохраняют метод. Нужен handler, когда вход — **публичный HTTP URL** (callback, закладка) или **cookies на redirect-ответе** (шаг 7).
+- **Cookies и заголовки на HTTP-границе** — **читать** cookie/`Authorization` для **`GET /api/me`**; **писать** **`httpOnly`** при login **`POST`**. Handler — когда клиент **шлёт HTTP cookies/headers** (browser, mobile, партнёр); если auth **только для вашего RSC/Action**, часто хватит **`cookies()`** без публичного `/api`.
 
 **When not to use:**
 
-- Обычное **чтение** для RSC — Server Components + `fetch` / БД.
-- **Мутации форм** только для вашего UI — [Server Actions](#server-actions).
+- **First paint в Server Component** — **`lib/`**, БД, server **`fetch`** ([Colocated backend](#colocated-backend-in-nextjs)). **Не** self-`fetch` на свой `/api` из RSC.
+- **Простые мутации из форм** — [Server Actions](#server-actions), если не нужен публичный URL.
+- **Только проверка сессии для страницы** — layout/page RSC или Action, без лишнего `/api`.
+- **Публичный CORS ради своего UI** — same-origin BFF; CORS — для **чужих origin** ([Handling CORS in Next.js](#handling-cors-in-nextjs)).
+- **Только кэш данных страницы** — кэш RSC/`use cache`; кэш handler — когда кэшируется **сам HTTP-эндпоинт** ([Caching GET Route Handlers](#caching-get-route-handlers)).
 
 **Pluses and minuses:**
 
-| +                                 | −                                          |
-| --------------------------------- | ------------------------------------------ |
-| Настоящий HTTP — любой клиент     | Нет progressive enhancement через `<form>` |
-| Стабильный документируемый URL    | CORS, CSRF, rate limit, auth — на вас      |
-| Webhooks и мобильные клиенты      | Лишний hop, если RSC дергает свой `/api`   |
-| `GET` можно кэшировать (с config) | Нельзя `page.tsx` в той же папке           |
+| +                       | −                               |
+| ----------------------- | ------------------------------- |
+| HTTP для любого клиента | Публичный URL — auth в handler  |
+| Секреты в env           | Нет layout как у `page.tsx`     |
+| JSON, файлы, webhooks   | Лишний hop, если вызвать из RSC |
 
 **Examples:**
 
+_Шаги 1–3 — минимальный handler._
+
 ```tsx
-// File: app/api/users/route.ts
-// URL:  GET/POST … https://your-site.com/api/users
-// Rule: в этой папке НЕ должно быть page.tsx — сегмент: либо страница, либо route.ts
+// Step 1–3: app/api/hello/route.ts  →  GET /api/hello
 export async function GET() {
-  const users = await db.user.findMany();
-  return Response.json(users);
+  return Response.json({ message: "Hello" });
+}
+```
+
+_Шаги 4–5 — query + JSON + статусы._
+
+```tsx
+// app/api/products/route.ts  →  GET /api/products?page=1  и  POST /api/products
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const page = Number(request.nextUrl.searchParams.get("page") ?? "1");
+  const products = await db.products.findPage(page);
+  return Response.json(products);
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const product = await db.products.create(body);
+    return Response.json(product, { status: 201 });
+  } catch {
+    return new Response("Internal server error", { status: 500 });
+  }
+}
+```
+
+_**Query-параметры** — пагинация, фильтры, валидация._
+
+```tsx
+// GET /api/items?page=2&limit=10
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  const page = Number(searchParams.get("page") ?? "1");
+  const limit = Number(searchParams.get("limit") ?? "10");
+  return NextResponse.json({ pathname, page, limit });
 }
 ```
 
 ```tsx
-// File: app/api/health/route.ts  →  URL: /api/health
-export async function GET() {
-  return Response.json({ ok: true });
+// GET /api/search?query=typescript&category=tutorials&page=2
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const query = request.nextUrl.searchParams.get("query");
+  const category = request.nextUrl.searchParams.get("category");
+  const page = Number(request.nextUrl.searchParams.get("page") ?? 1);
+
+  if (!query) {
+    return Response.json({ error: "query is required" }, { status: 400 });
+  }
+
+  const results = await searchService.find({ query, category, page });
+  return Response.json(results);
 }
 ```
 
 ```tsx
-// File: app/api/posts/[id]/route.ts
-// URL:  GET https://your-site.com/api/posts/123  →  params.id === "123"
-// Next.js 15+: params — Promise, нужен await
+// Query без NextRequest — только Web API
+export async function GET(request: Request) {
+  const id = new URL(request.url).searchParams.get("id");
+  return Response.json({ id });
+}
+```
+
+_Шаг 6 — `[id]`._
+
+```tsx
+// app/api/users/[id]/route.ts  →  GET /api/users/42  ,  DELETE /api/users/42
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  ctx: RouteContext<"/api/users/[id]">,
 ) {
-  const { id } = await params;
-  const post = await db.post.findUnique({ where: { id } });
-  if (!post) return Response.json({ error: "Not found" }, { status: 404 });
-  return Response.json(post);
+  const { id } = await ctx.params;
+  const user = await db.users.findById(id);
+  if (!user) return Response.json({ error: "Not found" }, { status: 404 });
+  return Response.json(user);
+}
+
+export async function DELETE(
+  _request: Request,
+  ctx: RouteContext<"/api/users/[id]">,
+) {
+  const { id } = await ctx.params;
+  await db.users.deleteById(id);
+  return new Response(null, { status: 204 });
+}
+```
+
+_Шаг 7 — redirects (OAuth, auth gate, legacy URL)._
+
+```tsx
+// app/api/oauth/callback/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const code = request.nextUrl.searchParams.get("code");
+  if (!code) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  const token = await exchangeCodeForToken(code);
+  const response = NextResponse.redirect(new URL("/dashboard", request.url));
+  response.cookies.set("session", token, { httpOnly: true, path: "/" });
+  return response;
 }
 ```
 
 ```tsx
-// File: app/api/webhook/route.ts  →  URL: POST /api/webhook
-export async function POST(request: Request) {
-  const raw = await request.text();
-  // verify signature on raw body
-  return new Response("ok", { status: 200 });
+// app/api/legacy-docs/route.ts — 308 на новый путь
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  return NextResponse.redirect(new URL("/docs", request.url), 308);
 }
 ```
 
-**Thoughts:** Cross-origin в браузере → [Handling CORS in Next.js](#handling-cors-in-nextjs). Same-origin `fetch("/api/...")` — без CORS. Сравнение с [Server Actions](#server-actions) — [Comparison table](#comparison-table).
+```tsx
+// app/api/session-check/route.ts — условный redirect
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const loggedIn = await checkAuth(request);
+  if (!loggedIn) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  return NextResponse.redirect(new URL("/app", request.url));
+}
+```
+
+_Работа с заголовками и cookies — **чтение заголовков**._
+
+```tsx
+// app/api/me/route.ts
+import { headers } from "next/headers";
+
+export async function GET(request: Request) {
+  const headersList = await headers();
+  const authorization = headersList.get("authorization");
+  const contentType = request.headers.get("content-type");
+  return Response.json({ authorization, contentType });
+}
+```
+
+_**Чтение и установка cookies**._
+
+```tsx
+// app/api/auth/login/route.ts
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  if (!token) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  return Response.json({ authenticated: true });
+}
+
+export async function POST(request: Request) {
+  const { username, password } = await request.json();
+  const token = await authService.login(username, password);
+  const response = NextResponse.json({ success: true });
+  response.cookies.set("auth_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+  return response;
+}
+```
+
+_**Обработка FormData** — формы и файлы._
+
+```tsx
+// app/api/upload/route.ts
+export async function POST(request: Request) {
+  const formData = await request.formData();
+  const title = formData.get("title") as string;
+  const file = formData.get("file") as File;
+  if (!file || file.size === 0) {
+    return Response.json({ error: "File is required" }, { status: 400 });
+  }
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const url = await storage.upload(buffer, file.name);
+  return Response.json({ title, url }, { status: 201 });
+}
+```
+
+_**Form POST → redirect (PRG)** — HTML-форма шлёт POST; handler читает FormData, затем redirect._
+
+```tsx
+// app/api/upload/route.ts — <form action="/api/upload" method="POST" encType="multipart/form-data">
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const formData = await request.formData();
+  const file = formData.get("file") as File;
+  if (!file?.size) {
+    return NextResponse.redirect(new URL("/upload?error=missing", request.url));
+  }
+  await storage.upload(Buffer.from(await file.arrayBuffer()), file.name);
+  return NextResponse.redirect(new URL("/upload/success", request.url), 303);
+}
+```
+
+_См. также:_ **webhooks** — [Webhooks in Route Handlers](#webhooks-in-route-handlers); **прокси** — [BFF Route Handler](#bff-route-handler).
+
+**Thoughts:** Сначала пройдите **10 шагов**; таблицу **Quick reference** используйте как шпаргалку по синтаксису. Handlers — **серверная граница** к внешнему API (нормализация JSON, env на сервере). CORS: [Handling CORS in Next.js](#handling-cors-in-nextjs). Сравнение — [Comparison table](#comparison-table).
 
 **Sources:**
 
 - [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
 - [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+- [nextjs.org/docs/app/api-reference/functions/next-request](https://nextjs.org/docs/app/api-reference/functions/next-request)
+- [nextjs.org/docs/app/api-reference/functions/next-response](https://nextjs.org/docs/app/api-reference/functions/next-response)
+- [MDN — Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) · [MDN — Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
 
 </details>
 
@@ -1839,8 +2048,7 @@ export const config = { matcher: "/api/:path*" };
 
 ```tsx
 // File: app/api/stripe/webhook/route.ts  →  URL: POST /api/stripe/webhook
-// Caller: серверы Stripe (не React) — URL в dashboard Stripe
-// request.text() до JSON.parse при проверке Stripe-Signature
+// Caller: серверы Stripe — request.text() до JSON.parse для подписи
 export async function POST(request: Request) {
   try {
     const payload = await request.text();
@@ -1853,7 +2061,37 @@ export async function POST(request: Request) {
 }
 ```
 
-**Thoughts:** Browser POST с вашего сайта — CSRF; webhooks — **shared secret**, не cookies.
+```tsx
+// File: app/api/webhooks/payment/route.ts — шаблон payment webhook
+import { NextRequest } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const signature = request.headers.get("x-webhook-signature");
+  const body = await request.text();
+
+  const isValid = verifyWebhookSignature(
+    body,
+    signature,
+    process.env.WEBHOOK_SECRET!,
+  );
+  if (!isValid) {
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
+  }
+
+  const event = JSON.parse(body);
+  switch (event.type) {
+    case "payment.succeeded":
+      await ordersService.markAsPaid(event.data.orderId);
+      break;
+    case "payment.failed":
+      await ordersService.markAsFailed(event.data.orderId);
+      break;
+  }
+  return new Response(null, { status: 204 });
+}
+```
+
+**Thoughts:** Browser POST с вашего сайта — CSRF; webhooks — **shared secret**, не cookies. Отвечайте **2xx быстро**; тяжёлую работу можно в очередь после ack.
 
 **Sources:** [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
 
@@ -1866,14 +2104,15 @@ export async function POST(request: Request) {
 
 ### Caching GET Route Handlers
 
-**Definition:** Как **`GET`** Route Handlers связаны с кэшем Next.js и CDN — отдельно от RSC `fetch` cache.
+**Definition:** Как **`GET`** Route Handlers связаны с кэшем Next.js, **Cache Components** и CDN — отдельно от RSC `fetch` cache.
 
 **How it works:**
 
-- В новых версиях **`GET` handlers по умолчанию динамические** (не кэшируются автоматически), пока не включите явно.
-- Segment config в файле, например `export const dynamic = 'force-static'` для безопасного build-time кэша.
-- `revalidate` или `Cache-Control` на `Response` — [Vercel CDN cache headers](#vercel-cdn-cache-headers).
-- `POST`/`PUT` не кэшируются статически.
+- Route Handlers **по умолчанию не кэшируются**. Для **`GET`** включайте кэш segment config, например `export const dynamic = 'force-static'` в файле handler.
+- **`POST`**, **`PUT`** и другие методы **никогда не кэшируются**, даже если в **том же** `route.ts` есть кэшируемый **`GET`**.
+- С **Cache Components** **`GET`** handlers ведут себя как UI routes: **по умолчанию request time**, **prerender на build**, если handler не трогает uncached/runtime данные; **`use cache`** — в **helper** (не в теле handler), чтобы включить uncached данные в static response.
+- Prerender **останавливается** (handler на request time), если **`GET`** использует сеть, БД, async file I/O, свойства **`request`** (`url`, `headers`, `cookies`, `body`), runtime API (`cookies()`, `headers()`, `connection()`) или недетерминизм (например `Math.random()`).
+- Данные из cached helper revalidate по **`cacheLife`** при новом запросе. `revalidate` или `Cache-Control` на `Response` — [Vercel CDN cache headers](#vercel-cdn-cache-headers).
 
 **When to use:**
 
@@ -1886,25 +2125,51 @@ export async function POST(request: Request) {
 | ------------------------ | --------------------------------------------- |
 | Edge/CDN                 | Устаревшие данные при долгом TTL              |
 | Те же options, что pages | Риск закэшировать private без `Cache-Control` |
+| `use cache` в helper     | `'use cache'` нельзя прямо в теле handler     |
 
 **Examples:**
 
 ```tsx
 // File: app/api/public/config/route.ts  →  URL: GET /api/public/config
-// dynamic = 'force-static' — явное кэширование GET (по умолчанию dynamic в новых Next.js)
+// Opt in: handlers по умолчанию dynamic/без кэша
 export const dynamic = "force-static";
 
 export async function GET() {
-  const data = await getPublicConfig();
-  return Response.json(data);
+  const res = await fetch("https://data.example.com/config", {
+    headers: { Authorization: `Bearer ${process.env.DATA_API_KEY}` },
+  });
+  return Response.json(await res.json());
 }
 ```
 
-**Thoughts:** Персональные API → `Cache-Control: private, no-store` + auth на каждый запрос.
+```tsx
+// File: app/api/products/route.ts — static JSON (без runtime/uncached доступа)
+export async function GET() {
+  return Response.json({ projectName: "Next.js" });
+}
+```
+
+```tsx
+// File: app/api/products/route.ts — БД через cached helper (Cache Components)
+import { cacheLife } from "next/cache";
+
+export async function GET() {
+  const products = await getProducts();
+  return Response.json(products);
+}
+
+async function getProducts() {
+  "use cache";
+  cacheLife("hours");
+  return db.query("SELECT * FROM products");
+}
+```
+
+**Thoughts:** Персональные API → `Cache-Control: private, no-store` + auth на каждый запрос. Динамический **`GET`** с `headers()` — request time, как у dynamic UI routes.
 
 **Sources:**
 
-- [nextjs.org/docs/app/guides/upgrading/version-15](https://nextjs.org/docs/app/guides/upgrading/version-15)
+- [nextjs.org/docs/app/getting-started/route-handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
 - [nextjs.org/docs/app/api-reference/file-conventions/route](https://nextjs.org/docs/app/api-reference/file-conventions/route)
 
 </details>

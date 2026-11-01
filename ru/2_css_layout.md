@@ -753,6 +753,7 @@ CSS length units (`px`, `rem`, `%`, `vw`, `fr`, `dvh`) resolve relative to diffe
 | `rem`       | Relative to root font-size    | Preferred for spacing/type scale                        |
 | `ch`        | Character width of "0"        | Max line length (`max-width: 65ch`)                     |
 | `vw` / `vh` | % of viewport                 | Mobile `100vh` includes URL bar — use `dvh`/`svh`/`lvh` |
+| `vmin` / `vmax` | Меньшая / большая сторона viewport | По MDN `vmin` равен `lvmin`, `vmax` — `lvmax` (large viewport). `svmin` / `dvmin` — small и dynamic |
 | `fr`        | Grid free space fraction      | Grid only                                               |
 | `dvh`       | Dynamic viewport height       | Adapts when mobile browser chrome shows/hides           |
 

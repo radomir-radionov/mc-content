@@ -642,7 +642,10 @@ Prefer **CSS classes** over inline styles. Use `style` only for values computed 
 | `classList.add/remove/toggle/contains` | one class at a time                                                 |
 | `elem.style.prop`                      | inline style only (camelCase: `backgroundColor`)                    |
 | `elem.style.cssText`                   | rewrite entire inline style string                                  |
-| `getComputedStyle(elem)`               | resolved styles after cascade (read-only; geometry usually in `px`) |
+| `getComputedStyle(elem)`               | стили после каскада (только чтение; геометрия обычно в `px`) |
+| `style.getPropertyValue(name)`         | инлайн-значение по имени в kebab-case; `""`, если свойство не задано инлайном |
+| `style.setProperty(name, value, priority?)` | задать инлайн-свойство (`priority` может быть `"important"`) |
+| `style.removeProperty(name)`           | убрать одно инлайн-свойство                                 |
 
 **When to use:**
 
@@ -659,12 +662,15 @@ el.classList.add("active");
 el.classList.toggle("hidden");
 el.style.left = `${x}px`;
 el.style.display = "";
-getComputedStyle(el).marginTop;
+el.style.setProperty("background-color", "red");
+el.style.getPropertyValue("background-color"); // "red"
+el.style.removeProperty("background-color");
+getComputedStyle(el).getPropertyValue("margin-top");
 ```
 
 **See also:** [Element size and scroll](#element-size-and-scroll) · [Coordinates](#coordinates)
 
-**Sources:** [javascript.info/styles-and-classes](https://javascript.info/styles-and-classes)
+**Sources:** [javascript.info/styles-and-classes](https://javascript.info/styles-and-classes) · [MDN CSSStyleDeclaration.getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue) · [MDN CSSStyleDeclaration.removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
 
 </details>
 

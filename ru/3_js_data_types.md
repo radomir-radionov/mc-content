@@ -315,7 +315,10 @@ Number(1n) + 2; // 3
 
 **How it works:**
 
-- Методы: `slice`, `includes`, `startsWith`, `trim`, `split`, `replace`, `replaceAll`.
+- Методы: `slice`, `includes`, `startsWith`, `endsWith`, `trim`, `split`, `replace`, `replaceAll`.
+- `padStart(targetLength, padString)` и `padEnd` повторяют `padString`, пока длина UTF-16 не станет `targetLength`. Строка, которая уже длиннее, возвращается как есть.
+- `substring(start, end)` меняет индексы местами, если `start > end`, и считает отрицательные аргументы нулём. Предпочтительнее `slice`: отрицательный индекс — с конца, аргументы не меняются местами.
+- `matchAll(regexp)` возвращает итератор всех совпадений, включая группы. У настоящего `RegExp` обязан быть флаг `g`, иначе `TypeError`.
 - Строки **итерируемы** (`for...of` / `Array.from`); `length` и индексы — в единицах UTF-16.
 - Суррогатные пары: `'😂'.length === 2`; `codePointAt` / `fromCodePoint` / `for...of`.
 - `str.normalize()` (NFC) перед сравнением при разном порядке диакритик.
@@ -337,6 +340,11 @@ Number(1n) + 2; // 3
 "a-b-c".split("-"); // ['a','b','c']
 ["a", "b"].join("-"); // 'a-b'
 "hello".includes("ell"); // true
+"hello".endsWith("lo"); // true
+"5".padStart(2, "0"); // "05"
+"Mozilla".substring(3, 1); // "oz" — аргументы поменялись местами
+"Mozilla".slice(-3); // "lla"
+[..."test1test2".matchAll(/t(e)(st(\d?))/g)].length; // 2
 "hello".replaceAll("l", "L"); // 'heLLo'
 [..."𝒳😂"];
 "S\u0307\u0323".normalize() === "S\u0323\u0307".normalize(); // true
@@ -345,7 +353,7 @@ Number(1n) + 2; // 3
 
 Интерполяция и многострочность → [Template literals](#template-literals).
 
-**Sources:** [javascript.info/string](https://javascript.info/string) · [javascript.info/unicode](https://javascript.info/unicode) · [javascript.info/primitives-methods](https://javascript.info/primitives-methods)
+**Sources:** [javascript.info/string](https://javascript.info/string) · [javascript.info/unicode](https://javascript.info/unicode) · [MDN String.prototype.padStart](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart) · [MDN String.prototype.substring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) · [MDN String.prototype.matchAll](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll)
 
 </details>
 

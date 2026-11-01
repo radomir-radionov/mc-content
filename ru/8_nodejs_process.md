@@ -51,7 +51,7 @@ child_process, кластер, рабочие и серверы реальног
 | `execFile(file, args)` | запустить исполняемый файл напрямую (без оболочки) |
 | `fork(modulePath)` | Spawn Node-модуль с каналом IPC |
 
-**How it works:** `fork` специализируется `spawn` для узла с `process.send` IPC — идеален для работников кластера.
+**How it works:** `fork` — это специализированный `spawn` для Node с IPC через `process.send`. Модуль `node:cluster` на нём запускает несколько процессов Node, которые делят серверные порты. `cluster.isPrimary` порождает воркеры (`cluster.fork()`); каждый воркер — `cluster.isWorker` и может слушать тот же порт. Если отдельные процессы не нужны, предпочтительнее `worker_threads` внутри одного процесса Node.
 
 **Examples:**
 
@@ -65,7 +65,7 @@ const worker = fork('./worker.js');
 worker.send({ task: 'compute' });
 ```
 
-**Sources:** [nodejs.org child_process](https://nodejs.org/api/child_process.html)
+**Sources:** [nodejs.org child_process](https://nodejs.org/api/child_process.html) · [nodejs.org cluster](https://nodejs.org/api/cluster.html)
 
 </details>
 

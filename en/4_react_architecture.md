@@ -299,11 +299,11 @@ features/checkout/
 | `entities` | Business nouns: User, Product                               |
 | `shared`   | UI kit ([Atomic Design](#atomic-design)), `api` client, lib |
 
-Import rule: **lower layers must not import from higher layers**. Cross-slice imports through slice **public API** (`index.ts`). Router setup → [Ecosystem — Client routing](./4_react_ecosystem.md#client-routing).
+Import rule: **lower layers must not import from higher layers**. A slice is split into **segments** (`ui`, `model`, `api`, `lib`). Other slices import only the slice **public API** (`index.ts`), not a file inside the slice. Router setup → [Ecosystem — Client routing](./4_react_ecosystem.md#client-routing).
 
 **When to use:** Medium/large SPAs; alternative to [Micro-frontends (MFE)](#micro-frontends-mfe) with one deploy.
 
-**Sources:** [feature-sliced.design](https://feature-sliced.design/) · [Frontend structure (canonical)](./7_special_architecture.md#frontend-structure)
+**Sources:** [feature-sliced.design](https://feature-sliced.design/) · [FSD layers](https://feature-sliced.design/docs/reference/layers) · [Frontend structure (canonical)](./7_special_architecture.md#frontend-structure)
 
 </details>
 

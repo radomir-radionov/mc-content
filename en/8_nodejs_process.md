@@ -51,7 +51,7 @@ Module to spawn child processes and communicate via stdio or IPC.
 | `execFile(file, args)` | run executable directly (no shell) |
 | `fork(modulePath)` | spawn Node module with IPC channel |
 
-**How it works:** `fork` is specialized `spawn` for Node with `process.send` IPC — ideal for cluster workers.
+**How it works:** `fork` is specialized `spawn` for Node with `process.send` IPC — ideal for cluster workers. The `node:cluster` module uses that to run several Node processes that share server ports. `cluster.isPrimary` forks workers (`cluster.fork()`); each worker is `cluster.isWorker` and can listen on the same port. When you do not need separate processes, prefer `worker_threads` inside one Node instance.
 
 **Examples:**
 
@@ -65,7 +65,7 @@ const worker = fork('./worker.js');
 worker.send({ task: 'compute' });
 ```
 
-**Sources:** [nodejs.org child_process](https://nodejs.org/api/child_process.html)
+**Sources:** [nodejs.org child_process](https://nodejs.org/api/child_process.html) · [nodejs.org cluster](https://nodejs.org/api/cluster.html)
 
 </details>
 

@@ -53,15 +53,17 @@ Sibling Core topics: [Language](./3_js_core.md) · [Data Types](./3_js_data_type
 - Shorthand: `{ name, age }` equals `{ name: name, age: age }`; computed keys `{ [dynamic]: 1 }`.
 - `in` checks the prototype chain; `Object.hasOwn(obj, key)` checks own properties only.
 - Spread / `Object.assign` shallow-merge objects.
+- `Object.groupBy(iterable, callback)` groups items by the string or symbol the callback returns. The result is a **null-prototype** object, so it does not inherit `Object.prototype` methods. Use `Map.groupBy` when the group key is not a property key.
 
 | Method                          | Returns                    |
 | ------------------------------- | -------------------------- |
-| `Object.keys(obj)`              | Own enumerable string keys |
-| `Object.values(obj)`            | Own enumerable values      |
-| `Object.entries(obj)`           | `[key, value]` pairs       |
-| `Object.assign(target, ...src)` | Target after shallow merge |
-| `Object.hasOwn(obj, prop)`      | Boolean (own prop)         |
-| `Object.freeze(obj)`            | Frozen object (shallow)    |
+| `Object.keys(obj)`              | Own enumerable string keys      |
+| `Object.values(obj)`            | Own enumerable values           |
+| `Object.entries(obj)`           | `[key, value]` pairs            |
+| `Object.assign(target, ...src)` | Target after shallow merge      |
+| `Object.hasOwn(obj, prop)`      | Boolean (own prop)              |
+| `Object.freeze(obj)`            | Frozen object (shallow)         |
+| `Object.groupBy(items, fn)`     | Null-prototype object of arrays |
 
 |                    | `key in obj`                             | `Object.hasOwn(obj, key)`                   |
 | ------------------ | ---------------------------------------- | ------------------------------------------- |
@@ -93,9 +95,18 @@ const merged = { ...defaults, ...user };
 const pairs = Object.fromEntries(
   Object.entries(user).map(([k, v]) => [k, String(v)]),
 );
+
+const grouped = Object.groupBy(
+  [
+    { name: "bananas", quantity: 5 },
+    { name: "asparagus", quantity: 9 },
+  ],
+  ({ quantity }) => (quantity < 6 ? "restock" : "sufficient"),
+);
+grouped.restock; // [{ name: "bananas", quantity: 5 }]
 ```
 
-**Sources:** [javascript.info/object](https://javascript.info/object) · [javascript.info/keys-values-entries](https://javascript.info/keys-values-entries)
+**Sources:** [javascript.info/object](https://javascript.info/object) · [javascript.info/keys-values-entries](https://javascript.info/keys-values-entries) · [MDN Object.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy)
 
 </details>
 

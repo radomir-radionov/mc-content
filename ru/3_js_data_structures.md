@@ -53,6 +53,7 @@
 - Сокращение: `{ name, age }` равно `{ name: name, age: age }`; вычисленные ключи `{ [dynamic]: 1 }`.
 - `in` проверяет цепочку прототипов; `Object.hasOwn(obj, key)` проверяет только свои свойства.
 - Распространение / `Object.assign` мелкое слияние объектов.
+- `Object.groupBy(iterable, callback)` группирует элементы по строке или символу, который вернул callback. Результат — объект с **нулевым прототипом**, без методов `Object.prototype`. Если ключ группы не может быть ключом свойства, используйте `Map.groupBy`.
 
 | Метод                           | Возврат                                  |
 | ------------------------------- | ---------------------------------------- |
@@ -62,6 +63,7 @@
 | `Object.assign(target, ...src)` | Цель после неглубокого слияния           |
 | `Object.hasOwn(obj, prop)`      | Логическое значение (собственная опора)  |
 | `Object.freeze(obj)`            | Замороженный объект (неглубокий)         |
+| `Object.groupBy(items, fn)`     | Объект массивов с нулевым прототипом     |
 
 | | `key in obj` | `Object.hasOwn(obj, key)` |
 | | --- | -------------- |
@@ -93,9 +95,18 @@ const merged = { ...defaults, ...user };
 const pairs = Object.fromEntries(
   Object.entries(user).map(([k, v]) => [k, String(v)]),
 );
+
+const grouped = Object.groupBy(
+  [
+    { name: "bananas", quantity: 5 },
+    { name: "asparagus", quantity: 9 },
+  ],
+  ({ quantity }) => (quantity < 6 ? "restock" : "sufficient"),
+);
+grouped.restock; // [{ name: "bananas", quantity: 5 }]
 ```
 
-**Sources:** [javascript.info/object](https://javascript.info/object) · [javascript.info/keys-values-entries](https://javascript.info/keys-values-entries)
+**Sources:** [javascript.info/object](https://javascript.info/object) · [javascript.info/keys-values-entries](https://javascript.info/keys-values-entries) · [MDN Object.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy)
 
 </details>
 

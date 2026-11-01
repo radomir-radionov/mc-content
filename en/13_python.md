@@ -7,7 +7,7 @@ sanbox: https://edube.org/sandbox
 `Язык программирования` — это язык для общения с машинами. Он состоит из команд. Каждая команда имеет только одно значение.  
 `Программа` — это алгоритм, записанный на языке программирования.  
 `Функция` — это алгоритм, составленный на языке программирования и имеющий уникальное имя.  
-`Переменная` — это элемент данных, имеющий собственное имя. Переменные используются для работы с данными, которые могут меняться.   
+`Переменная` — это элемент данных, имеющий собственное имя. Переменные используются для работы с данными, которые могут меняться.
 
 ### Sections
 
@@ -16,18 +16,24 @@ sanbox: https://edube.org/sandbox
 - [Extra](#extra)
 - [Imports](#imports)
 - [Turtle](#turtle)
+- [Exceptions](#exceptions)
+- [asyncio](#asyncio)
+- [Virtual environments](#virtual-environments)
 
 ---
 
 ## Loops
+
 <details>
   <summary>Loops</summary>
 
 ### Loops
-`цикл` —  это команда, выполняющая указанные действия до тех пор, пока остаётся истинным логическое выражение (условие).  
+
+`цикл` — это команда, выполняющая указанные действия до тех пор, пока остаётся истинным логическое выражение (условие).  
 `счётчик` - это переменная, хранящая число шагов цикла.
 
 `while`
+
 ```python
 card_number = int(input('Введите номер карты:'))
 while card_number != 45626:
@@ -37,7 +43,7 @@ print('Вы выиграли!')
 ```
 
 `for` — это цикл, перебирающий элементы конечной последовательности.  
-`Последовательность` – это упорядоченный набор элементов. 
+`Последовательность` – это упорядоченный набор элементов.
 
 Перебор элементов последовательности - `Оператор in`  
 Повтор действий в теле цикла n-раз - `Функция range()`
@@ -65,8 +71,8 @@ range(a, b) - создаёт последовательность чисел a, 
 for элемент in range(диапазон):
 
 for i in range(3):
-   wish = input('Введите предпочтение:')
-   print('Предпочтение учтено')
+wish = input('Введите предпочтение:')
+print('Предпочтение учтено')
 print('Система рекомендаций настроена!')
 
 `break` - оператор, досрочно прерывающий цикл.
@@ -79,6 +85,7 @@ for i in range(3):
       print('Авторизация c попытки', i+1)
       break
 ```
+
 </details>
 
 ### Basics
@@ -86,26 +93,28 @@ for i in range(3):
 `Система исполнения программ` - это встроенная в компьютер система, которая запускает различные алгоритмы и автоматически переключается между ними, анализируя «внешний мир» программы.
 
 `Комментарий` — это строка в программе, которая не просматривается интерпретатором. Видя специально оформленную строку, интерпретатор не пытается распознать в ней команду.
+
 ```python
 #краткий поясняющий комментарий
 '''Строка документации, поясняющая устройство программы'''
 ```
 
-операции: 
-Целочисленный тип: *, /, %, //(Целая часть от деления), +, -  
+операции:
+Целочисленный тип: \*, /, %, //(Целая часть от деления), +, -  
 Логический тип: >, <, ==, !=, <=, >=
 
-### Variables 
+### Variables
 
 hours = 6  
 print(hours)
 
-#### Какое имя можно дать переменной?  
+#### Какое имя можно дать переменной?
+
 - Можно использовать буквы, цифры и знак подчёркивания.
 - Имя любой переменной должно начинаться с буквы или нижнего подчёркивания.
 - Имя переменной не должно совпадать с командами языка и другими зарезервированными названиями.
 
-### Data types  
+### Data types
 
 `int` - целые числа - 144
 `float` - десятичные дроби - 48.3
@@ -128,16 +137,18 @@ print(hours)
   <summary>Functions</summary>
 
 ### Functions
-Функция  
+
+Функция
+
 - это алгоритм, составленный на языке программирования и имеющий уникальное имя.
 - это именованный набор команд программы, который может быть вызван из другой части программы.
 
 **функции являются самостоятельными блоками программы с собственными переменными.**  
-**значение  = имя_функции(аргумент1, аргумент2, …)**  
+**значение = имя_функции(аргумент1, аргумент2, …)**  
 **Одна функция — одно назначение**  
 Вместо объявления одной громоздкой функции лучше запрограммировать несколько компактных функций.
 
-```python
+````python
 def print_label(name):
    print('ЦЕНТР УСПЕХ')
    print('Имя:', name)
@@ -153,26 +164,27 @@ print('Готово! Заберите листы.')
 
 Оператор `return` Чтобы получить (вернуть) из функции значение, нужно использовать оператор return. Это значение можно присвоить переменной в основной части программы.
 
-```
+````
+
 def get_result(score):
-  if score >= 50 and score < 100:
-      result = 'диплом III степени'
-  elif score >= 100 and score < 200:
-      result = 'диплом II степени'
-  elif score >= 200:
-      result = 'диплом I степени'
-  else:
-      result = 'благодарственное письмо'
-  return result
+if score >= 50 and score < 100:
+result = 'диплом III степени'
+elif score >= 100 and score < 200:
+result = 'диплом II степени'
+elif score >= 200:
+result = 'диплом I степени'
+else:
+result = 'благодарственное письмо'
+return result
 
 name = input('Имя ученика:')
 score = int(input('Набранный балл:'))
 result = get_result(score)
 print(name, '-', result)
 if result == 'диплом I степени':
-   print('Подарок — сертификат в книжный магазин')
+print('Подарок — сертификат в книжный магазин')
 
-```
+````
 </details>
 
 ## Extra
@@ -208,7 +220,7 @@ def move(x, y):
 scr.onscreenclick(move)
 scr.listen() - Команда, указывающая объекту Screen, что нужно слушать клавиши
 scr.onkey(<имя_функции>, <клавиша>) - Подписка на «клик по клавише» (функция должна быть без параметров)
-```
+````
 
 </details>
 
@@ -218,6 +230,7 @@ scr.onkey(<имя_функции>, <клавиша>) - Подписка на «�
   <summary>Imports</summary>
 
 **type of imports**
+
 - Подключение всего модуля целиком. При использовании команды нужно указать, из какого она модуля.
 - Подключение одной функции из модуля. При вызове функции указывается просто её имя.
 - Подключение всех функций модуля. При вызове функции указывается просто её имя.
@@ -247,9 +260,10 @@ random() - Сгенерировать случайную десятичную д
 
 Модуль `time` содержит инструменты для работы с величинами, связанными со временем.
 
-`time()` - Возвращает количество секунд, прошедшее с начала эпохи  (для UNIX-систем это 1 января 1970 года)  
+`time()` - Возвращает количество секунд, прошедшее с начала эпохи (для UNIX-систем это 1 января 1970 года)  
 `sleep(seconds)` - Приостановить выполнение программы на число секунд seconds  
 `round(number, digits)` - Округлить число до digits-знаков после точки Базовая функция (не из time)
+
 </details>
 
 ## Turtle
@@ -258,19 +272,21 @@ random() - Сгенерировать случайную десятичную д
   <summary>Turtle</summary>
 
 ### Turtle
- good example - https://www.youtube.com/watch?v=G37YAx6IqAc
+
+good example - https://www.youtube.com/watch?v=G37YAx6IqAc
 
 `turtle` для отрисовки геометрических фигур, работает с растровой графикой
 
 `Пиксель` — это минимальная (неделимая) часть графического изображения  
-`Растр` — это набор пикселей.   
+`Растр` — это набор пикселей.  
 `Растровое изображение` — совокупность точек (пикселей), используемых для отображения картинки на экране компьютера.  
 `Черепашка` - это исполнитель команд модуля turtle, рисующий графические объекты.  
 `координатная плоскость` - часть окна, в которой располагается исполнитель  
-`координата` - Положение черепашки на плоскости определяется двумя числами. При запуске программы черепашка 
+`координата` - Положение черепашки на плоскости определяется двумя числами. При запуске программы черепашка
 появляется в начальной точке (0, 0).
 
 **Подключение**
+
 ```puthon
 from turtle import *
 ```
@@ -278,22 +294,22 @@ from turtle import *
 `forward(<количество пикселей>)` - Переместить черепашку вперёд на указанное число пикселей  
 `left(<количество градусов>)` - Повернуть черепашку влево на указанный угол в градусах  
 `right(<количество градусов>)` - Повернуть черепашку вправо на указанный угол в градусах  
-`color(<название цвета>)` - Установить исполнителю новый цвет с указанным названием    
-`exitonclick()` - Оставить изображение на экране после исполнения программы    
+`color(<название цвета>)` - Установить исполнителю новый цвет с указанным названием  
+`exitonclick()` - Оставить изображение на экране после исполнения программы  
 `pensize(<количество пикселей>)` - Изменить размер пера, которым рисует исполнитель (изначально — 1)  
-`circle(<радиус круга>)` - Нарисовать круг с заданным радиусом в пикселях    
-`begin_fill()` - Начать заливку фигуры (следом идёт команда рисования фигуры)     
+`circle(<радиус круга>)` - Нарисовать круг с заданным радиусом в пикселях  
+`begin_fill()` - Начать заливку фигуры (следом идёт команда рисования фигуры)  
 `end_fill()` - Завершить заливку фигуры  
 `penup()` - Поднять перо исполнителя (полезно при рисовании нескольких фигур)  
-`pendown()` - Опустить перо исполнителя   
+`pendown()` - Опустить перо исполнителя  
 `goto(<координата Х>, <координата Y>)` - Переместить исполнителя в точку с указанными координатами  
 `speed(<число от 0 до 10>)` - изменить скорость перемещения черепашки
 `hideturtle()` - скрыть исполнителя-черепашку с экрана (остаётся только рисунок)  
-`shape(‘turtle’)` - Изменить «костюм» черепашки (форму объекта). Возможные костюмы: ”arrow”, ”turtle”, ”circle”, ”square”, ”triangle”, ”classic”.    
+`shape(‘turtle’)` - Изменить «костюм» черепашки (форму объекта). Возможные костюмы: ”arrow”, ”turtle”, ”circle”, ”square”, ”triangle”, ”classic”.  
 `xcor()` - Текущая координата Х черепашки (по горизонтали).  
 `write('A!', font)` - Написать текст указанным шрифтом.  
 `font=('Arial', 14, 'normal')` - Шрифт задаётся последовательностью: «название, размер, стиль».  
-t.write('A!', font=('Arial', 14, 'normal'))  
+t.write('A!', font=('Arial', 14, 'normal'))
 
 ```python
 from turtle import *
@@ -345,7 +361,7 @@ def draw_triangle():
        left(120)
 speed(10) #увеличиваем скорость
 for i in range(36):
-   draw_triangle() 
+   draw_triangle()
    right(10)
 hideturtle()
 exitonclick()
@@ -359,7 +375,7 @@ def draw_square(length, cur_color):
        forward(length)
        left(90)
    end_fill()
-draw_square(200, 'black')   
+draw_square(200, 'black')
 draw_square(150, 'white')
 draw_square(100, 'lavender')
 draw_square(50, 'black')
@@ -368,5 +384,126 @@ exitonclick()
 ![image](https://github.com/Way-to-Front-end-Developer/Core/assets/66359081/c777003e-1a68-46cb-b4b6-8ac61ac7ebbf)
 
 ```
+
+</details>
+
+<a name="exceptions"></a>
+
+## Exceptions
+
+<details>
+  <summary>Exceptions</summary>
+
+### Exceptions
+
+**Definition:** An exception stops the normal flow when Python cannot finish a statement. `try` / `except` handles that failure; `raise` creates one.
+
+**How it works:**
+
+- `try` runs the risky code. The first matching `except` runs. `else` runs only if nothing was raised. `finally` runs either way (close a file, release a lock).
+- Catch a specific type (`except ValueError`), not a bare `except:`. A bare except also hides `KeyboardInterrupt` and `SystemExit`.
+- `raise` with no argument inside `except` re-raises the original exception and keeps its traceback.
+
+**When to use:** Parse user input, missing files, and failed I/O. Do not use exceptions for ordinary control flow such as “key not in dict” when `in` or `.get` is enough.
+
+**Pluses and minuses:**
+
+| +                          | −                                         |
+| -------------------------- | ----------------------------------------- |
+| Failures stay explicit     | A broad `except` hides bugs               |
+| `finally` always cleans up | Exceptions are slower than a simple check |
+
+**Examples:**
+
+```python
+try:
+    n = int(raw)
+except ValueError:
+    n = 0
+finally:
+    log.close()
+```
+
+**Sources:** [Python tutorial — Errors and Exceptions](https://docs.python.org/3/tutorial/errors.html)
+
+</details>
+
+<a name="asyncio"></a>
+
+## asyncio
+
+<details>
+  <summary>asyncio</summary>
+
+### asyncio
+
+**Definition:** `asyncio` runs concurrent I/O on one thread. A coroutine pauses at `await` so other tasks can run. It does not make CPU-bound Python parallel.
+
+**How it works:**
+
+- `async def` defines a coroutine. Calling it does not run it; `await` it, or pass it to `asyncio.run` at the program entry.
+- `asyncio.run(main())` creates the event loop, runs `main` until it finishes, and closes the loop. One `asyncio.run` per program.
+- `await asyncio.gather(a(), b())` runs those coroutines concurrently and waits for all of them.
+- Blocking calls (`time.sleep`, normal file reads) freeze the loop. Use `await asyncio.sleep` and async libraries.
+
+**When to use:** Many network or subprocess waits. For CPU work, use processes or a thread pool, not more coroutines.
+
+**Pluses and minuses:**
+
+| +                               | −                                      |
+| ------------------------------- | -------------------------------------- |
+| One thread, many in-flight I/O  | One blocking call stalls every task    |
+| Structured as `async` / `await` | Not a speedup for pure Python CPU work |
+
+**Examples:**
+
+```python
+import asyncio
+
+async def main():
+    await asyncio.sleep(1)
+
+asyncio.run(main())
+```
+
+**Sources:** [Python asyncio](https://docs.python.org/3/library/asyncio.html)
+
+</details>
+
+<a name="virtual-environments"></a>
+
+## Virtual environments
+
+<details>
+  <summary>Virtual environments</summary>
+
+### Virtual environments
+
+**Definition:** A virtual environment is a directory with its own Python and `site-packages`, so a project’s packages do not install into the system interpreter.
+
+**How it works:**
+
+- `python -m venv .venv` creates it. Activate with `source .venv/bin/activate` (Unix) or `.venv\Scripts\activate` (Windows). `deactivate` leaves it.
+- After activation, `python` and `pip` point inside `.venv`. Packages installed there stay in that project.
+- Commit `requirements.txt` (or a lock file). Do not commit `.venv`.
+
+**When to use:** Every project that installs third-party packages. The standard library `venv` is enough; you do not need a separate tool for the basic case.
+
+**Pluses and minuses:**
+
+| +                                              | −                                                 |
+| ---------------------------------------------- | ------------------------------------------------- |
+| Projects do not share one global site-packages | You must activate it (or call `.venv/bin/python`) |
+| Ships with Python                              | The folder is large; keep it out of git           |
+
+**Examples:**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+**Sources:** [Python venv](https://docs.python.org/3/library/venv.html)
 
 </details>

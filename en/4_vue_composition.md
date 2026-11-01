@@ -296,7 +296,7 @@ Lifecycle hooks
 | `onBeforeUpdate`  | `beforeUpdate`  | Before re-render           |
 | `onUpdated`       | `updated`       | After DOM patched          |
 | `onBeforeUnmount` | `beforeDestroy` | Before teardown            |
-| `onUnmounted`     | `unmounted`     | After removed              |
+| `onUnmounted`     | `unmounted` (Vue 2: `destroyed`) | After removed              |
 | `onErrorCaptured` | `errorCaptured` | Child error propagation    |
 | `onActivated`     | `activated`     | KeepAlive component shown  |
 | `onDeactivated`   | `deactivated`   | KeepAlive component hidden |
@@ -317,6 +317,49 @@ onUnmounted(() => window.removeEventListener("resize", onResize));
 [vuejs.org/api/composition-api-lifecycle.html](https://vuejs.org/api/composition-api-lifecycle.html)
 
 Reactivity utilities
+
+</details>
+
+<details>
+  <summary>nextTick</summary>
+
+### nextTick
+
+**Definition:** `nextTick` waits until Vue has flushed the buffered DOM updates from the current state changes.
+
+**How it works:**
+
+- Changing reactive state does not patch the DOM immediately. Vue buffers updates so a component renders once per tick, even if you change several refs.
+- `await nextTick()` (or pass a callback) resolves after that flush. Reading the DOM before it still shows the old markup.
+- Import it from `vue`. It returns `Promise<void>`.
+
+**When to use:** You changed state and the next line must measure or focus the updated element. Do not use it as a general "wait for the server" tool.
+
+**Pluses and minuses:**
+
+| +                                      | −                                              |
+| -------------------------------------- | ---------------------------------------------- |
+| Reads the DOM after the patch          | Easy to sprinkle through code that should use a watcher |
+| One flush for many state changes       | Does not wait for child async setup            |
+
+**Examples:**
+
+```vue
+<script setup>
+import { ref, nextTick } from "vue";
+
+const count = ref(0);
+
+async function increment() {
+  count.value++;
+  // DOM still shows the old text
+  await nextTick();
+  // #counter text is now updated
+}
+</script>
+```
+
+**Sources:** [vuejs.org nextTick](https://vuejs.org/api/general.html#nexttick)
 
 </details>
 
