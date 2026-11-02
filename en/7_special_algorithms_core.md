@@ -6,7 +6,7 @@ Algorithm basics and complexity analysis.
 
 ### Related docs
 
-* [Algorithms — Big O](./7_special_algorithms_core.md) · [Algorithms — Common](./7_special_algorithms_common.md) · [Algorithms — Patterns](./7_special_algorithms_patterns.md) · [Data structures](./7_special_data_structures.md) · [Computer science](./7_special_cs.md) · [SOLID](./7_special_engineering.md)
+- [Algorithms — Big O](./7_special_algorithms_core.md) · [Algorithms — Common](./7_special_algorithms_common.md) · [Algorithms — Patterns](./7_special_algorithms_patterns.md) · [Data structures](./7_special_data_structures.md) · [Big-O interview](./7_algo_big_o_interview.md#interview-practice) · [DSA course index](./7_ds_overview_interview.md#dsa-technical--course-index) · [Computer science](./7_special_cs.md) · [SOLID](./7_special_engineering.md)
 
 ### Sections
 
@@ -27,9 +27,9 @@ Algorithm basics and complexity analysis.
 
 **Pluses and minuses:**
 
-| + (formal algorithms) | − |
-|--------------------------|------|
-| Predictable performance | Over-engineering simple problems |
+| + (formal algorithms)                | −                                            |
+| ------------------------------------ | -------------------------------------------- |
+| Predictable performance              | Over-engineering simple problems             |
 | Interview and system design currency | Wrong algorithm for data shape wastes effort |
 
 **Thoughts:** Instruction = one step; procedure = composed instructions. Know the difference between algorithm and implementation.
@@ -51,24 +51,24 @@ Algorithm basics and complexity analysis.
 
 Big O describes how **time** or **space** grows relative to input size `n` — worst-case upper bound for asymptotic comparison. Not wall-clock time; ignores constants.
 
-| Notation | Name | Example |
-|----------|------|---------|
-| O(1) | Constant | Array index access, Map.get |
-| O(log n) | Logarithmic | Binary search |
-| O(n) | Linear | Single pass, linear search |
+| Notation   | Name         | Example                      |
+| ---------- | ------------ | ---------------------------- |
+| O(1)       | Constant     | Array index access, Map.get  |
+| O(log n)   | Logarithmic  | Binary search                |
+| O(n)       | Linear       | Single pass, linear search   |
 | O(n log n) | Linearithmic | Merge sort, quick sort (avg) |
-| O(n²) | Quadratic | Nested loops, bubble sort |
-| O(2ⁿ) | Exponential | Naive recursive Fibonacci |
-| O(n!) | Factorial | Brute-force permutations |
+| O(n²)      | Quadratic    | Nested loops, bubble sort    |
+| O(2ⁿ)      | Exponential  | Naive recursive Fibonacci    |
+| O(n!)      | Factorial    | Brute-force permutations     |
 
 **When to use:** Choosing sort/search strategy; reviewing PRs with nested loops on large collections; system design capacity estimates.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
+| +                                          | −                                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------------- |
 | Compare algorithms independent of hardware | Hides constants — O(n) with huge constant may beat O(log n) on small n |
-| Standard interview language | Worst-case may not match real data |
+| Standard interview language                | Worst-case may not match real data                                     |
 
 **Examples:**
 
@@ -117,8 +117,7 @@ function mergeSort(arr) {
 function pairs(arr) {
   const result = [];
   for (let i = 0; i < arr.length; i++)
-    for (let j = i + 1; j < arr.length; j++)
-      result.push([arr[i], arr[j]]);
+    for (let j = i + 1; j < arr.length; j++) result.push([arr[i], arr[j]]);
   return result;
 }
 
@@ -132,7 +131,10 @@ function fib(n) {
 function permutations(items) {
   if (items.length <= 1) return [items];
   return items.flatMap((x, i) =>
-    permutations([...items.slice(0, i), ...items.slice(i + 1)]).map((rest) => [x, ...rest]),
+    permutations([...items.slice(0, i), ...items.slice(i + 1)]).map((rest) => [
+      x,
+      ...rest,
+    ]),
   );
 }
 ```
@@ -156,10 +158,10 @@ function permutations(items) {
 
 **Time** = operations vs `n`. **Space** = extra memory vs `n` (excluding input).
 
-| Trade-off | Example |
-|-----------|---------|
+| Trade-off                | Example                    |
+| ------------------------ | -------------------------- |
 | More space for less time | Hash table for O(1) lookup |
-| Less space for more time | In-place sorting |
+| Less space for more time | In-place sorting           |
 
 **Thoughts:**
 

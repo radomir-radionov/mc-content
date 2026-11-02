@@ -11,6 +11,8 @@ Answers are filled for the full question list.
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
+- [Node backend course (#1–88)](#nodejs-backend--course-index)
 
 ---
 
@@ -4673,4 +4675,124 @@ server.listen(8000);
 - [Node.js — HTTP](https://nodejs.org/api/http.html)
 - [Node.js — URL](https://nodejs.org/api/url.html)
 - [MDN — HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
+</details>
+
+<a name="nodejs-backend--nestjs-vocabulary"></a>
+
+<details>
+<summary>NestJS building blocks (course #64–70, #84, #88)</summary>
+
+### NestJS building blocks (course #64–70, #84, #88)
+
+**Answer:** **Controllers** map HTTP routes to handlers and return responses. **Providers** (`@Injectable()`) hold business logic and are resolved by the DI container. **Modules** (`@Module`) declare imports, controllers, and providers as composition roots. **Middleware** runs before the route handler (Express-style chain). **Exception filters** catch errors and shape HTTP error responses. **Pipes** validate or transform inputs (`ValidationPipe`, `@Body()` parsing). **Guards** decide whether a request may proceed (`CanActivate`, roles/JWT). Nest adds TypeScript, DI, and layered architecture on top of Express/Fastify; trade-offs are learning curve and framework weight vs structure at scale.
+
+**See also:** [NestJS overview](./8_nodejs_http.md#nestjs) · [NestJS vs Express](./8_nodejs_http.md#nestjs-vs-express-vs-fastify)
+
+</details>
+
+<a name="nodejs-backend--express-vocabulary"></a>
+
+<details>
+<summary>Express application, router, middleware (course #62–63, #66, #82)</summary>
+
+### Express application, router, middleware (course #62–63, #66, #82)
+
+**Answer:** The **application** (`express()`) owns global settings, middleware, and mounted routers. A **router** (`express.Router()`) groups routes under a prefix (`app.use('/api', router)`). **Middleware** functions receive `(req, res, next)` and run in order — auth, parsing, logging — before route handlers. **Static files** are served with `express.static()`. Express is event-driven on Node’s HTTP server; errors flow to error-handling middleware with four arguments.
+
+**See also:** [Express interview](./8_express_interview.md#interview-practice) · [Node.js — HTTP](./8_nodejs_http.md)
+
+</details>
+
+<a name="nodejs-backend--socketio"></a>
+
+<details>
+<summary>Socket.io rooms and broadcast (course #71–73)</summary>
+
+### Socket.io rooms and broadcast (course #71–73)
+
+**Answer:** Socket.io adds named **events** (`socket.emit`, `socket.on`) on top of WebSockets/long-polling. **Rooms** group sockets (`socket.join('roomId')`); **`io.to(room).emit`** or **`socket.to(room).emit`** broadcast to peers in that room. Custom events carry app payloads; connection/disconnect are built-in. Use for live UI, chat, and notifications when HTTP polling is too heavy.
+
+**See also:** [WebSockets interview](./6_web_api_websockets_interview.md#interview-practice)
+
+</details>
+
+<a name="nodejs-backend--timers"></a>
+
+<details>
+<summary>setTimeout, setImmediate, process.nextTick (course #81, #85)</summary>
+
+### setTimeout, setImmediate, process.nextTick (course #81, #85)
+
+**Answer:** **`process.nextTick`** runs before the event loop continues — highest priority microtask-like queue. **`setImmediate`** runs in the **check** phase after I/O callbacks. **`setTimeout`** schedules a timer phase callback after the delay. Order in one turn: synchronous code → `nextTick` queue → microtasks (promises) → timers → I/O → `setImmediate`. Do not starve I/O with endless `nextTick`.
+
+**See also:** [Event loop](./8_nodejs_core.md) · “setImmediate” in this file
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+<a name="nodejs-backend--course-index"></a>
+
+<details>
+<summary>RU cheatsheet — Node backend course (#1–88)</summary>
+
+### RU cheatsheet — question index
+
+Syllabus **Node.js backend** (#1–88). Each row should pair **Theory** (concept topic) with **Interview** (Q&A). Depth lives in theory files; answers live here or in linked interview notes — link both ways, do not duplicate essays.
+
+#### Node core & built-ins (#1–9)
+
+| #   | RU topic                         | Theory                                                                                                | Interview                                                                                   |
+| --- | -------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 1   | http module                      | [http](./8_nodejs_modules.md) · [Express & HTTP](./8_nodejs_http.md)                                  | [HTTP module server](./8_nodejs_interview.md#interview-practice) — “create a simple server” |
+| 2   | Timers API, browser vs Node      | [#nodejs-backend--timers](#nodejs-backend--timers) · [Event loop](./8_nodejs_core.md#event-loop)      | [process.nextTick()](./8_nodejs_interview.md#interview-practice) · “non-blocking”           |
+| 3   | fs API                           | [fs (file system)](./8_nodejs_modules.md)                                                             | [fs sync vs async](./8_nodejs_interview.md#interview-practice)                              |
+| 4   | Event-based approach, Events API | [EventEmitter](./8_nodejs_core.md#eventemitter)                                                       | [EventEmitter](./8_nodejs_interview.md#interview-practice)                                  |
+| 5   | process module                   | [Process & threads](./8_nodejs_process.md#process-threads)                                            | “process” in [Node interview](./8_nodejs_interview.md#interview-practice)                   |
+| 6   | child_process                    | [child_process](./8_nodejs_process.md#child_process)                                                  | [process vs child_process](./8_nodejs_interview.md#interview-practice)                      |
+| 7   | Errors in Node API               | [Node.js overview](./8_nodejs_core.md#nodejs-overview)                                                | “error” in [Node interview](./8_nodejs_interview.md#interview-practice)                     |
+| 8   | cluster module                   | [Single-threaded vs multi-threaded](./8_nodejs_core.md#single-threaded-vs-multi-threaded)             | [clustering](./8_nodejs_interview.md#interview-practice)                                    |
+| 9   | Streams API                      | [Streams](./8_nodejs_core.md#streams) · [backpressure](./8_nodejs_core.md#stream-events-backpressure) | “stream” in [Node interview](./8_nodejs_interview.md#interview-practice)                    |
+
+#### SQL & relational (#10–35, #80, #84)
+
+| #      | RU topic (summary)  | Theory                           | Interview                                                                      |
+| ------ | ------------------- | -------------------------------- | ------------------------------------------------------------------------------ |
+| 10–35  | SQL, DDL, DML, JOIN | [SQL topic](./9_database_sql.md) | [Database interview — syllabus](./9_database_interview.md#ru-cheatsheet-index) |
+| 80, 84 | SQL operators       | [SQL topic](./9_database_sql.md) | [Database interview](./9_database_interview.md#interview-practice)             |
+
+#### NoSQL (#39–42, #79)
+
+| #     | RU topic              | Theory                                   | Interview                                                             |
+| ----- | --------------------- | ---------------------------------------- | --------------------------------------------------------------------- |
+| 39–42 | NoSQL, Mongo/Dynamo   | [NoSQL hub](./9_database_nosql.md)       | “MongoDB”, “NoSQL” in [Database interview](./9_database_interview.md) |
+| 79    | DynamoDB single-table | [NoSQL core](./9_database_nosql_core.md) | “DynamoDB” in [Database interview](./9_database_interview.md)         |
+
+#### Event loop, npm, debug (#43–52, #74–78, #81, #85)
+
+| #      | RU topic            | Theory                                                                                                                                                                              | Interview                                                                   |
+| ------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| 43–48  | Event loop, workers | [Event loop](./8_nodejs_core.md#event-loop) · [libuv](./8_nodejs_core.md#libuv) · [worker_threads](./8_nodejs_core.md#worker_threads) · [JS event loop](./3_js_async_event_loop.md) | “event loop”, “worker_threads” in [Node interview](./8_nodejs_interview.md) |
+| 49     | package-lock        | [npm, npx & nvm](./8_nodejs_modules.md)                                                                                                                                             | “package-lock” in [Node interview](./8_nodejs_interview.md)                 |
+| 50     | polling, epoll      | [libuv](./8_nodejs_core.md#libuv)                                                                                                                                                   | “libuv”, “thread pool” in [Node interview](./8_nodejs_interview.md)         |
+| 51–52  | inspect, debugger   | [Node.js overview](./8_nodejs_core.md#nodejs-overview)                                                                                                                              | “inspect”, “debugger” in [Node interview](./8_nodejs_interview.md)          |
+| 74–78  | npm, CJS, flags     | [npm](./8_nodejs_modules.md) · [ESM vs CJS](./8_nodejs_modules.md)                                                                                                                  | “CommonJS”, “npm” in [Node interview](./8_nodejs_interview.md)              |
+| 81, 85 | Timers priority     | [#nodejs-backend--timers](#nodejs-backend--timers)                                                                                                                                  | [process.nextTick()](./8_nodejs_interview.md#interview-practice)            |
+
+#### Buffer & streams (#53–60, #83, #87)
+
+| #      | RU topic                | Theory                                                                                                | Interview                                                                 |
+| ------ | ----------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 53–55  | Buffer                  | [Buffer](./8_nodejs_core.md#buffer)                                                                   | [Buffer class](./8_nodejs_interview.md#interview-practice)                |
+| 56–59  | Streams, pipe, drain    | [Streams](./8_nodejs_core.md#streams) · [backpressure](./8_nodejs_core.md#stream-events-backpressure) | “Transform”, “drain”, “pipe” in [Node interview](./8_nodejs_interview.md) |
+| 60–61  | Blocking I/O, callbacks | [Event loop](./8_nodejs_core.md#event-loop)                                                           | [non-blocking](./8_nodejs_interview.md#interview-practice)                |
+| 83, 87 | pipeline, errors        | [Stream events & backpressure](./8_nodejs_core.md#stream-events-backpressure)                         | “pipeline”, “highWaterMark” in [Node interview](./8_nodejs_interview.md)  |
+
+#### Express, Nest, Socket.io (#62–73, #82, #84, #88)
+
+| #             | RU topic  | Theory                                                                                                                               | Interview                                                                                                         |
+| ------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| 62–63, 66, 82 | Express   | [#nodejs-backend--express-vocabulary](#nodejs-backend--express-vocabulary) · [Express overview](./8_nodejs_http.md#express-overview) | [Express interview](./8_express_interview.md#interview-practice)                                                  |
+| 64–70, 84, 88 | NestJS    | [#nodejs-backend--nestjs-vocabulary](#nodejs-backend--nestjs-vocabulary) · [NestJS](./8_nodejs_http.md#nestjs)                       | [What is NestJS?](./8_nodejs_interview.md#interview-practice) · [Nest blocks](#nodejs-backend--nestjs-vocabulary) |
+| 71–73         | Socket.io | [#nodejs-backend--socketio](#nodejs-backend--socketio) · [Socket.IO](./8_nodejs_process.md)                                          | [WebSockets interview](./6_web_api_websockets_interview.md#interview-practice)                                    |
+
 </details>

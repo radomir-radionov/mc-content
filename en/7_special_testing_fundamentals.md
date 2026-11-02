@@ -13,6 +13,8 @@ AAA, the test pyramid, testing approaches, and common test purposes.
 - [Fundamentals](#fundamentals)
 - [Tests and AAA](#tests-and-aaa)
 - [Test pyramid](#test-pyramid)
+- [Testing Trophy](#testing-trophy)
+- [FIRST principles for unit tests](#first-principles-for-unit-tests)
 - [Testing approaches (black-box, white-box, gray-box)](#testing-approaches-black-box-white-box-gray-box)
 - [Tests by purpose (smoke, sanity, regression)](#tests-by-purpose-smoke-sanity-regression)
 
@@ -142,6 +144,57 @@ flowchart TB
 **Thoughts:**
 
 Contract tests between services sit between integration and E2E. Snapshot tests are unit-ish but can be brittle. Unit tests belong on **your** code; libraries get coverage via adapters + this pyramid’s integration/E2E layers — [Making tests easy](./7_special_testing_practices.md#making-tests-easy). Depth: [Integration](./7_special_testing_layers.md#integration-testing) · [System](./7_special_testing_layers.md#system-testing) · [E2E](./7_special_testing_layers.md#e2e-testing).
+
+---
+
+</details>
+
+<details>
+  <summary>Testing Trophy</summary>
+
+### Testing Trophy
+
+**Definition:** Kent C. Dodds’ **Testing Trophy** (not a pyramid) emphasizes **integration tests** in the middle of the suite — many **static** checks (types, lint), solid **unit** coverage, **more integration** than classic pyramids suggest, and a **thin** E2E layer on top.
+
+**How it works:**
+
+| Layer        | Role                                                         |
+| ------------ | ------------------------------------------------------------ |
+| **Static**   | TypeScript, ESLint, formatters — cheapest feedback in CI     |
+| **Unit**     | Pure logic, reducers, parsers — fast, isolated               |
+| **Integration** | Components + real collaborators (RTL + MSW, API + DB seed) |
+| **E2E**      | Critical user journeys only — slow, maintain carefully       |
+
+**When to use:** React/SPA teams where most bugs are **wiring** (props, hooks, router, cache), not a single pure function. Complements [Test pyramid](#test-pyramid); choose one mental model per repo and stay consistent.
+
+**See also:** [React — Testing pyramid](./4_react_testing.md#testing-pyramid-react) · [Test doubles](./7_special_testing_practices.md#test-doubles-stubs-mocks-spies)
+
+**Sources:** [Kent C. Dodds — Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
+
+---
+
+</details>
+
+<details>
+  <summary>FIRST principles for unit tests</summary>
+
+### FIRST principles for unit tests
+
+**Definition:** **FIRST** — qualities of good **unit** tests (often cited in interview lists).
+
+**How it works:**
+
+| Letter | Meaning        | Practice                                              |
+| ------ | -------------- | ----------------------------------------------------- |
+| **F**  | **Fast**       | Milliseconds; no real network/DB in unit layer        |
+| **I**  | **Independent**| Order-free; no shared mutable globals                 |
+| **R**  | **Repeatable** | Same result in CI and locally; control time/random    |
+| **S**  | **Self-validating** | Pass/fail without manual inspection            |
+| **T**  | **Timely**     | Written with or before the code they protect ([TDD](./7_special_testing_practices.md#tdd-test-driven-development)) |
+
+**When to use:** Reviewing flaky or slow suites; interview “how do you know a test is good?”
+
+**Sources:** [Clean Code — FIRST (concept)](https://github.com/ghsrinivasan/clean-code-javascript#testing)
 
 ---
 

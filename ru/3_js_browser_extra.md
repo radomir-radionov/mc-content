@@ -15,7 +15,7 @@
 | Area     | Topics                                                                                                                                    |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | **UI**   | Debounce, throttle, idle callbacks (size/scroll → [Document](./3_js_browser.md#document); rAF → [Animation](./3_js_browser_animation.md)) |
-| **APIs** | Storage, CORS, observers, History API, `URL` / `URLSearchParams`                                                                          |
+| **APIs** | Storage, CORS, observers, History API, `URL` / `URLSearchParams`, [Web Workers](#web-workers), [Worklets](#worklets)                      |
 
 ### Sections
 
@@ -24,7 +24,7 @@
 - [Media queries](#media-queries-in-javascript)
 - [Browser APIs & UI patterns](#browser-apis--ui-patterns)
 - [Debounce](#debounce) · [Throttle](#throttle) · [requestIdleCallback](#request-idle-callback)
-- [Browser storage](#browser-storage) · [Web Locks](#web-locks) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams)
+- [Browser storage](#browser-storage) · [Web Locks](#web-locks) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams) · [Web Workers](#web-workers) · [Worklets](#worklets)
 - [Interview](./3_js_interview.md)
 
 ---
@@ -343,10 +343,10 @@ const fromForage = await localforage.getItem("user");
 
 **Pluses and minuses:**
 
-| +                                            | −                                      |
-| -------------------------------------------- | -------------------------------------- |
-| Согласует вкладки без сервера                | Только тот же origin                   |
-| Отпускается, когда промис callback завершён  | Зависший промис держит замок           |
+| +                                           | −                            |
+| ------------------------------------------- | ---------------------------- |
+| Согласует вкладки без сервера               | Только тот же origin         |
+| Отпускается, когда промис callback завершён | Зависший промис держит замок |
 
 **Examples:**
 
@@ -355,10 +355,8 @@ await navigator.locks.request("net-db-sync", async () => {
   await syncIndexedDb();
 });
 
-await navigator.locks.request(
-  "cache",
-  { mode: "shared" },
-  async () => readCache(),
+await navigator.locks.request("cache", { mode: "shared" }, async () =>
+  readCache(),
 );
 ```
 
@@ -554,6 +552,52 @@ url.searchParams.getAll("category"); // ['html', 'js']
 **Thoughts:** Parse with `URL`; mutate query with `searchParams`, never with string concat.
 
 **Sources:** [javascript.info/url](https://javascript.info/url) · [MDN — URL](https://developer.mozilla.org/en-US/docs/Web/API/URL) · [MDN — URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)
+
+</details>
+
+<a name="web-workers"></a>
+
+<details>
+  <summary>Web Workers</summary>
+
+### Web Workers
+
+**Definition:**
+
+**Web Worker** — отдельный поток JS **без DOM** и **`window`**, обмен с главным потоком через **`postMessage`**.
+
+**How it works:**
+
+- **`new Worker(url)`** или module worker (`{ type: "module" }`).
+- Тяжёлые вычисления (парсинг, крипто) — чтобы **главный поток** не блокировал скролл и INP.
+- **Service Worker** — кэш/сеть ([PWA](./6_web_api_apps.md)), не путать с dedicated worker.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API
+
+</details>
+
+<a name="worklets"></a>
+
+<details>
+  <summary>Worklets (Paint, Audio, …)</summary>
+
+### Worklets (Paint, Audio, …)
+
+**Definition:**
+
+**Worklet** — короткие JS-хуки в конвейере отрисовки/аудио; не замена Worker для длинных задач.
+
+**How it works:**
+
+- **PaintWorklet** (Houdini) — кастомная заливка CSS.
+- **AudioWorklet** — обработка звука в реальном времени.
+- Регистрация: **`CSS.paintWorklet.addModule`**, **`audioWorklet.addModule`**.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Worklet
 
 </details>
 

@@ -458,3 +458,18 @@ Alternative: `:key="route.params.id"` on child to force remount.
 - [Medium — Practical Vue.js interview questions](https://medium.com/front-end-weekly/practical-vue-js-interview-questions-2252b7050b9d)
 
 </details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+| RU Vue list        | Theory / file                                      |
+| ------------------ | -------------------------------------------------- |
+| v-if vs v-show, v-model | [4_vue_core.md](./4_vue_core.md) · this file  |
+| Vuex, Router, SFC  | [4_vue_ecosystem.md](./4_vue_ecosystem.md)         |
+| React vs Vue        | Search “React” in this file                        |
+
+</details>

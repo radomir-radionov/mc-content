@@ -11,6 +11,9 @@ Browser security and third-party integrations.
 ### Sections
 
 - [13. Security](#13-security)
+- [HTTP security headers](#http-security-headers)
+- [Subresource Integrity (SRI)](#subresource-integrity-sri)
+- [Cross-origin requests in JavaScript](#cross-origin-requests-in-javascript)
 - [15. Integrations](#15-integrations)
 
 ---
@@ -295,6 +298,98 @@ fetch("/api/transfer", {
 
 ---
 
+</details>
+
+<a name="http-security-headers"></a>
+
+<details>
+  <summary>HTTP security headers</summary>
+
+### HTTP security headers
+
+**Definition:**
+
+**HTTP response headers** that instruct the browser to apply stricter defaults — transport, framing, MIME sniffing, script loading, and referrer leakage — without changing application routes.
+
+**How it works:**
+
+| Header | Role |
+| ------ | ---- |
+| **`Strict-Transport-Security`** | Force HTTPS for future visits ([HTTPS](./6_web_api_http.md#https)) |
+| **`Content-Security-Policy`** | Allow-list scripts, styles, connections ([CSP](#content-security-policy-csp)) |
+| **`X-Content-Type-Options: nosniff`** | Block MIME-type sniffing |
+| **`Referrer-Policy`** | Limit `Referer` on cross-origin navigations |
+| **`Permissions-Policy`** | Disable unused features (camera, geolocation, …) |
+| **`Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy`** | Process isolation (e.g. `SharedArrayBuffer`) |
+| **`Cross-Origin-Resource-Policy`** | Restrict who may read your responses cross-origin |
+
+Legacy **`X-Frame-Options`** / **`X-XSS-Protection`** — prefer CSP `frame-ancestors`; X-XSS filter is deprecated in modern browsers.
+
+Theory overlap: [Web security — CSP](./7_special_security.md#content-security-policy-csp) · [Clickjacking](#clickjacking).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP
+- https://securityheaders.com/
+</details>
+
+<a name="subresource-integrity-sri"></a>
+
+<details>
+  <summary>Subresource Integrity (SRI)</summary>
+
+### Subresource Integrity (SRI)
+
+**Definition:**
+
+**Subresource Integrity** lets the browser verify that a fetched **script or stylesheet** matches a **cryptographic hash** you embed in the page — mitigates CDN compromise or supply-chain substitution.
+
+**How it works:**
+
+```html
+<script
+  src="https://cdn.example.com/lib.js"
+  integrity="sha384-…"
+  crossorigin="anonymous"
+></script>
+```
+
+- Applies to `<script>` and `<link rel="stylesheet">` (and some preload/modulepreload links).
+- Cross-origin SRI requires **`crossorigin="anonymous"`** and CORS headers from the host.
+- SRI checks **bytes**, not whether you should trust the vendor — minimize third-party script count; see [Supply chain](./7_special_security.md#supply-chain-attacks).
+
+**Sources:**
+
+- [MDN — Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity)
+</details>
+
+<a name="cross-origin-requests-in-javascript"></a>
+
+<details>
+  <summary>Cross-origin requests in JavaScript</summary>
+
+### Cross-origin requests in JavaScript
+
+**Definition:**
+
+Patterns for a page on **origin A** to use data or APIs on **origin B** under the **Same-Origin Policy** and **CORS**.
+
+**How it works:**
+
+| Approach | When |
+| -------- | ---- |
+| **`fetch` / XHR + CORS** | Standard API calls; server sends `Access-Control-*` ([CORS](#cors)) |
+| **Same-origin BFF / reverse proxy** | Browser calls `/api/*` on your origin; server calls backend — no browser CORS |
+| **`postMessage`** | Cross-origin iframe/window with explicit `origin` checks |
+| **WebSocket** | Separate handshake; server must authenticate origin/session |
+| **JSONP** | Legacy `<script>` callback — avoid ([JSONP](#jsonp)) |
+
+CORS controls **reading** cross-origin responses; it does **not** replace **CSRF** protection for cookie sessions ([CSRF](#csrf-cross-site-request-forgery)).
+
+**Sources:**
+
+- [Same-Origin Policy — interview](./7_special_security_interview.md#security--front-end-checklist)
+- [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
 </details>
 
 <details>

@@ -11,6 +11,7 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -213,7 +214,7 @@ LIMIT 100;
 
 **How it works:**
 
-Nested loop — O(n*m). Hash и sort-merge — в среднем O(n+m).
+Nested loop — O(n\*m). Hash и sort-merge — в среднем O(n+m).
 
 Типы: `INNER`, `LEFT`, `RIGHT`, `FULL`, `CROSS`, `SELF`.
 
@@ -743,7 +744,6 @@ CREATE VIEW comedies AS
 - https://www.postgresql.org/docs/current/sql-createview.html
 </details>
 
-
 ### SQL Data Types and Operators
 
 <details>
@@ -1018,7 +1018,6 @@ ORDER BY 1;
 
 Типы аргументов определяют тип результата. Деление двух целых усекает к нулю; `5 / 2` равно `2`. Приведите хотя бы одну сторону, когда нужна дробная часть: `5::numeric / 2`. `%` — это остаток. `div(y, x)` — целочисленное деление. Делитель ноль вызывает ошибку. Null в арифметическом выражении даёт null.
 
-
 **Examples:**
 
 ```sql
@@ -1032,7 +1031,6 @@ FROM invoices;
 
 - https://www.postgresql.org/docs/current/functions-math.html
 </details>
-
 
 ### SQL Advanced Queries
 
@@ -1340,7 +1338,6 @@ HAVING count(*) > 1;
 - https://www.postgresql.org/docs/current/tutorial-window.html
 </details>
 
-
 ### Database Design & Architecture
 
 <details>
@@ -1644,7 +1641,6 @@ GROUP BY region;
 
 Обычное представление нужно, когда результат должен быть текущим, а запрос дешёвый. Материализованное представление нужно, когда сводка дорогая и читатели могут принять данные на момент последнего обновления.
 
-
 **Examples:**
 
 ```sql
@@ -1658,7 +1654,6 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY wrd;
 - https://www.postgresql.org/docs/current/sql-creatematerializedview.html
 - https://www.postgresql.org/docs/current/rules-materializedviews.html
 </details>
-
 
 ### SQL Optimization and Performance
 
@@ -1866,7 +1861,6 @@ CREATE TABLE measurement_y2026m01 PARTITION OF measurement
 - https://www.postgresql.org/docs/current/ddl-partitioning.html
 </details>
 
-
 ### SQL Security
 
 <details>
@@ -1986,7 +1980,6 @@ IMMUTABLE;
 - https://www.postgresql.org/docs/current/sql-createfunction.html
 - https://www.postgresql.org/docs/current/xfunc-sql.html
 </details>
-
 
 ### SQL Functions and Expressions
 
@@ -2114,7 +2107,6 @@ SELECT convert_from('\x4869'::bytea, 'UTF8');
 - https://www.postgresql.org/docs/current/functions-string.html
 - https://www.postgresql.org/docs/current/typeconv.html
 </details>
-
 
 ### Transaction Control and Locking
 
@@ -2250,7 +2242,6 @@ COMMIT;
 
 После `COMMIT` сервер сбросил запись о фиксации в журнал предзаписи согласно `synchronous_commit`. После `ROLLBACK` всё выглядит так, будто изменений не было, кроме продвижения последовательностей. `SAVEPOINT name` отмечает точку внутри транзакции. `ROLLBACK TO SAVEPOINT name` отменяет только работу после этой точки, и транзакция остаётся открытой. `RELEASE SAVEPOINT` снимает метку, не отменяя работу.
 
-
 **Examples:**
 
 ```sql
@@ -2267,7 +2258,6 @@ COMMIT;
 - https://www.postgresql.org/docs/current/sql-commit.html
 - https://www.postgresql.org/docs/current/sql-rollback.html
 </details>
-
 
 ### SQL and Modern Data Ecosystems
 
@@ -2431,7 +2421,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA billing TO billing_
 - https://www.postgresql.org/docs/current/postgres-fdw.html
 </details>
 
-
 ### SQL Best Practices and Standards
 
 <details>
@@ -2575,7 +2564,6 @@ COMMENT ON COLUMN films.kind IS 'Genre label such as Comedy or Drama.';
 
 - https://www.postgresql.org/docs/current/sql-comment.html
 </details>
-
 
 ### Analytical SQL Questions
 
@@ -2730,7 +2718,6 @@ FROM generate_series(0, 364) AS s(n);
 - https://www.postgresql.org/docs/current/functions-srf.html
 </details>
 
-
 ### Data Manipulation and ETL
 
 <details>
@@ -2869,7 +2856,6 @@ COPY orders TO STDOUT WITH (FORMAT csv, HEADER true);
 - https://www.postgresql.org/docs/current/app-pgdump.html
 - https://www.postgresql.org/docs/current/app-pgrestore.html
 </details>
-
 
 ### Domain-Specific SQL Scenarios
 
@@ -3026,7 +3012,6 @@ GROUP BY portfolio_id;
 - https://www.postgresql.org/docs/current/functions-aggregate.html
 </details>
 
-
 ### Troubleshooting and Debugging
 
 <details>
@@ -3138,7 +3123,6 @@ COMMIT;
 - https://www.postgresql.org/docs/current/runtime-config-locks.html
 </details>
 
-
 ### Advanced Data Analysis in SQL
 
 <details>
@@ -3158,7 +3142,6 @@ COMMIT;
 
 SQL нужен, чтобы задать воспроизводимый запрос признаков и отдавать оценки, которые уже записаны в таблицу. Подгонку делайте в системе, которая создана обучать модели, а затем верните оценки или параметры, если приложению они нужны в базе.
 
-
 **Examples:**
 
 ```sql
@@ -3173,7 +3156,28 @@ COPY (
 
 **Sources:**
 
-- https://www.postgresql.org/docs/current/functions-aggregate.html
-- https://www.postgresql.org/docs/current/tutorial-window.html
 - https://www.postgresql.org/docs/current/sql-copy.html
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — SQL block (Node course #10–35, #80, #84)</summary>
+
+### RU cheatsheet — question index
+
+Блок **Node backend** (#10–35). Полный курс: [Node interview — course index](./8_nodejs_interview.md#nodejs-backend--course-index). Теория: [SQL topic](./9_database_sql.md).
+
+| #      | RU topic                        | Поиск в этом файле / теория                    |
+| ------ | ------------------------------- | ---------------------------------------------- |
+| 10     | таблица, поле, запись           | “table”, “column” · [SQL](./9_database_sql.md) |
+| 11     | ограничения (constraints)       | “constraint”, “PRIMARY KEY”                    |
+| 12–15  | связи, DDL, индексы             | “CREATE TABLE”, “index”                        |
+| 16–21  | операторы, SELECT, подзапросы   | “SELECT”, “subquery”                           |
+| 22–27  | транзакции, JOIN, CRUD          | “transaction”, “JOIN”, “ACID”                  |
+| 28–35  | типы, функции, JOIN, сортировка | [SQL topic](./9_database_sql.md)               |
+| 80, 84 | SQL-операторы и функции         | [SQL topic](./9_database_sql.md)               |
+
+**NoSQL (#39–42, #79):** [NoSQL hub](./9_database_nosql.md)
+
 </details>

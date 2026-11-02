@@ -11,8 +11,8 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
-
----
+- [RU cheatsheet index](#ru-cheatsheet-index)
+- [React ecosystem course (#1–121)](#react-ecosystem--course-index)
 
 ## Interview Practice
 
@@ -4250,4 +4250,160 @@ dispatch({ type: "deleted", id: task.id });
 
 - [React — useReducer](https://react.dev/reference/react/useReducer)
 - [React — React Compiler introduction](https://react.dev/learn/react-compiler/introduction)
+</details>
+<a name="react-ecosystem--reactdom"></a>
+
+<details>
+<summary>ReactDOM — why a separate package and how it works</summary>
+
+### ReactDOM — why a separate package and how it works
+
+**Answer:** **React** is renderer-agnostic (components, state, reconciliation). **ReactDOM** is the **web DOM renderer**: mounts the fiber tree and applies DOM updates. Split so **React Native** and other targets share core. Modern apps use **`createRoot(container).render(<App />)`** (React 18+); legacy **`ReactDOM.render`** is deprecated. Reconciliation runs in React core; ReactDOM commits DOM mutations.
+
+**See also:** [4_react_core.md](./4_react_core.md) · “virtual DOM”, “reconciliation” in this file
+
+</details>
+
+<a name="react-ecosystem--styling"></a>
+
+<details>
+<summary>Styling in React — CSS Modules, Tailwind, Emotion, Styled Components, Vanilla Extract</summary>
+
+### Styling in React — CSS Modules, Tailwind, Emotion, Styled Components, Vanilla Extract
+
+**Answer:** **CSS Modules** — scoped class names at build time. **Tailwind** — utility classes, fast iteration. **Styled Components / Emotion** — CSS-in-JS at runtime (avoid in heavy **RSC** apps). **Vanilla Extract** — zero-runtime typed styles. Prefer static CSS or Tailwind for RSC; runtime CSS-in-JS only in client components.
+
+**See also:** [4_react_ecosystem.md](./4_react_ecosystem.md) (styling section)
+
+</details>
+
+<a name="react-ecosystem--nextjs-course"></a>
+
+<details>
+<summary>Next.js course topics — SSR, SSG, data fetching (Pages vs App Router)</summary>
+
+### Next.js course topics — SSR, SSG, data fetching (Pages vs App Router)
+
+**Answer:** **SSR** — HTML per request (`getServerSideProps` in **Pages Router**; **`async` Server Components** + `fetch` in **App Router**). **SSG** — HTML at build (`getStaticProps` / **`generateStaticParams`**). **`getStaticPaths`** — dynamic SSG routes. **`_app.js`** — Pages Router shell; App Router uses **`layout.tsx`**. **`getInitialProps`** — legacy; prefer GSSP/GSP or RSC. Code splitting is automatic via dynamic `import()`.
+
+**See also:** [4_nextjs_rendering.md](./4_nextjs_rendering.md) · [4_nextjs_data.md](./4_nextjs_data.md) · [4_react_platforms.md](./4_react_platforms.md)
+
+</details>
+
+<a name="react-ecosystem--gatsby"></a>
+
+<details>
+<summary>Gatsby — static site generator, PRPL, plugins, useStaticQuery</summary>
+
+### Gatsby — static site generator, PRPL, plugins, useStaticQuery
+
+**Answer:** **Gatsby** builds **static** React sites at compile time, sourcing data via **GraphQL**. **PRPL** — Push critical route, Render, Pre-cache, Lazy-load rest. **Source plugins** ingest CMS/Git; **transformer plugins** reshape data. **`useStaticQuery`** reads build-time data in components. Trade-off: fast CDN delivery vs dynamic server needs (often migrate to Next).
+
+**See also:** [Web app types](./6_web_api_apps.md#types-of-web-apps)
+
+</details>
+
+<a name="react-ecosystem--mobx"></a>
+
+<details>
+<summary>MobX — observables, actions, vs Redux/Flux</summary>
+
+### MobX — observables, actions, vs Redux/Flux
+
+**Answer:** **MobX** tracks **observable** state; **actions** mutate it; **reactions**/`observer` re-render UI. Less boilerplate than Redux; **mutable** appearance with automatic tracking. **Redux** — explicit actions/reducers, time-travel debugging. Use MobX for local complex UI state; Redux/RTK for large teams needing strict flux.
+
+**See also:** [4_react_ecosystem.md](./4_react_ecosystem.md) · [4_react_redux.md](./4_react_redux.md)
+
+</details>
+
+<a name="react-ecosystem--zustand"></a>
+
+<details>
+<summary>Zustand — store, hooks, async actions, devtools</summary>
+
+### Zustand — store, hooks, async actions, devtools
+
+**Answer:** **`create(set => ({ ... }))`** defines a store; **`useStore(selector)`** subscribes in components. Async: call **`set`** inside `async` actions after `fetch`. **`devtools`** middleware integrates Redux DevTools. Simpler than Redux; less structure — good for small/medium apps.
+
+**See also:** [4_react_ecosystem.md](./4_react_ecosystem.md) · [4_react_tanstack.md](./4_react_tanstack.md)
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+<a name="react-ecosystem--course-index"></a>
+
+<details>
+<summary>RU cheatsheet — React ecosystem course (#1–121)</summary>
+
+### RU cheatsheet — question index
+
+Курс **React and react ecosystem** (#1–121). Ищите через `Cmd+F` по RU/EN. Теория — в соседних топиках; ответы — здесь и в [Redux interview](./4_react_redux_interview.md#interview-practice).
+
+#### React core (#1–50)
+
+| #     | RU topic                                                                                        | Theory / search                                                                         |
+| ----- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 1–3   | ReactDOM                                                                                        | [#react-ecosystem--reactdom](#react-ecosystem--reactdom) · “ReactDOM”                   |
+| 4–5   | JSX, render                                                                                     | “JSX”, “render”                                                                         |
+| 6–7   | Fragments                                                                                       | “Fragment”                                                                              |
+| 8–10  | Reconciliation, Fiber, Virtual DOM                                                              | [4_react_core.md](./4_react_core.md) · “reconciliation”, “Fiber”, “virtual DOM”         |
+| 11–18 | Class/func components, props, state, setState, batching                                         | [4_react_hooks.md](./4_react_hooks.md) · “setState”, “batch”                            |
+| 19–20 | Lifecycle, Hooks                                                                                | “lifecycle”, “Rules of Hooks”                                                           |
+| 21    | PropTypes                                                                                       | “prop validation”                                                                       |
+| 22    | PureComponent, memo                                                                             | [4_react_perf.md](./4_react_perf.md)                                                    |
+| 23–25 | ref, Context, Portals                                                                           | “useRef”, “Context”, “Portal”                                                           |
+| 26–27 | Controlled/uncontrolled, forms                                                                  | “controlled”                                                                            |
+| 28–31 | Patterns, handlers, SyntheticEvent, bubbling                                                    | [4_react_patterns.md](./4_react_patterns.md) · “SyntheticEvent”                         |
+| 32–38 | Optimization, Reselect, virtualization, useMemo/useCallback, lazy, Concurrent/Suspense, bundles | [4_react_perf.md](./4_react_perf.md) · [4_react_concurrent.md](./4_react_concurrent.md) |
+| 39–42 | DevTools, testing, snapshots, e2e                                                               | [7_special_testing_interview.md](./7_special_testing_interview.md)                      |
+| 43–46 | React Router, hooks, API, history/location/match                                                | [4_react_ecosystem.md](./4_react_ecosystem.md)                                          |
+| 47–50 | useState/Context/Reducer, useEffect/useLayoutEffect, custom/rare hooks                          | [4_react_hooks.md](./4_react_hooks.md)                                                  |
+
+#### Styling (#51–55)
+
+| #     | RU topic                                                           | Anchor / search                                        |
+| ----- | ------------------------------------------------------------------ | ------------------------------------------------------ |
+| 51–55 | Styled Components, Tailwind, Emotion, CSS Modules, Vanilla Extract | [#react-ecosystem--styling](#react-ecosystem--styling) |
+
+#### Next.js (#56–83)
+
+| #     | RU topic                                                               | Theory / search                                                                                                                      |
+| ----- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 56–61 | Next vs React, SSR/CSR/SSG                                             | [#react-ecosystem--nextjs-course](#react-ecosystem--nextjs-course) · [4_nextjs_rendering.md](./4_nextjs_rendering.md)                |
+| 62–68 | Routing, getStaticProps/Paths, data between pages, serverless          | [4_nextjs_routing.md](./4_nextjs_routing.md) · [4_nextjs_data.md](./4_nextjs_data.md)                                                |
+| 69–83 | Code splitting, `_app`, auth, errors, caching, perf, A/B, realtime, CI | [#react-ecosystem--nextjs-course](#react-ecosystem--nextjs-course) · search “Next” in [4_react_ecosystem.md](./4_react_ecosystem.md) |
+
+#### Gatsby (#84–90)
+
+| #     | RU topic                                              | Anchor                                               |
+| ----- | ----------------------------------------------------- | ---------------------------------------------------- |
+| 84–90 | Gatsby, PRPL, CLI, plugins, useStaticQuery, pros/cons | [#react-ecosystem--gatsby](#react-ecosystem--gatsby) |
+
+#### Redux (#91–105)
+
+| #       | RU topic                             | Theory / search                                                                   |
+| ------- | ------------------------------------ | --------------------------------------------------------------------------------- |
+| 91      | Что такое Redux                      | “What is Redux” in [Redux interview](./4_react_redux_interview.md)                |
+| 92–93   | Flux, Redux vs Flux                  | “Flux” in Redux interview                                                         |
+| 94–96   | Principles, why, how it works        | [Redux](./4_react_redux.md) theory topic                                          |
+| 97      | connect                              | “connect” in Redux interview                                                      |
+| 98–99   | actions, reducers                    | “action”, “reducer” in Redux interview                                            |
+| 100     | middleware                           | “middleware” in Redux interview                                                   |
+| 101     | selectors                            | “selector” in Redux interview                                                     |
+| 102     | Redux-Saga                           | “saga” in Redux interview                                                         |
+| 103–104 | vs MobX, vs Apollo/Relay             | [#react-ecosystem--mobx](#react-ecosystem--mobx) · “MobX” / “Apollo” in interview |
+| 105     | mapStateToProps / mapDispatchToProps | “mapStateToProps” in Redux interview                                              |
+
+#### MobX (#106–115)
+
+| #       | RU topic                                                                   | Anchor / search                                  |
+| ------- | -------------------------------------------------------------------------- | ------------------------------------------------ |
+| 106–115 | MobX concepts, observer, actions, async, Flux diff, persistence, structure | [#react-ecosystem--mobx](#react-ecosystem--mobx) |
+
+#### Zustand (#116–121)
+
+| #       | RU topic                                                | Anchor                                                 |
+| ------- | ------------------------------------------------------- | ------------------------------------------------------ |
+| 116–121 | Zustand basics, state, pros/cons vs Redux, async, debug | [#react-ecosystem--zustand](#react-ecosystem--zustand) |
+
 </details>

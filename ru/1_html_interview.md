@@ -489,6 +489,60 @@ JavaScript можно включить и прямо в HTML-файл. Это н
 </details>
 
 <details>
+<summary>Зачем CSS в head, а JS перед закрывающим body? Какие исключения?</summary>
+
+### Зачем CSS в head, а JS перед закрывающим body? Какие исключения?
+
+**Definition:**
+
+Порядок по умолчанию делает **первую отрисовку** предсказуемой: таблицы стилей в `<head>` рано строят CSSOM; классические блокирующие скрипты в **конце `<body>`** выполняются, когда большая часть DOM уже разобрана.
+
+**How it works:**
+
+#### Зачем CSS в `<head>`
+
+- Подключённый CSS **блокирует отрисовку** намеренно, чтобы первый кадр был стилизован, а не «голый» HTML (FOUC).
+- Парсер может качать CSS, пока идёт по `<head>`.
+
+#### Зачем JS у `</body>` (классические скрипты)
+
+- Классический `<script src="…">` без `async`, `defer` или `type="module"` **останавливает разбор HTML**, пока скрипт качается и выполняется.
+- В конце body разметка выше уже в DOM; inline-скрипты с `querySelector` видят больше дерева.
+
+#### Частые исключения
+
+| Паттерн                           | Где                   | Почему допустимо                                                        |
+| --------------------------------- | --------------------- | ----------------------------------------------------------------------- |
+| `defer` или `type="module"`       | `<head>` или `<body>` | Параллельная загрузка; запуск после разбора (модули defer по умолчанию) |
+| `async`                           | `<head>`              | Независимые скрипты (аналитика); порядок не гарантирован                |
+| Critical CSS                      | Inline в `<head>`     | Отрисовка above-the-fold без лишнего round trip                         |
+| `rel="preload"` / `modulepreload` | `<head>`              | Ранняя загрузка; правила блокировки CSS сохраняются                     |
+| Небольшой bootstrap               | `<head>` с `defer`    | Современные бандлы часто грузят один deferred entry из `<head>`         |
+
+**When to use:**
+
+Для ручных страниц — правило по умолчанию; для бандлеров — `defer`/`module` в `<head>`. Подробнее: [HTML — Performance](./1_html_performance.md), [HTML — Rendering — Progressive rendering](./1_html_rendering.md#progressive-rendering).
+
+**Examples:**
+
+```html
+<head>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <main>...</main>
+</body>
+```
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script
+- https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Critical_rendering_path
+</details>
+
+<details>
 <summary>Как you add a comment in HTML and why would you use them?</summary>
 
 ### Как you add a comment in HTML and why would you use them?
@@ -591,6 +645,52 @@ JavaScript можно включить и прямо в HTML-файл. Это н
 
 - https://devinterview.io/questions/web-and-mobile-development/html5-interview-questions/
 - https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang
+</details>
+
+<details>
+<summary>На что обратить внимание при проектировании многоязычных сайтов?</summary>
+
+### На что обратить внимание при проектировании многоязычных сайтов?
+
+**Definition:**
+
+Многоязычные сайты ломаются, когда вёрстку, SEO и локаль сводят к «просто перевести строки». HTML задаёт язык и направление; CSS и URL должны следовать за контентом.
+
+**How it works:**
+
+#### Контент и вёрстка
+
+- Перевод **меняет длину** текста (немецкий часто длиннее). Кнопки, навигация и таблицы с фиксированной шириной ломаются без гибкой раскладки.
+- **Локаль ≠ язык**: `en-US` и `en-GB` различаются орфографией и форматами; не смешивайте их в одном `lang` без намерения.
+- **Даты, числа и валюту** форматируйте через `Intl` (или локаль на сервере), а не жёсткими шаблонами.
+
+#### Направление и типографика
+
+- `lang` не задаёт направление текста. Для арабского/иврита нужны `dir="rtl"` на `<html>` и соответствующий `lang`.
+- Предпочитайте **логические свойства CSS** (`margin-inline`, `padding-inline`) вместо только left/right. Зеркалируйте иконки с направлением.
+- Используйте **UTF-8** (`<meta charset="utf-8">`) и шрифты с нужными наборами символов.
+
+#### SEO и маршрутизация
+
+- **Отдельный канонический URL** на каждый языковой вариант; связывайте alternates через `<link rel="alternate" hreflang="…">` с взаимными ссылками. Добавляйте `hreflang="x-default"`, когда есть локаль по умолчанию.
+- Избегайте дубликатов: явные пути (`/en/…`, `/ru/…`) или каноникалы — не один URL с невидимым авто-переводом для краулеров.
+
+#### Продукт и UX
+
+- Дайте пользователю **выбрать язык**; не полагайтесь только на `Accept-Language`. Флаги — плохой переключатель языка (двусмысленно и политически нагруженно).
+- Машинный перевод рискован для юридических и медицинских текстов без проверки человеком.
+- Скринридеры используют `lang` (и `lang` на встроенных иностранных фразах); неверный язык портит произношение.
+
+**When to use:**
+
+Любой сайт с несколькими языками или RTL — планируйте URL, `lang`/`dir`, CSS и запас по длине текста до заморозки макета.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir
+- https://developers.google.com/search/docs/specialty/international/localized-versions
+- [HTML — SEO — Internationalization (i18n)](./1_html_seo.md)
 </details>
 
 <details>
@@ -1827,6 +1927,54 @@ HTML5 пришёл после HTML 4.01 и добавил элементы и в
 
 - https://developer.mozilla.org/en-US/docs/Glossary/HTML5
 - https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Structuring_documents
+</details>
+
+<details>
+<summary>Из чего состоит HTML5 как открытая веб-платформа?</summary>
+
+### Из чего состоит HTML5 как открытая веб-платформа?
+
+**Definition:**
+
+**HTML5** (сейчас **живой стандарт WHATWG HTML**) — один слой **открытой веб-платформы**. Браузер объединяет разметку, CSS, JavaScript и host API в одну среду выполнения — без «номера версии HTML5».
+
+**How it works:**
+
+#### Разметка и семантика (HTML)
+
+- Каркас: `<!doctype html>`, `head`, `body`, метаданные.
+- **Семантические области**: `header`, `nav`, `main`, `article`, `section`, `aside`, `footer`.
+- **Формы**, **медиа** (`video`, `audio`, `picture`, `srcset`), **графика** (`canvas`, inline **SVG**).
+
+#### Соседние слои (та же платформа)
+
+| Слой             | Роль                                   |
+| ---------------- | -------------------------------------- |
+| **CSS**          | Оформление, раскладка, адаптив         |
+| **JavaScript**   | Поведение, DOM, запросы к серверу      |
+| **Browser APIs** | Хранилище, сеть, устройства — через JS |
+
+#### Семейства API, которые часто относят к «HTML5»
+
+| Блок                     | Примеры                                                                    |
+| ------------------------ | -------------------------------------------------------------------------- |
+| **Семантика и a11y**     | Landmarks, `lang`, ARIA при необходимости                                  |
+| **С connectivity**       | `fetch`, WebSockets, Server-Sent Events                                    |
+| **Offline и storage**    | `localStorage`, `sessionStorage`, IndexedDB, Cache API (с service workers) |
+| **Мультимедиа**          | `<video>`, `<audio>`, text tracks                                          |
+| **2D/3D**                | `<canvas>`, WebGL/WebGPU                                                   |
+| **Доступ к устройствам** | Geolocation, `getUserMedia`, … (только с разрешения)                       |
+| **Производительность**   | `defer`/`async`, `preload`, responsive images                              |
+
+**When to use:**
+
+На собеседовании: назовите **семантику**, **медиа**, **формы**, **storage/connectivity API** и отметьте, что **CSS + JS** завершают платформу. Глубже: [HTML — Core — Web platform layers](./1_html_core.md#web-platform-layers), [Browser platform (Core)](./0_core_browser.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/HTML5
+- https://html.spec.whatwg.org/
+- https://developer.mozilla.org/en-US/docs/Web/API
 </details>
 
 <details>
@@ -3550,6 +3698,41 @@ customElements.define("filled-circle", FilledCircle);
 </details>
 
 <details>
+<summary>В чём разница между cookie, sessionStorage и localStorage?</summary>
+
+### В чём разница между cookie, sessionStorage и localStorage?
+
+**Definition:**
+
+Все три хранят данные в браузере, но **cookies** заточены под **HTTP**, а **Web Storage** — это **JS key-value API** в рамках **origin**.
+
+**How it works:**
+
+|                   | **Cookie**                                                           | **sessionStorage**                               | **localStorage**                                            |
+| ----------------- | -------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------- |
+| **Назначение**    | Session id, настройки, которые **сервер** читает в следующем запросе | Черновик или состояние мастера на вкладку        | Клиентские prefs между перезапусками                        |
+| **Уходит в HTTP** | Да — заголовок `Cookie` (если не заблокирован)                       | Нет                                              | Нет                                                         |
+| **Объём**         | ~4 KB на cookie                                                      | ~5 MiB на origin (типично)                       | ~5 MiB на origin (типично)                                  |
+| **Срок жизни**    | `Max-Age` / `Expires` или session cookie до конца сессии браузера    | До конца **сессии вкладки/окна**                 | Пока не очистит скрипт или пользователь (с учётом eviction) |
+| **API**           | `Set-Cookie` (сервер) + ограниченный `document.cookie`               | `setItem` / `getItem` (sync)                     | Как у sessionStorage                                        |
+| **Безопасность**  | `HttpOnly` скрывает от JS (но шлёт на сервер); `Secure` + `SameSite` | Любой same-origin скрипт (XSS) — не для секретов | Как sessionStorage                                          |
+
+**When to use:**
+
+- **Cookie**: сессия auth на сервере; мелкие флаги для backend.
+- **sessionStorage**: данные, которые должны исчезнуть с вкладкой.
+- **localStorage**: тема, язык UI, несекретные клиентские настройки.
+
+Для больших offline-данных — **IndexedDB**, не Web Storage. Сравнение: [JS browser extra — Browser storage](./3_js_browser_extra.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies
+- https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
+- https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+</details>
+
+<details>
 <summary>Что такое the Geolocation API and how is it used?</summary>
 
 ### Что такое the Geolocation API and how is it used?
@@ -3865,6 +4048,72 @@ pug.renderFile("template.pug", { name: "Timothy" });
 
 - https://pugjs.org/api/getting-started.html
 - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template
+</details>
+
+<details>
+<summary>Работали ли вы с разными HTML-шаблонизаторами?</summary>
+
+### Работали ли вы с разными HTML-шаблонизаторами?
+
+**Definition:**
+
+**HTML-шаблонизация** — генерация HTML из **шаблона + данных** на сервере, на сборке или во фреймворке UI, а не ручная верстка каждой страницы.
+
+**How it works:**
+
+#### Распространённые семейства
+
+| Тип                             | Примеры                                  | Где                          |
+| ------------------------------- | ---------------------------------------- | ---------------------------- |
+| **Шаблоны с логикой/отступами** | Pug (Jade), Nunjucks, EJS, Handlebars    | Сервер, SSG                  |
+| **Компонентные шаблоны**        | JSX/TSX (React), Vue SFC, Svelte         | SPA и SSR (Next.js, Nuxt, …) |
+| **`<template>` в браузере**     | Инертная разметка, клонирование скриптом | Web components               |
+
+#### Как ответить на собеседовании
+
+- Назовите **реальный опыт**: например **Pug** для compile-to-HTML, **JSX/TSX** в **React/Next.js** (handbook MyConspect).
+- Сравните **серверные шаблоны** (одна HTML-строка на запрос/сборку) и **UI-шаблоны** (reconciliation, hydration).
+- Разделение: шаблон — структура; данные — API, CMS или props.
+
+**When to use:**
+
+Сервер/SSG — лендинги и письмоподобные layout; компоненты — интерактивные приложения. См. вопросы про Pug и templating engine выше в этом файле.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template
+- https://pugjs.org/api/getting-started.html
+- https://react.dev/learn/writing-markup-with-jsx
+</details>
+
+<details>
+<summary>Что такое progressive rendering?</summary>
+
+### Что такое progressive rendering?
+
+**Definition:**
+
+**Progressive rendering** — браузер показывает **полезный контент рано**, пока HTML, CSS и JS ещё доезжают, вместо ожидания всех ресурсов перед первой отрисовкой.
+
+**How it works:**
+
+- HTML разбирается **потоково**; DOM растёт по мере байтов.
+- Первая стилизованная отрисовка всё равно ждёт **render-blocking CSS** (CSSOM). Critical CSS inline или в приоритете; остальное — отложить.
+- **`defer`**, **`async`**, **`type="module"`** — чтобы скрипты не блокировали разбор зря.
+- Картинки ниже fold: `loading="lazy"`; skeleton, пока грузятся данные.
+
+**When to use:**
+
+Длинные статьи, маркетинг с LCP-hero, SSR с последующей hydration.
+
+**Thoughts:**
+
+Сочетайте с non-blocking JS и lazy media — [HTML — Rendering — Progressive rendering](./1_html_rendering.md#progressive-rendering).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Critical_rendering_path
+- https://web.dev/articles/critical-rendering-path
 </details>
 
 <details>

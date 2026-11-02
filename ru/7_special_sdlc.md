@@ -19,7 +19,12 @@
 - [11. SDLC & Agile](#11-sdlc-agile)
 - [AI augmentation of SDLC phases](#ai-augmentation-of-sdlc-phases)
 - [Frontend team in Agile](#frontend-team-in-agile)
+- [Definition of Ready (DoR) and Definition of Done (DoD)](#definition-of-ready-dor-and-definition-of-done-dod)
+- [GitFlow branching model](#gitflow-branching-model)
+- [RACI and stakeholders](#raci-and-stakeholders)
+- [Technical debt](#technical-debt)
 - [Code refactoring](#code-refactoring)
+- [SDLC — interview checklist](#sdlc--interview-checklist)
 
 ---
 
@@ -486,6 +491,54 @@ _Сделать очередь видимой; столбец, который з
 </details>
 
 <details>
+  <summary>Definition of Ready (DoR) and Definition of Done (DoD)</summary>
+
+### Definition of Ready (DoR) and Definition of Done (DoD)
+
+**Definition:** **DoR** — критерии готовности задачи к спринту (AC, зависимости, дизайн). **DoD** — критерии «готово» (review, тесты, деплой, нет sev-1).
+
+**Sources:** [Scrum Guide](https://scrumguides.org/scrum-guide.html)
+
+---
+
+</details>
+
+<details>
+  <summary>GitFlow branching model</summary>
+
+### GitFlow branching model
+
+**Definition:** Ветки `main`, `develop`, `feature/*`, `release/*`, `hotfix/*`. Альтернатива — trunk-based / GitHub Flow.
+
+**See also:** [Pull requests](./0_git_team.md)
+
+---
+
+</details>
+
+<details>
+  <summary>RACI and stakeholders</summary>
+
+### RACI and stakeholders
+
+**Definition:** **Stakeholder** — заинтересованная сторона. **RACI** — Responsible, Accountable, Consulted, Informed.
+
+---
+
+</details>
+
+<details>
+  <summary>Technical debt</summary>
+
+### Technical debt
+
+**Definition:** Будущая цена компромиссов (нет тестов, запутанный код). Платить через backlog и рефакторинг на зелёных тестах.
+
+---
+
+</details>
+
+<details>
   <summary>Not a silver bullet</summary>
 
 ### Not a silver bullet
@@ -556,5 +609,22 @@ _Сделать очередь видимой; столбец, который з
 [refactoring.com](https://refactoring.com/)
 
 ---
+
+</details>
+
+---
+
+<a name="sdlc--interview-checklist"></a>
+
+## SDLC — interview checklist
+
+**Theory:** разделы выше · [MVP & POC](./0_mvp.md) · [Git](./0_git_team.md) · [CI/CD](./10_build_interview.md#what-is-cicd). Полные EN-карточки: [../en/7_special_sdlc.md#sdlc--interview-checklist](../en/7_special_sdlc.md#sdlc--interview-checklist).
+
+<details>
+<summary>SDLC, Agile, DoD/DoR, GitFlow, POC/MVP?</summary>
+
+### SDLC, Agile, DoD/DoR, GitFlow, POC/MVP?
+
+См. якоря выше и [POC vs Prototype vs MVP](./0_mvp.md#poc-vs-prototype-vs-mvp).
 
 </details>

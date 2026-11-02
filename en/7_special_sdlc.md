@@ -19,7 +19,12 @@ Waterfall, Agile, Scrum, and Kanban. Canonical **principles** and **six phases**
 - [11. SDLC & Agile](#11-sdlc-agile)
 - [AI augmentation of SDLC phases](#ai-augmentation-of-sdlc-phases)
 - [Frontend team in Agile](#frontend-team-in-agile)
+- [Definition of Ready (DoR) and Definition of Done (DoD)](#definition-of-ready-dor-and-definition-of-done-dod)
+- [GitFlow branching model](#gitflow-branching-model)
+- [RACI and stakeholders](#raci-and-stakeholders)
+- [Technical debt](#technical-debt)
 - [Code refactoring](#code-refactoring)
+- [SDLC — interview checklist](#sdlc--interview-checklist)
 
 ---
 
@@ -492,6 +497,84 @@ _Make the queue visible; the column that fills up is the team’s bottleneck._
 ---
 
 <details>
+  <summary>Definition of Ready (DoR) and Definition of Done (DoD)</summary>
+
+### Definition of Ready (DoR) and Definition of Done (DoD)
+
+**Definition:**
+
+- **Definition of Ready (DoR)** — checklist before a backlog item enters a sprint: clear acceptance criteria, dependencies resolved, design/API agreed, estimable.
+- **Definition of Done (DoD)** — checklist before work is **done**: code reviewed, tests pass, docs updated, deployed to agreed environment, no known sev-1 bugs.
+
+**How it works:**
+
+DoR prevents “half-specified” stories from blocking the team mid-sprint. DoD is shared by **all** disciplines (frontend includes a11y, perf budget, i18n if in scope). DoD ≠ “developer finished coding” — it is **shippable** per team contract.
+
+**When to use:** Scrum/Kanban interviews; align DoD with [CI/CD](./10_build_ci.md#continuous-integration-ci) gates.
+
+**Sources:** [Scrum Guide — Increment](https://scrumguides.org/scrum-guide.html)
+
+---
+
+</details>
+
+<details>
+  <summary>GitFlow branching model</summary>
+
+### GitFlow branching model
+
+**Definition:** **GitFlow** — long-lived **`main`** (production) and **`develop`**, plus short-lived **`feature/*`**, **`release/*`**, and **`hotfix/*`** branches.
+
+**How it works:**
+
+Features branch from `develop`, merge back; releases stabilize on `release/*` then merge to `main` and back to `develop`; hotfixes branch from `main`. Contrasts with **trunk-based** / **GitHub Flow** (short-lived branches off `main` + PR). Pick flow by release cadence and team size.
+
+**See also:** [Pull requests / MRs](./0_git_team.md) · [Git interview](./0_git_interview.md)
+
+**Sources:** [Atlassian — Gitflow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
+
+---
+
+</details>
+
+<details>
+  <summary>RACI and stakeholders</summary>
+
+### RACI and stakeholders
+
+**Definition:**
+
+- **Stakeholder** — anyone affected by or influencing the product (users, business, legal, ops).
+- **RACI** — responsibility matrix: **R**esponsible (does the work), **A**ccountable (one approver), **C**onsulted, **I**nformed.
+
+**How it works:**
+
+Use RACI on cross-team initiatives (launch, migration) to avoid “everyone thought someone else owned it.” In Agile, Product Owner is often **Accountable** for backlog; devs **Responsible** for increment; stakeholders **Consulted/Informed** in reviews.
+
+**Sources:** [PMI — RACI overview](https://www.pmi.org/learning/library/raci-matrix-responsibility-assignment-6039)
+
+---
+
+</details>
+
+<details>
+  <summary>Technical debt</summary>
+
+### Technical debt
+
+**Definition:** **Technical debt** — implied future cost from shortcuts (missing tests, tangled modules, outdated deps) taken to ship faster now.
+
+**How it works:**
+
+Like financial debt: you can borrow for speed if you **pay interest** (slower features, bugs, onboarding pain). Manage with visible backlog items, [refactoring](#code-refactoring) after green tests, and [Quality Gates](./7_special_testing_fundamentals.md#tests-and-aaa) in CI — not endless “cleanup sprints” without product value.
+
+**See also:** [Code review](./0_git_team.md) · [CI/CD interview](./10_build_interview.md#what-is-cicd)
+
+---
+
+</details>
+
+<details>
   <summary>Not a silver bullet</summary>
 
 ### Not a silver bullet
@@ -563,5 +646,58 @@ Canonical notes live in [DevOps](./15_devops.md). Pipeline tooling: [CI/CD](./10
 [refactoring.com](https://refactoring.com/)
 
 ---
+
+</details>
+
+---
+
+<a name="sdlc--interview-checklist"></a>
+
+## SDLC — interview checklist
+
+Compact answers for common **process** interview lists. **Theory:** sections above in this file · [MVP & POC](./0_mvp.md) · [Git team workflow](./0_git_team.md) · [CI/CD](./10_build_interview.md#what-is-cicd).
+
+<details>
+<summary>What is SDLC?</summary>
+
+### What is SDLC?
+
+Software Development Life Cycle — phases from idea to maintenance. Models: [Waterfall](#waterfall) · [Agile](#agile) · [Scrum](#scrum) · [Kanban](#kanban). Principles: [7_special_sdlc_principles.md](./7_special_sdlc_principles.md).
+
+</details>
+
+<details>
+<summary>What is Agile? Code review? CI/CD? Technical debt?</summary>
+
+### What is Agile? Code review? CI/CD? Technical debt?
+
+[Agile](#agile) · [Code review / PRs](./0_git_team.md) · [CI/CD](./10_build_interview.md#what-is-cicd) · [Technical debt](#technical-debt)
+
+</details>
+
+<details>
+<summary>Functional vs non-functional requirements?</summary>
+
+### Functional vs non-functional requirements?
+
+**Functional** — what the system **does** (features). **Non-functional** — **how well** (performance, security, a11y, scalability). NFRs often become DoD items (CWV budget, WCAG level).
+
+</details>
+
+<details>
+<summary>POC vs Prototype vs MVP? DoD vs DoR?</summary>
+
+### POC vs Prototype vs MVP? DoD vs DoR?
+
+[POC vs Prototype vs MVP](./0_mvp.md#poc-vs-prototype-vs-mvp) · [DoR and DoD](#definition-of-ready-dor-and-definition-of-done-dod)
+
+</details>
+
+<details>
+<summary>GitFlow? Stakeholder and RACI? Mentoring vs coaching?</summary>
+
+### GitFlow? Stakeholder and RACI?
+
+[GitFlow](#gitflow-branching-model) · [RACI](#raci-and-stakeholders). **Mentoring** — senior guides craft; **coaching** — asks questions so the person finds their own solution (often external coach).
 
 </details>

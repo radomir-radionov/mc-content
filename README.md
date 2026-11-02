@@ -2,9 +2,9 @@
 
 Public markdown conspect for [MyConspect](https://myconspect.vercel.app): bilingual study notes in **English** and **Russian**.
 
-| Directory | Locale |
-| --------- | ------ |
-| `en/`     | English |
+| Directory | Locale                            |
+| --------- | --------------------------------- |
+| `en/`     | English                           |
 | `ru/`     | Russian (same basenames as `en/`) |
 
 The [mc-app](https://github.com/radomir-radionov/mc-app) Next.js app renders topics listed in its catalog. Files here that are not in the catalog (for example personal link hubs) stay out of the site but remain in this repository.

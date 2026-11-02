@@ -171,11 +171,11 @@ Action в Redux создают как объектный литерал хотя
 
 ```js
 const myAction = {
-  type: 'ADD_TODO',
+  type: "ADD_TODO",
   payload: {
     id: 1,
-    text: 'Buy groceries'
-  }
+    text: "Buy groceries",
+  },
 };
 ```
 
@@ -186,14 +186,14 @@ const myAction = {
 ```ts
 // Defining the Action Interface
 interface AddTodoAction {
-  type: 'ADD_TODO';
+  type: "ADD_TODO";
   payload: { id: number; text: string };
 }
 
 // Creating an action
 const addTodoAction: AddTodoAction = {
-  type: 'ADD_TODO',
-  payload: { id: 1, text: 'Buy groceries' }
+  type: "ADD_TODO",
+  payload: { id: 1, text: "Buy groceries" },
 };
 ```
 
@@ -245,7 +245,7 @@ Reducers, чистые функции, — основа процесса изм�
 ```js
 // Action Creator
 function increment() {
-  return { type: 'INCREMENT' };
+  return { type: "INCREMENT" };
 }
 
 // Dispatching the action
@@ -296,9 +296,9 @@ Redux даёт служебные функции, такие как combineReduc
 ```js
 const counterReducer = (state = { count: 0 }, action) => {
   switch (action.type) {
-    case 'increment':
+    case "increment":
       return { count: state.count + 1 };
-    case 'decrement':
+    case "decrement":
       return { count: state.count - 1 };
     default:
       return state;
@@ -498,9 +498,9 @@ const initialState = { count: 0 };
 
 const counterReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'INCREMENT':
+    case "INCREMENT":
       return { count: state.count + 1 };
-    case 'DECREMENT':
+    case "DECREMENT":
       return { count: state.count - 1 };
     default:
       return state;
@@ -512,8 +512,8 @@ export default counterReducer;
 
 ```js
 // reducers/index.js
-import { combineReducers } from 'redux';
-import counterReducer from './counterReducer';
+import { combineReducers } from "redux";
+import counterReducer from "./counterReducer";
 
 const reducers = combineReducers({
   counter: counterReducer,
@@ -525,9 +525,9 @@ export default reducers;
 
 ```js
 // reducers/index.js
-import { combineReducers } from 'redux';
-import counterReducer from './counterReducer';
-import userReducer from './userReducer';
+import { combineReducers } from "redux";
+import counterReducer from "./counterReducer";
+import userReducer from "./userReducer";
 
 const reducers = combineReducers({
   counter: counterReducer,
@@ -539,8 +539,8 @@ export default reducers;
 
 ```js
 // store.js
-import { createStore, applyMiddleware, compose } from 'redux';
-import reducers from './reducers';
+import { createStore, applyMiddleware, compose } from "redux";
+import reducers from "./reducers";
 
 const store = createStore(
   reducers,
@@ -548,7 +548,7 @@ const store = createStore(
     counter: { count: 10 },
     // Additional initial states for more reducers
   },
-  compose(applyMiddleware(middleware1, middleware2))
+  compose(applyMiddleware(middleware1, middleware2)),
 );
 
 export default store;
@@ -684,15 +684,15 @@ export default store;
 **Вот как можно применить combineReducers:**
 
 ```js
-import { combineReducers } from 'redux';
-import notesReducer from './notesReducer';
-import uiReducer from './uiReducer';
-import userReducer from './userReducer';
+import { combineReducers } from "redux";
+import notesReducer from "./notesReducer";
+import uiReducer from "./uiReducer";
+import userReducer from "./userReducer";
 
 const rootReducer = combineReducers({
   notes: notesReducer,
   ui: uiReducer,
-  user: userReducer
+  user: userReducer,
 });
 
 export default rootReducer;
@@ -781,7 +781,7 @@ const incrementAsync = () => {
   return (dispatch) => {
     // Asynchronous Operation
     setTimeout(() => {
-      dispatch({ type: 'INCREMENT' }); // Dispatch a regular action after a delay
+      dispatch({ type: "INCREMENT" }); // Dispatch a regular action after a delay
     }, 2000);
   };
 };
@@ -792,12 +792,12 @@ const incrementAsync = () => {
 **Вот код на JavaScript:**
 
 ```js
-import { takeLatest, call, put } from 'redux-saga/effects';
-import { START_SUBMIT, SUCCESS_SUBMIT, FAILED_SUBMIT } from './actionTypes';
-import { validateInput } from './api';
+import { takeLatest, call, put } from "redux-saga/effects";
+import { START_SUBMIT, SUCCESS_SUBMIT, FAILED_SUBMIT } from "./actionTypes";
+import { validateInput } from "./api";
 
 function* submitForm(action) {
-  const {input} = action.payload;
+  const { input } = action.payload;
   try {
     yield call(validateInput, input);
     yield put({ type: SUCCESS_SUBMIT });
@@ -816,7 +816,6 @@ export default function* formSaga() {
 - [Devinterview.io — Redux](https://devinterview.io/questions/web-and-mobile-development/redux-interview-questions/)
 
 </details>
-
 
 ### Redux Core Concepts
 
@@ -849,9 +848,9 @@ export default function* formSaga() {
 
 ```js
 // configureStore.js
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import rootReducer from "./reducers";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 export default store;
@@ -859,12 +858,12 @@ export default store;
 // actions.js
 export const fetchData = () => {
   return async (dispatch) => {
-    dispatch({ type: 'FETCH_DATA_REQUEST' });
+    dispatch({ type: "FETCH_DATA_REQUEST" });
     try {
       const data = await someAPICall();
-      dispatch({ type: 'FETCH_DATA_SUCCESS', payload: data });
+      dispatch({ type: "FETCH_DATA_SUCCESS", payload: data });
     } catch (err) {
-      dispatch({ type: 'FETCH_DATA_FAILURE', error: err.message });
+      dispatch({ type: "FETCH_DATA_FAILURE", error: err.message });
     }
   };
 };
@@ -873,11 +872,11 @@ export const fetchData = () => {
 const initialState = { data: null, loading: false, error: null };
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'FETCH_DATA_REQUEST':
+    case "FETCH_DATA_REQUEST":
       return { ...state, loading: true, error: null };
-    case 'FETCH_DATA_SUCCESS':
+    case "FETCH_DATA_SUCCESS":
       return { ...state, data: action.payload, loading: false };
-    case 'FETCH_DATA_FAILURE':
+    case "FETCH_DATA_FAILURE":
       return { ...state, loading: false, error: action.error };
     default:
       return state;
@@ -954,8 +953,8 @@ const appState = {
 const getUser = (state) => state.user;
 const getUserEmail = (state) => getUser(state).email;
 const getElectronicsProducts = (state) => {
-  return state.products.list.filter((product) =>
-    product.category === "electronics"
+  return state.products.list.filter(
+    (product) => product.category === "electronics",
   );
 };
 
@@ -968,11 +967,17 @@ console.log(getElectronicsProducts(appState));
 const getAllProducts = (state) => state.products.list;
 const memoizedElectronicsSelector = createSelector(
   [getAllProducts],
-  (products) => products.filter((product) => product.category === "electronics")
+  (products) =>
+    products.filter((product) => product.category === "electronics"),
 );
 
 // Add a new product to trigger re-calculation
-appState.products.list.push({ id: 4, name: "Product 4", price: 300, category: "electronics" });
+appState.products.list.push({
+  id: 4,
+  name: "Product 4",
+  price: 300,
+  category: "electronics",
+});
 // Re-run the memoized selector
 console.log(memoizedElectronicsSelector(appState));
 // Output: [ { id: 1, name: "Product 1", price: 100, category: "electronics" }, { id: 3, name: "Product 3", price: 200, category: "electronics" }, { id: 4, name: "Product 4", price: 300, category: "electronics" } ]
@@ -1203,7 +1208,6 @@ const store = configureStore({
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
 
-
 ### Working with Redux Actions
 
 <details>
@@ -1337,10 +1341,13 @@ Thunk — это функция, которую вы отправляете. П�
 **Examples:**
 
 ```js
-const fetchUserById = createAsyncThunk("users/fetchByIdStatus", async (userId) => {
-  const response = await userAPI.fetchById(userId);
-  return response.data;
-});
+const fetchUserById = createAsyncThunk(
+  "users/fetchByIdStatus",
+  async (userId) => {
+    const response = await userAPI.fetchById(userId);
+    return response.data;
+  },
+);
 dispatch(fetchUserById(123));
 ```
 
@@ -1350,7 +1357,6 @@ dispatch(fetchUserById(123));
 - [Fundamentals — async logic](https://redux.js.org/tutorials/fundamentals/part-6-async-logic)
 - [Redux Toolkit usage guide](https://redux-toolkit.js.org/usage/usage-guide)
 </details>
-
 
 ### Reducers and State Management
 
@@ -1376,7 +1382,7 @@ extraReducers: (builder) => {
   builder.addCase(fetchUserById.fulfilled, (state, action) => {
     state.entities.push(action.payload);
   });
-}
+};
 ```
 
 **Sources:**
@@ -1560,7 +1566,6 @@ const usersSlice = createSlice({
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
 
-
 ### Redux Middleware and Side Effects
 
 <details>
@@ -1616,7 +1621,8 @@ redux-saga запускает функции-генераторы в проме�
 const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(sagaMiddleware),
 });
 sagaMiddleware.run(mySaga);
 ```
@@ -1704,7 +1710,6 @@ function logger({ getState }) {
 - [createListenerMiddleware](https://redux-toolkit.js.org/api/createListenerMiddleware)
 </details>
 
-
 ### Redux and UI Integration
 
 <details>
@@ -1783,10 +1788,9 @@ connect подписывает обёртку и передаёт данные �
 **Examples:**
 
 ```js
-connect(
-  (state, ownProps) => ({ todo: state.todos[ownProps.id] }),
-  { todoToggled },
-)(TodoRow);
+connect((state, ownProps) => ({ todo: state.todos[ownProps.id] }), {
+  todoToggled,
+})(TodoRow);
 ```
 
 **Sources:**
@@ -1904,7 +1908,6 @@ const selected = useSelector(selectorReturningObject, shallowEqual);
 - [Redux style guide](https://redux.js.org/style-guide/)
 - [Hooks API](https://react-redux.js.org/api/hooks)
 </details>
-
 
 ### Advanced Redux Patterns
 
@@ -2041,7 +2044,6 @@ Ducks значит, что один модуль владеет типами д�
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
 
-
 ### Redux State Normalization
 
 <details>
@@ -2125,7 +2127,6 @@ Ducks значит, что один модуль владеет типами д�
 
 - [Normalizing state shape](https://redux.js.org/usage/structuring-reducers/normalizing-state-shape)
 </details>
-
 
 ### Redux Ecosystem and Utilities
 
@@ -2241,7 +2242,6 @@ const store = configureStore({
 - [Redux style guide](https://redux.js.org/style-guide/)
 - [Redux Toolkit getting started](https://redux-toolkit.js.org/introduction/getting-started)
 </details>
-
 
 ### Testing Redux Applications
 
@@ -2367,7 +2367,6 @@ render(
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
 
-
 ### Redux with Other Frameworks and Libraries
 
 <details>
@@ -2461,7 +2460,6 @@ React Native рисует через React, поэтому те же `Provider`,
 - [createStore](https://redux.js.org/api/createStore)
 - [Redux Toolkit getting started](https://redux-toolkit.js.org/introduction/getting-started)
 </details>
-
 
 ### Scaling Redux for Large Applications
 
@@ -2570,7 +2568,6 @@ React Native рисует через React, поэтому те же `Provider`,
 - [RTK Query overview](https://redux-toolkit.js.org/rtk-query/overview)
 </details>
 
-
 ### Redux Performance Optimization
 
 <details>
@@ -2665,7 +2662,6 @@ const todo = useSelector((state) => state.todos.entities[id]);
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
 
-
 ### Redux and Forms
 
 <details>
@@ -2733,7 +2729,6 @@ const todo = useSelector((state) => state.todos.entities[id]);
 
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
-
 
 ### Redux and Authentication
 
@@ -2808,7 +2803,6 @@ builder.addCase(login.fulfilled, (state, action) => {
 - [Essentials — async logic](https://redux.js.org/tutorials/essentials/part-5-async-logic)
 </details>
 
-
 ### Migrating to Redux and State Hydration
 
 <details>
@@ -2873,7 +2867,6 @@ builder.addCase(login.fulfilled, (state, action) => {
 - [Redux style guide](https://redux.js.org/style-guide/)
 - [RTK Query overview](https://redux-toolkit.js.org/rtk-query/overview)
 </details>
-
 
 ### Redux Future and Community
 
@@ -2942,7 +2935,6 @@ Redux остаётся предсказуемым хранилищем клие�
 - [Redux Toolkit getting started](https://redux-toolkit.js.org/introduction/getting-started)
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
-
 
 ### Advanced State Modeling in Redux
 
@@ -3038,7 +3030,6 @@ type UserState =
 - [Redux style guide](https://redux.js.org/style-guide/)
 </details>
 
-
 ### Redux Interoperability
 
 <details>
@@ -3103,7 +3094,6 @@ type UserState =
 - [RTK Query overview](https://redux-toolkit.js.org/rtk-query/overview)
 - [Normalizing state shape](https://redux.js.org/usage/structuring-reducers/normalizing-state-shape)
 </details>
-
 
 ### Redux API Requests and Caching
 
@@ -3179,7 +3169,7 @@ middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.m
 
 **How it works:**
 
-- **REST**: `build.query({ query: (name) => \`pokemon/${name}\` })` делает GET к базовому URL. Мутации используют `build.mutation`.
+- **REST**: `build.query({ query: (name) => \`pokemon/${name}\` })`делает GET к базовому URL. Мутации используют`build.mutation`.
 - **Хуки**: Импортируйте `createApi` из `@reduxjs/toolkit/query/react`, чтобы конечная точка экспортировала `useGetPokemonByNameQuery`.
 - **Запасной путь**: Один REST-вызов может остаться `createAsyncThunk` плюс `extraReducers`, когда кэш не нужен.
 

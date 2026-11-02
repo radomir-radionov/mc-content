@@ -6,11 +6,12 @@ Interview Q&A for build and CI.
 
 ### Related docs
 
-* [Build — CI](./10_build_ci.md) · [Build — Bundlers](./10_build_bundlers.md) · [Build — Docker](./10_build_docker.md) · [Build — Infra](./10_build_infra.md) · [Build — Interview](./10_build_interview.md)
+- [Build — CI](./10_build_ci.md) · [Build — Bundlers](./10_build_bundlers.md) · [Build — Docker](./10_build_docker.md) · [Build — Infra](./10_build_infra.md) · [Build — Interview](./10_build_interview.md)
 
 ### Sections
 
 - [Questions & Answers](#questions-answers)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -38,11 +39,11 @@ Interview Q&A for build and CI.
 
 **CI** — automated build + test on each change. **Continuous Delivery** — deployable artifact, manual prod gate. **Continuous Deployment** — auto-deploy to prod.
 
-| Model | Deployment |
-|-------|------------|
-| CI | None |
-| Continuous Delivery | Manual / approval |
-| Continuous Deployment | Automatic |
+| Model                 | Deployment        |
+| --------------------- | ----------------- |
+| CI                    | None              |
+| Continuous Delivery   | Manual / approval |
+| Continuous Deployment | Automatic         |
 
 **Sources:** [ByteByteGo — CI/CD](https://blog.bytebytego.com/p/a-crash-course-in-cicd)
 
@@ -81,11 +82,11 @@ Interview Q&A for build and CI.
 
 Dev optimizes feedback speed; prod optimizes size, caching, and runtime.
 
-| Dev | Prod |
-|-----|------|
-| HMR, fast rebuild | Minify, tree-shake |
-| Inline source maps | Hashed filenames |
-| No minification | Code splitting |
+| Dev                | Prod               |
+| ------------------ | ------------------ |
+| HMR, fast rebuild  | Minify, tree-shake |
+| Inline source maps | Hashed filenames   |
+| No minification    | Code splitting     |
 
 **Sources:** [Vite — Building for production](https://vite.dev/guide/build.html)
 
@@ -234,11 +235,11 @@ CMD ["node", "dist/index.js"]
 
 52. How does a dev build differ from a production build?
 
-133. What is `package-lock.json` for?
+53. What is `package-lock.json` for?
 
-134. What is the difference between `npm install` and `npm ci`?
+54. What is the difference between `npm install` and `npm ci`?
 
-135. What are bundlers used for?
+55. What are bundlers used for?
 
 </details>
 
@@ -255,4 +256,18 @@ See also (git, not build): [0_git.md — Interview Practice](0_git_interview.md#
 
 </details>
 
+<a name="ru-cheatsheet-index"></a>
 
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+| RU build list              | Theory / this file                                         |
+| -------------------------- | ---------------------------------------------------------- |
+| Babel, tree shaking        | [10_build_bundlers.md](./10_build_bundlers.md) · Q&A above |
+| Webpack, bundle            | Search “Webpack”, “bundle”                                 |
+| Git, pull request          | [0_git_interview.md](./0_git_interview.md)                 |
+| stylelint, static analysis | Search “lint” in this file                                 |
+
+</details>

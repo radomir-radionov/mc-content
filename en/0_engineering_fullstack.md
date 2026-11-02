@@ -6,17 +6,18 @@ What a strong **full-stack** role expects: backend and **SQL**, **HTTP/API** and
 
 ### Related docs
 
-- [AI-first engineering & SDD](./0_ai_engineering.md) · [AI-assisted workflow (Claude Code, Codex)](./0_ai.md#ai-assisted-workflow-cursor-copilot-claude-code) · [MVP & judgment](./0_mvp.md) · [Behavior interview](./0_behavior_questions.md) · [Interview hub](./0_interview.md)
+- [AI-first engineering & SDD](./0_ai_engineering.md) · [AI-assisted workflow (Claude Code, Codex)](./0_ai.md#ai-assisted-workflow-cursor-copilot-claude-code) · [MVP & judgment](./0_mvp.md) · [Behavior interview](./0_behavior_questions.md) · [Interview hub](./0_interview.md) · [Core Web Vitals](./1_html_performance.md#core-web-vitals) · [Frontend performance map](./6_web_api_performance.md#frontend-performance-techniques-study-map)
 
 ### Main concepts
 
-| Area           | Topics                                                         |
-| -------------- | -------------------------------------------------------------- |
-| **Scope**      | [Full-stack delivery scope](#full-stack-delivery-scope)        |
-| **Production** | [Production diagnosis](#production-diagnosis)                  |
-| **Platform**   | [Delivery hygiene](#delivery-hygiene-git-ci-docker-migrations) |
-| **Security**   | [Secrets and access control](#secrets-and-access-control)      |
-| **Design**     | [Design patterns in practice](#design-patterns-in-practice)    |
+| Area           | Topics                                                                                                                                                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Scope**      | [Full-stack delivery scope](#full-stack-delivery-scope)                                                                                                                                                              |
+| **Production** | [Production diagnosis](#production-diagnosis)                                                                                                                                                                        |
+| **Platform**   | [Delivery hygiene](#delivery-hygiene-git-ci-docker-migrations)                                                                                                                                                       |
+| **Security**   | [Secrets and access control](#secrets-and-access-control)                                                                                                                                                            |
+| **Design**     | [Design patterns in practice](#design-patterns-in-practice)                                                                                                                                                          |
+| **Career**     | [Frontend developer demand (2026)](#frontend-developer-demand-2026) · [How long to learn frontend](#how-long-to-learn-frontend-development) · [Senior → staff engineer](#senior-frontend-engineer-to-staff-engineer) |
 
 ### Sections
 
@@ -25,6 +26,9 @@ What a strong **full-stack** role expects: backend and **SQL**, **HTTP/API** and
 - [Delivery hygiene (Git, CI, Docker, migrations)](#delivery-hygiene-git-ci-docker-migrations)
 - [Secrets and access control](#secrets-and-access-control)
 - [Design patterns in practice](#design-patterns-in-practice)
+- [Frontend developer demand (2026)](#frontend-developer-demand-2026)
+- [How long to learn frontend development](#how-long-to-learn-frontend-development)
+- [Senior frontend engineer to staff engineer](#senior-frontend-engineer-to-staff-engineer)
 - [Interview Practice](#interview-practice)
 
 ---
@@ -246,6 +250,119 @@ What a strong **full-stack** role expects: backend and **SQL**, **HTTP/API** and
 **Thoughts:** Frontend “patterns” are often **composition**; backend “patterns” often **decouple domain from IO** — read both [React patterns](./4_react_patterns.md) and [GoF catalog](./7_special_patterns.md).
 
 **Sources:** [Refactoring Guru — Design Patterns](https://refactoring.guru/design-patterns) · [patterns.dev — React](https://www.patterns.dev/react/)
+
+</details>
+
+## Frontend developer demand (2026)
+
+<details>
+<summary>Frontend developer demand (2026)</summary>
+
+**Definition:** A **sourced read** of how frontend hiring looks in the mid-2020s: aggregate demand still grows, but **entry-level and generalist mid-level** roles are tighter than senior and specialist depth.
+
+**How it works:**
+
+| Signal                                                                                                                                         | What it measures                                                                                                     | Takeaway                                                                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [BLS — Software developers](https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm)                               | ~**15%** US employment growth **2024–2034**                                                                          | Long-run demand for developers is still above average — not “frontend is dead.”                                                                             |
+| [Stanford Digital Economy Lab — AI & employment (Aug 2025 update)](https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine/) | Payroll data (ADP): early-career (22–25) in **high AI-exposure** jobs ~**19% below** the trend vs less-exposed peers | **Relative** gap for juniors in software-like roles — not “−19% total jobs.” Tacit knowledge and ambiguous ownership still favor experienced engineers.     |
+| [JetBrains — Developer Ecosystem 2025](https://www.jetbrains.com/lp/devecosystem-2025/)                                                        | ~**85%** use AI tools; ~**44%** say AI is fully/partially integrated in workflow                                     | High **tool adoption ≠** full workflow rewrite yet; **TypeScript**, **React**, testing, and CI/CD still show up as baseline + differentiators in job posts. |
+
+**Barbell pattern (recruiter commentary, not one named study):** heavy competition at **junior generalist** (routine UI overlaps AI assistants), softer appetite for **mid generalist** (teams scale seniors with AI instead of headcount), tighter market for **senior + specialists** (performance, a11y, design systems, full-stack slice ownership).
+
+**When to use:** Planning prep focus, interpreting layoff headlines, choosing depth vs framework churn.
+
+**Pluses and minuses:**
+
+| +                                                   | −                                                                                       |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Named studies beat viral “AI killed frontend” posts | Salary premiums in aggregator blogs are often **directional**, not one auditable survey |
+| Specialist lanes stay valuable                      | US-heavy job-posting share **≠** global picture                                         |
+
+**Thoughts:** Hold **BLS growth** and **junior relative squeeze** at once. Optimize for **demonstrable ownership** (feature, tests, perf, a11y) — not a longer framework list.
+
+**See also:** [How long to learn frontend](#how-long-to-learn-frontend-development) · [Senior → staff](#senior-frontend-engineer-to-staff-engineer) · [Frontend performance map](./6_web_api_performance.md#frontend-performance-techniques-study-map) · [Core Web Vitals](./1_html_performance.md#core-web-vitals)
+
+**Sources:** [BLS — Software developers](https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm) · [Stanford Digital Economy Lab](https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine/) · [JetBrains DevEco 2025](https://www.jetbrains.com/lp/devecosystem-2025/) · [web.dev — Vitals](https://web.dev/articles/vitals)
+
+</details>
+
+## How long to learn frontend development
+
+<details>
+<summary>How long to learn frontend development</summary>
+
+**Definition:** There is **no honest single number** — timeline depends on **hours per week**, **structured vs self-taught** path, and whether the goal is “first page” vs **junior job-ready** (TypeScript, React, tests, accessible markup, portfolio).
+
+**How it works:**
+
+| Path                      | Typical elapsed time                                                                                                                              | Hours / week (order of magnitude)   | Source                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Full-time bootcamp        | ~**2–7 months** (programs **6–28 weeks**)                                                                                                         | ~**40+**                            | [Course Report — outcomes surveys](https://www.coursereport.com/) (self-reported provider data)  |
+| Part-time bootcamp        | ~**6–9 months**                                                                                                                                   | ~**20–30** total (class + homework) | Same                                                                                             |
+| Self-taught (median pace) | **No finish-line study** — median **~8 h/week** in [freeCodeCamp 2021 New Coder Survey](https://www.freecodecamp.org/news/2021-new-coder-survey/) | ~**8**                              | Median **~3 months** already coding (under 5 y experience) at survey time — **not** time-to-hire |
+
+**Stage budget (same order bootcamps use):**
+
+1. **Web fundamentals** — HTML/CSS layout, JS (scope, async, DOM).
+2. **Plain projects** — small sites **without** a framework first.
+3. **Framework + TypeScript** — usually the longest stage (React surface + types).
+4. **Production skills + portfolio** — testing, a11y, performance, real repos (often where self-taught timelines stretch).
+
+**Rough arithmetic (illustrative):** ~**14 weeks × 40 h ≈ 560 h** structured bootcamp → at **8 h/week** self-paced ≈ **70 weeks** — only if your self-directed time is as focused as a curriculum (often it is not).
+
+**When to use:** Setting expectations with yourself or mentees; avoid comparing your 8 h/week path to someone else’s “3 month” claim that assumed full-time immersion.
+
+**Pluses and minuses:**
+
+| +                                                                                                  | −                                                                                                  |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Stage model works for bootcamp **and** self-taught                                                 | **Job search** is a separate variable stage — no credible single “months to offer” stat cited here |
+| Bootcamp length **grew** over time (Course Report history) — short timelines were often optimistic | Hybrid paths (self-teach 1–3, paid review for portfolio) are common but not a formal study         |
+
+**Thoughts:** Treat **stage 4** with bootcamp seriousness even if stages 1–3 were free resources. Entry-level market friction → [Frontend demand (2026)](#frontend-developer-demand-2026).
+
+**See also:** [Interview hub](./0_interview.md) · [React ecosystem — Performance](./4_react_ecosystem.md#code-splitting) · [HTML — Performance](./1_html_performance.md#core-web-vitals)
+
+**Sources:** [Course Report](https://www.coursereport.com/) · [freeCodeCamp — 2021 New Coder Survey](https://www.freecodecamp.org/news/2021-new-coder-survey/) · [Stanford — junior employment gap](https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine/)
+
+</details>
+
+## Senior frontend engineer to staff engineer
+
+<details>
+<summary>Senior frontend engineer to staff engineer</summary>
+
+**Definition:** **Staff** is a **different job**, not “senior for longer” — broader **technical direction**, **standards**, **cross-team impact**, and **evidence of sustained next-level scope** (company ladders differ).
+
+**How it works:**
+
+| Theme    | Senior-ish                                    | Staff-ish (typical)                                                                                                                                         |
+| -------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scope    | Own team goals; impact may spill outside team | Multi-team / multi-quarter direction (wording varies — read **your** ladder)                                                                                |
+| Coding   | Substantial feature delivery                  | Less volume; more review, standards, exploration, “glue” ([Will Larson — staff archetypes](https://staffeng.com/guides))                                    |
+| Evidence | Strong execution                              | **Documented** impact — mature companies stress **demonstrated** next-level scope, not a promotion checklist (read your employer’s public career framework) |
+
+**Staff archetypes (Larson):** **Tech lead** (guide one team’s approach), **Architect** (quality/direction in an area — e.g. frontend stack), **Solver** (ambiguous hard problems), **Right hand** (extends exec attention). Tech lead is often the **most accessible first** staff-shaped role — but doing TL tasks **≠** staff-level impact by default.
+
+**Frontend staff examples (job posts & blogs, not a universal standard):** shared component libraries, performance/a11y across groups, reducing tech debt that speeds many teams, mentoring — see [GitLab — staff frontend engineer (example JD)](https://about.gitlab.com/jobs/) and practitioner write-ups linked from [staffeng.com](https://staffeng.com/).
+
+**Promotion hygiene:** Start a **promotion/brag doc early** (projects, metrics, people helped, glue work); align with **manager + sponsor**; ladders explicitly reject “hope they grow into it” promotions at mature companies.
+
+**When to use:** Planning IC growth past senior; preparing staff interviews that test **judgment and trade-offs**, not bigger tickets.
+
+**Pluses and minuses:**
+
+| +                                    | −                                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Clearer target than “be more senior” | **Staff** scope definitions differ (Dropbox IC5 vs GitLab wording)                                |
+| Management remains a parallel path   | Glue work invisible unless **made visible** ([Tanya Reilly — glue work](https://noidea.dog/glue)) |
+
+**Thoughts:** If the company has **no staff path**, twenty years at senior can be normal ([Larson — getting the title](https://staffeng.com/guides/staff-archetypes)). Frontend can reach staff — but prove **organizational** leverage, not only PR throughput.
+
+**See also:** [Full-stack delivery scope](#full-stack-delivery-scope) · [Design patterns in practice](#design-patterns-in-practice) · [Behavior — career progress](./0_behavior_questions.md#how-could-you-have-improved-your-career-progress)
+
+**Sources:** [staffeng.com — guides](https://staffeng.com/guides) · [Reilly — glue work](https://noidea.dog/glue) · [GitLab — development career framework](https://handbook.gitlab.com/job-families/engineering/development/)
 
 </details>
 

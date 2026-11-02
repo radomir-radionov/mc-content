@@ -131,6 +131,37 @@ Questions on engineering judgment — common in senior and full-stack interviews
 </details>
 
 <details>
+  <summary>POC vs Prototype vs MVP</summary>
+
+### POC vs Prototype vs MVP
+
+**Definition:**
+
+Three **learning artifacts** with different goals — often confused in interviews.
+
+| Artifact      | Goal                                      | Audience        | Code quality        |
+| ------------- | ----------------------------------------- | --------------- | ------------------- |
+| **POC**       | Prove a **technical idea** is feasible    | Team / architect| Throwaway OK        |
+| **Prototype** | Explore **UX / flows** (look & feel)      | Stakeholders    | Often disposable    |
+| **MVP**       | **Validate product hypothesis** with users| Real early users| Minimal but shippable |
+
+**How it works:**
+
+- **POC** — “Can we hit 60fps with this canvas approach?” No polish; may never ship.
+- **Prototype** — clickable mock (Figma or SPA) to align on screens; not production-ready.
+- **MVP** — smallest **released** slice that measures learning (signup, one core action, metrics).
+
+**When to use:** Interview “difference between POC, Prototype, MVP?” — tie each to **risk reduced** (tech vs UX vs market).
+
+**See also:** [When does MVP beat architecture?](#when-does-mvp-beat-architecture)
+
+**Sources:** [Lean Startup — MVP](https://leanstartup.co/principles)
+
+---
+
+</details>
+
+<details>
   <summary>When does MVP beat architecture?</summary>
 
 ### When does MVP beat architecture?

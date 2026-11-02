@@ -6,11 +6,12 @@ Web components, shadow DOM, and newer HTML APIs.
 
 ### Related docs
 
-* [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
+- [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
 
 ### Sections
 
 - [Advanced topics](#advanced-topics)
+- [ApplicationCache (historical)](#applicationcache-historical)
 
 ---
 
@@ -25,10 +26,10 @@ Web components, shadow DOM, and newer HTML APIs.
 
 Web Components combine Custom Elements, Shadow DOM, and HTML Templates for reusable, encapsulated UI.
 
-| Technology | Purpose |
-|------------|---------|
-| Custom Elements | New HTML tags with lifecycle |
-| Shadow DOM | Encapsulated DOM + styles |
+| Technology              | Purpose                      |
+| ----------------------- | ---------------------------- |
+| Custom Elements         | New HTML tags with lifecycle |
+| Shadow DOM              | Encapsulated DOM + styles    |
 | `<template>` + `<slot>` | Inert markup cloned into DOM |
 
 **How it works:**
@@ -37,10 +38,10 @@ Web Components combine Custom Elements, Shadow DOM, and HTML Templates for reusa
 - Shadow DOM — encapsulated subtree + styles.
 - `<template>` + `<slot>` — declarative composition.
 
-| Spec | Purpose |
-|------|--------|
-| Custom Elements | New tags |
-| Shadow DOM | Encapsulation |
+| Spec            | Purpose       |
+| --------------- | ------------- |
+| Custom Elements | New tags      |
+| Shadow DOM      | Encapsulation |
 
 **When to use:**
 
@@ -60,7 +61,11 @@ Design system primitives · embeddable widgets · framework-agnostic components.
 </template>
 <user-card>
   <template shadowrootmode="open">
-    <style>:host { display: block; }</style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
     <slot></slot>
   </template>
   <span>Projected content</span>
@@ -82,10 +87,10 @@ Design system primitives · embeddable widgets · framework-agnostic components.
 
 The Popover API provides native top-layer overlays with light-dismiss and focus management via the `popover` attribute.
 
-| Value | Behavior |
-|-------|----------|
-| `popover="auto"` | Closes on outside click |
-| `popover="manual"` | Requires JS to close |
+| Value              | Behavior                |
+| ------------------ | ----------------------- |
+| `popover="auto"`   | Closes on outside click |
+| `popover="manual"` | Requires JS to close    |
 
 **How it works:**
 
@@ -93,10 +98,10 @@ The Popover API provides native top-layer overlays with light-dismiss and focus 
 - `popovertarget` on button toggles target by id.
 - `popover="auto"` light-dismiss; `manual` needs JS close.
 
-| Value | Behavior |
-|-------|----------|
-| `auto` | Outside click closes |
-| `manual` | JS-controlled |
+| Value    | Behavior             |
+| -------- | -------------------- |
+| `auto`   | Outside click closes |
+| `manual` | JS-controlled        |
 
 **When to use:**
 
@@ -130,11 +135,11 @@ Menus · tooltips · teaching UI without z-index wars.
 
 These global attributes control visibility, interactivity, and inline editing behavior.
 
-| Attribute | Behavior |
-|-----------|----------|
-| `hidden` | Not rendered (`display: none`) |
-| `inert` | Excluded from interaction and focus |
-| `contenteditable="true"` | User can edit content inline |
+| Attribute                | Behavior                            |
+| ------------------------ | ----------------------------------- |
+| `hidden`                 | Not rendered (`display: none`)      |
+| `inert`                  | Excluded from interaction and focus |
+| `contenteditable="true"` | User can edit content inline        |
 
 **How it works:**
 
@@ -142,10 +147,10 @@ These global attributes control visibility, interactivity, and inline editing be
 - `inert` — visible but removed from interaction/focus (modal backgrounds).
 - `contenteditable` — user can edit inner HTML inline.
 
-| Attribute | Behavior |
-|-----------|----------|
-| `hidden` | Not displayed |
-| `inert` | No interaction |
+| Attribute | Behavior       |
+| --------- | -------------- |
+| `hidden`  | Not displayed  |
+| `inert`   | No interaction |
 
 **When to use:**
 
@@ -178,10 +183,10 @@ Modal backdrop (`inert` on main) · toggle sections (`hidden`) · rich text edit
 
 Progressive enhancement starts with working baseline HTML and layers CSS/JS. Graceful degradation builds full experience with fallbacks.
 
-| Approach | Strategy |
-|----------|----------|
-| Progressive enhancement | HTML works first; JS enhances |
-| Graceful degradation | Full experience with fallbacks |
+| Approach                | Strategy                       |
+| ----------------------- | ------------------------------ |
+| Progressive enhancement | HTML works first; JS enhances  |
+| Graceful degradation    | Full experience with fallbacks |
 
 **How it works:**
 
@@ -189,10 +194,10 @@ Progressive enhancement starts with working baseline HTML and layers CSS/JS. Gra
 - **GD:** build full experience; provide fallbacks.
 - PE is the modern default for resilient web apps.
 
-| Approach | Strategy |
-|----------|----------|
-| PE | HTML first |
-| GD | Full + fallback |
+| Approach | Strategy        |
+| -------- | --------------- |
+| PE       | HTML first      |
+| GD       | Full + fallback |
 
 **When to use:**
 
@@ -228,9 +233,9 @@ Form works with POST · search works without JS autocomplete · `<noscript>` not
 
 Feature detection checks whether a capability exists. User-agent sniffing parses browser strings — brittle and discouraged.
 
-| Technique | Reliability |
-|-----------|-------------|
-| Feature detection | Preferred |
+| Technique           | Reliability     |
+| ------------------- | --------------- |
+| Feature detection   | Preferred       |
 | User-agent sniffing | Brittle — avoid |
 
 **How it works:**
@@ -239,10 +244,10 @@ Feature detection checks whether a capability exists. User-agent sniffing parses
 - UA sniffing: parsing `navigator.userAgent` — brittle.
 - `@supports` in CSS for style features.
 
-| Technique | Reliability |
-|-----------|-------------|
-| Feature detection | Good |
-| UA sniffing | Poor |
+| Technique         | Reliability |
+| ----------------- | ----------- |
+| Feature detection | Good        |
+| UA sniffing       | Poor        |
 
 **When to use:**
 
@@ -274,9 +279,9 @@ Polyfill dialog · progressive `popover` · CSS grid fallback.
 
 Validation checks HTML against the spec. Invalid HTML may render but causes accessibility, SEO, and maintenance issues.
 
-| Type | Checks |
-|------|--------|
-| Syntax | Well-formed markup |
+| Type    | Checks                              |
+| ------- | ----------------------------------- |
+| Syntax  | Well-formed markup                  |
 | Logical | Heading order, unique IDs, alt text |
 
 **How it works:**
@@ -285,10 +290,10 @@ Validation checks HTML against the spec. Invalid HTML may render but causes acce
 - Invalid markup may still render (error recovery) but hurts a11y/SEO.
 - Logical validation: one `h1`, unique ids, alt on images.
 
-| Type | Checks |
-|------|--------|
-| Syntax | Well-formed tags |
-| Logic | Heading order, unique IDs |
+| Type   | Checks                    |
+| ------ | ------------------------- |
+| Syntax | Well-formed tags          |
+| Logic  | Heading order, unique IDs |
 
 **When to use:**
 
@@ -305,8 +310,12 @@ CI HTML lint · pre-release audit · email HTML (stricter clients).
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head><title>Valid page</title></head>
-  <body><main><h1>Title</h1></main></body>
+  <head>
+    <title>Valid page</title>
+  </head>
+  <body>
+    <main><h1>Title</h1></main>
+  </body>
 </html>
 ```
 
@@ -323,9 +332,9 @@ CI HTML lint · pre-release audit · email HTML (stricter clients).
 
 HTML features vary by browser support. Check caniuse.com before using new APIs; use polyfills or progressive enhancement.
 
-| Tool | Purpose |
-|------|---------|
-| caniuse.com | Feature support matrix |
+| Tool                    | Purpose                    |
+| ----------------------- | -------------------------- |
+| caniuse.com             | Feature support matrix     |
 | Progressive enhancement | Baseline HTML always works |
 
 **How it works:**
@@ -334,10 +343,10 @@ HTML features vary by browser support. Check caniuse.com before using new APIs; 
 - Progressive enhancement: baseline HTML always works.
 - Polyfills for `dialog`, `popover` where needed.
 
-| Tool | Purpose |
-|------|--------|
-| caniuse.com | Support matrix |
-| PE | Baseline without new APIs |
+| Tool        | Purpose                   |
+| ----------- | ------------------------- |
+| caniuse.com | Support matrix            |
+| PE          | Baseline without new APIs |
 
 **When to use:**
 
@@ -370,11 +379,11 @@ Native `<dialog>` with fallback · `input type="date"` varying UI.
 
 HTML5 is part of a broader platform: HTML + CSS + JavaScript + DOM APIs. Markup provides structure; behavior and presentation come from JS and CSS.
 
-| Layer | Role |
-|-------|------|
-| HTML | Structure and semantics |
-| CSS | Presentation → [2_css.md](./2_css.md) |
-| JS | Behavior → [3_js_browser.md](./3_js_browser.md) |
+| Layer | Role                                            |
+| ----- | ----------------------------------------------- |
+| HTML  | Structure and semantics                         |
+| CSS   | Presentation → [2_css.md](./2_css.md)           |
+| JS    | Behavior → [3_js_browser.md](./3_js_browser.md) |
 
 **How it works:**
 
@@ -382,11 +391,11 @@ HTML5 is part of a broader platform: HTML + CSS + JavaScript + DOM APIs. Markup 
 - Markup provides structure; behavior from JS; presentation from CSS.
 - Living Standard at WHATWG — continuous evolution.
 
-| Layer | Role |
-|-------|------|
-| HTML | Structure |
-| CSS | Presentation |
-| JS | Behavior |
+| Layer | Role         |
+| ----- | ------------ |
+| HTML  | Structure    |
+| CSS   | Presentation |
+| JS    | Behavior     |
 
 **When to use:**
 
@@ -403,8 +412,13 @@ PWA (HTML+manifest+SW) · media pages · web components.
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head><link rel="stylesheet" href="/app.css" /></head>
-  <body><main id="app"></main><script src="/app.js" defer></script></body>
+  <head>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <main id="app"></main>
+    <script src="/app.js" defer></script>
+  </body>
 </html>
 ```
 
@@ -421,10 +435,10 @@ PWA (HTML+manifest+SW) · media pages · web components.
 
 Import maps let browsers resolve bare module specifiers to URLs without a bundler.
 
-| Key | Maps to |
-|-----|---------|
-| `"lodash"` | `/vendor/lodash.esm.js` |
-| `"components/"` | `/js/components/` |
+| Key             | Maps to                 |
+| --------------- | ----------------------- |
+| `"lodash"`      | `/vendor/lodash.esm.js` |
+| `"components/"` | `/js/components/`       |
 
 **How it works:**
 
@@ -432,10 +446,10 @@ Import maps let browsers resolve bare module specifiers to URLs without a bundle
 - Enables `import 'lodash'` without bundler in modern browsers.
 - JSON object: `imports` and optional `scopes`.
 
-| Key | Maps |
-|-----|------|
-| `imports` | Bare specifier → URL |
-| `scopes` | Path-specific overrides |
+| Key       | Maps                    |
+| --------- | ----------------------- |
+| `imports` | Bare specifier → URL    |
+| `scopes`  | Path-specific overrides |
 
 **When to use:**
 
@@ -451,12 +465,12 @@ No-bundler prototypes · CDN bare imports · scoped mappings.
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "lodash": "/vendor/lodash.esm.js",
-    "components/": "/js/components/"
+  {
+    "imports": {
+      "lodash": "/vendor/lodash.esm.js",
+      "components/": "/js/components/"
+    }
   }
-}
 </script>
 <script type="module" src="/app.mjs"></script>
 ```
@@ -474,11 +488,11 @@ No-bundler prototypes · CDN bare imports · scoped mappings.
 
 The Web App Manifest defines installable PWA metadata — name, icons, `start_url`, `display`, and theme colors.
 
-| Field | Purpose |
-|-------|---------|
-| `name` | App display name |
-| `icons` | Home screen icons |
-| `display: standalone` | App-like chrome |
+| Field                 | Purpose           |
+| --------------------- | ----------------- |
+| `name`                | App display name  |
+| `icons`               | Home screen icons |
+| `display: standalone` | App-like chrome   |
 
 **How it works:**
 
@@ -486,9 +500,9 @@ The Web App Manifest defines installable PWA metadata — name, icons, `start_ur
 - Fields: `name`, `icons`, `start_url`, `display`, `theme_color`.
 - Works with Service Worker for offline; manifest alone = installable metadata only.
 
-| Field | Purpose |
-|-------|--------|
-| `icons` | Install icons |
+| Field     | Purpose                   |
+| --------- | ------------------------- |
+| `icons`   | Install icons             |
 | `display` | `standalone` vs `browser` |
 
 **When to use:**
@@ -521,12 +535,12 @@ Add to home screen · standalone display · themed splash.
 
 Obsolete elements still parse in browsers but should not be used — replace with CSS or modern alternatives.
 
-| Obsolete | Replacement |
-|----------|-------------|
-| `<font>`, `<center>` | CSS typography/alignment |
-| `<marquee>` | CSS animations |
-| `<frame>`, `<frameset>` | Never use |
-| `<acronym>` | `<abbr>` |
+| Obsolete                | Replacement              |
+| ----------------------- | ------------------------ |
+| `<font>`, `<center>`    | CSS typography/alignment |
+| `<marquee>`             | CSS animations           |
+| `<frame>`, `<frameset>` | Never use                |
+| `<acronym>`             | `<abbr>`                 |
 
 **How it works:**
 
@@ -534,10 +548,10 @@ Obsolete elements still parse in browsers but should not be used — replace wit
 - Use CSS for presentation; semantic elements for structure.
 - Browsers may still render but invalid and bad for a11y.
 
-| Obsolete | Replacement |
-|----------|-------------|
-| `<font>` | CSS `color`/`font-family` |
-| `<center>` | CSS `text-align` |
+| Obsolete   | Replacement               |
+| ---------- | ------------------------- |
+| `<font>`   | CSS `color`/`font-family` |
+| `<center>` | CSS `text-align`          |
 
 **When to use:**
 
@@ -570,12 +584,12 @@ Migrating legacy sites · sanitizing old CMS output.
 
 HTML is the first line of defense against XSS. Escape user input, avoid inline handlers, and use CSP and SRI.
 
-| Risk | Safe practice |
-|------|---------------|
-| User input in HTML | Escape; use `textContent` not `innerHTML` |
-| Inline handlers | Avoid `onclick`; use `addEventListener` |
-| Third-party scripts | SRI `integrity` attribute |
-| `target="_blank"` | Add `rel="noopener noreferrer"` |
+| Risk                | Safe practice                             |
+| ------------------- | ----------------------------------------- |
+| User input in HTML  | Escape; use `textContent` not `innerHTML` |
+| Inline handlers     | Avoid `onclick`; use `addEventListener`   |
+| Third-party scripts | SRI `integrity` attribute                 |
+| `target="_blank"`   | Add `rel="noopener noreferrer"`           |
 
 **How it works:**
 
@@ -583,10 +597,10 @@ HTML is the first line of defense against XSS. Escape user input, avoid inline h
 - Avoid inline event handlers (`onclick`); use CSP.
 - SRI `integrity` on third-party scripts; `rel="noopener"` on `_blank`.
 
-| Risk | Mitigation |
-|------|------------|
+| Risk                  | Mitigation               |
+| --------------------- | ------------------------ |
 | `innerHTML` injection | `textContent` / sanitize |
-| Inline handlers | CSP + addEventListener |
+| Inline handlers       | CSP + addEventListener   |
 
 **When to use:**
 
@@ -601,13 +615,34 @@ User-generated comments · CMS content · third-party widgets.
 **Examples:**
 
 ```html
-<a href="https://external.com" target="_blank" rel="noopener noreferrer">External</a>
-<script src="https://cdn.example.com/lib.js" integrity="sha384-..." crossorigin="anonymous"></script>
+<a href="https://external.com" target="_blank" rel="noopener noreferrer"
+  >External</a
+>
+<script
+  src="https://cdn.example.com/lib.js"
+  integrity="sha384-..."
+  crossorigin="anonymous"
+></script>
 ```
 
 **Thoughts:** DOM XSS patterns → [3_js_browser.md](./3_js_browser.md). Stored vs reflected, CSP, clickjacking → [7_special.md](./7_special_security.md#14-common-web-attacks) · [6_web_api.md](./6_web_api_security.md#security).
 
 **Sources:** [MDN — XSS](https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting)
+
+</details>
+
+<details>
+  <summary>ApplicationCache (historical)</summary>
+
+### ApplicationCache (historical)
+
+**Definition:** **HTML Application Cache** (`manifest` attribute on `<html>`) was an early **offline** mechanism — **removed** from modern browsers. Do not use in new projects.
+
+**How it works:**
+
+Replaced by **Service Workers** + **Cache API** ([PWA notes](./6_web_api_pwa_interview.md) · [Web platform](./0_core_browser.md)). Interview answer: name it as **legacy**, explain migration to SW.
+
+**Sources:** [MDN — Offline and online events (deprecated ApplicationCache)](https://developer.mozilla.org/en-US/docs/Web/API/Window/offline_event)
 
 </details>
 

@@ -6,17 +6,18 @@
 
 ### Related docs
 
-- [AI-first engineering & SDD](./0_ai_engineering.md) · [AI-assisted workflow (Claude Code, Codex)](./0_ai.md#ai-assisted-workflow-cursor-copilot-claude-code) · [MVP & judgment](./0_mvp.md) · [Behavior interview](./0_behavior_questions.md) · [Interview hub](./0_interview.md)
+- [AI-first engineering & SDD](./0_ai_engineering.md) · [AI-assisted workflow (Claude Code, Codex)](./0_ai.md#ai-assisted-workflow-cursor-copilot-claude-code) · [MVP & judgment](./0_mvp.md) · [Behavior interview](./0_behavior_questions.md) · [Interview hub](./0_interview.md) · [Core Web Vitals](./1_html_performance.md#core-web-vitals) · [Frontend performance map](./6_web_api_performance.md#frontend-performance-techniques-study-map)
 
 ### Main concepts
 
-| Area           | Topics                                                         |
-| -------------- | -------------------------------------------------------------- |
-| **Scope**      | [Full-stack delivery scope](#full-stack-delivery-scope)        |
-| **Production** | [Production diagnosis](#production-diagnosis)                  |
-| **Platform**   | [Delivery hygiene](#delivery-hygiene-git-ci-docker-migrations) |
-| **Security**   | [Secrets and access control](#secrets-and-access-control)      |
-| **Design**     | [Design patterns in practice](#design-patterns-in-practice)    |
+| Area           | Topics                                                                                                                                                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Scope**      | [Full-stack delivery scope](#full-stack-delivery-scope)                                                                                                                                                              |
+| **Production** | [Production diagnosis](#production-diagnosis)                                                                                                                                                                        |
+| **Platform**   | [Delivery hygiene](#delivery-hygiene-git-ci-docker-migrations)                                                                                                                                                       |
+| **Security**   | [Secrets and access control](#secrets-and-access-control)                                                                                                                                                            |
+| **Design**     | [Design patterns in practice](#design-patterns-in-practice)                                                                                                                                                          |
+| **Career**     | [Frontend developer demand (2026)](#frontend-developer-demand-2026) · [How long to learn frontend](#how-long-to-learn-frontend-development) · [Senior → staff engineer](#senior-frontend-engineer-to-staff-engineer) |
 
 ### Sections
 
@@ -25,6 +26,9 @@
 - [Delivery hygiene (Git, CI, Docker, migrations)](#delivery-hygiene-git-ci-docker-migrations)
 - [Secrets and access control](#secrets-and-access-control)
 - [Design patterns in practice](#design-patterns-in-practice)
+- [Frontend developer demand (2026)](#frontend-developer-demand-2026)
+- [How long to learn frontend development](#how-long-to-learn-frontend-development)
+- [Senior frontend engineer to staff engineer](#senior-frontend-engineer-to-staff-engineer)
 - [Interview Practice](#interview-practice)
 
 ---
@@ -246,6 +250,92 @@
 **Thoughts:** Frontend — **composition**; backend — **decouple domain from IO** — [React patterns](./4_react_patterns.md) + [GoF](./7_special_patterns.md).
 
 **Sources:** [Refactoring Guru](https://refactoring.guru/design-patterns) · [patterns.dev — React](https://www.patterns.dev/react/)
+
+</details>
+
+## Frontend developer demand (2026)
+
+<details>
+<summary>Frontend developer demand (2026)</summary>
+
+**Definition:** **Обзор с источниками** о рынке frontend в середине 2020‑х: суммарный спрос растёт, но **junior и generalist mid** проходят путь сложнее, чем senior и узкие специализации.
+
+**How it works:**
+
+| Signal                                                                                                           | What it measures                                                                    | Takeaway                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [BLS — Software developers](https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm) | Рост занятости в США ~**15%** **2024–2034**                                         | Долгосрочный спрос на разработчиков выше среднего — не «frontend умер».                   |
+| [Stanford Digital Economy Lab](https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine/)       | Payroll ADP: 22–25 лет в **AI‑exposed** ролях ~**19% ниже** тренда vs менее exposed | **Относительный** разрыв для junior в software‑подобных ролях, не «−19% всех jobs».       |
+| [JetBrains DevEco 2025](https://www.jetbrains.com/lp/devecosystem-2025/)                                         | ~**85%** используют AI; ~**44%** — реальная интеграция в workflow                   | Высокое **adoption ≠** полная перестройка процесса; **TS/React/тесты/CI** остаются базой. |
+
+**Barbell (комментарии рекрутеров, не одно исследование):** конкуренция на **junior generalist**, слабее спрос на **mid generalist**, плотнее рынок **senior + specialists** (perf, a11y, design systems, full‑stack slice).
+
+**When to use:** Выбор фокуса подготовки; интерпретация новостей о layoffs; depth vs смена фреймворков.
+
+**Pluses and minuses:**
+
+| +                                               | −                                                                   |
+| ----------------------------------------------- | ------------------------------------------------------------------- |
+| Именованные исследования лучше viral‑заголовков | Зарплатные «премии» в агрегаторах часто **ориентир**, не один аудит |
+| Специализации востребованы                      | Доля US‑вакансий **≠** глобальная картина                           |
+
+**Thoughts:** Держите в голове **и рост BLS, и squeeze junior**. Показывайте **ownership** (фича, тесты, perf, a11y), а не длинный список фреймворков.
+
+**See also:** [How long to learn frontend](#how-long-to-learn-frontend-development) · [Senior → staff](#senior-frontend-engineer-to-staff-engineer) · [Performance map](./6_web_api_performance.md#frontend-performance-techniques-study-map)
+
+**Sources:** [BLS](https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm) · [Stanford](https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine/) · [JetBrains](https://www.jetbrains.com/lp/devecosystem-2025/)
+
+</details>
+
+## How long to learn frontend development
+
+<details>
+<summary>How long to learn frontend development</summary>
+
+**Definition:** **Честного одного числа нет** — зависит от **часов в неделю**, **bootcamp vs self‑taught** и цели: «первая страница» vs **junior job‑ready** (TS, React, тесты, a11y, портфолио).
+
+**How it works:**
+
+| Path                 | Typical elapsed time                    | Hours / week | Source                                                                                         |
+| -------------------- | --------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
+| Full‑time bootcamp   | ~**2–7 мес.** (программы **6–28 нед.**) | ~**40+**     | [Course Report](https://www.coursereport.com/)                                                 |
+| Part‑time bootcamp   | ~**6–9 мес.**                           | ~**20–30**   | Same                                                                                           |
+| Self‑taught (median) | Нет метрики «до оффера»                 | ~**8**       | [freeCodeCamp 2021 New Coder Survey](https://www.freecodecamp.org/news/2021-new-coder-survey/) |
+
+**Stages:** (1) fundamentals → (2) проекты без фреймворка → (3) framework + TS → (4) production + portfolio (здесь self‑taught чаще «растягивается»).
+
+**Illustrative math:** ~**560 h** bootcamp ≈ **70 нед.** при **8 h/week** — если время так же сфокусировано, как в программе.
+
+**Thoughts:** Stage **4** — с серьёзностью bootcamp. Рынок junior → [Demand (2026)](#frontend-developer-demand-2026).
+
+**See also:** [Interview hub](./0_interview.md) · [CWV](./1_html_performance.md#core-web-vitals)
+
+**Sources:** [Course Report](https://www.coursereport.com/) · [freeCodeCamp survey](https://www.freecodecamp.org/news/2021-new-coder-survey/)
+
+</details>
+
+## Senior frontend engineer to staff engineer
+
+<details>
+<summary>Senior frontend engineer to staff engineer</summary>
+
+**Definition:** **Staff** — **другая роль**, не «senior дольше»: шире **техническое направление**, **стандарты**, **кросс‑командный** эффект и **доказанный** scope следующего уровня (лестницы компаний различаются).
+
+**How it works:**
+
+| Theme    | Senior-ish       | Staff-ish                                                                          |
+| -------- | ---------------- | ---------------------------------------------------------------------------------- |
+| Scope    | Цели команды     | Multi‑team / multi‑quarter (читайте **свою** лестницу)                             |
+| Coding   | Много фич        | Меньше кода; review, standards, glue ([staffeng.com](https://staffeng.com/guides)) |
+| Evidence | Сильная delivery | **Задокументированный** impact; не чеклист «надеемся вырастет»                     |
+
+**Archetypes (Larson):** Tech lead, Architect (область, напр. frontend stack), Solver, Right hand. TL — часто **первая** staff‑форма, но TL‑обязанности **≠** staff impact.
+
+**Thoughts:** Glue work делайте **видимым** ([Reilly — glue](https://noidea.dog/glue)). Frontend staff возможен через **организационный** рычаг, не только PR throughput.
+
+**See also:** [Full-stack scope](#full-stack-delivery-scope) · [Behavior — career](./0_behavior_questions.md#how-could-you-have-improved-your-career-progress)
+
+**Sources:** [staffeng.com](https://staffeng.com/guides) · [GitLab career framework](https://handbook.gitlab.com/job-families/engineering/development/)
 
 </details>
 

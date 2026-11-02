@@ -12,6 +12,8 @@ Security model and common web attacks.
 
 - [13. Web security](#13-web-security)
 - [14. Common web attacks](#14-common-web-attacks)
+- [OWASP Top 10](#owasp-top-10)
+- [Principle of least privilege (POLP)](#principle-of-least-privilege-polp)
 
 ---
 
@@ -48,10 +50,68 @@ Practices to protect confidentiality, integrity, and availability of web apps an
 
 **Thoughts:**
 
-Security is ongoing — not a checklist once. Transport crypto: [Encryption](#encryption) · [HTTPS](./6_web_api_http.md#https). HTTP-specific headers: [6_web_api.md](./6_web_api.md).
+Security is ongoing — not a checklist once. Transport crypto: [Encryption](#encryption) · [HTTPS](./6_web_api_http.md#https). HTTP-specific headers: [Browser security — HTTP security headers](./6_web_api_security.md#http-security-headers). OWASP risk list: [OWASP Top 10](#owasp-top-10).
 
 ---
 
+</details>
+
+<a name="owasp-top-10"></a>
+
+<details>
+  <summary>OWASP Top 10</summary>
+
+### OWASP Top 10
+
+**Definition:**
+
+**OWASP Top 10** is a periodically updated list of the **most critical application security risks** — a prioritization guide for developers, architects, and auditors. It is not a compliance standard by itself; map each category to concrete controls in your stack.
+
+**How it works (2021 edition — confirm the current list at [owasp.org/Top10](https://owasp.org/Top10/)):**
+
+| #   | Risk                             | Frontend-relevant examples                                                                      |
+| --- | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| A01 | Broken Access Control            | IDOR, missing server-side AuthZ ([IDOR](#idor-insecure-direct-object-reference))                |
+| A02 | Cryptographic Failures           | HTTP without TLS, secrets in `localStorage`, weak password storage                              |
+| A03 | Injection                        | XSS ([XSS](#xss-cross-site-scripting)), SQLi ([SQL injection](#sql-injection))                  |
+| A04 | Insecure Design                  | Missing threat model, trust in client-only checks                                               |
+| A05 | Security Misconfiguration        | Open CORS `*`, debug in prod, default credentials                                               |
+| A06 | Vulnerable Components            | Outdated npm packages ([Supply chain](#supply-chain-attacks))                                   |
+| A07 | Auth Failures                    | Weak sessions, no MFA, JWT misuse ([Auth & storage](./6_web_api_auth.md))                       |
+| A08 | Software/Data Integrity Failures | CDN tampering — use [SRI](./6_web_api_security.md#subresource-integrity-sri)                    |
+| A09 | Logging & Monitoring Failures    | No audit trail on auth failures                                                                 |
+| A10 | SSRF                             | Server fetches attacker URLs ([SSRF](./6_web_api_security.md#ssrf-server-side-request-forgery)) |
+
+Interview Q&A: [Security — front-end checklist](./7_special_security_interview.md#security--front-end-checklist).
+
+**Sources:**
+
+- https://owasp.org/Top10/
+</details>
+
+<a name="principle-of-least-privilege-polp"></a>
+
+<details>
+  <summary>Principle of least privilege (POLP)</summary>
+
+### Principle of least privilege (POLP)
+
+**Definition:**
+
+Every user, service account, API token, and database role receives only the **minimum permissions** needed for its job — no “admin by default,” no wildcard scopes “for later.”
+
+**How it works:**
+
+- **Authorization:** check ownership on every resource (`order.userId === session.userId`), not only “is logged in?” ([IDOR](#idor-insecure-direct-object-reference)).
+- **Roles:** prefer fine-grained policies (ABAC) over a sprawl of coarse roles when rules get complex — see [Auth — RBAC pointers](./6_web_api_auth.md).
+- **Tokens:** short-lived access tokens; refresh scoped to one client; no shared signing keys across microservices without rotation plan.
+- **Frontend:** hiding buttons is UX only — **server must enforce** the same rules.
+
+Already named in [Web application security (principles)](#13-web-security). Interview: [POLP checklist](./7_special_security_interview.md#security--front-end-checklist).
+
+**Sources:**
+
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
 </details>
 
 <details>
@@ -590,6 +650,8 @@ Compromise via malicious or hijacked dependencies (npm packages, typosquatting).
 | Pin versions; review new deps               |
 | Subresource Integrity (SRI) for CDN scripts |
 | Minimal dependency tree                     |
+
+Full SRI: [Browser security — SRI](./6_web_api_security.md#subresource-integrity-sri).
 
 **Thoughts:** `postinstall` scripts and abandoned packages are attack surface. Use `npm ci` in CI.
 

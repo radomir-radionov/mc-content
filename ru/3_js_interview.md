@@ -12,6 +12,7 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -121,7 +122,7 @@ console.log(obj.nonExistentProperty); // undefined
 ```
 
 ```js
-let obj = { prop: 'value' };
+let obj = { prop: "value" };
 ```
 
 #### Пример кода
@@ -134,28 +135,28 @@ let var2 = null;
 
 let object = {
   a: 1,
-  b: undefined
+  b: undefined,
 };
 
 function test(arg1, arg2) {
-  console.log(arg1);  // undefined: not provided
-  console.log(arg2);  // null: provided as such
+  console.log(arg1); // undefined: not provided
+  console.log(arg2); // null: provided as such
 }
 
 function clearProperty(prop) {
   delete object[prop];
 }
 
-console.log(var1);     // undefined
-console.log(var2);     // null
+console.log(var1); // undefined
+console.log(var2); // null
 console.log(object.a); // 1
 console.log(object.b); // undefined
 console.log(object.c); // undefined
 ```
 
-тест();               // Оба аргумента undefined test(1, null);        // arg1 равен 1, arg2 равен null
+тест(); // Оба аргумента undefined test(1, null); // arg1 равен 1, arg2 равен null
 
-ClearProperty('b');  // Удаляет свойство «b» из объекта
+ClearProperty('b'); // Удаляет свойство «b» из объекта
 
 ```js
 console.log(object.b); // undefined: Property 'b' was removed, not set to null
@@ -257,7 +258,7 @@ console.log(myVar); // 5
 
 console.log(sayHello()); // "Hello, World!"
 function sayHello() {
-    return "Hello, World!";
+  return "Hello, World!";
 }
 
 // Приведенный выше код на этапе компиляции эквивалентен следующему:
@@ -280,7 +281,7 @@ console.log(globalVar); // Undefined
 console.log(globalFunction()); // "Hello, Global!"
 var globalVar = "I am global Var!";
 function globalFunction() {
-    return "Hello, Global!";
+  return "Hello, Global!";
 }
 ```
 
@@ -288,18 +289,18 @@ function globalFunction() {
 
 ```js
 function hoistingInLocalScope() {
-    // Эти локальные объявления поднимаются на этапе компиляции:
-    // var localVar;
-    // function localFunction() {}
+  // Эти локальные объявления поднимаются на этапе компиляции:
+  // var localVar;
+  // function localFunction() {}
 
-    console.log(localVar); // Undefined
-    localVar = "I am a local var!";
-    console.log(localFunction()); // "Hello, Local!"
+  console.log(localVar); // Undefined
+  localVar = "I am a local var!";
+  console.log(localFunction()); // "Hello, Local!"
 
-    var localVar;
-    function localFunction() {
-        return "Hello, Local!";
-    }
+  var localVar;
+  function localFunction() {
+    return "Hello, Local!";
+  }
 }
 ```
 
@@ -357,10 +358,10 @@ let myLetVar = 5;
 Вот код JavaScript:
 
 ```js
-let globalVar = 'I am global';
+let globalVar = "I am global";
 
 function testScope() {
-    console.log(globalVar); // Output: 'I am global'
+  console.log(globalVar); // Output: 'I am global'
 }
 
 testScope();
@@ -373,8 +374,8 @@ console.log(globalVar); // Output: 'I am global'
 
 ```js
 function testScope() {
-    let localVar = 'I am local';
-    console.log(localVar); // Output: 'I am local'
+  let localVar = "I am local";
+  console.log(localVar); // Output: 'I am local'
 }
 
 // Этот оператор выдаст ошибку, поскольку localVar не определен вне области действия функции.
@@ -387,13 +388,13 @@ function testScope() {
 
 ```js
 function testScope() {
-    let localVar = 'I am local';
-    if (true) {
-        let blockVar = 'I am local to this block';
-        console.log(localVar, blockVar); // Both will be accessible
-    }
-    // Этот оператор выдаст ошибку, поскольку blockVar не определен вне области действия блока.
-    // console.log(blockVar);
+  let localVar = "I am local";
+  if (true) {
+    let blockVar = "I am local to this block";
+    console.log(localVar, blockVar); // Both will be accessible
+  }
+  // Этот оператор выдаст ошибку, поскольку blockVar не определен вне области действия блока.
+  // console.log(blockVar);
 }
 
 testScope();
@@ -451,14 +452,14 @@ testScope();
 
 ```js
 // Abstract equality
-console.log('5' == 5);      // true
-console.log(null == undefined);  // true
-console.log(0 == false);    // true
+console.log("5" == 5); // true
+console.log(null == undefined); // true
+console.log(0 == false); // true
 
 // Strict equality
-console.log('5' === 5);     // false
+console.log("5" === 5); // false
 console.log(null === undefined); // false
-console.log(0 === false);   // false
+console.log(0 === false); // false
 ```
 
 **Sources:**
@@ -519,15 +520,18 @@ console.log(0 === false);   // false
 
 ```js
 function generatePassword() {
-  let password = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const passwordLength = 8;
-  for(let i = 0; i < passwordLength; i++) {
-    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  for (let i = 0; i < passwordLength; i++) {
+    password += characters.charAt(
+      Math.floor(Math.random() * characters.length),
+    );
   }
 
   return function getPassword() {
-      return password;
+    return password;
   };
 }
 
@@ -583,12 +587,12 @@ console.log(getPassword()); // Outputs the generated password.
 let globalVar = 10;
 
 function globalFunction() {
-    console.log('Global this: ', this.globalVar);
-    console.log('Global this in strict mode: ', this);
+  console.log("Global this: ", this.globalVar);
+  console.log("Global this in strict mode: ", this);
 }
 ```
 
-- **глобальная функция();  // Вывод**: 10, окно или undefined (в строгом режиме)
+- **глобальная функция(); // Вывод**: 10, окно или undefined (в строгом режиме)
 
 // В Node.js все будет иначе, потому что "окно" не определено. Но "this" будет относиться к глобальному объекту.
 
@@ -646,7 +650,7 @@ function greet(name) {
 }
 
 // Arrow Function
-const greetArrow = name => "Hello, " + name + "!";
+const greetArrow = (name) => "Hello, " + name + "!";
 ```
 
 В приведенном выше коде Greeting — это стандартная функция, а GreetingArrow — это стрелочная функция, демонстрирующая разницу в синтаксисе и необходимых ключевых словах.
@@ -657,13 +661,13 @@ const greetArrow = name => "Hello, " + name + "!";
 
 ```js
 // Using traditional functions
-document.getElementById('myButton').onclick = function() {
-  console.log('Button clicked:', this);  // Refers to the button element
+document.getElementById("myButton").onclick = function () {
+  console.log("Button clicked:", this); // Refers to the button element
 };
 
 // Using arrow functions
-document.getElementById('myButton').onclick = () => {
-  console.log('Button clicked:', this);  // Refers to the global/window object
+document.getElementById("myButton").onclick = () => {
+  console.log("Button clicked:", this); // Refers to the global/window object
 };
 ```
 
@@ -715,14 +719,15 @@ document.getElementById('myButton').onclick = () => {
 let name = "John";
 let message = `Hi ${name}!`;
 
-console.log(message);  // Output: "Hi John!"
+console.log(message); // Output: "Hi John!"
 ```
 
 #### Пример кода: интерполяция многострочного текста и строк
 
 ```js
 // Regular String
-let poem = "Roses are red,\nViolets are blue,\nSugar is sweet,\nAnd so are you.";
+let poem =
+  "Roses are red,\nViolets are blue,\nSugar is sweet,\nAnd so are you.";
 
 // Template Literal
 let poemTemplate = `
@@ -780,19 +785,19 @@ let poemTemplate = `
 ```js
 // Simple higher-order function
 function multiplier(factor) {
-  return function(num) {
+  return function (num) {
     return num * factor;
   };
 }
 
 // Invoke a higher-order function
 const twice = multiplier(2);
-console.log(twice(5));  // Output: 10
+console.log(twice(5)); // Output: 10
 
 // Functional programming with higher-order functions
 const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map(multiplier(2));  // [2, 4, 6, 8, 10]
-const tripled = numbers.map(multiplier(3));  // [3, 6, 9, 12, 15]
+const doubled = numbers.map(multiplier(2)); // [2, 4, 6, 8, 10]
+const tripled = numbers.map(multiplier(3)); // [3, 6, 9, 12, 15]
 ```
 
 **Sources:**
@@ -832,7 +837,7 @@ const tripled = numbers.map(multiplier(3));  // [3, 6, 9, 12, 15]
 ```js
 // Define a function
 function greet() {
-  console.log('Hello!');
+  console.log("Hello!");
 }
 
 // Assign the function to a variable
@@ -841,18 +846,18 @@ let sayHello = greet;
 // Call the function through the variable
 ```
 
-сказатьПривет();  // Вывод: «Привет!»
+сказатьПривет(); // Вывод: «Привет!»
 
 ```js
 // Reassign the variable to a new function
-sayHello = function() {
-  console.log('Bonjour!');
+sayHello = function () {
+  console.log("Bonjour!");
 };
 
 // Call it again to see the new behavior
 ```
 
-сказатьПривет();  // Вывод: «Добрый день!»
+сказатьПривет(); // Вывод: «Добрый день!»
 
 **Sources:**
 
@@ -883,11 +888,11 @@ JavaScript рассматривает функции как первокласс
 Вот код JavaScript:
 
 ```js
-const sayHello = () => console.log('Hello!');
+const sayHello = () => console.log("Hello!");
 const runFunction = (func) => func();
 ```
 
-runFunction (сказать Привет);  // Вывод: «Привет!»
+runFunction (сказать Привет); // Вывод: «Привет!»
 
 **Sources:**
 
@@ -944,30 +949,30 @@ runFunction (сказать Привет);  // Вывод: «Привет!»
 Вот код JavaScript:
 
 ```js
-(function(){
-    var foo = 'bar';
-    console.log(foo);
+(function () {
+  var foo = "bar";
+  console.log(foo);
 })();
 ```
 
 В примере this функция заключена в круглые скобки, что гарантирует, что заключенная функция будет оценена как выражение. Впоследствии он вызывается с завершающей парой круглых скобок.
 
 ```js
-(function(){
-    console.log('Invoked!');
+(function () {
+  console.log("Invoked!");
 })();
 ```
 
 ```js
-!function(){
-    console.log('Invoked!');
-}();
+!(function () {
+  console.log("Invoked!");
+})();
 ```
 
 ```js
-(function factorial(n){
-    if (n <= 1) return 1;
-    return n * factorial(n-1);
+(function factorial(n) {
+  if (n <= 1) return 1;
+  return n * factorial(n - 1);
 })(5);
 ```
 
@@ -1007,7 +1012,7 @@ runFunction (сказать Привет);  // Вывод: «Привет!»
 
 Шаблон IIFE немедленно выполняется и возвращает назначаемый объект, фактически создавая модуль.
 
-мойМодуль.частныйМетод();  // Выдает ошибку, поскольку частныйМетод не предоставлен
+мойМодуль.частныйМетод(); // Выдает ошибку, поскольку частныйМетод не предоставлен
 В примере this PrivateVariable и PrivateMethod доступны только в лексическом окружении IIFE, что делает их частными.
 
 Инструменты JavaScript, такие как TypeScript и Babel, также предлагают такие модули, как Module.export, предоставляющие дополнительные возможности инкапсуляции.
@@ -1018,19 +1023,19 @@ runFunction (сказать Привет);  // Вывод: «Привет!»
 
 ```js
 function outerFunction() {
-    let outerVar = 'I am outer';  // This variable is in the lexical environment of outerFunction
+  let outerVar = "I am outer"; // This variable is in the lexical environment of outerFunction
 
-    function innerFunction() {
-        console.log(outerVar);  // Accesses outerVar from the lexical environment of outerFunction
-    }
+  function innerFunction() {
+    console.log(outerVar); // Accesses outerVar from the lexical environment of outerFunction
+  }
 
-    return innerFunction;
+  return innerFunction;
 }
 
 let myInnerFunction = outerFunction();
 ```
 
-- **myInnerFunction();  // Журналы**: «Я внешний»
+- **myInnerFunction(); // Журналы**: «Я внешний»
 
 Здесь InternalFunction сохраняет доступ к OuterVar.
 
@@ -1038,41 +1043,41 @@ let myInnerFunction = outerFunction();
 
 ```js
 function Gadget() {
-    let secret = 'top secret';
-    this.setSecret = function (value) {
-        secret = value;
-    };
-    this.getSecret = function () {
-        return secret;
-    };
+  let secret = "top secret";
+  this.setSecret = function (value) {
+    secret = value;
+  };
+  this.getSecret = function () {
+    return secret;
+  };
 }
 
 let phone = new Gadget();
-phone.setSecret('new secret');
-console.log(phone.getSecret());  // 'new secret'
+phone.setSecret("new secret");
+console.log(phone.getSecret()); // 'new secret'
 ```
 
 Вот код:
 
 ```js
 let myModule = (function () {
-    let privateVariable = 'I am private';
+  let privateVariable = "I am private";
 
-    function privateMethod() {
-        console.log('I am a private method');
-    }
+  function privateMethod() {
+    console.log("I am a private method");
+  }
 
-    return {
-        publicMethod: function () {
-            console.log('I am a public method');
-        },
-        getPrivateVariable: function () {
-            return privateVariable;
-        }
-    };
+  return {
+    publicMethod: function () {
+      console.log("I am a public method");
+    },
+    getPrivateVariable: function () {
+      return privateVariable;
+    },
+  };
 })();
 
-console.log(myModule.getPrivateVariable());  // 'I am private'
+console.log(myModule.getPrivateVariable()); // 'I am private'
 ```
 
 **Sources:**
@@ -4082,4 +4087,465 @@ export function Hello() {
 - [React Native — Getting started](https://reactnative.dev/docs/getting-started)
 - [React — Render and Commit](https://react.dev/learn/render-and-commit)
 - [MDN — What is a progressive web app?](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/What_is_a_progressive_web_app)
+</details>
+
+### Front-end Developer Interview (H5BP)
+
+<details>
+<summary>AMD vs CommonJS?</summary>
+
+### AMD vs CommonJS?
+
+**Definition:**
+
+CJS — sync, Node; AMD — async в браузере (legacy). Сегодня **ES modules**.
+
+**Sources:**
+
+- [JS modules](./3_js_modules.md)
+</details>
+
+<details>
+<summary>IIFE: function foo(){ }(); — почему не работает?</summary>
+
+### IIFE: function foo(){ }(); — почему не работает?
+
+**Definition:**
+
+Нужны скобки: `(function foo(){})();`
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/IIFE
+</details>
+
+<details>
+<summary>null, undefined, undeclared</summary>
+
+### null, undefined, undeclared
+
+**Definition:**
+
+`typeof` для undeclared; `=== null` / `== null`.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined
+</details>
+
+<details>
+<summary>forEach vs map</summary>
+
+### forEach vs map
+
+**Definition:**
+
+**map** возвращает массив; **forEach** — только side effects.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+</details>
+
+<details>
+<summary>call, apply, bind</summary>
+
+### call, apply, bind
+
+**Definition:**
+
+call/apply — вызов с `this`; bind — новая функция.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+</details>
+
+<details>
+<summary>JSONP</summary>
+
+### JSONP
+
+**Definition:**
+
+`<script>` + callback; не fetch; устарело из-за CORS.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/JSONP
+</details>
+
+<details>
+<summary>Атрибут vs свойство DOM</summary>
+
+### Атрибут vs свойство DOM
+
+**Definition:**
+
+Атрибут в разметке; property — живое поле узла.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/Attribute
+</details>
+
+<details>
+<summary>load vs DOMContentLoaded</summary>
+
+### load vs DOMContentLoaded
+
+**Definition:**
+
+DOMContentLoaded — DOM готов; load — все ресурсы.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event
+</details>
+
+<details>
+<summary>== vs ===</summary>
+
+### == vs ===
+
+**Definition:**
+
+**===** без приведения типов.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality
+</details>
+
+<details>
+<summary>Same-origin</summary>
+
+### Same-origin
+
+**Definition:**
+
+scheme+host+port; CORS для cross-origin чтения.
+
+**Sources:**
+
+- [CORS](./3_js_browser_extra.md)
+</details>
+
+<details>
+<summary>use strict</summary>
+
+### use strict
+
+**Definition:**
+
+Строгий режим — меньше скрытых ошибок.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+</details>
+
+<details>
+<summary>SPA и SEO</summary>
+
+### SPA и SEO
+
+**Definition:**
+
+SSR/SSG, канонические URL, meta (Next.js).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/SPA
+</details>
+
+<details>
+<summary>let vs var vs const</summary>
+
+### let vs var vs const
+
+**Definition:**
+
+var — function scope; let/const — block; const без rebinding.
+
+**Sources:**
+
+- [JS variables](./3_js_variables.md)
+</details>
+
+### Coding (H5BP)
+
+<details>
+<summary>H5BP: 10 + '20'</summary>
+
+### H5BP: 10 + '20'
+
+**Definition:** **`"1020"`**
+
+</details>
+
+<details>
+<summary>H5BP: 0.1 + 0.2 == 0.3</summary>
+
+### H5BP: 0.1 + 0.2 == 0.3
+
+**Definition:** **`false`**
+
+</details>
+
+<details>
+<summary>H5BP: порядок one three two</summary>
+
+### H5BP: порядок one three two
+
+**Definition:** setTimeout(0) после sync и microtasks.
+
+</details>
+
+<details>
+<summary>duplicate массива</summary>
+
+### duplicate массива
+
+**Examples:**
+
+```js
+const duplicate = (arr) => [...arr, ...arr];
+```
+
+</details>
+
+<a name="javascript-core--ru-list"></a>
+
+<details>
+<summary>Парсинг, reflow и repaint (конвейер браузера)</summary>
+
+### Parsing, reflow, and repaint (browser pipeline)
+
+**Answer:** **Parsing** builds **DOM** (HTML) and **CSSOM** (CSS), then a **render tree**. **Reflow (layout)** recalculates geometry when structure or size-affecting styles change. **Repaint** redraws pixels when only visual properties change (no layout). Prefer `transform` / `opacity` for animation; batch DOM writes.
+
+**See also:** [HTML — Rendering](./1_html_rendering.md#from-url-to-pixels) · [CSS — Architecture](./2_css_architecture.md)
+
+</details>
+
+<details>
+<summary>Set, Map, WeakSet и WeakMap</summary>
+
+### Set, Map, WeakSet, and WeakMap
+
+**Answer:** **Set** — unique values, any type. **Map** — key/value with any key type, insertion order. **WeakSet** / **WeakMap** — keys must be objects; entries do not prevent GC; no size iteration API. Use WeakMap for private metadata on DOM nodes or caches keyed by object identity.
+
+**See also:** [JS — Objects](./3_js_objects.md) · search “localStorage” for storage contrast
+
+</details>
+
+<details>
+<summary>flat, flatMap, includes, Array.from</summary>
+
+### Array flat, flatMap, includes, and Array.from
+
+**Answer:** `flat(depth)` flattens nested arrays. `flatMap(fn)` is `map` then `flat(1)`. `includes` checks value presence (NaN-safe vs `indexOf`). `Array.from(iterable, mapFn?)` builds arrays from iterables or array-likes (e.g. `NodeList`, strings).
+
+**See also:** [JS — Arrays](./3_js_array.md)
+
+</details>
+
+<details>
+<summary>Сборщик мусора — что это и зачем</summary>
+
+### What is the garbage collector and why is it needed?
+
+**Answer:** The **GC** frees heap memory for objects that are no longer reachable. JavaScript relies on automatic GC so developers avoid manual `free`. Trade-off: GC pauses and retained references (closures, globals, detached DOM) can still cause leaks.
+
+**See also:** [Garbage collection](./3_js_objects.md#garbage-collection) · [V8 architecture](./3_js_core.md#v8-engine-architecture)
+
+</details>
+
+<a name="javascript-core--alert-bom"></a>
+
+<details>
+<summary>alert, prompt и confirm</summary>
+
+### alert, prompt, and confirm
+
+**Answer:** Blocking browser dialogs on the **window** object. **`alert(msg)`** — OK only. **`prompt(msg, default?)`** — returns string or `null` if cancelled. **`confirm(msg)`** — returns boolean. Avoid in production UX; use in-page modals. In modern apps prefer `dialog` or component libraries.
+
+**See also:** [JS — Browser](./3_js_browser.md)
+
+</details>
+
+<a name="javascript-core--proto-vs-prototype"></a>
+
+<details>
+<summary>__proto__ и свойство prototype</summary>
+
+### **proto** vs prototype property
+
+**Answer:** **`[[Prototype]]`** (access via `Object.getPrototypeOf`) is the **instance’s** link up the chain. **`Fn.prototype`** exists only on **constructor functions** — the object used as `[[Prototype]]` for `new Fn()`. Do not mutate `__proto__` in new code; prefer `Object.create` / classes.
+
+**See also:** [JS — Objects](./3_js_objects.md) · “prototype chain” in this file
+
+</details>
+
+<a name="javascript-core--bind-once"></a>
+
+<details>
+<summary>Привязка this — можно ли bind дважды?</summary>
+
+### Binding this — can you bind twice?
+
+**Answer:** **`bind`** returns a new function whose **`this`** is fixed to the first argument. A **second `bind` on that result does not replace** the first bound `this` (internal `boundThis` wins). Context is **lost** when passing `obj.method` as a callback — fix with `bind`, arrow wrapper, or class field arrow.
+
+**See also:** [JS — Functions](./3_js_functions.md)
+
+</details>
+
+<a name="javascript-core--null-prototype"></a>
+
+<details>
+<summary>Object.create(null)</summary>
+
+### Object.create(null) — null prototype object
+
+**Answer:** Creates a **dictionary** with **no** `Object.prototype` — no inherited `toString`, `hasOwnProperty`, or accidental key collisions with prototype methods. Use for map-like objects built from user input keys.
+
+```js
+const dict = Object.create(null);
+dict.key = "value";
+```
+
+**See also:** [JS — Objects](./3_js_objects.md)
+
+</details>
+
+<a name="javascript-core--inheritance-styles"></a>
+
+<details>
+<summary>Прототипное vs функциональное наследование</summary>
+
+### Prototype inheritance vs functional (closure) inheritance
+
+**Answer:** **Prototype** — shared methods on `Constructor.prototype`; memory-efficient, dynamic. **Functional / closure** — factory returns object with methods closing over private variables; true privacy, per-instance method copies. ES **classes** are syntax over prototypes; **`#private`** fields cover many closure use cases.
+
+**See also:** [7_oop_interview — OOP/FP](./7_oop_interview.md#oop--fp--cheatsheet)
+
+</details>
+
+<a name="javascript-core--clone"></a>
+
+<details>
+<summary>Поверхностное и глубокое клонирование</summary>
+
+### Shallow vs deep object cloning
+
+**Answer:** **Shallow:** `{ ...obj }` or `Object.assign({}, obj)` — nested objects are **shared**. **Deep (JSON-safe):** `structuredClone(obj)` (modern) or `JSON.parse(JSON.stringify(obj))` — drops functions, `undefined`, `Date`, cycles. Libraries like **`_.cloneDeep`** for rich types.
+
+**See also:** search “immutable” in this file
+
+</details>
+
+<a name="javascript-core--promise-static"></a>
+
+<details>
+<summary>Promise.resolve, reject, all, allSettled, race, any</summary>
+
+### Promise.resolve, reject, all, allSettled, race, any
+
+**Answer:** **`resolve(v)`** / **`reject(r)`** — wrap values in settled promises. **`all`** — all fulfill or first reject. **`allSettled`** — wait for every outcome `{ status, value|reason }`. **`race`** — first settlement wins. **`any`** — first fulfillment; **`AggregateError`** if all reject.
+
+**See also:** [JS — Async](./3_js_async.md)
+
+</details>
+
+<a name="javascript-core--promise-states"></a>
+
+<details>
+<summary>Состояния Promise и finally</summary>
+
+### Promise states and finally
+
+**Answer:** A promise is **pending**, then **fulfilled** (with a value) or **rejected** (with a reason). **`then`** / **`catch`** chain handlers; **`finally`** runs after either outcome (good for cleanup). Prefer **`async/await`** + **`try/catch`** for readability.
+
+**See also:** “Promises vs Callbacks” in this file
+
+</details>
+
+<a name="javascript-core--web-storage"></a>
+
+<details>
+<summary>localStorage, sessionStorage, storage event</summary>
+
+### localStorage, sessionStorage — set, get, clear, storage event
+
+**Answer:** **`setItem(key, string)`**, **`getItem`**, **`removeItem`**, **`clear()`**. Values are **strings** — use `JSON.stringify` for objects. **`localStorage`** persists per origin across tabs; **`sessionStorage`** per tab. The **`storage`** event on `window` fires in **other** documents on the same origin when `localStorage` changes (not in the tab that wrote).
+
+**See also:** “localStorage, sessionStorage, and cookies” in this file
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+Use `Cmd+F` with RU or EN phrasing. Theory depth lives in linked conspect files; this file holds interview answers. Syllabus aligned with **JavaScript Core** course (JS → TS → Testing).
+
+| #   | RU topic (your list)                         | Theory                                                                                          | Search in this file / anchor                                                                                                                        |
+| --- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Парсинг, Reflow, Repaint                     | [1_html_rendering.md](./1_html_rendering.md) · [2_css_architecture.md](./2_css_architecture.md) | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 2   | Циклы while и for                            | [3_js_loops.md](./3_js_loops.md)                                                                | “loop”, “for”, “while”                                                                                                                              |
+| 3   | Условие if                                   | [3_js_operators.md](./3_js_operators.md)                                                        | “if”, conditional                                                                                                                                   |
+| 4   | Конструкция switch                           | [3_js_loops.md](./3_js_loops.md)                                                                | “switch”                                                                                                                                            |
+| 5   | Логические / условные операторы              | [3_js_operators.md](./3_js_operators.md)                                                        | “ternary”, “&&”, “logical”                                                                                                                          |
+| 6   | alert / prompt / confirm                     | [3_js_browser.md](./3_js_browser.md)                                                            | [#javascript-core--alert-bom](#javascript-core--alert-bom)                                                                                          |
+| 7   | let, const, var                              | [3_js_variables.md](./3_js_variables.md)                                                        | “let”, “const”, “var”, TDZ                                                                                                                          |
+| 8   | Виды функций, hoisting                       | [3_js_functions.md](./3_js_functions.md)                                                        | “function declaration”, “hoisting”                                                                                                                  |
+| 9   | Деструктуризация, spread                     | [3_js_operators.md](./3_js_operators.md)                                                        | “destructuring”, “spread”                                                                                                                           |
+| 10  | Optional chaining `?.`                       | [3_js_operators.md](./3_js_operators.md)                                                        | “optional chaining”                                                                                                                                 |
+| 11  | Работа с массивами (map, filter, …)          | [3_js_array.md](./3_js_array.md)                                                                | “map vs forEach”, “reduce”, “filter”                                                                                                                |
+| 12  | == vs ===                                    | [3_js_core.md](./3_js_core.md)                                                                  | “strict equality”, “==”                                                                                                                             |
+| 13  | Hoisting, TDZ                                | [3_js_variables.md](./3_js_variables.md)                                                        | “temporal dead zone”, “hoisting”                                                                                                                    |
+| 14  | Template strings                             | [3_js_core.md](./3_js_core.md)                                                                  | “template literal”                                                                                                                                  |
+| 15  | Arrow vs function                            | [3_js_functions.md](./3_js_functions.md)                                                        | “arrow function”, “this”                                                                                                                            |
+| 16  | IIFE                                         | [3_js_functions.md](./3_js_functions.md)                                                        | “IIFE”                                                                                                                                              |
+| 17  | Default params, rest `...args`               | [3_js_functions.md](./3_js_functions.md)                                                        | “default parameter”, “rest”                                                                                                                         |
+| 18  | var vs assignment without declaration        | [3_js_variables.md](./3_js_variables.md)                                                        | “implicit global”, “use strict”                                                                                                                     |
+| 19  | Lexical environment / scope chain            | [3_js_closures.md](./3_js_closures.md)                                                          | “lexical”, “scope”                                                                                                                                  |
+| 20  | Garbage collector (×2 in syllabus)           | [3_js_objects.md#garbage-collection](./3_js_objects.md#garbage-collection)                      | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 21  | Object.keys / values / entries / fromEntries | [3_js_objects.md](./3_js_objects.md)                                                            | “Object.entries”, “Object.values”                                                                                                                   |
+| 22  | flat, flatMap, includes, Array.from          | [3_js_array.md](./3_js_array.md)                                                                | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 23  | Примитивы vs объекты                         | [3_js_data_types.md](./3_js_data_types.md)                                                      | “data types”, “primitive”                                                                                                                           |
+| 24  | Set / Map / WeakSet / WeakMap                | [3_js_objects.md](./3_js_objects.md)                                                            | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 25  | Type coercion / conversion                   | [3_js_core.md](./3_js_core.md)                                                                  | “coercion”, “type conversion”                                                                                                                       |
+| 26  | typeof                                       | [3_js_core.md](./3_js_core.md)                                                                  | “typeof”                                                                                                                                            |
+| 27  | Prototype chain, **proto**, prototype        | [3_js_objects.md](./3_js_objects.md) · [3_js_classes.md](./3_js_classes.md)                     | [#javascript-core--proto-vs-prototype](#javascript-core--proto-vs-prototype)                                                                        |
+| 28  | Object.create, functional vs prototype       | [3_js_objects.md](./3_js_objects.md)                                                            | [#javascript-core--inheritance-styles](#javascript-core--inheritance-styles) · [#javascript-core--null-prototype](#javascript-core--null-prototype) |
+| 29  | Object.prototype methods                     | [3_js_objects.md](./3_js_objects.md)                                                            | “hasOwnProperty”, “toString”                                                                                                                        |
+| 30  | Closures                                     | [3_js_closures.md](./3_js_closures.md)                                                          | “closure”                                                                                                                                           |
+| 31  | this, bind (once?), lost context             | [3_js_functions.md](./3_js_functions.md)                                                        | [#javascript-core--bind-once](#javascript-core--bind-once)                                                                                          |
+| 32  | Classes, extends, super, #private            | [3_js_classes.md](./3_js_classes.md)                                                            | “class”, “super”, “instanceof”                                                                                                                      |
+| 33  | Blocking vs async code                       | [3_js_async.md](./3_js_async.md)                                                                | “blocking”, “async”                                                                                                                                 |
+| 34  | XMLHttpRequest                               | [3_js_async.md](./3_js_async.md)                                                                | “XMLHttpRequest”, “fetch”                                                                                                                           |
+| 35  | Promise.resolve / reject                     | [3_js_async.md](./3_js_async.md)                                                                | [#javascript-core--promise-static](#javascript-core--promise-static)                                                                                |
+| 36  | Promise.all / allSettled / race / any        | [3_js_async.md](./3_js_async.md)                                                                | [#javascript-core--promise-static](#javascript-core--promise-static)                                                                                |
+| 37  | Event loop, macro vs microtasks              | [3_js_async_event_loop.md](./3_js_async_event_loop.md)                                          | “event loop”, “microtask”, “macrotask”                                                                                                              |
+| 38  | setTimeout / setInterval, delay 0            | [3_js_async_event_loop.md](./3_js_async_event_loop.md)                                          | “setTimeout(0)”, H5BP setTimeout                                                                                                                    |
+| 39  | Object.keys, values, for...in                | [3_js_objects.md](./3_js_objects.md)                                                            | “for...in”, “Object.keys”                                                                                                                           |
+| 40  | map vs forEach; find, filter, some, includes | [3_js_array.md](./3_js_array.md)                                                                | “map vs forEach”, “filter”, “some”                                                                                                                  |
+| 41  | reduce, sort                                 | [3_js_array.md](./3_js_array.md)                                                                | “reduce”, “sort”                                                                                                                                    |
+| 42  | Клонирование объектов                        | [3_js_objects.md](./3_js_objects.md)                                                            | [#javascript-core--clone](#javascript-core--clone)                                                                                                  |
+| 43  | Promises vs callbacks; states; finally       | [3_js_async.md](./3_js_async.md)                                                                | [#javascript-core--promise-states](#javascript-core--promise-states)                                                                                |
+| 44  | DOM, selectors, events                       | [3_js_browser.md](./3_js_browser.md) · [3_js_events.md](./3_js_events.md)                       | “DOM”, “querySelector”                                                                                                                              |
+| 45  | Bubbling, capture, delegation                | [3_js_events.md](./3_js_events.md)                                                              | “bubbling”, “capturing”, “delegation”                                                                                                               |
+| 46  | Cookies                                      | [3_js_browser.md](./3_js_browser.md)                                                            | “cookie”                                                                                                                                            |
+| 47  | localStorage / sessionStorage + CRUD         | [3_js_browser.md](./3_js_browser.md)                                                            | [#javascript-core--web-storage](#javascript-core--web-storage)                                                                                      |
+| 48  | Coding tasks (palindrome, …)                 | —                                                                                               | “palindrome”, “shortest word”, “duplicate”                                                                                                          |
+| 49  | OOP / FP overlap                             | [7_oop_interview.md#oop--fp--cheatsheet](./7_oop_interview.md#oop--fp--cheatsheet)              | “prototype”, “FP”                                                                                                                                   |
+
+**TypeScript** (#50–62): [5_ts_interview.md#ru-cheatsheet-index](./5_ts_interview.md#ru-cheatsheet-index) (JS course) · [full RU syllabus](./5_ts_interview.md#typescript-interview--course-index).
+
+**Testing** (#63–65): [7_special_testing_interview.md#javascript-core--test-pyramid](./7_special_testing_interview.md#javascript-core--test-pyramid) — testing types, general testing, **Test Pyramid**.
+
 </details>

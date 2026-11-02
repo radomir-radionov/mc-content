@@ -10,6 +10,8 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
+- [DSA Technical course (#1–33)](#dsa-technical--course-index)
 
 ---
 
@@ -42,7 +44,7 @@ def reverse_array(arr):
     while start < end:
         arr[start], arr[end] = arr[end], arr[start]
         start, end = start + 1, end - 1
-        
+
 my_array = [1, 2, 3, 4, 5]
 print("Original Array:", my_array)
 reverse_array(my_array)
@@ -79,11 +81,11 @@ print("Reversed Array:", my_array)
 
 Анализ сложности
 
-| Операция | Массив | Связанный список |
-| --- | --- | --- |
-| Доступ | `O(1)` (с индексом) | `O(n)` |
-| Массовая вставка | `O(n) или O(1)` | `O(1)` |
-| Удаление | `O(n) до O(1)` | `O(1)` |
+| Операция         | Массив              | Связанный список |
+| ---------------- | ------------------- | ---------------- |
+| Доступ           | `O(1)` (с индексом) | `O(n)`           |
+| Массовая вставка | `O(n) или O(1)`     | `O(1)`           |
+| Удаление         | `O(n) до O(1)`      | `O(1)`           |
 
 **When to use:**
 
@@ -289,7 +291,7 @@ Low                             High
 ```
 
 - **Среднее**: (Низ + Выс) / 2 = 5
-Это определяет среднее число как 12.
+  Это определяет среднее число как 12.
 
 - **Сравнение**: Поскольку среднее число меньше целевого значения 17, мы можем отбросить левую часть массива.
 
@@ -302,6 +304,7 @@ Low        High
 - **Обновленные указатели**: Теперь у нас есть уменьшенный массив для поиска.
 
 Средний = 7
+
 ```text
 ^      ^
 Low   High
@@ -371,7 +374,7 @@ def rotate_matrix_ccw(matrix):
 
     return matrix
 
-# Test 
+# Test
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 print(rotate_2d_clockwise(matrix))
 # Output: [[7, 4, 1], [8, 5, 2], [9, 6, 3]]
@@ -561,6 +564,7 @@ mySlice := originalArray[1:4]  // References the originalArray from index 1 to 3
 Использование дополнительного пространства:
 
 Создайте новый массив и добавьте элементы из обоих массивов, используя два указателя, затем верните объединенный список.
+
 - **Временная сложность**: `O(n + m)` - где `n and m` — это количество элементов в каждом массиве. Этот подход простой и интуитивно понятный.
 
 Использование минимальной кучи:
@@ -570,13 +574,14 @@ mySlice := originalArray[1:4]  // References the originalArray from index 1 to 3
 Временная сложность: `O((n + m)log(n + m))`
 
 - **Пространственная сложность**: `O(n + m)` - Куча может содержать все элементы.
-Этот подход полезен, когда массивы слишком большие, чтобы поместиться в памяти.
+  Этот подход полезен, когда массивы слишком большие, чтобы поместиться в памяти.
 
 Слияние на месте:
 
 Реализуйте слияние, подобное тому, которое используется в сортировке слиянием, непосредственно внутри входного массива.
+
 - **Временная сложность**: `O(n ⋅ m)` - где `n and m` это количество элементов в каждом массиве.
-Слияние на месте становится неэффективным по мере увеличения числа вставок.
+  Слияние на месте становится неэффективным по мере увеличения числа вставок.
 
 Использование бинарного поиска:
 
@@ -613,8 +618,8 @@ mySlice := originalArray[1:4]  // References the originalArray from index 1 to 3
 Временная сложность:
 
 - **Худший случай**: `O(n^2)` - Это происходит, когда мы сталкиваемся с наименее оптимизированным сценарием, что снижает
-н
-только одним элементом на каждый шаг стежка.
+  н
+  только одним элементом на каждый шаг стежка.
 - **Средний случай**: `O(n)` - Средняя производительность высокая, что делает ожидаемую временную сложность линейной.
 
 Метод кучи
@@ -716,7 +721,7 @@ def kth_largest_heap(arr, k):
 
 ```java
 public class SinglyLinkedList {
-    
+
     private static class Node {
         private int data;
         private Node next;
@@ -751,7 +756,7 @@ public class SinglyLinkedList {
 
 ```java
 public class DoublyLinkedList {
-    
+
     private static class Node {
         private int data;
         private Node previous;
@@ -841,6 +846,7 @@ public class DoublyLinkedList {
 
 н
 является количеством узлов в связном списке, так как каждый указатель посещает каждый узел только один раз.
+
 - **Пространственная сложность**: `O(1)`, так как алгоритм использует только постоянное количество дополнительной памяти.
 
 **Examples:**
@@ -941,7 +947,7 @@ class Node:
 class SinglyLinkedList:
     def __init__(self):
         self.head = None
-    
+
     def append(self, data):  # O(n) without tail pointer
         new_node = Node(data)
         if not self.head:
@@ -951,7 +957,7 @@ class SinglyLinkedList:
         while last_node.next:
             last_node = last_node.next
         last_node.next = new_node
-    
+
     def delete(self, data):  # O(n) only if element is not at head
         current_node = self.head
         if current_node.data == data:
@@ -1012,7 +1018,7 @@ class SinglyLinkedList:
 - **Инициализировать**: Отслеживайте три ключевых узла: предыдущий, текущий и следующий.
 - **Обратные ссылки**: Обновите каждый узел так, чтобы он указывал на предыдущий в цепочке.
 - **Переместить указатели**: Сдвиньте предыдущий, текущий и следующий узлы на одну позицию для следующей итерации.
-Этот процесс продолжается итеративно, пока current не достигнет конца, т.е. NULL.
+  Этот процесс продолжается итеративно, пока current не достигнет конца, т.е. NULL.
 
 Анализ сложности
 
@@ -2286,7 +2292,7 @@ def bfs(adj, src):
 
 **How it works:**
 
-Если вес каждого ребра равен 1, BFS даёт наименьшее число рёбер, O(V + E). Если веса неотрицательны, Дейкстра с двоичной кучей стоит O((V + E) log V), и её нельзя использовать с отрицательными рёбрами. Если веса могут быть отрицательными и нет отрицательного цикла, Беллман-Форд ослабляет каждое ребро V - 1 раз, O(V * E), а ещё одно успешное ослабление сообщает об отрицательном цикле. DAG решается за O(V + E) после топологического порядка.
+Если вес каждого ребра равен 1, BFS даёт наименьшее число рёбер, O(V + E). Если веса неотрицательны, Дейкстра с двоичной кучей стоит O((V + E) log V), и её нельзя использовать с отрицательными рёбрами. Если веса могут быть отрицательными и нет отрицательного цикла, Беллман-Форд ослабляет каждое ребро V - 1 раз, O(V \* E), а ещё одно успешное ослабление сообщает об отрицательном цикле. DAG решается за O(V + E) после топологического порядка.
 
 **When to use:**
 
@@ -2465,7 +2471,7 @@ while queue:
 
 **Definition:**
 
-Беллман-Форд считает кратчайшие пути из одной вершины, когда рёбра могут быть отрицательными, и обнаруживает отрицательный цикл. GeeksforGeeks даёт время O(V * E) и память O(V).
+Беллман-Форд считает кратчайшие пути из одной вершины, когда рёбра могут быть отрицательными, и обнаруживает отрицательный цикл. GeeksforGeeks даёт время O(V \* E) и память O(V).
 
 **How it works:**
 
@@ -3638,11 +3644,11 @@ scores[player] = new_score
 
 **Definition:**
 
-Дорожная сеть — взвешенный граф: перекрёстки — вершины, участки дорог — рёбра с неотрицательной ценой проезда. Путь считает Дейкстра или A* с тем же правилом ослабления.
+Дорожная сеть — взвешенный граф: перекрёстки — вершины, участки дорог — рёбра с неотрицательной ценой проезда. Путь считает Дейкстра или A\* с тем же правилом ослабления.
 
 **How it works:**
 
-Список смежности подходит редкому дорожному графу, память O(V + E). Дейкстра с двоичной кучей стоит O((V + E) log V) и верна, потому что время в пути не отрицательно. GeeksforGeeks показывает min-heap пар (расстояние, вершина) и пропуск устаревших записей кучи. Сжатие или иерархия могут уменьшить граф, который видит Дейкстра, но ядро — по-прежнему кратчайшие пути без отрицательных рёбер. Беллман-Форд без отрицательных рёбер не нужен и стоит O(V * E).
+Список смежности подходит редкому дорожному графу, память O(V + E). Дейкстра с двоичной кучей стоит O((V + E) log V) и верна, потому что время в пути не отрицательно. GeeksforGeeks показывает min-heap пар (расстояние, вершина) и пропуск устаревших записей кучи. Сжатие или иерархия могут уменьшить граф, который видит Дейкстра, но ядро — по-прежнему кратчайшие пути без отрицательных рёбер. Беллман-Форд без отрицательных рёбер не нужен и стоит O(V \* E).
 
 **Examples:**
 
@@ -3713,4 +3719,94 @@ top = heapq.nlargest(k, candidates, key=candidates.get)
 - [Hashing](https://www.geeksforgeeks.org/dsa/hashing-data-structure/)
 - [Graph and its representations](https://www.geeksforgeeks.org/dsa/graph-and-its-representations/)
 - [Priority Queue](https://www.geeksforgeeks.org/dsa/priority-queue-set-1-introduction/)
+</details>
+
+<a name="dsa-technical--paradigms"></a>
+
+<details>
+<summary>Algorithm paradigms — BFS, DFS, D&C, greedy, DP, backtracking (course #19–28)</summary>
+
+### Algorithm paradigms — BFS, DFS, D&C, greedy, DP, backtracking (course #19–28)
+
+**Answer:** Сортировка и поиск; обходы дерева (pre/in/post, BFS по уровням); на графах **BFS** — кратчайшие пути без весов, **DFS** — компоненты и циклы; **divide & conquer**; **greedy** при доказуемом локальном выборе; **DP** при перекрывающихся подзадачах; **backtracking** — DFS с откатом.
+
+**See also:** [Algorithms — Common](./7_special_algorithms_common.md) · [Graph interview](./7_algo_graphs_interview.md)
+
+</details>
+
+<a name="dsa-technical--graph-algorithms"></a>
+
+<details>
+<summary>Classic graph algorithms (course #29–33)</summary>
+
+### Classic graph algorithms (course #29–33)
+
+**Answer:** **Quickselect** — k-й элемент за O(n) в среднем; **Floyd** — цикл черепаха/заяц; **Bellman–Ford** — отрицательные рёбра; **Dijkstra** — неотрицательные веса + priority queue; **topological sort** — порядок на DAG.
+
+**See also:** [Graph Theory interview](./7_algo_graphs_interview.md)
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+<a name="dsa-technical--course-index"></a>
+
+<details>
+<summary>RU cheatsheet — DSA Technical course (#1–33)</summary>
+
+### RU cheatsheet — question index
+
+Курс **Technical** (#1–33). **Theory** + **Interview** на каждой строке.
+
+#### Foundations (#1)
+
+| #   | RU topic       | Theory                                                          | Interview                                                                 |
+| --- | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 1   | Big O Notation | [Big O notation](./7_special_algorithms_core.md#big-o-notation) | [What is Big-O Notation?](./7_algo_big_o_interview.md#interview-practice) |
+
+#### Linear & associative structures (#2–6, #13)
+
+| #   | RU topic                     | Theory                                                           | Interview                                                                     |
+| --- | ---------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2   | Массивы                      | [Array](./7_special_data_structures_linear.md#array)             | [Arrays interview](./7_ds_arrays_interview.md#interview-practice)             |
+| 3   | Хэш-таблицы                  | [Hash table](./7_special_data_structures_advanced.md#hash-table) | [Hash Tables interview](./7_ds_hash_tables_interview.md#interview-practice)   |
+| 4–5 | Singly / doubly linked lists | [Linked list](./7_special_data_structures_linear.md#linked-list) | [Linked Lists interview](./7_ds_linked_lists_interview.md#interview-practice) |
+| 6   | Стек                         | [Stack](./7_special_data_structures_linear.md#stack)             | [Stacks interview](./7_ds_stacks_interview.md#interview-practice)             |
+| 13  | 2-D arrays / матрицы         | [Array](./7_special_data_structures_linear.md#array)             | [Arrays interview](./7_ds_arrays_interview.md#interview-practice)             |
+
+#### Trees, heaps, tries (#7–12)
+
+| #     | RU topic                     | Theory                                                              | Interview                                                                     |
+| ----- | ---------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 7–8   | Binary tree, BST             | [Tree](./7_special_data_structures_trees.md#tree)                   | [Binary Tree interview](./7_ds_binary_tree_interview.md#interview-practice)   |
+| 9     | Trie                         | [Trees & graphs](./7_special_data_structures_trees.md)              | [Trie interview](./7_ds_tries_interview.md#interview-practice)                |
+| 10    | N-ary tree                   | [Tree](./7_special_data_structures_trees.md#tree)                   | [Tree Data Structure interview](./7_ds_trees_interview.md#interview-practice) |
+| 11–12 | Min/max heap, priority queue | [Heap](./7_special_data_structures_advanced.md#heap-priority-queue) | [Heaps interview](./7_ds_heaps_maps_interview.md#interview-practice)          |
+
+#### Graphs & representation (#14–17)
+
+| #     | RU topic                | Theory                                                                           | Interview                                                                 |
+| ----- | ----------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 14    | Графы                   | [Graph](./7_special_data_structures_trees.md#graph)                              | [Graph Theory interview](./7_algo_graphs_interview.md#interview-practice) |
+| 15–16 | Adjacency list / matrix | [Graph](./7_special_data_structures_trees.md#graph)                              | [Graph interview](./7_algo_graphs_interview.md#interview-practice)        |
+| 17    | Interface design (DS)   | [Choosing a structure](./7_special_data_structures.md#choosing-a-data-structure) | [Overview interview](./7_ds_overview_interview.md#interview-practice)     |
+
+#### Recursion & paradigms (#18–28)
+
+| #     | RU topic             | Theory                                                                                              | Interview                                                                       |
+| ----- | -------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 18    | Рекурсия             | [Tree traversal](./7_special_data_structures_trees.md#tree-traversal-recursive-vs-iterative)        | [Recursion interview](./7_algo_recursion_interview.md#interview-practice)       |
+| 19    | Sorting              | [Common algorithms](./7_special_algorithms_common.md)                                               | [Sorting interview](./7_algo_sorting_interview.md#interview-practice)           |
+| 20    | Search               | [Common algorithms](./7_special_algorithms_common.md)                                               | [Searching interview](./7_algo_searching_interview.md#interview-practice)       |
+| 21–24 | Traversals, BFS, DFS | [#dsa-technical--paradigms](#dsa-technical--paradigms) · [Common](./7_special_algorithms_common.md) | [Graph interview](./7_algo_graphs_interview.md#interview-practice)              |
+| 25    | Divide & conquer     | [Common algorithms](./7_special_algorithms_common.md)                                               | [D&C interview](./7_algo_divide_conquer_interview.md#interview-practice)        |
+| 26    | Greedy               | [Common algorithms](./7_special_algorithms_common.md)                                               | [Greedy interview](./7_algo_greedy_interview.md#interview-practice)             |
+| 27    | Dynamic programming  | [Common algorithms](./7_special_algorithms_common.md)                                               | [DP interview](./7_algo_dp_interview.md#interview-practice)                     |
+| 28    | Backtracking         | [Patterns](./7_special_algorithms_patterns.md)                                                      | [Backtracking interview](./7_algo_backtracking_interview.md#interview-practice) |
+
+#### Named algorithms (#29–33)
+
+| #     | RU topic                                                           | Theory                                                                                                            | Interview                                                                 |
+| ----- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 29–33 | Quickselect, Floyd cycle, Bellman–Ford, Dijkstra, topological sort | [#dsa-technical--graph-algorithms](#dsa-technical--graph-algorithms) · [Common](./7_special_algorithms_common.md) | [Graph Theory interview](./7_algo_graphs_interview.md#interview-practice) |
+
 </details>

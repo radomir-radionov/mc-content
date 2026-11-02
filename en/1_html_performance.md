@@ -172,7 +172,7 @@ onINP(({ attribution }) =>
 onCLS(({ attribution }) => console.log(attribution.largestShiftTarget));
 ```
 
-Next.js: [4_nextjs.md — CWV](./4_nextjs_optimizations.md#core-web-vitals-on-vercel). Metric deep-dives: [LCP](#lcp-largest-contentful-paint) · [INP](#inp-interaction-to-next-paint) · [CLS](#cls-cumulative-layout-shift). DevTools: [11_vsc_browser.md](./11_vsc_browser.md#devtools--core-web-vitals).
+**See also:** [LCP](#lcp-largest-contentful-paint) · [INP](#inp-interaction-to-next-paint) · [CLS](#cls-cumulative-layout-shift) · [Performance study map](./6_web_api_performance.md#frontend-performance-techniques-study-map) · [Next.js CWV](./4_nextjs_optimizations.md#core-web-vitals-on-vercel) · [DevTools](./11_vsc_browser.md#devtools--core-web-vitals)
 
 #### Common pitfalls
 

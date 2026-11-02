@@ -11,6 +11,7 @@ Answers are filled for every question in this note.
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [OOP & FP — cheatsheet](#oop--fp--cheatsheet)
 
 ---
 
@@ -892,7 +893,6 @@ Relationship with SOLID principles:
 
 </details>
 
-
 ### Class Relationships and Design
 
 <details>
@@ -1371,7 +1371,6 @@ public class Bicycle {
 - [Overriding and Hiding Methods](https://docs.oracle.com/javase/tutorial/java/IandI/override.html)
 </details>
 
-
 ### Advanced OOP Concepts
 
 <details>
@@ -1664,7 +1663,6 @@ class User(JsonMixin):
 - [Favoring Composition Over Inheritance In Java](https://www.geeksforgeeks.org/java/favoring-composition-over-inheritance-in-java-with-examples/)
 </details>
 
-
 ### Practical Use and Patterns
 
 <details>
@@ -1947,7 +1945,6 @@ class Order {
 - [Favoring Composition Over Inheritance In Java](https://www.geeksforgeeks.org/java/favoring-composition-over-inheritance-in-java-with-examples/)
 </details>
 
-
 ### OOP Best Practices
 
 <details>
@@ -2185,4 +2182,129 @@ Favor a direct call or one composed object on a measured hot path. Keep interfac
 
 - [Design Patterns and Best Practices Interview Questions](https://www.geeksforgeeks.org/interview-prep/design-patterns-best-practices-interview-questions-oops/)
 - [Difference Between Abstract Class and Interface in Java](https://www.geeksforgeeks.org/java/difference-between-abstract-class-and-interface-in-java/)
+</details>
+
+---
+
+<a name="oop--fp--cheatsheet"></a>
+
+### OOP & FP — cheatsheet (RU list)
+
+**Theory:** [OOP & SOLID](./7_special_engineering.md) · [MVC/MVVM](./7_special_architecture.md#mvc-family) · [GRASP](./0_system_design_grasp.md) · [GOF](./7_special_patterns.md) · [JS classes](./3_js_classes.md). Long-form OOP Q&A: [Interview Practice](#interview-practice) above.
+
+<details>
+<summary>Основные принципы ООП? / What are the main OOP principles?</summary>
+
+### Основные принципы ООП?
+
+Encapsulation, inheritance, polymorphism, abstraction — [OOP](./7_special_engineering.md#object-oriented-programming-oop).
+
+</details>
+
+<details>
+<summary>Что такое SOLID?</summary>
+
+### Что такое SOLID?
+
+[SOLID overview](./7_special_engineering.md#solid-overview); see also LSP/DIP cards above in this file.
+
+</details>
+
+<details>
+<summary>Классовое vs прототипное наследование?</summary>
+
+### Классовое vs прототипное наследование?
+
+JS: prototypes + `class` sugar — [OOP in JavaScript](./3_js_objects.md#oop-in-javascript) · [Prototypal inheritance (JS interview)](./3_js_interview.md).
+
+</details>
+
+<details>
+<summary>Однонаправленный vs двусторонний поток данных?</summary>
+
+### Однонаправленный vs двусторонний поток данных?
+
+[One-way vs two-way binding](./7_special_architecture.md#unidirectional-vs-two-way-data-binding).
+
+</details>
+
+<details>
+<summary>ФП? MVC? MVVM? MVP? Недостатки MVW?</summary>
+
+### ФП? MVC? MVVM? MVP?
+
+[FP in JS](./3_js_interview.md) · [MVC family](./7_special_architecture.md#mvc-family) · [MVC vs MVP vs MVVM](./7_special_architecture.md#mvc-vs-mvp-vs-mvvm).
+
+</details>
+
+<details>
+<summary>Каррирование? ООП vs ФП в JS?</summary>
+
+### Каррирование? ООП vs ФП в JS?
+
+[Functions — currying](./3_js_functions.md) · multi-paradigm JS ([7_special_cs](./7_special_cs.md)).
+
+</details>
+
+<details>
+<summary>Монолит vs микросервисы?</summary>
+
+### Монолит vs микросервисы?
+
+[Microservices](./0_system_design_architecture.md#microservices-architecture).
+
+</details>
+
+<details>
+<summary>GRASP? GOF? Паттерны?</summary>
+
+### GRASP? GOF?
+
+[GRASP](./0_system_design_grasp.md) · [Design patterns](./7_special_patterns.md).
+
+</details>
+
+<details>
+<summary>Дескрипторы? Геттеры/сеттеры? static?</summary>
+
+### Дескрипторы? Геттеры/сеттеры? static?
+
+[Descriptors](./3_js_classes.md#property-descriptors) · [Getters/setters](./3_js_classes.md#getters-and-setters) · [Static](./3_js_classes.md#static-methods-and-properties).
+
+</details>
+
+<details>
+<summary>Композиция vs наследование? Агрегация?</summary>
+
+### Композиция vs наследование?
+
+[Inheritance vs composition (above)](#compare-inheritance-vs-mixin-vs-composition) · [Aggregation (above)](#explain-how-aggregation-relationship-is-represented-in-oop).
+
+</details>
+
+<details>
+<summary>Абстрактный класс в JS? Прототипы?</summary>
+
+### Абстрактный класс в JS?
+
+[Abstract classes in JavaScript](./3_js_classes.md#abstract-classes-in-javascript).
+
+</details>
+
+<details>
+<summary>IoC? Dependency injection?</summary>
+
+### IoC? DI?
+
+[IoC](./7_special_engineering.md#inversion-of-control) · [DIP](./7_special_engineering.md#dependency-inversion-dip) · [Constructor injection](./3_js_classes.md#constructor-injection).
+
+</details>
+
+<details>
+<summary>Реактивное программирование? Императив vs декларатив?</summary>
+
+### Реактивное программирование?
+
+[Reactive programming](./7_special_architecture.md#reactive-programming--reactivity).
+
 </details>

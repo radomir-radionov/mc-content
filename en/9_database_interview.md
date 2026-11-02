@@ -11,6 +11,7 @@ Answers are filled for every question in this file.
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -3127,35 +3128,30 @@ COMMIT;
 <details>
 <summary>Explain how to use SQL for predictive analysis and machine learning purposes.</summary>
 
-### Explain how to use SQL for predictive analysis and machine learning purposes.
-
-**Definition:**
-
-Core PostgreSQL does not train or store a machine-learning model. SQL prepares features and labels and can apply a simple numeric formula you write yourself.
-
-**How it works:**
-
-Aggregates and windows build the training table: counts, sums, lags, and ratios per entity. `COPY` exports that result for a tool that fits a model. A scored column can be loaded back and joined. A hand-written formula, such as a weighted sum in a `SELECT`, is ordinary arithmetic, not a fitted model. There is no `CREATE MODEL` statement in core SQL.
-
-**When to use:**
-
-Use SQL to define a reproducible feature query and to serve scores that have already been written into a table. Do the fit in a system that is built to train models, then bring the scores or the parameters back if the application needs them in the database.
-
-**Examples:**
-
-```sql
-COPY (
-    SELECT customer_id,
-           count(*) AS order_count,
-           sum(amount) AS total_amount
-    FROM orders
-    GROUP BY customer_id
-) TO STDOUT WITH (FORMAT csv, HEADER true);
-```
-
 **Sources:**
 
 - https://www.postgresql.org/docs/current/functions-aggregate.html
 - https://www.postgresql.org/docs/current/tutorial-window.html
 - https://www.postgresql.org/docs/current/sql-copy.html
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — SQL block (Node course #10–35, #80, #84)</summary>
+
+### RU cheatsheet — question index
+
+Part of **Node backend** (#10–35). Pair **Theory** with **Interview** on every row. Map: [Node course index](./8_nodejs_interview.md#nodejs-backend--course-index). SQL concepts: [SQL topic](./9_database_sql.md).
+
+| #      | RU topic                        | Theory                                                   | Interview                                                                       |
+| ------ | ------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 10     | таблица, поле, запись           | [SQL](./9_database_sql.md#sql)                           | [What is SQL?](./9_database_interview.md#interview-practice)                    |
+| 11     | ограничения (constraints)       | [Constraints](./9_database_sql.md) · search “constraint” | “PRIMARY KEY”, “FOREIGN KEY” in [Database interview](./9_database_interview.md) |
+| 12–15  | связи, DDL, индексы             | [SQL topic](./9_database_sql.md)                         | “CREATE TABLE”, “index” in [Database interview](./9_database_interview.md)      |
+| 16–35  | DML, SELECT, JOIN, transactions | [SQL topic](./9_database_sql.md)                         | Matching `<summary>` in [Database interview](./9_database_interview.md)         |
+| 80, 84 | SQL-операторы и функции         | [SQL topic](./9_database_sql.md)                         | “operator”, “aggregate” in [Database interview](./9_database_interview.md)      |
+
+**NoSQL (#39–42, #79):** Theory [NoSQL hub](./9_database_nosql.md) · Interview [Database interview](./9_database_interview.md#interview-practice)
+
 </details>

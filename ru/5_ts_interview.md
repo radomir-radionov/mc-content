@@ -1,16 +1,18 @@
 # TypeScript — Interview
 
-Вопросы для собеседования по TypeScript. Ответы заполнены для опубликованной части, остальные пустые.
+Вопросы для собеседования по TypeScript. Блок Devinterview ниже заполнен; в конце — краткие блоки курса и RU-индекс.
 
 [← Назад к хабу](./5_ts.md)
 
 ### Related docs
 
-[TypeScript — хаб](./5_ts.md) · [Типы](./5_ts_types.md) · [Сужение](./5_ts_narrowing.md) · [Функции](./5_ts_functions.md) · [Манипуляции типами](./5_ts_type_manipulation.md)
+[TypeScript — хаб](./5_ts.md) · [Типы](./5_ts_types.md) · [Сужение](./5_ts_narrowing.md) · [Функции](./5_ts_functions.md) · [Манипуляции типами](./5_ts_type_manipulation.md) · [Course index](./5_ts_interview.md#typescript-interview--course-index)
 
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [TypeScript interview course index](#typescript-interview--course-index)
+- [RU cheatsheet index](#ru-cheatsheet-index) (JavaScript Core #50–62)
 
 ---
 
@@ -136,10 +138,16 @@ let scores: number[] = [85, 90, 78];
 // or use a compact form: let scores: Array<number> = [85, 90, 78];
 
 // Tuple
-let employee: [string, number, boolean] = ['John', 35, true];
+let employee: [string, number, boolean] = ["John", 35, true];
 
 // Enum
-enum WeekDays { Monday, Tuesday, Wednesday, Thursday, Friday }
+enum WeekDays {
+  Monday,
+  Tuesday,
+  Wednesday,
+  Thursday,
+  Friday,
+}
 let today: WeekDays = WeekDays.Wednesday;
 
 // Any
@@ -161,8 +169,8 @@ function errorMessage(message: string): never {
 
 // Object
 let person: object = {
-  name: 'John',
-  age: 30
+  name: "John",
+  age: 30,
 };
 
 // Function
@@ -235,15 +243,15 @@ function doSomething() {
 - Статические типы: TypeScript требует объявить тип переменной (или дать системе вывести его), а затем инициализировать значением ровно этого типа:
 
 ```ts
-let count: number;  // Declaration
-count = 42;  // Allowed
-count = "42";  // Error! Type 'string' is not assignable to type 'number'.
+let count: number; // Declaration
+count = 42; // Allowed
+count = "42"; // Error! Type 'string' is not assignable to type 'number'.
 ```
 
 - Вывод типа: TypeScript часто выводит тип по значению инициализации. Явно указывать тип тогда не нужно.
 
 ```ts
-let word = "hello!";  // TypeScript infers the type as 'string' because of the initialization.
+let word = "hello!"; // TypeScript infers the type as 'string' because of the initialization.
 ```
 
 **When to use:**
@@ -292,12 +300,12 @@ let word = "hello!";  // TypeScript infers the type as 'string' because of the i
 
 ```ts
 interface Point {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
-  
+
 function printPoint(p: Point) {
-    console.log(`Point coordinates: (${p.x}, ${p.y})`);
+  console.log(`Point coordinates: (${p.x}, ${p.y})`);
 }
 
 let pointA = { x: 3, y: 7 }; // This object matches Point's structure
@@ -363,7 +371,7 @@ enum HttpMethods {
   GET,
   POST,
   PUT,
-  DELETE
+  DELETE,
 }
 
 const requestType: HttpMethods = HttpMethods.GET;
@@ -378,9 +386,9 @@ const requestType: HttpMethods = HttpMethods.GET;
 
 ```ts
 enum MediaTypes {
-  Image = 'image',
-  Video = 'video',
-  Audio = 'audio'
+  Image = "image",
+  Video = "video",
+  Audio = "audio",
 }
 
 const selectedType: MediaTypes = MediaTypes.Image;
@@ -414,15 +422,15 @@ Enum помогает гарантировать нужный тип данны�
 
 **How it works:**
 
-1) Объявление функции
+1. Объявление функции
 
 У функции указывают имя, список параметров и тип возврата. Если функция ничего не возвращает, тип возврата — `void`.
 
-2) Функциональное выражение
+2. Функциональное выражение
 
 Функцию можно объявить выражением: присвоить её переменной как значение. Так гибче, например когда нужны колбэки.
 
-3) Необязательные параметры и параметры по умолчанию
+3. Необязательные параметры и параметры по умолчанию
 
 TypeScript поддерживает и необязательные параметры, и параметры со значением по умолчанию, функция становится гибче.
 
@@ -430,15 +438,15 @@ TypeScript поддерживает и необязательные параме
 
 Параметр по умолчанию — это параметр, которому сразу задают значение.
 
-4) Rest-параметры
+4. Rest-параметры
 
 Параметр можно объявить как rest: функция примет любое число аргументов для него.
 
-5) Перегрузки функции
+5. Перегрузки функции
 
 Можно объявить несколько перегрузок: набор параметров и их типы возврата для одной функции. Это особенно полезно, когда поведение логически зависит от типов входа.
 
-6) Сигнатура вызова
+6. Сигнатура вызова
 
 У объектов в TypeScript есть сигнатура вызова: ею задают ожидаемую структуру функции для конкретного метода объекта.
 
@@ -448,7 +456,7 @@ TypeScript поддерживает и необязательные параме
 
 ```ts
 function greet(name: string): void {
-    console.log(`Hello, ${name}!`);
+  console.log(`Hello, ${name}!`);
 }
 ```
 
@@ -456,8 +464,8 @@ function greet(name: string): void {
 
 ```ts
 let greet: (name: string) => void;
-greet = function(name: string): void {
-    console.log(`Hello, ${name}!`);
+greet = function (name: string): void {
+  console.log(`Hello, ${name}!`);
 };
 ```
 
@@ -465,11 +473,11 @@ greet = function(name: string): void {
 
 ```ts
 function greet(name: string, title?: string) {
-    if (title) {
-        console.log(`Hello, ${title} ${name}!`);
-    } else {
-        console.log(`Hello, ${name}!`);
-    }
+  if (title) {
+    console.log(`Hello, ${title} ${name}!`);
+  } else {
+    console.log(`Hello, ${name}!`);
+  }
 }
 ```
 
@@ -477,7 +485,7 @@ function greet(name: string, title?: string) {
 
 ```ts
 function greet(name = "Stranger") {
-    console.log(`Hello, ${name}!`);
+  console.log(`Hello, ${name}!`);
 }
 ```
 
@@ -485,7 +493,7 @@ function greet(name = "Stranger") {
 
 ```ts
 function introduce(greeting: string, ...names: string[]) {
-    console.log(`${greeting}, ${names.join(", ")}!`);
+  console.log(`${greeting}, ${names.join(", ")}!`);
 }
 
 introduce("Hello", "Alice", "Bob", "Carol");
@@ -498,11 +506,11 @@ function specialGreet(name: string): void;
 function specialGreet(title: string, name: string): void;
 
 function specialGreet(a: any, b?: any): void {
-    if (b) {
-        console.log(`Hello, ${a}, ${b}`);
-    } else {
-        console.log(`Hello, ${a}`);
-    }
+  if (b) {
+    console.log(`Hello, ${a}, ${b}`);
+  } else {
+    console.log(`Hello, ${a}`);
+  }
 }
 ```
 
@@ -510,12 +518,12 @@ function specialGreet(a: any, b?: any): void {
 
 ```ts
 type Greeter = {
-    (name: string): void
+  (name: string): void;
 };
 
 let welcome: Greeter;
-welcome = function(name: string): void {
-    console.log(`Welcome, ${name}!`);
+welcome = function (name: string): void {
+  console.log(`Welcome, ${name}!`);
 };
 ```
 
@@ -560,7 +568,7 @@ let value = 10; // Type 'number' inferred
 let message = "Hello, TypeScript!"; // Type 'string' inferred
 
 function add(a: number, b: number) {
-    return a + b;
+  return a + b;
 }
 
 let sum = add(5, 7); // Type 'number' inferred
@@ -594,7 +602,7 @@ TypeScript использует `const` и `let` для объявления п�
 
 ```ts
 const productId: number = 5;
-let productName: string = 'Tesla';
+let productName: string = "Tesla";
 
 const getProductDetails = (id: number): string => {
   return `Product ID: ${id}`;
@@ -616,14 +624,14 @@ myArray.push(4);
 Пример кода: `let`. Вот код на TypeScript:
 
 ```ts
-let vehicleType: string = 'Car';
+let vehicleType: string = "Car";
 
 if (true) {
-  let vehicleType: string = 'Motorcycle';
-  console.log(vehicleType);  // Output: Motorcycle
+  let vehicleType: string = "Motorcycle";
+  console.log(vehicleType); // Output: Motorcycle
 }
 
-console.log(vehicleType);  // Output: Car
+console.log(vehicleType); // Output: Car
 ```
 
 **Sources:**
@@ -659,17 +667,12 @@ console.log(vehicleType);  // Output: Car
   "compilerOptions": {
     "target": "ES5",
     "module": "commonjs",
-    "strict": true,    
+    "strict": true,
     "outDir": "dist",
-    "rootDir": "src"  
+    "rootDir": "src"
   },
-  "include": [
-    "src/**/*.ts"    
-  ],
-  "exclude": [      
-    "node_modules",   
-    "**/*.spec.ts"    
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
 ```
 
@@ -686,7 +689,7 @@ console.log(vehicleType);  // Output: Car
     "jsx": "react",
     "declaration": false,
     "sourceMap": true,
-    "outDir": "dist",  
+    "outDir": "dist",
     "rootDir": "src",
     "strict": true,
     "noImplicitAny": true,
@@ -700,7 +703,7 @@ console.log(vehicleType);  // Output: Car
     "baseUrl": ".",
     "paths": {
       "components/*": ["src/components/*"],
-      "utils/*": ["src/utils/*"],
+      "utils/*": ["src/utils/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -710,24 +713,17 @@ console.log(vehicleType);  // Output: Car
     "isolatedModules": true,
     "newLine": "LF",
     "watchOptions": {
-      "watchFile": "useFsEvents",  
-      "fallbackPolling": "dynamicPriority",   
+      "watchFile": "useFsEvents",
+      "fallbackPolling": "dynamicPriority",
       "polling": true,
       "esModuleInterop": true,
-            "pollingInterval": 2500,
-      
+      "pollingInterval": 2500,
+
       "followSymlinks": true
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "@types"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "@types"],
+  "exclude": ["node_modules", "dist"]
 }
 ```
 
@@ -773,8 +769,8 @@ console.log(vehicleType);  // Output: Car
 
 ```ts
 class Example {
-    // Field is automatically initialized to undefined upon object creation
-    someField: string;
+  // Field is automatically initialized to undefined upon object creation
+  someField: string;
 }
 ```
 
@@ -784,7 +780,7 @@ TypeScript поддерживает абстрактные классы как �
 
 ```ts
 abstract class AbstractExample {
-    abstract someMethod(): void;  // Method has no implementation (abstract)
+  abstract someMethod(): void; // Method has no implementation (abstract)
 }
 ```
 
@@ -794,10 +790,10 @@ abstract class AbstractExample {
 
 ```ts
 class Example {
-    readonly id: number;
-    constructor(id: number) {
-        this.id = id;  // Readonly can only be assigned in the constructor or declaration
-    }
+  readonly id: number;
+  constructor(id: number) {
+    this.id = id; // Readonly can only be assigned in the constructor or declaration
+  }
 }
 ```
 
@@ -807,10 +803,10 @@ class Example {
 
 ```ts
 class Example {
-    static count = 0;  // Static property
-    static incrementCount() {
-        Example.count++;
-    }
+  static count = 0; // Static property
+  static incrementCount() {
+    Example.count++;
+  }
 }
 ```
 
@@ -820,15 +816,15 @@ class Example {
 
 ```ts
 class Example {
-    private _name: string;
+  private _name: string;
 
-    get name(): string {
-        return this._name;
-    }
+  get name(): string {
+    return this._name;
+  }
 
-    set name(newName: string) {
-        this._name = newName.trim();
-    }
+  set name(newName: string) {
+    this._name = newName.trim();
+  }
 }
 ```
 
@@ -838,10 +834,13 @@ TypeScript даёт короткий способ объявить свойст�
 
 ```ts
 class Example {
-    constructor(private _name: string, public age: number) {
-        // Private _name property created and initialized from constructor parameter
-        // Public age property created and initialized from constructor parameter
-    }
+  constructor(
+    private _name: string,
+    public age: number,
+  ) {
+    // Private _name property created and initialized from constructor parameter
+    // Public age property created and initialized from constructor parameter
+  }
 }
 ```
 
@@ -859,7 +858,7 @@ class Example {
 
 ```javascript
 const Animal = class {
-    // Class methods and properties defined here
+  // Class methods and properties defined here
 };
 ```
 
@@ -933,7 +932,7 @@ class Snake extends Animal {
 }
 
 const mySnake = new Snake("Cobra");
-mySnake.move();  // Output: Slithering... Cobra moved 5m.
+mySnake.move(); // Output: Slithering... Cobra moved 5m.
 ```
 
 2. Наследование прототипным способом
@@ -950,7 +949,7 @@ function Animal(this: Animal, name: string) {
   this.name = name;
 }
 
-Animal.prototype.move = function(distanceInMeters: number = 0) {
+Animal.prototype.move = function (distanceInMeters: number = 0) {
   console.log(`${this.name} moved ${distanceInMeters}m.`);
 };
 
@@ -964,13 +963,13 @@ Snake.prototype = Object.create(Animal.prototype);
 Snake.prototype.constructor = Snake;
 
 // Override the Base Type's Method
-Snake.prototype.move = function(distanceInMeters = 5) {
+Snake.prototype.move = function (distanceInMeters = 5) {
   console.log("Slithering...");
   Animal.prototype.move.call(this, distanceInMeters);
 };
 
 const mySnake = new Snake("Cobra");
-mySnake.move();  // Output: Slithering... Cobra moved 5m.
+mySnake.move(); // Output: Slithering... Cobra moved 5m.
 ```
 
 Упрощённые способы
@@ -984,7 +983,7 @@ function Animal(name: string) {
   this.name = name;
 }
 
-Animal.prototype.move = function(distanceInMeters: number = 0) {
+Animal.prototype.move = function (distanceInMeters: number = 0) {
   console.log(`${this.name} moved ${distanceInMeters}m.`);
 };
 
@@ -996,7 +995,7 @@ function Snake(name: string) {
 Snake.prototype = Object.create(Animal.prototype);
 Snake.prototype.constructor = Snake;
 
-Snake.prototype.move = function(distanceInMeters = 5) {
+Snake.prototype.move = function (distanceInMeters = 5) {
   console.log("Slithering...");
   Animal.prototype.move.call(this, distanceInMeters);
 };
@@ -1031,41 +1030,43 @@ Snake.prototype.move = function(distanceInMeters = 5) {
 
 ```ts
 class Person {
-    public name: string;
-    private age: number;
-    protected contact: string;
+  public name: string;
+  private age: number;
+  protected contact: string;
 
-    constructor(name: string, age: number, contact: string) {
-        this.name = name;
-        this.age = age;
-        this.contact = contact;
-    }
+  constructor(name: string, age: number, contact: string) {
+    this.name = name;
+    this.age = age;
+    this.contact = contact;
+  }
 }
 
 class Employee extends Person {
-    private employeeId: string;
+  private employeeId: string;
 
-    constructor(name: string, age: number, contact: string, employeeId: string) {
-        super(name, age, contact);
-        this.employeeId = employeeId;
-    }
+  constructor(name: string, age: number, contact: string, employeeId: string) {
+    super(name, age, contact);
+    this.employeeId = employeeId;
+  }
 
-    public displayDetails(): void {
-        console.log(`${this.name} - ${this.age} - ${this.contact} - ${this.employeeId}`);
-    }
+  public displayDetails(): void {
+    console.log(
+      `${this.name} - ${this.age} - ${this.contact} - ${this.employeeId}`,
+    );
+  }
 }
 
 // Somewhere in your code
 const person = new Person("John Doe", 30, "1234567");
-console.log(person.name);  // Accessible
-console.log(person.age);   // ERROR: 'age' is private
+console.log(person.name); // Accessible
+console.log(person.age); // ERROR: 'age' is private
 
 const employee = new Employee("Jane Doe", 25, "2345678", "E123");
-console.log(employee.contact);  // ERROR: 'contact' is protected
-employee.displayDetails();     // Correctly displays details
+console.log(employee.contact); // ERROR: 'contact' is protected
+employee.displayDetails(); // Correctly displays details
 
-employee.age = 35;    // ERROR: 'age' is private
-employee.contact = "3456789";  // ERROR: 'contact' is protected
+employee.age = 35; // ERROR: 'age' is private
+employee.contact = "3456789"; // ERROR: 'contact' is protected
 ```
 
 **Sources:**
@@ -1117,38 +1118,41 @@ employee.contact = "3456789";  // ERROR: 'contact' is protected
 
 ```ts
 abstract class Shape {
-    abstract getArea(): number;
-    abstract getPerimeter(): number;
-    color: string;
+  abstract getArea(): number;
+  abstract getPerimeter(): number;
+  color: string;
 
-    constructor(color: string) {
-        this.color = color;
-    }
+  constructor(color: string) {
+    this.color = color;
+  }
 
-    static defaultColor: string = 'red';
+  static defaultColor: string = "red";
 
-    describe() {
-        return `This shape is ${this.color}.`;
-    }
+  describe() {
+    return `This shape is ${this.color}.`;
+  }
 }
 
 // This will throw an error because the derived class does not provide concrete implementations for abstract methods.
-class Circle extends Shape { 
-    constructor(public radius: number, color: string) {
-        super(color);
-    }
+class Circle extends Shape {
+  constructor(
+    public radius: number,
+    color: string,
+  ) {
+    super(color);
+  }
 
-    // The 'Circle' class inherited the following properties from 'Shape', but neither implements nor specifies them in the derived class: 'getArea' and 'getPerimeter'.
-    getArea(): number {
-        return Math.PI * this.radius ** 2;
-    }
+  // The 'Circle' class inherited the following properties from 'Shape', but neither implements nor specifies them in the derived class: 'getArea' and 'getPerimeter'.
+  getArea(): number {
+    return Math.PI * this.radius ** 2;
+  }
 
-    getPerimeter(): number {
-        return 2 * Math.PI * this.radius;
-    }
+  getPerimeter(): number {
+    return 2 * Math.PI * this.radius;
+  }
 }
 
-const myCircle = new Circle(5, 'blue');
+const myCircle = new Circle(5, "blue");
 console.log(myCircle.getArea()); // Outputs: 78.54
 console.log(myCircle.describe()); // Outputs: This shape is blue.
 console.log(Shape.defaultColor); // Outputs: red
@@ -1186,7 +1190,7 @@ class Person {
   // Member variables
   name: string;
   age: number;
-  
+
   // Constructor
   constructor(name: string, age: number) {
     this.name = name;
@@ -2001,7 +2005,7 @@ Mapped type строит новый объектный тип, обходя об
 
 - **Форма:** `{ [Property in keyof Type]: boolean }` копирует ключи `Type` и ставит каждому значение `boolean`.
 - **Модификаторы:** `readonly` и `?` можно добавить или снять. Префикс `+` добавляет и стоит по умолчанию. Префикс `-` снимает: `-readonly` или `-?`. `Required<T>` — это mapped type, который снимает `?`.
-- **Переименование ключей:** С TypeScript 4.1 `as` меняет ключи: `` [Property in keyof Type as `get${Capitalize<string & Property>}`] ``. Условный тип, который даёт `never`, выбрасывает этот ключ.
+- **Переименование ключей:** С TypeScript 4.1 `as` меняет ключи: ``[Property in keyof Type as `get${Capitalize<string & Property>}`]``. Условный тип, который даёт `never`, выбрасывает этот ключ.
 - **Другие объединения:** Слева от `in` может быть объединение не только из `string | number | symbol`, например объединение событий, ключом которых служит `kind`.
 
 **When to use:**
@@ -2220,7 +2224,9 @@ function assertNever(value: never): never {
   throw new Error("Unexpected value");
 }
 
-function area(shape: { kind: "square"; size: number } | { kind: "circle"; radius: number }): number {
+function area(
+  shape: { kind: "square"; size: number } | { kind: "circle"; radius: number },
+): number {
   switch (shape.kind) {
     case "square":
       return shape.size * shape.size;
@@ -2502,7 +2508,10 @@ export const twoPi = valueOfPi * 2;
 **Examples:**
 
 ```ts
-function loggedMethod(originalMethod: any, context: ClassMethodDecoratorContext) {
+function loggedMethod(
+  originalMethod: any,
+  context: ClassMethodDecoratorContext,
+) {
   const methodName = String(context.name);
   function replacementMethod(this: any, ...args: any[]) {
     console.log(`Entering ${methodName}`);
@@ -2552,7 +2561,10 @@ class Person {
 **Examples:**
 
 ```ts
-function registered(_value: new (...args: any[]) => object, context: ClassDecoratorContext) {
+function registered(
+  _value: new (...args: any[]) => object,
+  context: ClassDecoratorContext,
+) {
   context.addInitializer(function () {
     console.log(context.kind, context.name);
   });
@@ -2594,7 +2606,10 @@ class User {
 **Examples:**
 
 ```ts
-function loggedMethod(originalMethod: any, context: ClassMethodDecoratorContext) {
+function loggedMethod(
+  originalMethod: any,
+  context: ClassMethodDecoratorContext,
+) {
   const methodName = String(context.name);
   function replacementMethod(this: any, ...args: any[]) {
     console.log(`Entering ${methodName}`);
@@ -2675,7 +2690,10 @@ class Person {
 **Examples:**
 
 ```ts
-function trace<This>(_value: undefined, context: ClassFieldDecoratorContext<This>) {
+function trace<This>(
+  _value: undefined,
+  context: ClassFieldDecoratorContext<This>,
+) {
   context.addInitializer(function (this: This) {
     console.log(String(context.name), context.access.get(this));
   });
@@ -2718,7 +2736,10 @@ class User {
 **Examples:**
 
 ```ts
-function loggedMethod(originalMethod: any, _context: ClassMethodDecoratorContext) {
+function loggedMethod(
+  originalMethod: any,
+  _context: ClassMethodDecoratorContext,
+) {
   return function replacement(this: any, ...args: any[]) {
     console.log("Entering");
     return originalMethod.call(this, ...args);
@@ -3449,9 +3470,7 @@ export default {
   entry: "./src/index.ts",
   devtool: "inline-source-map",
   module: {
-    rules: [
-      { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ },
-    ],
+    rules: [{ test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ }],
   },
   resolve: { extensions: [".tsx", ".ts", ".js"] },
   output: {
@@ -3962,7 +3981,8 @@ interface Book {
 
 const app = express();
 
-app.route("/book")
+app
+  .route("/book")
   .get((_req: Request, res: Response) => {
     res.send("Get a random book");
   })
@@ -4128,9 +4148,7 @@ function canEdit(caller: Caller): boolean {
 **Examples:**
 
 ```ts
-type Order =
-  | { status: "draft"; id: string }
-  | { status: "placed"; id: string };
+type Order = { status: "draft"; id: string } | { status: "placed"; id: string };
 
 function place(order: Order): Order {
   if (order.status !== "draft") return order;
@@ -4563,7 +4581,7 @@ type PropEventSource<T> = {
 **How it works:**
 
 - **Ограничение:** `T extends [infer U extends number, ...unknown[]] ? U : never` берёт первый элемент кортежа, только если это число. Иначе тип — `never`.
-- **Шаблонные строки:** `` "100" extends `${infer U extends number}` ? U : never `` — это литерал `100`, а не `number`. Тот же приём отображает `"100"` в `` 100n `` для `bigint` и `"true"` в `true` для `boolean`.
+- **Шаблонные строки:** ``"100" extends `${infer U extends number}` ? U : never`` — это литерал `100`, а не `number`. Тот же приём отображает `"100"` в `100n` для `bigint` и `"true"` в `true` для `boolean`.
 - **Unicode:** TypeScript 7 выводит одну кодовую точку. `` S extends `${infer Head}${infer Tail}` `` на `"😀abc"` — это `["😀", "abc"]`. Старые проверки раскалывали эмодзи на две единицы UTF-16.
 - **Распределение:** Голый параметр типа в условном типе по-прежнему распределяется по объединению. Ограничение `extends` фильтрует каждый выведенный кусок. Значение в рантайме оно в этот литерал не превращает.
 
@@ -4775,5 +4793,183 @@ npx tsc --noEmit
 - [TypeScript 5.9 — tsc --init](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-9.html)
 - [TypeScript handbook — Creating .d.ts from .js](https://www.typescriptlang.org/docs/handbook/declaration-files/dts-from-js.html)
 - [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)
+
+</details>
+
+<a name="javascript-core--ts-basics"></a>
+
+<details>
+<summary>Базовые типы TypeScript (курс)</summary>
+
+### TypeScript basic types (course summary)
+
+**Answer:** **`boolean`**, **`number`** (all floats), **`string`**, **`array`** (`T[]` or `Array<T>`), **`tuple`** (fixed-length typed slots), **`enum`** (numeric or string constants), **`any`** (opt out of checking), **`void`** (no return), **`null` / `undefined`**, **`never`** (no reachable return). Prefer **`unknown`** over **`any`** at boundaries; enable **`strict`** in `tsconfig`.
+
+**See also:** [The Basics](./5_ts_basics.md) · [Types — Values](./5_ts_types_values.md)
+
+</details>
+
+<details>
+<summary>Type vs interface (курс)</summary>
+
+### Type alias vs interface (course summary)
+
+**Answer:** Both describe object shapes. **`interface`** supports **declaration merging** and **`extends`**. **`type`** supports **unions**, **intersections**, and mapped types. For public object APIs many teams use **`interface`**; for unions and utilities use **`type`**.
+
+**See also:** search “type vs interface” in this file
+
+</details>
+
+<details>
+<summary>Type guards и testing types</summary>
+
+### Type guards and testing types
+
+**Answer:** **Type guards** narrow unions at runtime: `typeof`, `instanceof`, `in`, or **`animal is Cat`** predicates. **Testing types** — assert compile-time contracts with **`@ts-expect-error`**, **`satisfies`**, or tools like **Vitest `expectTypeOf`** / **dtslint** so API changes fail CI before runtime.
+
+**See also:** search “type guard” in this file
+
+</details>
+
+<a name="typescript-interview--course-index"></a>
+
+<details>
+<summary>TypeScript interview — course index (RU syllabus)</summary>
+
+### TypeScript interview — course index (RU syllabus)
+
+Classic **«Собеседование по TypeScript»** outline (Theory | Interview). Devinterview answers live under [Interview Practice](#interview-practice); depth under [5_ts.md](./5_ts.md) handbook. **JavaScript Core** rows **#50–62**: [RU cheatsheet index](#ru-cheatsheet-index).
+
+#### Основы
+
+| RU topic (syllabus)               | Theory                                                                                                | Interview                                                                                                                                                       |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Основные особенности TypeScript   | [The Basics](./5_ts_basics.md) · [Types — Values](./5_ts_types_values.md)                             | [What is TypeScript and how does it differ from JavaScript?](#interview-practice)                                                                               |
+| Преимущества TypeScript           | [The Basics](./5_ts_basics.md)                                                                        | Same block — benefits in **Definition** / **When to use**                                                                                                       |
+| Встроенные типы данных            | [Types — Values](./5_ts_types_values.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics) | [What are the basic types available in TypeScript?](#interview-practice)                                                                                        |
+| Интерфейс                         | [Types — Shapes](./5_ts_types_shapes.md) · [Declaration merging](./5_ts_declaration_merging.md)       | [What are Interfaces in TypeScript and how do they work?](#interview-practice)                                                                                  |
+| Модуль                            | [Modules](./5_ts_modules.md) · [Namespaces & modules](./5_ts_namespaces_modules.md)                   | [How do you organize code with Modules in TypeScript?](#interview-practice)                                                                                     |
+| TypeScript на backend             | [API contracts](./5_ts_api_contracts.md)                                                              | [Explain how to handle data modeling in a TypeScript backend.](#interview-practice) · [Discuss using TypeScript in a Node.js application.](#interview-practice) |
+| Утверждение типа (type assertion) | [Assertions](./5_ts_assertions.md)                                                                    | [Explain Type Assertions and why they are useful.](#interview-practice)                                                                                         |
+| Переопределение метода            | [Classes — Inheritance](./5_ts_classes.md#inheritance)                                                | [How do you implement Inheritance in TypeScript?](#interview-practice) · `super` in class answers                                                               |
+
+#### Синтаксис и основы языка
+
+| RU topic                     | Theory                                                                          | Interview                                                                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Объявление переменной        | [Variable Declaration](./5_ts_variable_declaration.md)                          | [How do you declare variables in TypeScript?](#interview-practice) · [Explain the use of 'let' and 'const'.](#interview-practice) |
+| Конструктор базового класса  | [Classes](./5_ts_classes.md)                                                    | [Can you describe the use of Constructors within TypeScript classes?](#interview-practice) · inheritance block                    |
+| Миксины                      | [Mixins](./5_ts_mixins.md)                                                      | Generics + classes answers · handbook [Mixins](./5_ts_mixins.md)                                                                  |
+| Проверка на null / undefined | [Narrowing](./5_ts_narrowing.md) · [Null & undefined](./5_ts_null_undefined.md) | [How do you enable strict null checks in TypeScript?](#interview-practice) · type guards                                          |
+| Getters / setters            | [Classes](./5_ts_classes.md)                                                    | [How do getters and setters work in TypeScript?](#interview-practice)                                                             |
+| Экспорт классов из модуля    | [Modules](./5_ts_modules.md)                                                    | [How do you export and import modules?](#interview-practice)                                                                      |
+| Строка → число               | [Types — Values](./5_ts_types_values.md)                                        | Narrowing / assertions in [Interview Practice](#interview-practice) — search “number”                                             |
+| Файл `.map` (source map)     | [Compiler fundamentals](./5_ts_compiler_fundamentals.md)                        | [How does TypeScript support source maps?](#interview-practice)                                                                   |
+| Классы в TypeScript          | [Classes](./5_ts_classes.md)                                                    | [Explain classes in TypeScript. How are they different from ES6 classes?](#interview-practice)                                    |
+
+#### TypeScript и JavaScript
+
+| RU topic          | Theory                                                   | Interview                                                                                                        |
+| ----------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Связь TS и JS     | [The Basics](./5_ts_basics.md)                           | [Can you explain what is meant by "TypeScript is a superset of JavaScript"?](#interview-practice)                |
+| JSX               | [JSX](./5_ts_jsx.md)                                     | Framework blocks — search “React”, “JSX” in [Interview Practice](#interview-practice)                            |
+| Компиляция `.ts`  | [Compiler fundamentals](./5_ts_compiler_fundamentals.md) | [How do you compile TypeScript files into JavaScript?](#interview-practice)                                      |
+| Области видимости | [Variable Declaration](./5_ts_variable_declaration.md)   | [Explain the use of 'let' and 'const' in TypeScript.](#interview-practice) · [JS variables](./3_js_variables.md) |
+
+#### Продвинутое
+
+| RU topic                   | Theory                                                                                                | Interview                                                                                               |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Стрелочные функции         | [Functions](./5_ts_functions.md) · [JS functions](./3_js_functions.md)                                | Function / `this` answers in [Interview Practice](#interview-practice)                                  |
+| Rest-параметры             | [Functions](./5_ts_functions.md)                                                                      | [How do you define and use a function in TypeScript?](#interview-practice)                              |
+| Triple-Slash директивы     | [Triple-Slash](./5_ts_triple_slash.md)                                                                | [Explain the purpose of 'tsconfig.json'.](#interview-practice) · handbook                               |
+| Тип `Omit`                 | [Utility — Omit](./5_ts_utility_object.md#omit)                                                       | [Discuss the Partial, Required, Readonly, and Pick utility types.](#interview-practice) (mentions Omit) |
+| Перегрузка функций         | [Functions](./5_ts_functions.md)                                                                      | [Explain Method Overloading in TypeScript.](#interview-practice)                                        |
+| Все свойства необязательны | [Utility — Partial](./5_ts_utility_object.md)                                                         | Partial / Required block in [Interview Practice](#interview-practice)                                   |
+| Ключевое слово `unknown`   | [Types — Safety](./5_ts_types_safety.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics) | Course summary + search “unknown” in [Interview Practice](#interview-practice)                          |
+| Декораторы                 | [Decorators](./5_ts_decorators.md)                                                                    | [What are Decorators and how do you use them?](#interview-practice)                                     |
+| Тип `Awaited`              | [Utility types](./5_ts_utility_union_function.md)                                                     | Async / Promise answers — search “await” in [Interview Practice](#interview-practice)                   |
+| `never` vs `void`          | [Types — Safety](./5_ts_types_safety.md)                                                              | [What is the 'never' type and when would it be used?](#interview-practice) · course #53 block           |
+| `implements` vs `extends`  | [Classes — `implements`](./5_ts_classes.md#implements) · [Inheritance](./5_ts_classes.md#inheritance) | Inheritance + `implements` sections in class answers                                                    |
+| Условные типы              | [Type Manipulation](./5_ts_type_manipulation.md)                                                      | [Explain Conditional types in TypeScript.](#interview-practice)                                         |
+
+#### Ещё вопросы
+
+| RU topic                         | Theory                                                                     | Interview                                                                            |
+| -------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Модификатор доступа по умолчанию | [Classes — visibility](./5_ts_classes.md#member-visibility)                | [What are access modifiers and how do they work in TypeScript?](#interview-practice) |
+| Ключевое слово `declare`         | [Triple-Slash / ambient](./5_ts_triple_slash.md)                           | [How do you manage type definitions for external libraries?](#interview-practice)    |
+| Дженерики                        | [Type Manipulation](./5_ts_type_manipulation.md)                           | [What are Generics in TypeScript and why are they used?](#interview-practice)        |
+| `enum`                           | [Enums](./5_ts_enums.md)                                                   | [Describe the Enum type and when you might use it.](#interview-practice)             |
+| Пространство имён (namespace)    | [Namespaces](./5_ts_namespaces.md)                                         | [When would you use Namespaces?](#interview-practice)                                |
+| Необязательные параметры         | [Functions](./5_ts_functions.md)                                           | Function definition block in [Interview Practice](#interview-practice)               |
+| FP / переиспользуемые компоненты | [Functions](./5_ts_functions.md) · [Generics](./5_ts_type_manipulation.md) | Generics + React integration blocks — search “generic”, “React”                      |
+| Tuple vs массив                  | [Object Types](./5_ts_objects.md)                                          | [What are Tuple types and when should they be used?](#interview-practice)            |
+| Внутренние vs внешние модули     | [Namespaces and Modules](./5_ts_namespaces_modules.md)                     | [What is the difference between Internal and External modules?](#interview-practice) |
+| Коллекции (Map, Set, …)          | [Types — Values](./5_ts_types_values.md) · [JS Set/Map](./3_js_objects.md) | Basic types + JS interview “Set / Map”                                               |
+| Тип `Record`                     | [Utility — Record](./5_ts_utility_object.md#record)                        | Mapped / utility sections in [Interview Practice](#interview-practice)               |
+| Абстрактные классы               | [Classes — abstract](./5_ts_classes.md#abstract-classes)                   | [Discuss Abstract classes and their purposes in TypeScript.](#interview-practice)    |
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+**JavaScript Core** course TypeScript block (**#50–62**). Each row: **Theory** + **Interview**. JS rows **#1–49**: [3_js_interview.md#ru-cheatsheet-index](./3_js_interview.md#ru-cheatsheet-index). Full RU syllabus: [#typescript-interview--course-index](#typescript-interview--course-index).
+
+| #   | RU topic (course)                 | Theory                                                                                                                             | Interview                                                                                                                     |
+| --- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 50  | TS basic types (boolean, number…) | [Basics](./5_ts_basics.md) · [Types — Values](./5_ts_types_values.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics) | [What are the basic types available in TypeScript?](#interview-practice)                                                      |
+| 51  | array, tuple                      | [Object Types](./5_ts_objects.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics)                                     | [What are Tuple types and when should they be used?](#interview-practice)                                                     |
+| 52  | enum                              | [Enums](./5_ts_enums.md)                                                                                                           | [Describe the Enum type and when you might use it.](#interview-practice)                                                      |
+| 53  | any, void, null, undefined, never | [Types — Safety](./5_ts_types_safety.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics)                              | [What is the 'never' type and when would it be used?](#interview-practice) · course summary block                             |
+| 54  | Type vs Interface                 | [Types — Shapes](./5_ts_types_shapes.md) · [Declaration merging](./5_ts_declaration_merging.md)                                    | Type alias vs interface course block · search “interface” in [Interview Practice](#interview-practice)                        |
+| 55  | Function types                    | [Functions](./5_ts_functions.md)                                                                                                   | [How do you define and use a function in TypeScript?](#interview-practice)                                                    |
+| 56  | Generic types                     | [Type Manipulation](./5_ts_type_manipulation.md)                                                                                   | [What are Generics in TypeScript and why are they used?](#interview-practice)                                                 |
+| 57  | Type guards                       | [Narrowing](./5_ts_narrowing.md)                                                                                                   | Type guards course block · search “typeof type guard” in [Interview Practice](#interview-practice)                            |
+| 58  | Testing types                     | [7_special_testing_interview.md](./7_special_testing_interview.md)                                                                 | Course block · `@ts-expect-error`, `satisfies`, `expectTypeOf`                                                                |
+| 59  | Decorators, JSX, overloads        | [Decorators](./5_ts_decorators.md) · [JSX](./5_ts_jsx.md) · [Functions](./5_ts_functions.md)                                       | [Explain Method Overloading in TypeScript.](#interview-practice) · search “decorator”, “JSX”                                  |
+| 60  | strict / compiler options         | [Compiler fundamentals](./5_ts_compiler_fundamentals.md) · [Basics — strict](./5_ts_basics.md#strict-compiler-options)             | [Explain the purpose of 'tsconfig.json'.](#interview-practice) · [How do you enable strict null checks?](#interview-practice) |
+| 61  | Modules (import / export)         | [Modules](./5_ts_modules.md)                                                                                                       | [How do you export and import modules?](#interview-practice)                                                                  |
+| 62  | Utility types (Partial, Pick, …)  | [Utility Types](./5_ts_utility_types.md) · [Object utilities](./5_ts_utility_object.md)                                            | [Discuss the Partial, Required, Readonly, and Pick utility types.](#interview-practice)                                       |
+
+**JavaScript (#1–49):** [3_js_interview.md#ru-cheatsheet-index](./3_js_interview.md#ru-cheatsheet-index)
+
+**Testing (#63–65):** [7_special_testing_interview.md#javascript-core--test-pyramid](./7_special_testing_interview.md#javascript-core--test-pyramid)
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+Блок **JavaScript Core** (#50–62): **Theory** + **Interview**. JS **#1–49**: [3_js_interview.md#ru-cheatsheet-index](./3_js_interview.md#ru-cheatsheet-index). Полный RU-сyllabus: [#typescript-interview--course-index](#typescript-interview--course-index).
+
+| #   | RU topic (course)                 | Theory                                                                                                                             | Interview                                                                                                                     |
+| --- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 50  | TS basic types (boolean, number…) | [Basics](./5_ts_basics.md) · [Types — Values](./5_ts_types_values.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics) | [What are the basic types available in TypeScript?](#interview-practice)                                                      |
+| 51  | array, tuple                      | [Object Types](./5_ts_objects.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics)                                     | [What are Tuple types and when should they be used?](#interview-practice)                                                     |
+| 52  | enum                              | [Enums](./5_ts_enums.md)                                                                                                           | [Describe the Enum type and when you might use it.](#interview-practice)                                                      |
+| 53  | any, void, null, undefined, never | [Types — Safety](./5_ts_types_safety.md) · [#javascript-core--ts-basics](#javascript-core--ts-basics)                              | [What is the 'never' type and when would it be used?](#interview-practice) · course summary block                             |
+| 54  | Type vs Interface                 | [Types — Shapes](./5_ts_types_shapes.md) · [Declaration merging](./5_ts_declaration_merging.md)                                    | Type alias vs interface course block · search “interface” in [Interview Practice](#interview-practice)                        |
+| 55  | Function types                    | [Functions](./5_ts_functions.md)                                                                                                   | [How do you define and use a function in TypeScript?](#interview-practice)                                                    |
+| 56  | Generic types                     | [Type Manipulation](./5_ts_type_manipulation.md)                                                                                   | [What are Generics in TypeScript and why are they used?](#interview-practice)                                                 |
+| 57  | Type guards                       | [Narrowing](./5_ts_narrowing.md)                                                                                                   | Type guards course block · search “typeof type guard” in [Interview Practice](#interview-practice)                            |
+| 58  | Testing types                     | [7_special_testing_interview.md](./7_special_testing_interview.md)                                                                 | Course block · `@ts-expect-error`, `satisfies`, `expectTypeOf`                                                                |
+| 59  | Decorators, JSX, overloads        | [Decorators](./5_ts_decorators.md) · [JSX](./5_ts_jsx.md) · [Functions](./5_ts_functions.md)                                       | [Explain Method Overloading in TypeScript.](#interview-practice) · search “decorator”, “JSX”                                  |
+| 60  | strict / compiler options         | [Compiler fundamentals](./5_ts_compiler_fundamentals.md) · [Basics — strict](./5_ts_basics.md#strict-compiler-options)             | [Explain the purpose of 'tsconfig.json'.](#interview-practice) · [How do you enable strict null checks?](#interview-practice) |
+| 61  | Modules (import / export)         | [Modules](./5_ts_modules.md)                                                                                                       | [How do you export and import modules?](#interview-practice)                                                                  |
+| 62  | Utility types (Partial, Pick, …)  | [Utility Types](./5_ts_utility_types.md) · [Object utilities](./5_ts_utility_object.md)                                            | [Discuss the Partial, Required, Readonly, and Pick utility types.](#interview-practice)                                       |
+
+**JavaScript (#1–49):** [3_js_interview.md#ru-cheatsheet-index](./3_js_interview.md#ru-cheatsheet-index)
+
+**Testing (#63–65):** [7_special_testing_interview.md#javascript-core--test-pyramid](./7_special_testing_interview.md#javascript-core--test-pyramid)
 
 </details>

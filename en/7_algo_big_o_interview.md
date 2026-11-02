@@ -6,7 +6,7 @@ Answers are filled for every question in this note.
 
 ### Related docs
 
-- [Big-O Notation — Interview](./7_algo_big_o_interview.md)
+- [Algorithms — Big O](./7_special_algorithms_core.md#big-o-notation) · [Big-O Notation — Interview](./7_algo_big_o_interview.md) · [DSA Technical course](./7_ds_overview_interview.md#dsa-technical--course-index)
 
 ### Sections
 
@@ -42,34 +42,34 @@ Questions from [Devinterview.io — Big-O Notation](https://devinterview.io/ques
 ### Complexity Classes
 
 - **Constant Complexity** `O(1)`
- - Resources used are independent of the input size.
- - Time Example: Arithmetic operations, Array index access
- - Space Example: Using a fixed-size array
- 
+- Resources used are independent of the input size.
+- Time Example: Arithmetic operations, Array index access
+- Space Example: Using a fixed-size array
+
 - **Logarithmic Complexity** `O(log n)`
- - Resource usage grows logarithmically with input size.
- - Time Example: Binary search in a sorted array
- - Space Example: Binary tree traversal
- 
+- Resource usage grows logarithmically with input size.
+- Time Example: Binary search in a sorted array
+- Space Example: Binary tree traversal
+
 - **Linear Complexity** `O(n)`
- - Resource usage scales linearly with input size.
- - Time Example: Element search in an unordered list
- - Space Example: Allocating an array proportional to input size
- 
+- Resource usage scales linearly with input size.
+- Time Example: Element search in an unordered list
+- Space Example: Allocating an array proportional to input size
+
 - **Linearithmic Complexity** `O(n log n)`
- - Resource usage grows at a rate between linear and quadratic. Often seen when combining linear and logarithmic operations.
- - Time Example: Efficient sorting algorithms like merge sort and quicksort
- - Space Example: Divide-and-conquer algorithms that decompose the problem
- 
+- Resource usage grows at a rate between linear and quadratic. Often seen when combining linear and logarithmic operations.
+- Time Example: Efficient sorting algorithms like merge sort and quicksort
+- Space Example: Divide-and-conquer algorithms that decompose the problem
+
 - **Quadratic Complexity** `O(n^2)`
- - Resources scale with the square of the input size.
- - Time Example: Algorithms with simple nested loops, e.g., bubble sort
- - Space Example: Creating a two-dimensional matrix based on input size
- 
+- Resources scale with the square of the input size.
+- Time Example: Algorithms with simple nested loops, e.g., bubble sort
+- Space Example: Creating a two-dimensional matrix based on input size
+
 - **Exponential Complexity** `O(2^n)`
- - Resource usage doubles (or increases exponentially) with each additional unit of input.
- - Time Example: Generating all subsets of a set
- - Space Example: Recursive algorithms that double the size of the call stack for each input element
+- Resource usage doubles (or increases exponentially) with each additional unit of input.
+- Time Example: Generating all subsets of a set
+- Space Example: Recursive algorithms that double the size of the call stack for each input element
 
 ### Practical Applications
 
@@ -283,20 +283,24 @@ Although the **dominant term** typically defines a function's time complexity, c
 Let's consider a scenario where we need to compare time complexities based on Big-O notation.
 
 1. **Low Order, Large Coefficient**: `3n + 500` vs `6n + 10` where `n` is small:
- - Big-O suggests `O(n)`
- - In practice, `3n` tends to outperform `6n`, especially for diminutive `n`.
+
+- Big-O suggests `O(n)`
+- In practice, `3n` tends to outperform `6n`, especially for diminutive `n`.
 
 2. **Low Order, Small Coefficient**: `0.05n + 3` vs `0.1n + 1.5` where `n` is large:
- - Big-O suggests `O(n)`
- - With sizeable `n`, the constant factors can still have an **observable** cumulative effect.
+
+- Big-O suggests `O(n)`
+- With sizeable `n`, the constant factors can still have an **observable** cumulative effect.
 
 3. **High Order, Small Coefficient**: `0.00001n^2 + 10` vs `0.0001n^2 + 1` :
- - Big-O suggests `O(n^2)`
- - For large `n`, the leading term becomes so dominant that the impact of the coefficients is relegated.
+
+- Big-O suggests `O(n^2)`
+- For large `n`, the leading term becomes so dominant that the impact of the coefficients is relegated.
 
 4. **High Order, Large Coefficient**: `10n^2 + 5n + 2` vs `2n^2 + 3n + 1` for all `n`:
- - Big-O suggests `O(n^2)`
- - Coefficients can modify performance marginally, but not enough to alter the **asymptotic behavior**.
+
+- Big-O suggests `O(n^2)`
+- Coefficients can modify performance marginally, but not enough to alter the **asymptotic behavior**.
 
 ### Real-world Examples
 
@@ -324,7 +328,7 @@ In this scenario, let's discuss the problems for which probabilistic algorithms 
 
 The goal is to find out whether a graph `G` is connected, i.e., there is a path between every pair of vertices.
 
-#### Deterministic Algorithm 
+#### Deterministic Algorithm
 
 The standard "Breadth-First Search" or "Depth-First Search" algorithms **requires linear time** in `O(|V|+|E|)` to determine graph connectivity.
 
@@ -367,7 +371,7 @@ Let's look at common array operations and their Big O-time complexities.
 
 #### Access `O(1)`
 
-Accessing an array element by its index is a **constant-time operation**. 
+Accessing an array element by its index is a **constant-time operation**.
 
 #### Search `O(n)`
 
@@ -383,7 +387,7 @@ Appending an element (insertion at the end) can generally be done in **amortized
 
 #### Delete `O(n)`
 
-Deleting an element at a specific index will likely require subsequent elements to be shifted, which is a linear-time operation. 
+Deleting an element at a specific index will likely require subsequent elements to be shifted, which is a linear-time operation.
 
 If you delete the last element, it's a **constant-time operation**.
 
@@ -417,9 +421,9 @@ That means, in the worst case, they could occupy as much space as an `O(n)`-size
 ### Memory Overhead in Different Types of Linked Lists
 
 - **Singly Linked List**: Each node has a single pointer, typically 4-8 bytes on a 64-bit system, in addition to the data. Hence, `O(1)` pointers per node makes it `O(n)` in terms of space.
- 
+
 - **Doubly Linked List**: Every node has two pointers, requiring either 8-16 bytes. While it's still `O(1)` in terms of pointers, it does have comparatively higher overhead than a singly linked list.
- 
+
 - **Circularly Linked List**: Similar to singly and doubly linked lists, but the tail node points back to the head. It doesn't impact the space complexity.
 
 - **XOR Linked List**: Uses bitwise XOR operations to store only one reference (as opposed to two in doubly linked lists). However, it's quite complex to implement and maintain, so it's used mainly for educational or theoretical purposes.
@@ -445,60 +449,70 @@ Let's look at the **Big-O complexities** of various fundamental sorting algorith
 ### Bubble Sort
 
 **Complexity**:
+
 - Best Case: `O(n)` when the list is already sorted due to the flag `swapped`.
 - Worst Case: `O(n^2)` when each element requires `n-1` comparisons and there are `n` elements.
 
 ### Selection Sort
 
 **Complexity**:
+
 - Best Case: `O(n^2)` because `n-1` passes are still made to find the largest element.
 - Worst Case: `O(n^2)` for the same reason.
 
 ### Insertion Sort
 
 **Complexity**:
+
 - Best Case: `O(n)` when the list is already sorted.
 - Worst Case: `O(n^2)` occurs when the list is sorted in reverse order. `n-1` comparisons and assignments are made for each of the `n` elements.
 
 ### Merge Sort
 
 **Complexity**:
+
 - Best Case: `O(n log n)` as it partitions the list equally and takes `n log n` time to merge.
 - Worst Case: `O(n log n)` due to the same reasons.
 
 ### Quick Sort
 
 **Complexity**:
+
 - Best Case: `O(n log n)` when the chosen pivot divides the list evenly all the time.
 - Worst Case: `O(n^2)` when the pivot is always one of the smallest or largest elements. This is more likely if the list is already partially sorted.
 
 ### Heap Sort
 
 **Complexity**:
+
 - Best Case: `O(n log n)` - The heapify operation takes `O(n)` time and the heap operations take `O(log n)` time.
 - Worst Case: `O(n log n)` for the same reason.
 
 ### Counting Sort
 
 **Complexity**:
+
 - Best Case: `O(n+k)` for `k` distinct elements with `O(n)` time complexity.
 - Worst Case: `O(n+k)` for `k` distinct elements.
 
 ### Radix Sort
 
 **Complexity**:
+
 - Best Case: `O(nk)` where `k` is the number of digits in the maximum number. Actual complexity is `O(dn+k)`.
 - Worst Case: `O(nk)` similar to the best case, but it varies based on the distribution of data.
 
 ### Bucket Sort
 
 **Complexity**:
+
 - Best Case: `O(n+k)` where `k` is the number of buckets or partitions. It can be made `O(n)` when `k=n^2`.
 - Worst Case: `O(n^2)` when all elements fall into a single bucket.
 
 ### Shell Sort
 
 **Complexity**:
+
 - Best Case: Depends on the gap sequence, but typically `O(n log n)`.
 - Worst Case: `O(n (log n)^2)` typically but can vary based on the gap sequence.
 
@@ -531,6 +545,7 @@ Binary Search's time complexity is evaluated using a **recurrence relation**, be
 `T(n) = T((n)/(2)) + 1`
 
 where:
+
 - `T(n)` is the time complexity.
 - The constant work done within each recursive call is `1`.
 - The algorithm divides the list into sublists of length `(n)/(2)`.
@@ -541,7 +556,7 @@ Here is the Pseudocode:
 
 ### Time Complexity Breakdown
 
-- **Loop Control**: Although not always true, the loop's primary control generally checks `min <= max`. Each iteration, therefore, helps to halve the size of the sublist under consideration. 
+- **Loop Control**: Although not always true, the loop's primary control generally checks `min <= max`. Each iteration, therefore, helps to halve the size of the sublist under consideration.
 
 - **Iteration Count**: The number of iterations, in the worst-case, typically determines how efficiently Binary Search can reduce the search space. Also, the overall complexity can be expressed as:
 
@@ -587,25 +602,25 @@ Let's discuss the **time** and **space** complexities associated with basic **Ha
 ### Key Operations
 
 - **Search** (Find Element) - `O(1)`
- - The hash function identifies the location of an element within the unique hash table.
+- The hash function identifies the location of an element within the unique hash table.
 
 - **Insert** (Add New Element) - `O(1)`
- - The hash function determines placement, usually in constant time.
+- The hash function determines placement, usually in constant time.
 
 - **Delete** (Remove Element) - `O(1)`
- - Similar to "Insert", this step generally requires only constant time.
+- Similar to "Insert", this step generally requires only constant time.
 
 #### Resizing Mechanism
 
 - **Resize** (Rehash for Dynamic Tables) - `O(n)`
- - Regarding amortized time, resizing arrays takes linear time but happens infrequently. Thus, the average time is amortized over many operations.
+- Regarding amortized time, resizing arrays takes linear time but happens infrequently. Thus, the average time is amortized over many operations.
 
 - **Rehash** (during Resizing) - `O(n)`
- - Re-inserting all elements happens linearly with the number of items in the table.
+- Re-inserting all elements happens linearly with the number of items in the table.
 
 ### Why is Search `O(1)`?
 
-In an ideal setting, each key is mapped to a unique hash, and thus a **unique** table slot. When dealing with **collisions** (two keys hashing to the same slot), some algorithms outshine others. 
+In an ideal setting, each key is mapped to a unique hash, and thus a **unique** table slot. When dealing with **collisions** (two keys hashing to the same slot), some algorithms outshine others.
 
 The time it takes to resolve a collision is crucial in forming the table's amortized bounds. Techniques include separate chaining and open addressing.
 
@@ -647,11 +662,11 @@ Here is the Python code:
 #### Rotations for Balancing
 
 - **Single Rotation**: Utilized when an imbalance arises due to operations on either the left or right subtree of a node.
- - Left Rotation: Resolves a `left-heavy` situation.
- - Right Rotation: Resolves a `right-heavy` situation.
- 
+- Left Rotation: Resolves a `left-heavy` situation.
+- Right Rotation: Resolves a `right-heavy` situation.
+
 - **Double Rotation**: Employed when a node's imbalance is due to operations stemming from both subtrees.
- - Left-Right (or Right-Left) Rotation: Applies both a left and a right (or vice versa) rotation to restore balance.
+- Left-Right (or Right-Left) Rotation: Applies both a left and a right (or vice versa) rotation to restore balance.
 
 #### Example of Rotation
 
@@ -689,7 +704,7 @@ def insert(root, value):
   /
 B(0)
   \
-   C(0) 
+   C(0)
 ```
 
 ```
@@ -716,7 +731,7 @@ def insert(root, value):
 
     root.height = 1 + max(get_height(root.left), get_height(root.right))
     balance = get_balance(root)
-    
+
     if balance > 1 and value < root.left.value:
         return right_rotate(root)
     if balance < -1 and value > root.right.value:
@@ -727,7 +742,7 @@ def insert(root, value):
     if balance < -1 and value < root.right.value:
         root.right = right_rotate(root.right)
         return left_rotate(root)
-    
+
     return root
 
 def get_height(node):
@@ -805,7 +820,7 @@ Here is the detailed breakdown:
 - **Space Complexity**: `O(V^2)`
 - Dynamic Programming formulation
 
-#### A* Algorithm
+#### A\* Algorithm
 
 - **Time Complexity**: `O(log V)` on average - Admissible and consistent heuristics guide the search. Failing to do so can lead to higher time complexities.
 - Efficiency in practice often relies on a good heuristic function `h(n)`.
@@ -832,38 +847,38 @@ Here is the detailed breakdown:
 
 ### Array Operations
 
-- **Index**: `i` 
- nodes: `lfloor (i-1)/(2) rfloor` parent, `2i+1` left child, `2i+2` right child
+- **Index**: `i`
+  nodes: `lfloor (i-1)/(2) rfloor` parent, `2i+1` left child, `2i+2` right child
 - **Parent, Left Child, Right Child**:
- - Parent: `index = lfloor fracindex -12 rfloor`
- - Left Child: `index = 2 × index + 1`
- - Right Child: `index = 2 × index + 2`
+- Parent: `index = lfloor fracindex -12 rfloor`
+- Left Child: `index = 2 × index + 1`
+- Right Child: `index = 2 × index + 2`
 
 ### Operations Complexity
 
-- **Insertion**: `O(log n)` 
- The element to be inserted is placed at the leaf level, and then "heapified" (moved up).
- - Time: This involves up to `log n` swaps to restore the heap's structure.
+- **Insertion**: `O(log n)`
+  The element to be inserted is placed at the leaf level, and then "heapified" (moved up).
+- Time: This involves up to `log n` swaps to restore the heap's structure.
 
- - Space: The operation may incur up to `O(log n)` space due to its iterative nature.
+- Space: The operation may incur up to `O(log n)` space due to its iterative nature.
 
-- **Deletion**: `O(log n)` 
- The root element is replaced with the last node, and then "heapified" (moved down).
- - Time: This includes up to `log n` swaps to preserve the heap property.
+- **Deletion**: `O(log n)`
+  The root element is replaced with the last node, and then "heapified" (moved down).
+- Time: This includes up to `log n` swaps to preserve the heap property.
 
- - Space: It requires `O(1)` space, as it performs in-place swaps.
+- Space: It requires `O(1)` space, as it performs in-place swaps.
 
-- **Min/Max Lookups**: `O(1)` 
- The smallest or largest element, respectively, can be found at the root.
- - Time: This is a direct and constant time operation.
+- **Min/Max Lookups**: `O(1)`
+  The smallest or largest element, respectively, can be found at the root.
+- Time: This is a direct and constant time operation.
 
- - Space: It does not utilize additional space.
+- Space: It does not utilize additional space.
 
-- **Extract Min/Max**: `O(log n)` 
- Same as Deletion.
- - Time: Like deletion, the process may take up to `log n` swaps.
+- **Extract Min/Max**: `O(log n)`
+  Same as Deletion.
+- Time: Like deletion, the process may take up to `log n` swaps.
 
- - Space: It requires `O(1)` space, as it performs in-place swaps.
+- Space: It requires `O(1)` space, as it performs in-place swaps.
 
 ### Code Example: Heap Operations
 
@@ -922,7 +937,7 @@ print(heapq._heappop_max(max_heap))  # Output: 3
 
 #### Data Compression Algorithms
 
-- **Time**: Using a simple algorithm for compression or decompression can save computing time. 
+- **Time**: Using a simple algorithm for compression or decompression can save computing time.
 - **Space**: More sophisticated compression techniques can require additional space but reduce memory's overall size.
 
 #### Index for Text Queries

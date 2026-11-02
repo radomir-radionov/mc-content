@@ -820,9 +820,441 @@ May serve from cache without revalidation for 3600 seconds; shared caches (CDN) 
 ---
 
 </details>
- frameworks — which would you pick for the next project and why?
-7. What is the V8 engine?
 
----
+### Front-end Developer Interview (H5BP)
 
+<details>
+<summary>Traditionally, why serve site assets from multiple domains?</summary>
+
+### Traditionally, why serve site assets from multiple domains?
+
+**Definition:**
+
+Splitting static assets across **several hostnames** (for example `static1.example.com`, `static2.example.com`) was a workaround for **per-host connection limits** in HTTP/1.1 browsers.
+
+**How it works:**
+
+- HTTP/1.1 allowed roughly **six parallel connections per host**; sharding let the browser download more files at once.
+- **HTTP/2 and HTTP/3** multiplex many streams on **one connection**, so domain sharding often **hurts** (extra DNS + TLS handshakes, harder caching).
+- **CDNs** still use many hostnames for geographic routing, not only parallelism.
+
+**When to use:**
+
+Prefer **one origin** (or one CDN) with HTTP/2+ unless measurement shows a win. See [Web APIs — HTTP — Caching](./6_web_api_http.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Connection_management_in_HTTP_1.x
+- https://web.dev/articles/http2
+</details>
+
+<details>
+<summary>Describe the process from typing a URL to the page finishing load.</summary>
+
+### Describe the process from typing a URL to the page finishing load.
+
+**Definition:**
+
+The path spans **DNS**, **TCP/TLS**, **HTTP**, **parse**, **style**, **layout**, **paint**, and **JavaScript** — the critical rendering path plus network.
+
+**How it works:**
+
+1. **URL** → scheme chooses stack (`https` → DNS lookup → TCP → TLS handshake).
+2. **HTTP request/response** — server returns HTML (often compressed).
+3. **Parse HTML** → build DOM incrementally; discover `<link>`, `<script>`, `<img>`.
+4. **CSS** → fetch, parse CSSOM; render-blocking CSS delays first paint.
+5. **Render tree** → layout (geometry) → paint → composite layers.
+6. **Scripts** — classic blocking, or `defer`/`async`/`module` per tag.
+7. **Subresources** — images, fonts, XHR/fetch; **`load`** when dependent resources finish; **`DOMContentLoaded`** when HTML is parsed (defer scripts run first).
+
+Deep dive: [HTML — Rendering](./1_html_rendering.md), [Web APIs — Core](./6_web_api_core.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Critical_rendering_path
+- https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event
+</details>
+
+<details>
+<summary>Long-Polling vs WebSockets vs Server-Sent Events?</summary>
+
+### Long-Polling vs WebSockets vs Server-Sent Events?
+
+**Definition:**
+
+Three patterns for **server → client** updates over HTTP; WebSockets add a full **duplex** channel.
+
+|           | **Long-polling**                                   | **WebSockets**                  | **SSE (EventSource)**         |
+| --------- | -------------------------------------------------- | ------------------------------- | ----------------------------- |
+| Direction | Client polls; server holds request open until data | Bidirectional                   | Server → client only          |
+| Protocol  | HTTP request/response loop                         | Upgraded TCP connection (`ws:`) | Single long-lived HTTP stream |
+| Reconnect | New request each time                              | App must reconnect              | Browser auto-reconnects       |
+| Best for  | Legacy chat/notifications                          | Games, collaborative editing    | Live feeds, metrics           |
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+- https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+</details>
+
+<details>
+<summary>Explain Expires, Date, Age, If-Modified-Since, Cache-Control, ETag, Transfer-Encoding, Do Not Track, X-Frame-Options.</summary>
+
+### Explain Expires, Date, Age, If-Modified-Since, Cache-Control, ETag, Transfer-Encoding, Do Not Track, X-Frame-Options.
+
+**Definition:**
+
+Mix of **caching validators**, **freshness**, **transport**, **privacy hint**, and **security** headers.
+
+**How it works:**
+
+- **`Date`**: message origination time (HTTP-date).
+- **`Expires`**: legacy absolute expiry; prefer **`Cache-Control: max-age=…`**.
+- **`Age`**: seconds a response sat in a cache (added by caches).
+- **`ETag` / `If-None-Match`**: opaque validator; match → **304 Not Modified**, empty body.
+- **`Last-Modified` / `If-Modified-Since`**: weaker time validator; same 304 pattern.
+- **`Cache-Control`**: `max-age`, `no-store`, `no-cache`, `private`, `public`, `immutable`, … — primary cache policy today.
+- **`Transfer-Encoding: chunked`**: body sent in chunks (common with dynamic HTML).
+- **`DNT: 1`**: client asks not to track; **not enforced** by spec — treat as hint only.
+- **`X-Frame-Options` / CSP `frame-ancestors`**: restrict embedding in iframes (clickjacking mitigation).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options
+</details>
+
+<details>
+<summary>What are HTTP methods? List methods you know.</summary>
+
+### What are HTTP methods? List methods you know.
+
+**Definition:**
+
+HTTP methods declare **intent** on a resource. Safe methods should not change server state; idempotent methods can be repeated without extra side effects.
+
+| Method      | Role                                  |
+| ----------- | ------------------------------------- |
+| **GET**     | Read representation; safe, idempotent |
+| **HEAD**    | Like GET without body                 |
+| **POST**    | Submit/create; not idempotent         |
+| **PUT**     | Replace resource; idempotent          |
+| **PATCH**   | Partial update                        |
+| **DELETE**  | Remove; idempotent                    |
+| **OPTIONS** | Supported methods (CORS preflight)    |
+| **CONNECT** | Tunnel (proxies)                      |
+| **TRACE**   | Echo request (rare)                   |
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods
+</details>
+
+<details>
+<summary>What tools find a performance bug? How improve scrolling performance?</summary>
+
+### What tools find a performance bug? How improve scrolling performance?
+
+**Definition:**
+
+Use **profiling + field data** to find long tasks and layout thrash; scroll jank is usually **main-thread work** during `scroll` or **heavy paint**.
+
+**How it works:**
+
+#### Tools
+
+- Chrome **Performance** panel — frames, long tasks, layout/paint markers.
+- **Lighthouse** / **Web Vitals** — LCP, INP, CLS in lab and field.
+- **Coverage** — unused CSS/JS weight.
+
+#### Scroll improvements
+
+- Prefer **`transform` / `opacity`** for animations (often compositor-only).
+- **`passive: true`** on touch/wheel listeners when you do not call `preventDefault`.
+- Avoid reading layout (`offsetHeight`, `getBoundingClientRect`) in a loop with writes — batch DOM reads/writes.
+- Virtualize long lists; `content-visibility: auto` for off-screen sections.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event
+- https://web.dev/articles/optimize-long-tasks
+- [Web APIs — Performance](./6_web_api_performance.md)
+</details>
+
+<details>
+<summary>Explain layout, painting, and compositing.</summary>
+
+### Explain layout, painting, and compositing.
+
+**Definition:**
+
+After the render tree exists, the browser **layout** (reflow) computes geometry, **paint** fills pixels, **composite** merges layers on the GPU.
+
+**How it works:**
+
+- **Layout**: box sizes/positions — triggered by geometry changes (width, text, DOM insert).
+- **Paint**: draw text, colors, borders, images into layers.
+- **Composite**: GPU blends layers; `transform`/`opacity` on promoted layers can skip layout/paint.
+
+Changing only `color` → paint; changing `width` → layout + paint. See [HTML — Rendering](./1_html_rendering.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Rendering
+- https://web.dev/articles/reduce-the-scope-and-complexity-of-style-calculations
+</details>
+
+### Web Technologies (interview)
+
+<details>
+<summary>What is the Richardson REST maturity model?</summary>
+
+### What is the Richardson REST maturity model?
+
+**Definition:**
+
+Leonard Richardson’s model ranks how closely an HTTP API uses **web mechanics** (verbs, nouns, hypermedia), not “how good the JSON is.”
+
+**How it works:**
+
+| Level | Name         | Idea                                                  |
+| ----- | ------------ | ----------------------------------------------------- |
+| **0** | Swamp of POX | One URL, POST everything (RPC tunnel)                 |
+| **1** | Resources    | Different URLs per resource                           |
+| **2** | HTTP verbs   | Nouns in paths + correct **GET/POST/PUT/DELETE**      |
+| **3** | Hypermedia   | Responses include **links** to next actions (HATEOAS) |
+
+Most production APIs sit at **Level 2**. Level 3 is rare but is the strict REST ideal.
+
+**Sources:**
+
+- [REST principles](./6_web_api_rest.md#rest-principles-and-contract)
+- https://martinfowler.com/articles/richardsonMaturityModel.html
+</details>
+
+<details>
+<summary>HTTP/1.1 vs HTTP/2 — what changes? How does multiplexing work?</summary>
+
+### HTTP/1.1 vs HTTP/2 — what changes? How does multiplexing work?
+
+**Definition:**
+
+**HTTP/1.1** sends human-readable messages; browsers open **several TCP connections** per host to work around head-of-line blocking. **HTTP/2** keeps the same **methods, status codes, and headers**, but frames them **binary** on **one TCP connection** with **many parallel streams**.
+
+**How it works:**
+
+- **Multiplexing:** many request/response streams interleave on one connection; no “wait for the big JS file before the small CSS file” on that connection.
+- **Header compression** (HPACK) cuts repeated header bytes.
+- **Server push** (optional, rarely used today) could push assets proactively.
+- DevTools still _display_ `GET /path` — that is not the on-wire HTTP/1 text format.
+
+**Sources:**
+
+- [Web APIs — HTTP](./6_web_api_http.md)
+- https://web.dev/articles/performance-http2
+</details>
+
+<details>
+<summary>What is HTTP/3 and how is it different?</summary>
+
+### What is HTTP/3 and how is it different?
+
+**Definition:**
+
+**HTTP/3** runs HTTP semantics over **QUIC** on **UDP**, not over TCP. It targets faster handshakes and better loss recovery on noisy networks.
+
+**How it works:**
+
+- **QUIC** combines transport + encryption (TLS 1.3 integrated); connection migration can survive IP changes (mobile).
+- Still **GET/POST**, status codes, and headers — framing changes, semantics do not.
+- Browsers negotiate HTTP/3 via **Alt-Svc** / HTTPS records.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/HTTP_3
+- [TCP vs UDP?](#tcp-vs-udp) (HTTP/3 on UDP)
+</details>
+
+<details>
+<summary>What is the difference between PUT and POST?</summary>
+
+### What is the difference between PUT and POST?
+
+**Definition:**
+
+**POST** usually **creates** or **triggers processing** at a URL; repeating it may create **duplicate** side effects (**not idempotent**). **PUT** **replaces** the resource at the URL; sending the same PUT again should leave the server in the **same state** (**idempotent**).
+
+**How it works:**
+
+- `POST /orders` — create a new order (each call may add another order).
+- `PUT /users/42` — replace user 42’s representation entirely.
+- **PATCH** — partial update (not necessarily idempotent unless designed that way).
+
+CRUD mapping: [REST — CRUD & REST mapping](./6_web_api_rest.md#crud--rest-mapping).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods
+</details>
+
+<details>
+<summary>What is the difference between host and domain?</summary>
+
+### What is the difference between host and domain?
+
+**Definition:**
+
+A **domain name** (e.g. `example.com`) is a human-readable DNS name. A **host** is the **authority** in a URL: hostname **plus optional port** (`example.com:443`, `api.example.com`).
+
+**How it works:**
+
+- `www.example.com` and `example.com` are **different hosts** until DNS/CNAME/redirects unify them.
+- **Origin** = scheme + host + port — drives **same-origin policy**, cookies, and storage.
+- DNS resolves the host to an **IP address**; the browser opens TCP/TLS to that IP and port.
+
+**Sources:**
+
+- [URI, URL & URN](./6_web_api_core.md#uri-url--urn)
+- https://developer.mozilla.org/en-US/docs/Glossary/Host
+</details>
+
+<details>
+<summary>What is the TCP three-way handshake?</summary>
+
+### What is the TCP three-way handshake?
+
+**Definition:**
+
+Before HTTP, **TCP** opens a reliable connection with **three steps**: SYN → SYN-ACK → ACK.
+
+**How it works:**
+
+1. Client sends **SYN** (synchronize sequence numbers).
+2. Server replies **SYN-ACK**.
+3. Client sends **ACK** — connection established; HTTP or TLS follows.
+
+**TLS** adds its own handshake after TCP (or inside QUIC for HTTP/3). “Triple handshake” in interviews usually means this **TCP** setup.
+
+**Sources:**
+
+- [How the Internet works](./6_web_api_core.md#internet)
+- [TCP vs UDP?](#tcp-vs-udp)
+</details>
+
+<details>
+<summary>How is a session established between client and server?</summary>
+
+### How is a session established between client and server?
+
+**Definition:**
+
+Two layers: **transport/security** (TCP/QUIC + TLS) and **application session** (cookies, tokens).
+
+**How it works:**
+
+1. DNS → TCP three-way (or QUIC) → **TLS** negotiates keys and verifies the certificate.
+2. **HTTP** is stateless: each request stands alone.
+3. **Login session:** server sets **`Set-Cookie`** (often `HttpOnly`, `Secure`, `SameSite`); browser sends **`Cookie`** on later requests.
+4. **JWT in memory** or **Authorization header** — same idea: server validates proof on every request.
+
+**Sources:**
+
+- [HTTP cookies](./6_web_api_http.md#http-cookies)
+- [HTTPS / TLS](./6_web_api_http.md#https)
+</details>
+
+<details>
+<summary>Why clear cache and how do you do it?</summary>
+
+### Why clear cache and how do you do it?
+
+**Definition:**
+
+Caches speed up repeat visits but serve **stale** JS/CSS/HTML after deploys or when debugging.
+
+**How it works:**
+
+| Layer       | Why clear                   | How                                                                                           |
+| ----------- | --------------------------- | --------------------------------------------------------------------------------------------- |
+| **Browser** | Old bundle after release    | Hard reload; DevTools “Disable cache”; clear site data                                        |
+| **CDN**     | Edge still has old `app.js` | **Purge** URL/tag; prefer **fingerprinted filenames** (`app.a1b2.js`) to avoid purge          |
+| **HTTP**    | Wrong `Cache-Control`       | `no-cache` + validators, or short `max-age` for HTML; long `max-age` + hash for static assets |
+
+**When to use:**
+
+After production deploy if filenames are not content-hashed; when reproducing a user bug that might be stale assets.
+
+**Sources:**
+
+- [CDN](./0_system_design_data.md#cdn-content-delivery-network)
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching
+</details>
+
+<details>
+<summary>What is cross-browser compatibility?</summary>
+
+### What is cross-browser compatibility?
+
+**Definition:**
+
+**Cross-browser compatibility** means your site **works and looks acceptable** across target browsers (Chrome, Firefox, Safari, Edge, mobile WebViews) without breaking core functionality.
+
+**How it works:**
+
+- Baseline: valid HTML, progressive enhancement, test on real devices.
+- Check **MDN/caniuse** for API/CSS support; use **`@supports`** and polyfills only when measured need exists.
+- Avoid **UA sniffing**; prefer **feature detection**.
+- Layout: logical properties for RTL; test Safari + Chrome for flex/grid quirks.
+
+CSS fixes: [CSS interview — browser-specific styling](./2_css_interview.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Cross_browser_testing
+</details>
+
+<details>
+<summary>SSR vs CSR — pros and cons?</summary>
+
+### SSR vs CSR — pros and cons?
+
+**Definition:**
+
+**CSR (client-side rendering):** browser downloads JS, builds UI in the client. **SSR (server-side rendering):** server sends **HTML** (then often **hydrates** with JS).
+
+|       | **CSR (SPA)**                                                              | **SSR / hybrid**                                            |
+| ----- | -------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **+** | Rich interactivity after load; simpler hosting for static shell            | SEO-friendly HTML; faster first content; personalized pages |
+| **−** | Weak SEO/social previews without extra work; slower first meaningful paint | Server cost; hydration complexity; careful cache boundaries |
+
+**When to use:**
+
+Dashboards → CSR or CSR-heavy app shell. Marketing, e-commerce product pages, auth-gated content with SEO → SSR/SSG/ISR (Next.js, etc.).
+
+**Sources:**
+
+- [Web — SSR & hybrid](./4_react_platforms.md#web--ssr--hybrid)
+- [Next.js — SSR](./4_nextjs_rendering.md#server-side-rendering-ssr)
+</details>
+
+<details>
+<summary>What is progressive SSR?</summary>
+
+### What is progressive SSR?
+
+**Definition:**
+
+**Progressive SSR** (often called **streaming SSR**) sends **HTML in chunks** as server data resolves, instead of waiting for the **entire page** before the first byte.
+
+**How it works:**
+
+- Fast shell (header, layout) flushes first; slow DB/API regions stream inside **`Suspense`** boundaries.
+- Improves **TTFB** and perceived speed vs “all-or-nothing” SSR.
+- Pairs with [progressive rendering](./1_html_rendering.md#progressive-rendering) in the browser (paint as bytes arrive).
+
+**Sources:**
+
+- [Next.js — Streaming SSR](./4_nextjs_rendering.md#streaming-ssr)
+- https://react.dev/reference/react-dom/server
 </details>

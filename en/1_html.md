@@ -26,7 +26,7 @@ Document structure, browser rendering, forms, media, UX/UI principles, and SEO. 
 | [HTML — Global attributes](./1_html_global_attributes.md)         | Attributes on any element (in progress).                              |
 | [HTML — Attributes by element](./1_html_attributes_by_element.md) | Per-element attribute lists (in progress).                            |
 | [HTML — Attribute values](./1_html_attribute_values.md)           | Enumerated and typed values (in progress).                            |
-| [HTML — Interview](./1_html_interview.md)                         | HTML interview questions, answers not filled in.                      |
+| [HTML — Interview](./1_html_interview.md)                         | HTML interview Q&A (HackFrontend-style set; growing answer bank).     |
 
 ### Interview practice
 

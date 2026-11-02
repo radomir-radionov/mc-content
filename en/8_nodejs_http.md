@@ -6,7 +6,7 @@ Express, auth, validation, Koa, NestJS, and runtime choice.
 
 ### Related docs
 
-- [Node.js — Core](./8_nodejs_core.md) · [Node.js — Modules](./8_nodejs_modules.md) · [Node.js — HTTP](./8_nodejs_http.md) · [Node.js — Additional](./8_nodejs_process.md) · [Node.js — Interview](./8_nodejs_interview.md)
+- [Node.js — Core](./8_nodejs_core.md) · [Node.js — Modules](./8_nodejs_modules.md) · [Node.js — HTTP](./8_nodejs_http.md) · [Node.js — Additional](./8_nodejs_process.md) · [Node.js — Interview](./8_nodejs_interview.md#interview-practice) · [Node backend course](./8_nodejs_interview.md#nodejs-backend--course-index)
 
 ### Sections
 

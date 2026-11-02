@@ -11,6 +11,8 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
+- [Node backend course (#1–88)](#nodejs-backend--course-index)
 
 ---
 
@@ -4673,4 +4675,120 @@ server.listen(8000);
 - [Node.js — HTTP](https://nodejs.org/api/http.html)
 - [Node.js — URL](https://nodejs.org/api/url.html)
 - [MDN — HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
+</details>
+
+<a name="nodejs-backend--nestjs-vocabulary"></a>
+
+<details>
+<summary>NestJS building blocks (course #64–70, #84, #88)</summary>
+
+### NestJS building blocks (course #64–70, #84, #88)
+
+**Answer:** **Controllers** связывают HTTP-маршруты с обработчиками. **Providers** (`@Injectable()`) — сервисы в DI-контейнере. **Modules** группируют imports/controllers/providers. **Middleware**, **exception filters**, **pipes**, **guards** — слои до/вокруг handler (как в [NestJS overview](./8_nodejs_http.md#nestjs)).
+
+**See also:** [NestJS vs Express](./8_nodejs_http.md#nestjs-vs-express-vs-fastify)
+
+</details>
+
+<a name="nodejs-backend--express-vocabulary"></a>
+
+<details>
+<summary>Express application, router, middleware (course #62–63, #66, #82)</summary>
+
+### Express application, router, middleware (course #62–63, #66, #82)
+
+**Answer:** **app** (`express()`) — корень сервера; **router** монтируется через `app.use(prefix, router)`; **middleware** — цепочка `(req, res, next)`; статика — `express.static()`.
+
+**See also:** [Express interview](./8_express_interview.md#interview-practice)
+
+</details>
+
+<a name="nodejs-backend--socketio"></a>
+
+<details>
+<summary>Socket.io rooms and broadcast (course #71–73)</summary>
+
+### Socket.io rooms and broadcast (course #71–73)
+
+**Answer:** Именованные **события**, **rooms** (`join` / `to().emit`), broadcast в комнату. Поверх WebSocket/long-polling для realtime UI.
+
+**See also:** [WebSockets interview](./6_web_api_websockets_interview.md#interview-practice)
+
+</details>
+
+<a name="nodejs-backend--timers"></a>
+
+<details>
+<summary>setTimeout, setImmediate, process.nextTick (course #81, #85)</summary>
+
+### setTimeout, setImmediate, process.nextTick (course #81, #85)
+
+**Answer:** **`process.nextTick`** — раньше всего; затем microtasks; **`setImmediate`** — фаза check после I/O; **`setTimeout`** — timers. Не забивайте loop бесконечным `nextTick`.
+
+**See also:** [Event loop](./8_nodejs_core.md)
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+<a name="nodejs-backend--course-index"></a>
+
+<details>
+<summary>RU cheatsheet — Node backend course (#1–88)</summary>
+
+### RU cheatsheet — question index
+
+Курс **Node backend** (#1–88). Ищите через `Cmd+F` по RU/EN. Теория — в соседних топиках; ответы — здесь, в [Express interview](./8_express_interview.md#interview-practice) и [Database interview](./9_database_interview.md#ru-cheatsheet-index).
+
+#### Node core & built-ins (#1–9)
+
+| #   | RU topic                         | Theory / search                                                        |
+| --- | -------------------------------- | ---------------------------------------------------------------------- |
+| 1   | http module                      | “http”, `createServer` в этом файле · [HTTP topic](./8_nodejs_http.md) |
+| 2   | Timers API, browser vs Node      | [#nodejs-backend--timers](#nodejs-backend--timers)                     |
+| 3   | fs API                           | “readFile”, `fs` · [Core](./8_nodejs_core.md)                          |
+| 4   | Event-based approach, Events API | “EventEmitter” в этом файле                                            |
+| 5   | process module                   | [Process topic](./8_nodejs_process.md)                                 |
+| 6   | child_process                    | “spawn”, “fork” в этом файле                                           |
+| 7   | Errors in Node API               | “error” в этом файле                                                   |
+| 8   | cluster module                   | “cluster” · [Process topic](./8_nodejs_process.md)                     |
+| 9   | Streams API                      | “stream” · [Core](./8_nodejs_core.md)                                  |
+
+#### SQL & relational (#10–35, #80, #84)
+
+| #      | RU topic (summary)                     | Theory / search                                                                                        |
+| ------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 10–35  | таблицы, DDL, SELECT, JOIN, транзакции | [SQL topic](./9_database_sql.md) · [Database interview](./9_database_interview.md#ru-cheatsheet-index) |
+| 80, 84 | SQL-операторы и функции                | [SQL topic](./9_database_sql.md)                                                                       |
+
+#### NoSQL (#39–42, #79)
+
+| #     | RU topic              | Theory / search                          |
+| ----- | --------------------- | ---------------------------------------- |
+| 39–42 | NoSQL, Mongo/Dynamo   | [NoSQL hub](./9_database_nosql.md)       |
+| 79    | DynamoDB single-table | [NoSQL core](./9_database_nosql_core.md) |
+
+#### Event loop, npm, debug (#43–52, #74–78, #81, #85)
+
+| #      | RU topic                       | Theory / search                                    |
+| ------ | ------------------------------ | -------------------------------------------------- |
+| 43–48  | Event loop, worker_threads     | [Core](./8_nodejs_core.md) · “event loop”          |
+| 49–52  | lockfile, libuv, inspect       | “package-lock”, “inspect” в этом файле             |
+| 74–78  | npm, CJS, flags                | [Modules](./8_nodejs_modules.md)                   |
+| 81, 85 | nextTick / immediate / timeout | [#nodejs-backend--timers](#nodejs-backend--timers) |
+
+#### Buffer & streams (#53–60, #83, #87)
+
+| #      | RU topic                      | Theory / search                        |
+| ------ | ----------------------------- | -------------------------------------- |
+| 53–61  | Buffer, streams, blocking I/O | “Buffer”, “pipe”, “drain” в этом файле |
+| 83, 87 | pipeline, highWaterMark       | “pipeline”, “highWaterMark”            |
+
+#### Express, Nest, Socket.io (#62–73, #82, #84, #88)
+
+| #             | RU topic  | Theory / search                                                            |
+| ------------- | --------- | -------------------------------------------------------------------------- |
+| 62–63, 66, 82 | Express   | [#nodejs-backend--express-vocabulary](#nodejs-backend--express-vocabulary) |
+| 64–70, 84, 88 | NestJS    | [#nodejs-backend--nestjs-vocabulary](#nodejs-backend--nestjs-vocabulary)   |
+| 71–73         | Socket.io | [#nodejs-backend--socketio](#nodejs-backend--socketio)                     |
+
 </details>

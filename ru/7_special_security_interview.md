@@ -11,6 +11,7 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [Security — чеклист фронтенда](#security--front-end-checklist)
 
 ---
 
@@ -3626,4 +3627,369 @@ Retry-After: 30
 
 - [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)
 - [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+</details>
+
+---
+
+### Security — front-end checklist
+
+Краткие ответы под блок **Security** на собеседованиях. **Теория (канон):** [Web security](./7_special_security.md) · [Browser security](./6_web_api_security.md) · [Auth & storage](./6_web_api_auth.md).
+
+<details>
+<summary>Разница между идентификацией, аутентификацией и авторизацией?</summary>
+
+### Разница между идентификацией, аутентификацией и авторизацией?
+
+**Definition:**
+
+- **Идентификация** — заявление личности (логин, email).
+- **Аутентификация** — доказательство (пароль, MFA, подписанный токен).
+- **Авторизация** — что этой личности **разрешено** (роли, права).
+
+**How it works:**
+
+Аналогия с билетом: имя на билете → идентификация; проверка паспорта → аутентификация; проход на посадку → авторизация. HTTP: **`401`** — нет/неверные учётные данные; **`403`** — вошли, но действие запрещено.
+
+См. [Auth](./6_web_api_auth.md#identification-authentication-authorization--http-basic) · [Аутентификация vs авторизация](#what-is-the-difference-between-authentication-and-authorization).
+
+**Sources:**
+
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+</details>
+
+<details>
+<summary>Виды аутентификации?</summary>
+
+### Виды аутентификации?
+
+**How it works:**
+
+| Тип                    | Примеры                            |
+| ---------------------- | ---------------------------------- |
+| **Знание**             | Пароль, PIN                        |
+| **Владение**           | TOTP, WebAuthn/FIDO2               |
+| **Биометрия**          | Отпечаток, Face ID (на устройстве) |
+| **Федерация**          | OAuth2/OIDC, SAML SSO              |
+| **Токены**             | Cookie сессии, Bearer JWT          |
+| **Сертификат / Basic** | mTLS, HTTP Basic только поверх TLS |
+
+Для привилегированных аккаунтов — **MFA**. См. [MFA](#can-you-describe-multi-factor-authentication-mfa-and-where-its-used).
+
+**Sources:**
+
+- [OAuth2 & OIDC](./6_web_api_auth.md#oauth2--oidc-overview)
+</details>
+
+<details>
+<summary>Что такое «распределённая система аутентификации»?</summary>
+
+### Что такое «распределённая система аутентификации»?
+
+**Definition:**
+
+**Федеративная аутентификация:** несколько приложений доверяют одному **поставщику идентификации (IdP)** — пользователь входит один раз; приложения проверяют **ID token (OIDC)** или **SAML**, а не хранят пароли у себя.
+
+**How it works:**
+
+Redirect → вход на IdP → **authorization code + PKCE** → обмен на токены на бэкенде. Политика MFA/паролей централизована; **авторизацию** каждого действия всё равно делает ваш сервер.
+
+См. [SSO](#what-is-single-sign-on-sso-and-what-are-its-benefits).
+
+**Sources:**
+
+- [OpenID](#what-is-openid-and-how-does-it-relate-to-web-security)
+</details>
+
+<details>
+<summary>Что такое токены JWT? Как их использовать для аутентификации?</summary>
+
+### Что такое токены JWT? Как их использовать для аутентификации?
+
+**Definition:**
+
+Подписанный JSON с утверждениями (`sub`, `exp`, `iss`, `aud`) — **Bearer** в заголовке или **ID token** в OIDC.
+
+**How it works:**
+
+Проверка подписи, срока и аудитории на сервере; короткий TTL; отзыв через refresh-ротацию или denylist по `jti`. Не хранить access token в **`localStorage`** — предпочтительны **HttpOnly** cookie или память + BFF.
+
+См. [JWT](#what-is-jwt-json-web-tokens-and-how-are-they-used-in-authentication).
+
+**Sources:**
+
+- [OWASP JWT Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html)
+</details>
+
+<details>
+<summary>Что такое безопасные (Secure) и HttpOnly cookies?</summary>
+
+### Что такое безопасные (Secure) и HttpOnly cookies?
+
+**Definition:**
+
+**`Secure`** — cookie только по **HTTPS**. **`HttpOnly`** — недоступна из JS, снижает кражу сессии при XSS. Добавляйте **`SameSite`** против CSRF.
+
+**How it works:**
+
+```http
+Set-Cookie: session=…; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+**Sources:**
+
+- [HTTP cookies](./6_web_api_http.md#http-cookies)
+</details>
+
+<details>
+<summary>Что такое Content Security Policy (CSP)?</summary>
+
+### Что такое Content Security Policy (CSP)?
+
+**Definition:**
+
+Заголовок HTTP со списком доверенных источников **скриптов, стилей, загрузок** — запасной рубеж против **XSS**.
+
+**How it works:**
+
+Строгий `script-src` с nonce/hash; `frame-ancestors` от clickjacking; без `'unsafe-inline'` в проде.
+
+См. [CSP](./6_web_api_security.md#content-security-policy-csp).
+
+**Sources:**
+
+- [MDN — CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+</details>
+
+<details>
+<summary>Что такое CORS?</summary>
+
+### Что такое CORS?
+
+**Definition:**
+
+Механизм **браузера**: сервер разрешает JS **читать** cross-origin ответ. Не заменяет CSRF-защиту.
+
+**How it works:**
+
+Preflight `OPTIONS`; `Access-Control-Allow-Origin` и правила credentials. См. [CORS](./6_web_api_security.md#cors).
+
+**Sources:**
+
+- [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
+</details>
+
+<details>
+<summary>Что такое межсайтовый скриптинг (XSS)?</summary>
+
+### Что такое межсайтовый скриптинг (XSS)?
+
+**Definition:**
+
+Выполнение **чужого скрипта в вашем origin** у жертвы — reflected, stored, DOM.
+
+**Sources:**
+
+- [XSS](./6_web_api_security.md#cross-site-scripting-xss)
+- [Профилактика XSS](#can-you-explain-the-cross-site-scripting-xss-attack-and-how-to-prevent-it)
+</details>
+
+<details>
+<summary>Методы повышения безопасности веб-приложений?</summary>
+
+### Методы повышения безопасности веб-приложений?
+
+**How it works:**
+
+HTTPS, HSTS, безопасные cookie; валидация ввода; кодирование вывода; параметризованный SQL; AuthZ на сервере; CSRF-токены / SameSite; CSP; security headers; патчи зависимостей; логирование; threat modeling.
+
+**Sources:**
+
+- [Secure coding](#what-are-secure-coding-practices-and-why-are-they-needed)
+</details>
+
+<details>
+<summary>Что такое OWASP Top 10?</summary>
+
+### Что такое OWASP Top 10?
+
+**Definition:**
+
+Приоритетный список **критичных рисков** веб-приложений от OWASP (актуальную редакцию смотрите на [owasp.org/Top10](https://owasp.org/Top10/)).
+
+**How it works (имена 2021 — сверьте с текущим выпуском):**
+
+Broken Access Control; Cryptographic Failures; Injection; Insecure Design; Misconfiguration; Vulnerable Components; Auth Failures; Integrity Failures; Logging Failures; SSRF.
+
+**Sources:**
+
+- https://owasp.org/Top10/
+</details>
+
+<details>
+<summary>Что такое SSL/TLS? Зачем в веб-разработке?</summary>
+
+### Что такое SSL/TLS? Зачем в веб-разработке?
+
+**Definition:**
+
+**TLS** шифрует HTTP и проверяет сертификат сервера — конфиденциальность и целостность по сети; нужен для **Secure** cookie, SW, многих API.
+
+**Sources:**
+
+- [SSL/TLS](#what-are-ssl-and-tls-and-what-role-do-they-play-in-web-security) · [HTTPS](./6_web_api_http.md#https)
+</details>
+
+<details>
+<summary>Основные угрозы безопасности на веб-страницах?</summary>
+
+### Основные угрозы безопасности на веб-страницах?
+
+**How it works:**
+
+XSS, CSRF, clickjacking, open redirect, утечки в URL, mixed content, вредоносные third-party скрипты, неверный CORS; плюс серверные injection и broken access control.
+
+**Sources:**
+
+- [Common vulnerabilities](#what-are-some-common-web-security-vulnerabilities)
+</details>
+
+<details>
+<summary>HTTP-заголовки для безопасности веб-приложений?</summary>
+
+### HTTP-заголовки для безопасности веб-приложений?
+
+**How it works:**
+
+`Strict-Transport-Security`, `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, при необходимости COOP/COEP/CORP.
+
+**Sources:**
+
+- [Security headers](#what-are-security-headers-and-why-are-they-important)
+</details>
+
+<details>
+<summary>Принципы стратегии безопасности?</summary>
+
+### Принципы стратегии безопасности?
+
+**How it works:**
+
+CIA; defense in depth; deny by default; [наименьшие привилегии](#what-is-the-principle-of-least-privilege-polp); secure SDLC; проверка на сервере; управление секретами; мониторинг и IR-план.
+
+**Sources:**
+
+- [Threat modeling](#can-you-explain-the-concept-of-threat-modeling)
+</details>
+
+<details>
+<summary>Что такое принцип наименьших привилегий (POLP)?</summary>
+
+### Что такое принцип наименьших привилегий (POLP)?
+
+**Definition:**
+
+Минимальные права для пользователя, сервиса, токена и учётки БД — только то, что нужно для задачи.
+
+**Sources:**
+
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+</details>
+
+<details>
+<summary>Как защищаться от DDoS?</summary>
+
+### Как защищаться от DDoS?
+
+**How it works:**
+
+CDN/scrubbing, rate limit, WAF, кэш статики, autoscaling с учётом стоимости, сетевые митигации.
+
+**Sources:**
+
+- [DDoS](#how-does-a-distributed-denial-of-service-ddos-attack-work-and-how-can-websites-be-protected-from-it)
+</details>
+
+<details>
+<summary>Как защищаться от CSRF?</summary>
+
+### Как защищаться от CSRF?
+
+**How it works:**
+
+`SameSite` на cookie; anti-CSRF token; POST для изменений; кастомные заголовки для cookie-API. CORS ≠ защита от CSRF.
+
+**Sources:**
+
+- [CSRF](./6_web_api_security.md#csrf-cross-site-request-forgery)
+</details>
+
+<details>
+<summary>Как защищаться от XSS?</summary>
+
+### Как защищаться от XSS?
+
+**How it works:**
+
+Кодирование вывода; строгий CSP; HttpOnly cookie; без `innerHTML` с недоверенными данными; санитайзеры только проверенные.
+
+**Sources:**
+
+- [XSS prevention](#can-you-explain-the-cross-site-scripting-xss-attack-and-how-to-prevent-it)
+</details>
+
+<details>
+<summary>Меры безопасности при работе с cookie на клиенте?</summary>
+
+### Меры безопасности при работе с cookie на клиенте?
+
+**How it works:**
+
+Не дублировать сессию в `localStorage`; полагаться на `Secure`/`HttpOnly`/`SameSite` с сервера; logout на сервере; минимизировать third-party cookies.
+
+**Sources:**
+
+- [Cookies risk](#how-can-web-cookies-compromise-security-and-how-do-you-safeguard-against-these-risks)
+</details>
+
+<details>
+<summary>Подходы к междоменным запросам в JavaScript?</summary>
+
+### Подходы к междоменным запросам в JavaScript?
+
+**How it works:**
+
+`fetch` + CORS; **BFF/прокси** same-origin; `postMessage` с проверкой origin; WebSocket с auth на сервере; не использовать JSONP.
+
+**Sources:**
+
+- [Same-Origin Policy](#explain-the-same-origin-policy-and-its-importance-in-web-security)
+</details>
+
+<details>
+<summary>Лучшие практики веб-хранилища?</summary>
+
+### Лучшие практики веб-хранилища?
+
+**How it works:**
+
+`localStorage` / `sessionStorage` читаются при XSS — **не** класть токены и PII; для настроек UI — ок; auth через HttpOnly cookie или память + refresh.
+
+**Sources:**
+
+- [Auth & storage](./6_web_api_auth.md)
+</details>
+
+<details>
+<summary>Что такое SRI? Как улучшить безопасность?</summary>
+
+### Что такое SRI? Как улучшить безопасность?
+
+**Definition:**
+
+**Subresource Integrity** — атрибут `integrity` на `<script>` / `<link rel="stylesheet">`; браузер сравнивает hash с файлом; для CDN нужен `crossorigin="anonymous"`.
+
+**Sources:**
+
+- [SRI](#can-you-explain-the-role-of-subresource-integrity-sri-in-web-security)
+- [MDN — SRI](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity)
 </details>

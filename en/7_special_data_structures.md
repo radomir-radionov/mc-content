@@ -17,19 +17,19 @@ Arrays, trees, graphs, heaps, and how to pick the right structure.
 
 ### Interview
 
-| Topic | Covers |
-| --- | --- |
-| [Arrays — Interview](./7_ds_arrays_interview.md) | Arrays interview questions, answers not filled in. |
-| [Hash Tables — Interview](./7_ds_hash_tables_interview.md) | Hash Tables interview questions, answers not filled in. |
-| [Stacks — Interview](./7_ds_stacks_interview.md) | Stacks interview questions, answers not filled in. |
-| [Heaps and Maps — Interview](./7_ds_heaps_maps_interview.md) | Heaps and Maps interview questions, answers not filled in. |
-| [Binary Tree — Interview](./7_ds_binary_tree_interview.md) | Binary Tree interview questions, answers not filled in. |
-| [Linked Lists — Interview](./7_ds_linked_lists_interview.md) | Linked Lists interview questions, answers not filled in. |
-| [Strings — Interview](./7_ds_strings_interview.md) | Strings interview questions, answers not filled in. |
-| [Tree Data Structure — Interview](./7_ds_trees_interview.md) | Tree Data Structure interview questions, answers not filled in. |
-| [Queues — Interview](./7_ds_queues_interview.md) | Queues interview questions, answers not filled in. |
-| [Trie — Interview](./7_ds_tries_interview.md) | Trie interview questions, answers not filled in. |
-| [Data Structures — Interview](./7_ds_overview_interview.md) | Data Structures interview questions, answers not filled in. |
+| Topic                                                        | Covers                                                                                                                                            |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Arrays — Interview](./7_ds_arrays_interview.md)             | Arrays interview questions, answers not filled in.                                                                                                |
+| [Hash Tables — Interview](./7_ds_hash_tables_interview.md)   | Hash Tables interview questions, answers not filled in.                                                                                           |
+| [Stacks — Interview](./7_ds_stacks_interview.md)             | Stacks interview questions, answers not filled in.                                                                                                |
+| [Heaps and Maps — Interview](./7_ds_heaps_maps_interview.md) | Heaps and Maps interview questions, answers not filled in.                                                                                        |
+| [Binary Tree — Interview](./7_ds_binary_tree_interview.md)   | Binary Tree interview questions, answers not filled in.                                                                                           |
+| [Linked Lists — Interview](./7_ds_linked_lists_interview.md) | Linked Lists interview questions, answers not filled in.                                                                                          |
+| [Strings — Interview](./7_ds_strings_interview.md)           | Strings interview questions, answers not filled in.                                                                                               |
+| [Tree Data Structure — Interview](./7_ds_trees_interview.md) | Tree Data Structure interview questions, answers not filled in.                                                                                   |
+| [Queues — Interview](./7_ds_queues_interview.md)             | Queues interview questions, answers not filled in.                                                                                                |
+| [Trie — Interview](./7_ds_tries_interview.md)                | Trie interview questions, answers not filled in.                                                                                                  |
+| [Data Structures — Interview](./7_ds_overview_interview.md)  | Data Structures interview questions, answers not filled in. · [RU course index (#1–33)](./7_ds_overview_interview.md#dsa-technical--course-index) |
 
 ---
 

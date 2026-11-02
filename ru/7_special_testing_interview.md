@@ -11,6 +11,7 @@
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [Testing — interview checklist](#testing--interview-checklist)
 
 ---
 
@@ -94,6 +95,7 @@
 
 Она отвечает на вопрос “Are we building the product right?”
 Примеры: ревью кода, инспекции и разборы.
+
 - Валидация: гарантирует, что ПО отвечает действительным нуждам пользователя.
 
 Она отвечает на вопрос “Are we building the right product?”
@@ -120,20 +122,16 @@
 1. Анализ требований и планирование:
 
 Консультации со стейкхолдерами: работа со стейкхолдерами, чтобы полностью понять их нужды и ожидания и задать ясные цели проекта.
-Роль тестирования: проверка требований приёмами вроде оценки прототипа и анализа сценариев использования.
-2. Проектирование и архитектурное планирование:
+Роль тестирования: проверка требований приёмами вроде оценки прототипа и анализа сценариев использования. 2. Проектирование и архитектурное планирование:
 
 Создание документов: сюда входят Software Requirement Specification (SRS) и документ высокоуровневого проектирования.
-Роль тестирования: ревью проекта и структурное тестирование проверяют, что проект системы соответствует заданным требованиям.
-3. Реализация и кодирование:
+Роль тестирования: ревью проекта и структурное тестирование проверяют, что проект системы соответствует заданным требованиям. 3. Реализация и кодирование:
 
 Основная функциональность: здесь пишут код под проверенные и утверждённые требования.
-Модульное тестирование: небольшие независимые единицы кода проверяют, что они ведут себя как ожидается, и дают надёжные кирпичи для большей системы.
-4. Системное тестирование: интегрированную систему проверяют целиком, чтобы все возможности работали согласованно.
+Модульное тестирование: небольшие независимые единицы кода проверяют, что они ведут себя как ожидается, и дают надёжные кирпичи для большей системы. 4. Системное тестирование: интегрированную систему проверяют целиком, чтобы все возможности работали согласованно.
 
 Разбиение фазы: перед выпуском это часто делят на альфа- и бета-тестирование.
-Стресс-тестирование: опыты в крайних условиях помогают оценить пределы системы.
-5. Развёртывание и сопровождение:
+Стресс-тестирование: опыты в крайних условиях помогают оценить пределы системы. 5. Развёртывание и сопровождение:
 
 Проверка развёртывания: после развёртывания тесты убеждаются, что система правильно работает в живой среде.
 Регулярные проверки: сопровождение включает периодические проверки и обновления, чтобы ПО оставалось оптимизированным и защищённым.
@@ -663,6 +661,7 @@ public class CashierServiceTest {
 
 Чтобы изолировать функциональность для теста, могут применяться mock-объекты и заглушки.
 Такое тестирование обычно автоматическое, и его делают разработчики.
+
 - Системное тестирование: режим широкого охвата.
 
 Во время тестирования никакие компоненты не изолируют.
@@ -685,6 +684,7 @@ public class CashierServiceTest {
 - Интеграционное тестирование: режим среднего охвата.
 
 Больше сосредоточено на взаимодействии компонентов внутри системы, чем на более широких функциях системы.
+
 - Системное тестирование: режим широкого охвата.
 
 #### Среда теста
@@ -726,33 +726,27 @@ public class CashierServiceTest {
 
 Охват: выполняет внутренняя команда, прежде чем продукт станет доступен нескольким внешним заказчикам.
 Цель: найти критические проблемы и уточнить возможности по прямой обратной связи пользователей.
-Обычно в: ПО, игровых консолях и развёртывании приложений в частных организациях.
-2. Бета-тестирование:
+Обычно в: ПО, игровых консолях и развёртывании приложений в частных организациях. 2. Бета-тестирование:
 
 Охват: выполняет избранная группа внешних пользователей или заказчиков.
 Цель: вскрыть последние проблемы или сбои и понять опыт и принятие пользователей.
-Обычно в: ПО, веб-приложениях и более широких потребительских продуктах.
-3. Приёмка по контракту:
+Обычно в: ПО, веб-приложениях и более широких потребительских продуктах. 3. Приёмка по контракту:
 
 Охват: обычно происходит в точке договорённости между двумя или более сторонами.
 Цель: разработанный продукт или услуга соответствует заданным требованиям контракта.
-Обычно в: государственных проектах, крупных клиентских работах и юридических соглашениях.
-4. Приёмка по регулированию:
+Обычно в: государственных проектах, крупных клиентских работах и юридических соглашениях. 4. Приёмка по регулированию:
 
 Охват: нужна, чтобы продукт соответствовал конкретным отраслевым или региональным нормам.
 Цель: продукт удовлетворяет заданным регуляторным условиям или стандартам безопасности.
-Обычно в: отраслях вроде здравоохранения, финансов, авиации и фармацевтики.
-5. Пользовательское приёмочное тестирование (UAT):
+Обычно в: отраслях вроде здравоохранения, финансов, авиации и фармацевтики. 5. Пользовательское приёмочное тестирование (UAT):
 
 Охват: проводят стейкхолдеры, часто конечные пользователи или представители заказчика.
 Цель: система работает согласно их заданным требованиям и нуждам.
-Обычно в: всех отраслях, особенно там, где сильно опираются на нужды и вклад пользователей.
-6. Операционное тестирование:
+Обычно в: всех отраслях, особенно там, где сильно опираются на нужды и вклад пользователей. 6. Операционное тестирование:
 
 Охват: операционные аспекты и способность системы выполнять задачи.
 Цель: операционная готовность системы, часто в условиях реального мира.
-Обычно в: критически важных системах, обороне, экстренном реагировании и крупных промышленных системах.
-7. Приёмка по регулированию:
+Обычно в: критически важных системах, обороне, экстренном реагировании и крупных промышленных системах. 7. Приёмка по регулированию:
 
 Охват: продукт соответствует отраслевым или региональным нормам.
 Цель: соблюдение конкретных норм или стандартов безопасности.
@@ -1121,7 +1115,6 @@ Type: Single, Span, Stripe, Mirror, RAID-5. Format method: Quick, Slow. File sys
 - [ISTQB Glossary — model-based testing](https://casqb.org/uploads/downloadables/_files_0/84__files_0.pdf)
 </details>
 
-
 ### Test Management
 
 <details>
@@ -1384,10 +1377,10 @@ Type: Single, Span, Stripe, Mirror, RAID-5. Format method: Quick, Slow. File sys
 **Examples:**
 
 ```ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
+  reporter: [["list"], ["json", { outputFile: "test-results.json" }]],
 });
 ```
 
@@ -1458,7 +1451,6 @@ R1 «пользователь может оплатить действитель
 - [ISTQB Glossary — test progress](https://casqb.org/uploads/downloadables/_files_0/84__files_0.pdf)
 </details>
 
-
 ### Automation Testing
 
 <details>
@@ -1486,7 +1478,7 @@ R1 «пользователь может оплатить действитель
 **Examples:**
 
 ```js
-test('two plus two is four', () => {
+test("two plus two is four", () => {
   expect(2 + 2).toBe(4);
 });
 ```
@@ -1521,15 +1513,15 @@ test('two plus two is four', () => {
 **Examples:**
 
 ```ts
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from "@playwright/test";
 
 export class PlaywrightDevPage {
   readonly getStartedLink: Locator;
   constructor(public readonly page: Page) {
-    this.getStartedLink = page.locator('a', { hasText: 'Get started' });
+    this.getStartedLink = page.locator("a", { hasText: "Get started" });
   }
   async goto() {
-    await this.page.goto('https://playwright.dev');
+    await this.page.goto("https://playwright.dev");
   }
   async getStarted() {
     await this.getStartedLink.first().click();
@@ -1641,7 +1633,7 @@ Jest или pytest — рядом с функцией. Playwright — когда
 test.each([
   [1, 1, 2],
   [1, 2, 3],
-])('.add(%i, %i)', (a, b, expected) => {
+])(".add(%i, %i)", (a, b, expected) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -1770,11 +1762,11 @@ test.each([
 **Examples:**
 
 ```js
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('status becomes submitted', async ({ page }) => {
-  await page.locator('#submit-button').click();
-  await expect(page.locator('.status')).toHaveText('Submitted');
+test("status becomes submitted", async ({ page }) => {
+  await page.locator("#submit-button").click();
+  await expect(page.locator(".status")).toHaveText("Submitted");
 });
 ```
 
@@ -1820,7 +1812,6 @@ def test_eval(test_input, expected):
 - [pytest — parametrize](https://docs.pytest.org/en/stable/how-to/parametrize.html)
 - [Jest — test.each](https://jestjs.io/docs/api)
 </details>
-
 
 ### Performance Testing
 
@@ -1910,17 +1901,17 @@ HTTP-метрики k6 — `http_req_duration` (задержка) и `http_req_f
 **Examples:**
 
 ```javascript
-import http from 'k6/http';
+import http from "k6/http";
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.01'],
-    http_req_duration: ['p(95)<200'],
+    http_req_failed: ["rate<0.01"],
+    http_req_duration: ["p(95)<200"],
   },
 };
 
 export default function () {
-  http.get('https://quickpizza.grafana.com');
+  http.get("https://quickpizza.grafana.com");
 }
 ```
 
@@ -1951,29 +1942,33 @@ export default function () {
 **Examples:**
 
 ```javascript
-import { check } from 'k6';
-import http from 'k6/http';
+import { check } from "k6";
+import http from "k6/http";
 
 export const options = {
   scenarios: {
     my_scenario1: {
-      executor: 'constant-arrival-rate',
-      duration: '30s',
+      executor: "constant-arrival-rate",
+      duration: "30s",
       preAllocatedVUs: 50,
       rate: 50,
-      timeUnit: '1s',
+      timeUnit: "1s",
     },
   },
 };
 
 export default function () {
-  const payload = JSON.stringify({ name: 'lorem', surname: 'ipsum' });
-  const headers = { 'Content-Type': 'application/json' };
-  const res = http.post('https://quickpizza.grafana.com/api/post', payload, { headers });
+  const payload = JSON.stringify({ name: "lorem", surname: "ipsum" });
+  const headers = { "Content-Type": "application/json" };
+  const res = http.post("https://quickpizza.grafana.com/api/post", payload, {
+    headers,
+  });
   check(res, {
-    'Post status is 200': (r) => res.status === 200,
-    'Post Content-Type header': (r) => res.headers['Content-Type'] === 'application/json',
-    'Post response name': (r) => res.status === 200 && res.json().name === 'lorem',
+    "Post status is 200": (r) => res.status === 200,
+    "Post Content-Type header": (r) =>
+      res.headers["Content-Type"] === "application/json",
+    "Post response name": (r) =>
+      res.status === 200 && res.json().name === "lorem",
   });
 }
 ```
@@ -2069,7 +2064,6 @@ p(95) у `http_req_duration` пересекает 200 мс только в ст�
 
 - [Grafana k6 — API load testing](https://grafana.com/docs/k6/latest/testing-guides/api-load-testing)
 </details>
-
 
 ### Security Testing
 
@@ -2314,7 +2308,6 @@ Cryptographic Failures — это A04:2025. Тестирование безоп�
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
 
-
 ### Mobile and Web Application Testing
 
 <details>
@@ -2341,12 +2334,12 @@ Cryptographic Failures — это A04:2025. Тестирование безоп�
 **Examples:**
 
 ```ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'Mobile Safari', use: { ...devices['iPhone 13'] } },
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "Mobile Safari", use: { ...devices["iPhone 13"] } },
   ],
 });
 ```
@@ -2439,11 +2432,11 @@ npx playwright codegen --device="iPhone 13" playwright.dev
 **Examples:**
 
 ```ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 test.use({ viewport: { width: 1600, height: 1200 } });
 
-test('my test', async ({ page }) => {
+test("my test", async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1200 });
 });
 ```
@@ -2476,7 +2469,7 @@ test('my test', async ({ page }) => {
 
 ```ts
 const context = await browser.newContext({
-  ...devices['Desktop Chrome'],
+  ...devices["Desktop Chrome"],
   userAgent: undefined,
 });
 ```
@@ -2512,9 +2505,9 @@ const context = await browser.newContext({
 
 ```ts
 projects: [
-  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  { name: 'Mobile Safari', use: { ...devices['iPhone 13'] } },
-]
+  { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+  { name: "Mobile Safari", use: { ...devices["iPhone 13"] } },
+];
 ```
 
 **Sources:**
@@ -2551,7 +2544,6 @@ projects: [
 - [Grafana k6 — Thresholds](https://grafana.com/docs/k6/latest/using-k6/thresholds)
 </details>
 
-
 ### Test Automation Frameworks
 
 <details>
@@ -2574,10 +2566,10 @@ projects: [
 **Examples:**
 
 ```ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
+  reporter: [["list"], ["json", { outputFile: "test-results.json" }]],
 });
 ```
 
@@ -2704,7 +2696,7 @@ export default defineConfig({
 
 ```ts
 export default defineConfig({
-  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
+  reporter: [["list"], ["json", { outputFile: "test-results.json" }]],
 });
 ```
 
@@ -2713,7 +2705,6 @@ export default defineConfig({
 - [Playwright — Reporters](https://playwright.dev/docs/test-reporters)
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
-
 
 ### API Testing
 
@@ -2765,12 +2756,15 @@ export default defineConfig({
 **Examples:**
 
 ```javascript
-const payload = JSON.stringify({ name: 'lorem', surname: 'ipsum' });
-const headers = { 'Content-Type': 'application/json' };
-const res = http.post('https://quickpizza.grafana.com/api/post', payload, { headers });
+const payload = JSON.stringify({ name: "lorem", surname: "ipsum" });
+const headers = { "Content-Type": "application/json" };
+const res = http.post("https://quickpizza.grafana.com/api/post", payload, {
+  headers,
+});
 check(res, {
-  'Post status is 200': (r) => res.status === 200,
-  'Post Content-Type header': (r) => res.headers['Content-Type'] === 'application/json',
+  "Post status is 200": (r) => res.status === 200,
+  "Post Content-Type header": (r) =>
+    res.headers["Content-Type"] === "application/json",
 });
 ```
 
@@ -2898,7 +2892,6 @@ Postman отправляет запрос и показывает ответ, ч
 
 - [Pact — Introduction](https://docs.pact.io/)
 </details>
-
 
 ### Quality Assurance Processes
 
@@ -3045,7 +3038,6 @@ Scrum Guide не определяет роль QA. Он определяет р�
 - [The Scrum Guide](https://scrumguides.org/scrum-guide.html)
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
-
 
 ### Advanced Testing Topics
 
@@ -3202,7 +3194,6 @@ Principles of Chaos определяют хаос-инжиниринг как д
 - [Playwright — Emulation](https://playwright.dev/docs/emulation)
 </details>
 
-
 ### Behavioral Testing Questions
 
 <details>
@@ -3344,7 +3335,6 @@ Principles of Chaos определяют хаос-инжиниринг как д
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
 
-
 ### Situation-based Testing Questions
 
 <details>
@@ -3485,7 +3475,6 @@ p(95) HTTP остаётся ниже 200 мс, а p(95) `browser_web_vital_lcp` 
 - [Principles of Chaos Engineering](https://principlesofchaos.org/)
 </details>
 
-
 ### Technical Testing Questions
 
 <details>
@@ -3544,7 +3533,7 @@ test.each([
   [1, 1],
   [2, 1],
   [7, 13],
-])('fibonacci(%i)', (n, expected) => {
+])("fibonacci(%i)", (n, expected) => {
   expect(fibonacci(n)).toBe(expected);
 });
 ```
@@ -3553,4 +3542,79 @@ test.each([
 
 - [Jest — test.each](https://jestjs.io/docs/api)
 - [Jest — Using matchers](https://jestjs.io/docs/using-matchers)
+</details>
+
+### Front-end Developer Interview (H5BP)
+
+<details>
+<summary>Плюсы и минусы тестирования кода?</summary>
+
+### Плюсы и минусы тестирования кода?
+
+**Definition:**
+
+Меньше регрессий и безопаснее рефакторинг vs время на написание и риск flaky-тестов.
+
+**Sources:**
+
+- [Testing fundamentals](./7_special_testing_fundamentals.md)
+</details>
+
+<details>
+<summary>Инструменты проверки функциональности?</summary>
+
+### Инструменты проверки функциональности?
+
+**Definition:**
+
+Jest/Vitest, Playwright/Cypress, ESLint, TypeScript.
+
+**Sources:**
+
+- [Testing tooling](./7_special_testing_tooling.md)
+</details>
+
+<details>
+<summary>Unit vs integration / functional?</summary>
+
+### Unit vs integration / functional?
+
+**Definition:**
+
+Unit — изолированный модуль; integration — несколько слоёв; E2E — поведение как у пользователя.
+
+**Sources:**
+
+- [Testing layers](./7_special_testing_layers.md)
+</details>
+
+<details>
+<summary>Зачем линтер стиля кода?</summary>
+
+### Зачем линтер стиля кода?
+
+**Definition:**
+
+ESLint ловит стиль и класс ошибок до runtime (`no-undef`, unused).
+
+**Sources:**
+
+- https://eslint.org/docs/latest/use/core-concepts
+</details>
+
+---
+
+<a name="testing--interview-checklist"></a>
+
+### Testing — interview checklist
+
+**Theory:** [Fundamentals](./7_special_testing_fundamentals.md#testing-trophy) · [Practices](./7_special_testing_practices.md#test-doubles-stubs-mocks-spies). EN-карточки: [../en/7_special_testing_interview.md#testing--interview-checklist](../en/7_special_testing_interview.md#testing--interview-checklist).
+
+<details>
+<summary>Fake/Stub/Mock, TDD/BDD, Testing Trophy, FIRST?</summary>
+
+### Fake/Stub/Mock, Trophy, FIRST?
+
+[Doubles](./7_special_testing_practices.md#test-doubles-stubs-mocks-spies) · [Trophy](./7_special_testing_fundamentals.md#testing-trophy) · [FIRST](./7_special_testing_fundamentals.md#first-principles-for-unit-tests)
+
 </details>

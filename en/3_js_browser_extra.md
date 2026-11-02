@@ -15,7 +15,7 @@ Storage, CORS, observers, History, URL helpers, and UI timing. Windows, files, n
 | Area     | Topics                                                                                                                                    |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | **UI**   | Debounce, throttle, idle callbacks (size/scroll → [Document](./3_js_browser.md#document); rAF → [Animation](./3_js_browser_animation.md)) |
-| **APIs** | Storage, CORS, observers, History API, `URL` / `URLSearchParams`                                                                          |
+| **APIs** | Storage, CORS, observers, History API, `URL` / `URLSearchParams`, [Web Workers](#web-workers), [Worklets](#worklets)                      |
 
 ### Sections
 
@@ -24,7 +24,7 @@ Storage, CORS, observers, History, URL helpers, and UI timing. Windows, files, n
 - [Media queries](#media-queries-in-javascript)
 - [Browser APIs & UI patterns](#browser-apis--ui-patterns)
 - [Debounce](#debounce) · [Throttle](#throttle) · [requestIdleCallback](#request-idle-callback)
-- [Browser storage](#browser-storage) · [Web Locks](#web-locks) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams)
+- [Browser storage](#browser-storage) · [Web Locks](#web-locks) · [CORS](#cors-same-origin) · [Observers](#intersection-resize-observer) · [History API](#history-api) · [URL / URLSearchParams](#url--urlsearchparams) · [Web Workers](#web-workers) · [Worklets](#worklets)
 - [Interview](./3_js_interview.md)
 
 ---
@@ -343,10 +343,10 @@ const fromForage = await localforage.getItem("user");
 
 **Pluses and minuses:**
 
-| +                                            | −                                      |
-| -------------------------------------------- | -------------------------------------- |
-| Coordinates tabs without a server            | Same-origin only                       |
-| Released when the callback promise settles   | A stuck promise holds the lock         |
+| +                                          | −                              |
+| ------------------------------------------ | ------------------------------ |
+| Coordinates tabs without a server          | Same-origin only               |
+| Released when the callback promise settles | A stuck promise holds the lock |
 
 **Examples:**
 
@@ -355,10 +355,8 @@ await navigator.locks.request("net-db-sync", async () => {
   await syncIndexedDb();
 });
 
-await navigator.locks.request(
-  "cache",
-  { mode: "shared" },
-  async () => readCache(),
+await navigator.locks.request("cache", { mode: "shared" }, async () =>
+  readCache(),
 );
 ```
 
@@ -555,6 +553,66 @@ url.searchParams.getAll("category"); // ['html', 'js']
 
 **Sources:** [javascript.info/url](https://javascript.info/url) · [MDN — URL](https://developer.mozilla.org/en-US/docs/Web/API/URL) · [MDN — URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)
 
+</details>
+
+<a name="web-workers"></a>
+
+<details>
+  <summary>Web Workers</summary>
+
+### Web Workers
+
+**Definition:**
+
+A **Web Worker** runs JavaScript on a **background thread** with its own global scope — **no DOM**, **no `window`**, but **`postMessage`** to the main thread.
+
+**How it works:**
+
+- **`new Worker(url)`** or **module worker** (`{ type: "module" }`) loads a separate script.
+- **`worker.postMessage(data)`** / **`onmessage`** — structured clone (not shared memory unless **SharedArrayBuffer** + COOP/COEP).
+- Use for **CPU-heavy** work (parsing, crypto, big transforms) so the **main thread** stays responsive (INP, scroll).
+- **Dedicated worker** — one owner tab; **SharedWorker** — rare, multiple contexts; **Service Worker** — network/cache (see [PWA](./6_web_api_apps.md)).
+
+**When to use:**
+
+Large file processing, off-main-thread libraries; not for tiny tasks (startup cost).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API
+- [JS interview — Web Workers](./3_js_interview.md)
+
+</details>
+
+<a name="worklets"></a>
+
+<details>
+  <summary>Worklets (Paint, Audio, …)</summary>
+
+### Worklets (Paint, Audio, …)
+
+**Definition:**
+
+**Worklets** are lightweight **JavaScript contexts** tied to a rendering pipeline stage. Unlike classic Workers, they run **short, deterministic** hooks invoked by the browser (often on the **render thread**), not long-lived message loops.
+
+**How it works:**
+
+| Worklet                         | Role                                                      |
+| ------------------------------- | --------------------------------------------------------- |
+| **PaintWorklet** (Houdini)      | Custom CSS `background-image: paint(...)`                 |
+| **AudioWorklet**                | Real-time audio processing in **`AudioWorkletProcessor`** |
+| **Layout / Animation / Parser** | Spec-defined; support varies                              |
+
+Register with **`CSS.paintWorklet.addModule(url)`** or **`audioContext.audioWorklet.addModule(url)`**; implement **`registerPaint`** / processor class in the worklet file.
+
+**When to use:**
+
+Custom paint effects or low-latency audio — not a general “move React to a thread” tool (use **Web Workers** for that).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Worklet
+- https://developer.mozilla.org/en-US/docs/Web/API/PaintWorklet
 </details>
 
 <details>

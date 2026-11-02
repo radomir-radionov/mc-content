@@ -28,7 +28,7 @@
 - [Patterns](#patterns)
 - **Class basics:** [Class syntax](#class-syntax) · [Static methods and properties](#static-methods-and-properties)
 - **Inheritance:** [Inheritance and `super`](#inheritance-and-super) · [Extending built-in classes](#extending-built-in-classes) · [Class checking: `instanceof`](#class-checking-instanceof)
-- **Encapsulation:** [Private and protected properties and methods](#private-and-protected-properties-and-methods) · [Getters and setters](#getters-and-setters)
+- **Encapsulation:** [Private and protected properties and methods](#private-and-protected-properties-and-methods) · [Property descriptors](#property-descriptors) · [Getters and setters](#getters-and-setters) · [Abstract classes in JavaScript](#abstract-classes-in-javascript)
 - **Patterns:** [Mixins](#mixins) · [Constructor injection](#constructor-injection)
 - [Interview](./3_js_interview.md)
 
@@ -406,6 +406,61 @@ class LoggedAccount extends Account {
 
 **Sources:** [javascript.info/private-protected-properties-methods](https://javascript.info/private-protected-properties-methods) · [MDN — private elements](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements) · [Classes (TypeScript)](./5_ts_classes.md)
 
+</details>
+
+<a name="property-descriptors"></a>
+
+<details>
+  <summary>Object property descriptors</summary>
+
+### Object property descriptors
+
+**Definition:**
+
+Every property has a **descriptor**: `value`/`writable` or `get`/`set`, plus **`enumerable`** and **`configurable`**. `Object.defineProperty(obj, key, desc)` sets them explicitly (used by frameworks and accessors).
+
+**How it works:**
+
+- **Data descriptor:** `{ value, writable, enumerable, configurable }`.
+- **Accessor descriptor:** `{ get, set, enumerable, configurable }` — see [Getters and setters](#getters-and-setters).
+- `Object.getOwnPropertyDescriptor`, `preventExtensions`, `seal`, `freeze` change what callers may do.
+
+Interview: [OOP & FP cheatsheet](./7_oop_interview.md#oop--fp--cheatsheet).
+
+**Sources:**
+
+- [MDN — Object.defineProperty](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)
+</details>
+
+<a name="abstract-classes-in-javascript"></a>
+
+<details>
+  <summary>Abstract classes in JavaScript</summary>
+
+### Abstract classes in JavaScript
+
+**Definition:**
+
+JavaScript has **no `abstract` keyword**. Patterns: (1) throw in `constructor` if `new.target === Base`; (2) throw in methods meant to be overridden; (3) use TypeScript `abstract class` at compile time only.
+
+**How it works:**
+
+```js
+class AbstractRepo {
+  constructor() {
+    if (new.target === AbstractRepo) {
+      throw new Error("AbstractRepo cannot be instantiated");
+    }
+  }
+  findById(_id) {
+    throw new Error("Not implemented");
+  }
+}
+```
+
+**Sources:**
+
+- [Classes basics](#class-syntax) · [Interview — abstract class](./7_oop_interview.md#oop--fp--cheatsheet)
 </details>
 
 <details>

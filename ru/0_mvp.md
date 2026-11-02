@@ -131,6 +131,19 @@
 </details>
 
 <details>
+  <summary>POC vs Prototype vs MVP</summary>
+
+### POC vs Prototype vs MVP
+
+**Definition:** **POC** — тех. feasibility; **Prototype** — UX/flows; **MVP** — минимальный **релиз** для проверки гипотезы с пользователями.
+
+**See also:** [When does MVP beat architecture?](#when-does-mvp-beat-architecture)
+
+---
+
+</details>
+
+<details>
   <summary>When does MVP beat architecture?</summary>
 
 ### When does MVP beat architecture?

@@ -6,11 +6,12 @@ HTML interview questions. Answers are filled for the published subset; the rest 
 
 ### Related docs
 
-* [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
+- [HTML — Core](./1_html_core.md) · [HTML — Structure](./1_html_structure.md) · [HTML — Semantics](./1_html_semantics.md) · [HTML — Forms](./1_html_forms.md) · [HTML — Media](./1_html_media.md) · [HTML — Rendering](./1_html_rendering.md) · [HTML — Performance](./1_html_performance.md) · [HTML — SEO](./1_html_seo.md) · [HTML — Advanced](./1_html_advanced.md) · [HTML — Interview](./1_html_interview.md)
 
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -48,11 +49,11 @@ The primary objective of HTML5 is to improve the language's support for the late
 
 #### Visual Presentation and User Interface Adaptations
 
-HTML5 is engineered to provide more flexibility, control, and aesthetic maturity for web pages and web-based software applications. Web developers can use it to craft modern web interfaces with rich visual and multimedia experiences. It also allows for more responsive and adaptive design, ensuring optimal viewing on a variety of devices and screen sizes. This reflects a broader shift in technology toward a more device-agnostic user experience. 
+HTML5 is engineered to provide more flexibility, control, and aesthetic maturity for web pages and web-based software applications. Web developers can use it to craft modern web interfaces with rich visual and multimedia experiences. It also allows for more responsive and adaptive design, ensuring optimal viewing on a variety of devices and screen sizes. This reflects a broader shift in technology toward a more device-agnostic user experience.
 
 #### The Role of CSS and JavaScript
 
-While HTML offers static content, **CSS** and **JavaScript** enable additional layers of styling, interactivity, and dynamic content updates. The integration of these three technologies (referred to as **HTML-CSS-JS**) stands as the trio that forms the backbone of almost all web-based content. They're often presented as **HTML5-CSS3-JS** to signify unified modern best practices. Online, there's even tools that combine these technologies into a  single framework or language such as WebAssembly or Dart. The trio represents a more modular approach, allowing distinct teams to focus on individual layers, streamlining development in larger projects. Mastering their intersection helps in designing a robust and cohesive user experience. This concept is captured by the acronym "PEA", which stands for the Platform (HTML), the Engine (JavaScript), and the Appearance (CSS). Each category focuses on a distinct aspect of user experience.
+While HTML offers static content, **CSS** and **JavaScript** enable additional layers of styling, interactivity, and dynamic content updates. The integration of these three technologies (referred to as **HTML-CSS-JS**) stands as the trio that forms the backbone of almost all web-based content. They're often presented as **HTML5-CSS3-JS** to signify unified modern best practices. Online, there's even tools that combine these technologies into a single framework or language such as WebAssembly or Dart. The trio represents a more modular approach, allowing distinct teams to focus on individual layers, streamlining development in larger projects. Mastering their intersection helps in designing a robust and cohesive user experience. This concept is captured by the acronym "PEA", which stands for the Platform (HTML), the Engine (JavaScript), and the Appearance (CSS). Each category focuses on a distinct aspect of user experience.
 
 #### Practical Uses
 
@@ -98,7 +99,7 @@ The `html` element is the root element of an HTML page. It encompasses the entir
 
 ```html
 <html>
-    <!-- Head and Body Sections Are Nested Inside -->
+  <!-- Head and Body Sections Are Nested Inside -->
 </html>
 ```
 
@@ -108,7 +109,7 @@ The `head` section provides meta-information about the document. It isn't displa
 
 ```html
 <head>
-    <!-- Title and Meta-Tags, Styles, Scripts, etc. -->
+  <!-- Title and Meta-Tags, Styles, Scripts, etc. -->
 </head>
 ```
 
@@ -126,7 +127,7 @@ The `body` section encapsulates the document's visible content—what users see 
 
 ```html
 <body>
-    <!-- Content Visible to Users: Headings, Paragraphs, Images, etc. -->
+  <!-- Content Visible to Users: Headings, Paragraphs, Images, etc. -->
 </body>
 ```
 
@@ -151,6 +152,7 @@ The `body` section encapsulates the document's visible content—what users see 
 #### DOCTYPE: Defining Document Type and Validation Mode
 
 ##### Purpose
+
 - Specifies the HTML or XHTML version used in the document.
 - Identifies parsing method and algorithm for the web browser, affecting consistency.
 
@@ -232,8 +234,8 @@ While the **\<head>** and **\<body>** tags are fundamental to every HTML documen
   <!DOCTYPE html>
   <html>
     <head>
-      <meta charset="UTF-8">
-      <link rel="stylesheet" type="text/css" href="styles.css">
+      <meta charset="UTF-8" />
+      <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
     <body>
       <!-- Content Here -->
@@ -247,8 +249,8 @@ While the **\<head>** and **\<body>** tags are fundamental to every HTML documen
   <!DOCTYPE html>
   <html>
     <head>
-      <meta charset="UTF-8">
-      <link rel="stylesheet" type="text/css" href="styles.css">
+      <meta charset="UTF-8" />
+      <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
     <body>
       <header>
@@ -273,7 +275,6 @@ While the **\<head>** and **\<body>** tags are fundamental to every HTML documen
       <footer>
         <p>&copy; 2023 MySite</p>
       </footer>
-
     </body>
   </html>
   ```
@@ -323,17 +324,20 @@ Here is the HTML code:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="This is a sample web page with a concise description.">
-    <meta name="keywords" content="HTML, meta tags, web design, SEO">
-    <meta name="author" content="John Doe">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="This is a sample web page with a concise description."
+    />
+    <meta name="keywords" content="HTML, meta tags, web design, SEO" />
+    <meta name="author" content="John Doe" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sample Web Page</title>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Page content goes here -->
-</body>
+  </body>
 </html>
 ```
 
@@ -372,7 +376,7 @@ HTML uses the `<link>` tag to **integrate external resources** such as CSS files
 ##### Syntax
 
 ```html
-<link rel="stylesheet" href="path/to/style.css">
+<link rel="stylesheet" href="path/to/style.css" />
 ```
 
 - **rel**: Specifies the type of relationship between the current document and the linked file. For CSS, it should be set to "stylesheet".
@@ -388,12 +392,12 @@ Here is the HTML code:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="path/to/style.css">
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="path/to/style.css" />
+  </head>
+  <body>
     <!-- Body content -->
-</body>
+  </body>
 </html>
 ```
 
@@ -425,11 +429,11 @@ To use an external JavaScript file, follow these steps:
 
 2. **Link the JavaScript File to your HTML Document**: Add the following code within the `<head>` or at the end of the `<body>` section of your HTML file.
 
-    ```html
-    <script src="path-to-your-js-file.js"></script>
-    ```
+   ```html
+   <script src="path-to-your-js-file.js"></script>
+   ```
 
-    Replace `path-to-your-js-file.js` with the actual path to your JavaScript file.
+   Replace `path-to-your-js-file.js` with the actual path to your JavaScript file.
 
 ##### Best Practices
 
@@ -441,16 +445,15 @@ To use an external JavaScript file, follow these steps:
 
 You can also include JavaScript directly within your HTML file. This is called an "inline script." To do this, encase your JavaScript code within `<script>` tags, like this:
 
-  ```html
-  <script>
-      // Your JavaScript code goes here
-  </script>
-  ```
+```html
+<script>
+  // Your JavaScript code goes here
+</script>
+```
 
 ##### Best Practices
 
 - **Content Separation**: For better code organization, it's often better to keep your JavaScript in a separate file, especially for larger applications.
-  
 - **Caching**: When using an external JavaScript file, the browser caches the script, which can speed up your site on subsequent visits. However, if the script changes often, this caching can be a problem.
 
 - **Maintainability and Reusability**: Utilizing an external JavaScript file allows for better code management, reusability, and ease of making updates or fixes across multiple HTML files.
@@ -464,18 +467,18 @@ Here is the code:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="path-to-your-js-file.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Your content here -->
     <script>
-        // Inline JavaScript code here.
+      // Inline JavaScript code here.
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -483,6 +486,60 @@ Here is the code:
 
 - https://devinterview.io/questions/web-and-mobile-development/html5-interview-questions/
 - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script
+</details>
+
+<details>
+<summary>Why put CSS link tags in head and scripts before closing body? What are the exceptions?</summary>
+
+### Why put CSS link tags in head and scripts before closing body? What are the exceptions?
+
+**Definition:**
+
+Default document order keeps **first paint** predictable: stylesheets in `<head>` build the CSSOM early; parser-blocking scripts at the **end of `<body>`** run after most DOM nodes exist.
+
+**How it works:**
+
+#### Why CSS in `<head>`
+
+- Linked CSS is **render-blocking** by design so the first paint is styled, not unstyled HTML (FOUC).
+- The parser can fetch CSS while it continues through `<head>`.
+
+#### Why JS near `</body>` (classic scripts)
+
+- A classic `<script src="…">` without `async`, `defer`, or `type="module"` **blocks HTML parsing** while it downloads and runs.
+- Placing it at the end means markup above is parsed first; inline scripts that call `document.querySelector` see more of the tree.
+
+#### Common exceptions
+
+| Pattern                           | Where                 | Why it is OK                                                              |
+| --------------------------------- | --------------------- | ------------------------------------------------------------------------- |
+| `defer` or `type="module"`        | `<head>` or `<body>`  | Download in parallel; run after document parse (modules defer by default) |
+| `async`                           | `<head>`              | Independent scripts (analytics); order not guaranteed                     |
+| Critical CSS                      | Inline in `<head>`    | Above-the-fold paint without waiting for another round trip               |
+| `rel="preload"` / `modulepreload` | `<head>`              | Fetch early; still obey render-blocking rules for CSS                     |
+| Small bootstraps                  | `<head>` with `defer` | Modern apps often load one deferred bundle from `<head>`                  |
+
+**When to use:**
+
+Follow the default for hand-written pages; use `defer`/`module` in `<head>` when bundlers already emit non-blocking entry scripts. Details: [HTML — Performance](./1_html_performance.md), [HTML — Rendering — Progressive rendering](./1_html_rendering.md#progressive-rendering).
+
+**Examples:**
+
+```html
+<head>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <main>...</main>
+</body>
+```
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script
+- https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Critical_rendering_path
 </details>
 
 <details>
@@ -548,8 +605,8 @@ For serving content in multiple languages and optimizing accessibility and searc
 ```html
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Website</title>
   </head>
   <body>
@@ -560,7 +617,7 @@ For serving content in multiple languages and optimizing accessibility and searc
 
 #### Common Language Codes
 
-Most languages follow the two-letter ISO 639-1 code, such as "en" for English or "es" for Spanish. Some languages also use an extended ISO 639-2 or 639-3 code, which might require three to four letters, like "por" for Portuguese. 
+Most languages follow the two-letter ISO 639-1 code, such as "en" for English or "es" for Spanish. Some languages also use an extended ISO 639-2 or 639-3 code, which might require three to four letters, like "por" for Portuguese.
 
 For dialects or region-specific content, you can use a hyphen, followed by an ISO 3166-1 alpha-2 country code. For instance:
 
@@ -573,9 +630,10 @@ Understand that while the `lang` attribute assists in accessibility, user agents
 
 #### SEO Considerations
 
-Serving content in multiple languages comes with SEO responsibilities. One common practice is to assign a *language-specific* URL for each version of your content. In addition to this, utilize human-readable URLs to effectively comminicate the language and the content topic/design.
+Serving content in multiple languages comes with SEO responsibilities. One common practice is to assign a _language-specific_ URL for each version of your content. In addition to this, utilize human-readable URLs to effectively comminicate the language and the content topic/design.
 
 For instance, use:
+
 - `example.com/en-US/about` for pages in American English.
 - `example.com/es-MX/sobre` for those in Mexican Spanish.
 
@@ -590,9 +648,55 @@ This technique requires further validation and clearance upon implementation as 
 </details>
 
 <details>
+<summary>What should you watch out for when designing multilingual sites?</summary>
+
+### What should you watch out for when designing multilingual sites?
+
+**Definition:**
+
+Multilingual sites fail when layout, SEO, or locale data are treated as “translate strings only.” HTML sets language and direction; CSS and URLs must follow.
+
+**How it works:**
+
+#### Content and layout
+
+- Translated copy **changes length** (German often grows). Fixed-width buttons, nav, and tables break unless layout flexes.
+- **Locale ≠ language**: `en-US` vs `en-GB` differ in spelling and formats; do not overload one `lang` for both without meaning to.
+- Format **dates, numbers, and currency** with `Intl` (or server locale), not hard-coded patterns.
+
+#### Direction and typography
+
+- `lang` does not set text direction. Arabic/Hebrew need `dir="rtl"` on `<html>` (and often `lang="ar"` / `lang="he"`).
+- Prefer **CSS logical properties** (`margin-inline`, `padding-inline`) over left/right-only rules. Mirror icons that imply direction.
+- Ship **UTF-8** (`<meta charset="utf-8">`) and fonts that cover the scripts you use.
+
+#### SEO and routing
+
+- One **canonical URL per language variant**; link alternates with `<link rel="alternate" hreflang="…">` and reciprocal links. Add `hreflang="x-default"` when you have a default locale.
+- Avoid duplicate content: separate paths (`/en/…`, `/ru/…`) or clear canonicals — not the same URL with invisible auto-translate for crawlers.
+
+#### Product and UX
+
+- Let users **choose language**; do not rely on `Accept-Language` alone. Flags are a poor language control (ambiguous and politically loaded).
+- Machine translation is risky for legal, medical, or compliance text without human review.
+- Screen readers use `lang` (and `lang` on inline foreign phrases); wrong language hurts pronunciation.
+
+**When to use:**
+
+Any site with more than one language or RTL script — plan URLs, `lang`/`dir`, CSS, and copy expansion before visual design freezes.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir
+- https://developers.google.com/search/docs/specialty/international/localized-versions
+- [HTML — SEO — Internationalization (i18n)](./1_html_seo.md)
+</details>
+
+<details>
 <summary>What are data-* attributes and when should they be used?</summary>
 
-### What are data-* attributes and when should they be used?
+### What are data-\* attributes and when should they be used?
 
 **Definition:**
 
@@ -616,16 +720,16 @@ Here is the HTML & JavaScript:
 <div id="user" data-name="John Doe" data-age="25"></div>
 
 <script>
-  const userDiv = document.getElementById('user');
-  console.log(userDiv.dataset.name);  // Output: "John Doe"
-  console.log(userDiv.dataset.age);   // Output: "25"
+  const userDiv = document.getElementById("user");
+  console.log(userDiv.dataset.name); // Output: "John Doe"
+  console.log(userDiv.dataset.age); // Output: "25"
 </script>
 ```
 
 #### Appropriate Use-Cases
 
 - **Custom Content for DOM Elements**: For attaching extra information or configuration settings exclusively relevant to an HTML element.
-  
+
   Example: A `div` may have a `data-show-tooltip` attribute set to `true` to indicate it should display a tooltip.
 
 - **Interactivity Configuration**: When working with user-made widgets, data attributes can specify how they behave in a more structured, intended manner. Useful in contexts where individual DIV or section blocks have interactivity toggles, or categories.
@@ -669,7 +773,7 @@ In the HTML, the content "Caution" is visually bold and the content "Urgent Noti
 ```html
 <p>
   <b>Caution</b>: This action cannot be undone.
-  <br>
+  <br />
   <strong>Urgent Notice!</strong> Please save your work before proceeding.
 </p>
 ```
@@ -711,10 +815,12 @@ One potential usage could be for interactive instructions:
 
 The 'i' tag, or **italics** tag, is often avoided for text styling. Instead, consider semantic HTML, CSS, or more explicit HTML options like `<em>` for emphasis, when possible.
 
-Here's an example of `<em>` combined with CSS for an additional bit of fluorescence. 
+Here's an example of `<em>` combined with CSS for an additional bit of fluorescence.
 
 ```html
-<p>His <em style="background-color: yellow; color: red;">anger</em> was palpable.</p>
+<p>
+  His <em style="background-color: yellow; color: red;">anger</em> was palpable.
+</p>
 ```
 
 **Sources:**
@@ -770,7 +876,10 @@ The `<mark>` tag is used to **highlight** or **set apart** text without specifyi
 ##### Use Case
 
 ```html
-<p>Important: Please <mark>schedule your appointment</mark> at least 48 hours in advance.</p>
+<p>
+  Important: Please <mark>schedule your appointment</mark> at least 48 hours in
+  advance.
+</p>
 ```
 
 **Sources:**
@@ -826,26 +935,26 @@ Consider the before and after examples to see the impact of semantic tags.
 
 ```html
 <div class="nav">
-    <div class="logo">
-        <a href="#">Logo</a>
-    </div>
-    <div class="nav-links">
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-    </div>
+  <div class="logo">
+    <a href="#">Logo</a>
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
 </div>
 <div class="main-wrapper">
-    <div class="image">
-        <img src="image.jpg" alt="A beautiful landscape">
-    </div>
-    <div class="content">
-        <h3>Welcome</h3>
-        <p>Some welcome text here.</p>
-    </div>
+  <div class="image">
+    <img src="image.jpg" alt="A beautiful landscape" />
+  </div>
+  <div class="content">
+    <h3>Welcome</h3>
+    <p>Some welcome text here.</p>
+  </div>
 </div>
 <div class="footer">
-    <p>© 2022 Company Name</p>
+  <p>© 2022 Company Name</p>
 </div>
 ```
 
@@ -853,29 +962,29 @@ Consider the before and after examples to see the impact of semantic tags.
 
 ```html
 <header>
-    <div class="logo">
-        <a href="#">Logo</a>
-    </div>
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-    </nav>
+  <div class="logo">
+    <a href="#">Logo</a>
+  </div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </nav>
 </header>
 
 <main>
-    <figure>
-        <img src="image.jpg" alt="A beautiful landscape">
-        <figcaption>A beautiful landscape</figcaption>
-    </figure>
-    <section>
-        <h1>Welcome</h1>
-        <p>Some welcome text here.</p>
-    </section>
+  <figure>
+    <img src="image.jpg" alt="A beautiful landscape" />
+    <figcaption>A beautiful landscape</figcaption>
+  </figure>
+  <section>
+    <h1>Welcome</h1>
+    <p>Some welcome text here.</p>
+  </section>
 </main>
 
 <footer>
-    <p>© 2022 Company Name</p>
+  <p>© 2022 Company Name</p>
 </footer>
 ```
 
@@ -905,7 +1014,8 @@ Traditional paragraph formatting in HTML is achieved using the `<p>` tag. The br
 
 ```html
 <p>
-    This is an example of a paragraph. The text enclosed within the &lt;p&gt; tags represents a single paragraph.
+  This is an example of a paragraph. The text enclosed within the &lt;p&gt; tags
+  represents a single paragraph.
 </p>
 ```
 
@@ -922,13 +1032,12 @@ To insert a simple line break in an HTML document, use the `<br>` tag. This tag 
 ##### Syntax
 
 ```html
-First Line<br>Second Line
+First Line<br />Second Line
 ```
 
 ##### Visual Representation
 
 First Line<br> Second Line (This text doesn't render the line break; it's just to show the raw HTML.)
-
 
 #### Multi-line Text Elements
 
@@ -1188,7 +1297,8 @@ Use the `<img>` element. `src` is the image URL, and `alt` is the replacement te
   src="images/dinosaur.jpg"
   alt="The head and torso of a dinosaur skeleton; it has a large head with long sharp teeth"
   width="400"
-  height="341" />
+  height="341"
+/>
 ```
 
 **Sources:**
@@ -1225,7 +1335,8 @@ Use the `<img>` element. `src` is the image URL, and `alt` is the replacement te
 ```html
 <img
   src="/shared-assets/images/examples/grapefruit-slice.jpg"
-  alt="Grapefruit slice atop a pile of other slices" />
+  alt="Grapefruit slice atop a pile of other slices"
+/>
 ```
 
 **Sources:**
@@ -1314,14 +1425,20 @@ A client-side image map is a `<map>` of `<area>` links, referenced from an `<img
     shape="circle"
     coords="75,75,75"
     href="https://developer.mozilla.org/docs/Web/JavaScript"
-    alt="JavaScript" />
+    alt="JavaScript"
+  />
   <area
     shape="circle"
     coords="275,75,75"
     href="https://developer.mozilla.org/docs/Web/CSS"
-    alt="CSS" />
+    alt="CSS"
+  />
 </map>
-<img usemap="#primary" src="parrots.jpg" alt="350 x 150 picture of two parrots" />
+<img
+  usemap="#primary"
+  src="parrots.jpg"
+  alt="350 x 150 picture of two parrots"
+/>
 ```
 
 **Sources:**
@@ -1813,6 +1930,54 @@ HTML5 followed HTML 4.01 and added elements and capabilities for structure, medi
 </details>
 
 <details>
+<summary>What are the building blocks of HTML5 as an open web platform?</summary>
+
+### What are the building blocks of HTML5 as an open web platform?
+
+**Definition:**
+
+**HTML5** (now the **WHATWG HTML Living Standard**) is one layer of the **open web platform**. The browser combines markup, CSS, JavaScript, and host APIs into one runtime — not a single “HTML5” version number.
+
+**How it works:**
+
+#### Markup and semantics (HTML)
+
+- Document skeleton: `<!doctype html>`, `head`, `body`, metadata.
+- **Semantic sectioning**: `header`, `nav`, `main`, `article`, `section`, `aside`, `footer`.
+- Rich **forms** (`email`, `date`, `required`, …), **media** (`video`, `audio`, `picture`, `srcset`), **graphics** (`canvas`, inline **SVG**).
+
+#### Companion layers (same platform)
+
+| Layer            | Role                                      |
+| ---------------- | ----------------------------------------- |
+| **CSS**          | Presentation, layout, responsive design   |
+| **JavaScript**   | Behavior, DOM, fetch to servers           |
+| **Browser APIs** | Storage, network, devices — exposed to JS |
+
+#### API families often grouped with “HTML5”
+
+| Building block                | Examples                                                                      |
+| ----------------------------- | ----------------------------------------------------------------------------- |
+| **Semantics & accessibility** | Landmarks, `lang`, ARIA where needed                                          |
+| **Connectivity**              | `fetch`, WebSockets, Server-Sent Events                                       |
+| **Offline & storage**         | `localStorage`, `sessionStorage`, IndexedDB, Cache API (with service workers) |
+| **Multimedia**                | `<video>`, `<audio>`, timed text tracks                                       |
+| **2D/3D graphics**            | `<canvas>`, WebGL/WebGPU                                                      |
+| **Device access**             | Geolocation, media capture (`getUserMedia`), … (always permission-gated)      |
+| **Performance integration**   | `defer`/`async` scripts, `preload`, responsive images                         |
+
+**When to use:**
+
+Interview answer: name **semantics**, **media**, **forms**, **storage/connectivity APIs**, and note that **CSS + JS** complete the platform. Deep dive: [HTML — Core — Web platform layers](./1_html_core.md#web-platform-layers), [Browser platform (Core)](./0_core_browser.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/HTML5
+- https://html.spec.whatwg.org/
+- https://developer.mozilla.org/en-US/docs/Web/API
+</details>
+
+<details>
 <summary>How do you create a section on a webpage using HTML5 semantic elements?</summary>
 
 ### How do you create a section on a webpage using HTML5 semantic elements?
@@ -1972,7 +2137,8 @@ Use `<section>` for a generic standalone region that has no more specific elemen
 <figure>
   <img
     src="/shared-assets/images/examples/elephant.jpg"
-    alt="Elephant at sunset" />
+    alt="Elephant at sunset"
+  />
   <figcaption>An elephant at sunset</figcaption>
 </figure>
 ```
@@ -2010,7 +2176,9 @@ A data table is a `<table>` of rows (`<tr>`). Header cells are `<th>`, and data 
 
 ```html
 <table>
-  <caption>Alien football stars</caption>
+  <caption>
+    Alien football stars
+  </caption>
   <thead>
     <tr>
       <th scope="col">Player</th>
@@ -2155,7 +2323,9 @@ Give the table a `<caption>`, mark header cells with `<th>`, and set `scope` so 
 
 ```html
 <table>
-  <caption>Dinosaurs in the Jurassic period</caption>
+  <caption>
+    Dinosaurs in the Jurassic period
+  </caption>
   <tr>
     <th scope="col">Symbol</th>
     <th scope="col">Code word</th>
@@ -2200,7 +2370,9 @@ Keep the data in a real `<table>` and let CSS size it. HTML has no attribute tha
 
 ```html
 <table>
-  <caption>A summary of the UK's most famous punk bands</caption>
+  <caption>
+    A summary of the UK's most famous punk bands
+  </caption>
   <thead>
     <tr>
       <th scope="col">Band</th>
@@ -2356,7 +2528,8 @@ Nest a `<track>` in the `<video>`. `src` is a WebVTT file (`.vtt`), and `kind` s
     kind="captions"
     srclang="en"
     label="English"
-    src="/shared-assets/misc/friday.vtt" />
+    src="/shared-assets/misc/friday.vtt"
+  />
 </video>
 ```
 
@@ -2526,7 +2699,8 @@ Offer several files with `srcset` and tell the browser the display slot with `si
   src="logo.png"
   width="320"
   height="320"
-  alt="MDN Web Docs logo" />
+  alt="MDN Web Docs logo"
+/>
 
 <picture>
   <source srcset="photo.avif" type="image/avif" />
@@ -2811,7 +2985,8 @@ Give every `<img>` an `alt`. Describe a content image. Use `alt=""` when the ima
 ```html
 <img
   src="/shared-assets/images/examples/elephant.jpg"
-  alt="Elephant at sunset" />
+  alt="Elephant at sunset"
+/>
 
 <img src="divider.png" alt="" />
 ```
@@ -3262,7 +3437,8 @@ Give crawlers a document they can read: a real title, a description, semantic el
   <title>My test page</title>
   <meta
     name="description"
-    content="A short summary of what this page is about." />
+    content="A short summary of what this page is about."
+  />
 </head>
 ```
 
@@ -3422,7 +3598,10 @@ Set charset, language, title, and description; outline the page with headings th
   <head>
     <meta charset="utf-8" />
     <title>Beetles</title>
-    <meta name="description" content="What a beetle is, and how its body is divided." />
+    <meta
+      name="description"
+      content="What a beetle is, and how its body is divided."
+    />
   </head>
   <body>
     <h1>Beetles</h1>
@@ -3516,6 +3695,41 @@ Set charset, language, title, and description; outline the page with headings th
 **Sources:**
 
 - https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+</details>
+
+<details>
+<summary>What is the difference between a cookie, sessionStorage, and localStorage?</summary>
+
+### What is the difference between a cookie, sessionStorage, and localStorage?
+
+**Definition:**
+
+All three persist data in the browser, but **cookies** are built for **HTTP**, while **Web Storage** is a **JavaScript key–value API** scoped to an **origin**.
+
+**How it works:**
+
+|                    | **Cookie**                                                                 | **sessionStorage**                                         | **localStorage**                                              |
+| ------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------- |
+| **Primary use**    | Session id, prefs the **server** must read on the next request             | Tab-scoped draft or wizard state                           | Client prefs that survive browser restarts                    |
+| **Sent with HTTP** | Yes — `Cookie` header on matching requests (unless blocked)                | No                                                         | No                                                            |
+| **Capacity**       | ~4 KB per cookie                                                           | ~5 MiB per origin (typical)                                | ~5 MiB per origin (typical)                                   |
+| **Lifetime**       | `Max-Age` / `Expires`, or session cookie until browser session ends        | Until the **tab/window** session ends                      | Until cleared by script or user (subject to browser eviction) |
+| **API**            | `Set-Cookie` (server) + `document.cookie` (limited)                        | `setItem` / `getItem` (sync)                               | Same as sessionStorage                                        |
+| **Security notes** | `HttpOnly` hides from JS (still sent to server); use `Secure` + `SameSite` | Readable by any same-origin script (XSS) — not for secrets | Same as sessionStorage                                        |
+
+**When to use:**
+
+- **Cookie**: auth session the server validates; small flags the backend needs.
+- **sessionStorage**: data that must die when the tab closes.
+- **localStorage**: theme, locale UI choice, non-sensitive client-only prefs.
+
+Neither Web Storage nor cookies replace **IndexedDB** for large or structured offline data. Full comparison: [JS browser extra — Browser storage](./3_js_browser_extra.md).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies
+- https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
+- https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 </details>
 
 <details>
@@ -3837,6 +4051,72 @@ pug.renderFile("template.pug", { name: "Timothy" });
 </details>
 
 <details>
+<summary>Have you used different HTML templating languages before?</summary>
+
+### Have you used different HTML templating languages before?
+
+**Definition:**
+
+**HTML templating** means generating HTML from a **template + data** — on the server, at build time, or in a UI framework — instead of hand-writing every page.
+
+**How it works:**
+
+#### Common families
+
+| Kind                             | Examples                                   | Typical use                               |
+| -------------------------------- | ------------------------------------------ | ----------------------------------------- |
+| **Whitespace / logic templates** | Pug (Jade), Nunjucks, EJS, Handlebars      | Server or static site generators          |
+| **Component templates**          | JSX/TSX (React), Vue SFC templates, Svelte | SPA and SSR frameworks (Next.js, Nuxt, …) |
+| **Browser `<template>`**         | Inert markup cloned by script              | Web components, client widgets            |
+
+#### How to answer in an interview
+
+- Name what you **actually used**: e.g. **Pug** for compile-to-HTML strings, **JSX/TSX** in **React/Next.js** for component trees (MyConspect handbook app).
+- Contrast **server templates** (one HTML string per request/build) vs **UI templates** (reconciled DOM, hydration).
+- Mention **separation of concerns**: template holds structure; data comes from API, CMS, or props.
+
+**When to use:**
+
+Server/build templates for marketing pages and email-like layouts; component templates for interactive apps. See the Pug and templating-engine questions above in this file.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template
+- https://pugjs.org/api/getting-started.html
+- https://react.dev/learn/writing-markup-with-jsx
+</details>
+
+<details>
+<summary>What is progressive rendering?</summary>
+
+### What is progressive rendering?
+
+**Definition:**
+
+**Progressive rendering** means the browser shows **useful content early** while HTML, CSS, and JS still stream in — instead of waiting for every asset before the first paint.
+
+**How it works:**
+
+- HTML parses **incrementally**; the DOM grows as bytes arrive.
+- First styled paint still waits on **render-blocking CSS** (CSSOM). Inline or prioritize **critical CSS**; defer the rest.
+- Use **`defer`**, **`async`**, or **`type="module"`** so scripts do not block parsing unnecessarily.
+- Below-the-fold images: `loading="lazy"`; optional skeleton UI while data loads.
+
+**When to use:**
+
+Long articles, marketing pages with LCP heroes, SSR HTML that hydrates later.
+
+**Thoughts:**
+
+Pair with non-blocking JS and lazy media — see [HTML — Rendering — Progressive rendering](./1_html_rendering.md#progressive-rendering).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Critical_rendering_path
+- https://web.dev/articles/critical-rendering-path
+</details>
+
+<details>
 <summary>What are browser developer tools, and how do you use them with HTML?</summary>
 
 ### What are browser developer tools, and how do you use them with HTML?
@@ -3977,7 +4257,8 @@ Minifying removes unnecessary whitespace and comments so the file is smaller. Pa
 **Examples:**
 
 ```html
-<h1>HTML debugging examples</h1><p>What causes errors in HTML?</p>
+<h1>HTML debugging examples</h1>
+<p>What causes errors in HTML?</p>
 ```
 
 **Sources:**
@@ -4060,7 +4341,8 @@ A CSS framework is a stylesheet you link from the document. Bootstrap is one suc
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous" />
+      crossorigin="anonymous"
+    />
   </head>
   <body>
     <h1>Hello, world!</h1>
@@ -4101,7 +4383,8 @@ Bootstrap ships a ready CSS file and a JavaScript bundle, so you style and add c
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"
+></script>
 ```
 
 **Sources:**
@@ -4518,4 +4801,27 @@ Write HTML that does the job without the newest feature, then add that feature w
 - https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement
 - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script
 - https://developer.mozilla.org/en-US/docs/Web/HTML/How_to/Author_fast-loading_HTML_pages
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+| Your HTML list topic                            | Find in this file                                                                                                     |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Элемент, атрибуты, doctype, структура           | [HTML Basics](#html-basics)                                                                                           |
+| HTML5 платформа, валидация                      | [HTML5 Features](#html5-features) · [ApplicationCache (historical)](./1_html_advanced.md#applicationcache-historical) |
+| Семантика, nav, article/section, picture/srcset | [Semantics](#what-are-semantic-html-tags-and-why-are-they-important)                                                  |
+| Формы, input, label, autocomplete               | [Forms](#forms-and-input-elements)                                                                                    |
+| canvas/svg, alt, decoding                       | [Images and Objects](#images-and-objects)                                                                             |
+| viewport, meta, head                            | [Responsive Design](#responsive-design-and-media-queries) · meta tags                                                 |
+| Таблицы tr/th/td                                | [Tables](#tables)                                                                                                     |
+| Доступность, ARIA                               | [Accessibility](#accessibility) + [1_html_a11y.md](./1_html_a11y.md)                                                  |
+| Производительность HTML                         | [Best Practices](#html-best-practices) · [1_html_performance.md](./1_html_performance.md)                             |
+
+**Theory:** [1_html_core.md](./1_html_core.md) · [structure](./1_html_structure.md) · [semantics](./1_html_semantics.md) · [forms](./1_html_forms.md) · [media](./1_html_media.md).
+
 </details>

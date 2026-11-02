@@ -6,7 +6,7 @@ child_process, cluster, workers, and real-time servers.
 
 ### Related docs
 
-* [Node.js — Core](./8_nodejs_core.md) · [Node.js — Modules](./8_nodejs_modules.md) · [Node.js — HTTP](./8_nodejs_http.md) · [Node.js — Additional](./8_nodejs_process.md) · [Node.js — Interview](./8_nodejs_interview.md)
+- [Node.js — Core](./8_nodejs_core.md) · [Node.js — Modules](./8_nodejs_modules.md) · [Node.js — HTTP](./8_nodejs_http.md) · [Node.js — Additional](./8_nodejs_process.md) · [Node.js — Interview](./8_nodejs_interview.md#interview-practice) · [Node backend course](./8_nodejs_interview.md#nodejs-backend--course-index)
 
 ### Sections
 
@@ -25,10 +25,10 @@ child_process, cluster, workers, and real-time servers.
 
 A process is a running program with its own isolated virtual address space (PID). A thread is a unit of execution within a process (typically its own stack). Node's main JS runs on one thread; libuv uses a thread pool for I/O. OS scheduling, context, interrupts, POSIX signals: [Processes, multitasking & interrupts](./0_system_design_core.md#processes-multitasking). Stack vs heap inside that space: [Memory: stack and heap](./3_js_data_types.md#memory-stack-heap).
 
-| Concept | Node.js |
-|---------|---------|
-| Main process | one V8 instance, one event loop |
-| Child process | separate memory, own V8 |
+| Concept       | Node.js                                   |
+| ------------- | ----------------------------------------- |
+| Main process  | one V8 instance, one event loop           |
+| Child process | separate memory, own V8                   |
 | Worker thread | shared memory option, separate JS context |
 
 **Sources:** [nodejs.org process](https://nodejs.org/api/process.html)
@@ -44,25 +44,25 @@ A process is a running program with its own isolated virtual address space (PID)
 
 Module to spawn child processes and communicate via stdio or IPC.
 
-| Method | Use case |
-|--------|----------|
-| `spawn(cmd, args)` | streaming I/O, long-running commands |
-| `exec(cmd)` | shell command, buffered output |
-| `execFile(file, args)` | run executable directly (no shell) |
-| `fork(modulePath)` | spawn Node module with IPC channel |
+| Method                 | Use case                             |
+| ---------------------- | ------------------------------------ |
+| `spawn(cmd, args)`     | streaming I/O, long-running commands |
+| `exec(cmd)`            | shell command, buffered output       |
+| `execFile(file, args)` | run executable directly (no shell)   |
+| `fork(modulePath)`     | spawn Node module with IPC channel   |
 
 **How it works:** `fork` is specialized `spawn` for Node with `process.send` IPC — ideal for cluster workers. The `node:cluster` module uses that to run several Node processes that share server ports. `cluster.isPrimary` forks workers (`cluster.fork()`); each worker is `cluster.isWorker` and can listen on the same port. When you do not need separate processes, prefer `worker_threads` inside one Node instance.
 
 **Examples:**
 
 ```js
-import { spawn, fork } from 'node:child_process';
+import { spawn, fork } from "node:child_process";
 
-const ls = spawn('ls', ['-la']);
-ls.stdout.on('data', (data) => console.log(data.toString()));
+const ls = spawn("ls", ["-la"]);
+ls.stdout.on("data", (data) => console.log(data.toString()));
 
-const worker = fork('./worker.js');
-worker.send({ task: 'compute' });
+const worker = fork("./worker.js");
+worker.send({ task: "compute" });
 ```
 
 **Sources:** [nodejs.org child_process](https://nodejs.org/api/child_process.html) · [nodejs.org cluster](https://nodejs.org/api/cluster.html)
@@ -78,10 +78,10 @@ worker.send({ task: 'compute' });
 
 Library for low-latency, bidirectional, event-based communication between client and server over WebSocket (with fallbacks).
 
-| Layer | Role |
-|-------|------|
+| Layer     | Role                                        |
+| --------- | ------------------------------------------- |
 | Engine.IO | low-level connection, transport negotiation |
-| Socket.IO | high-level events, rooms, namespaces |
+| Socket.IO | high-level events, rooms, namespaces        |
 
 **How it works:** unsubscribe in `useEffect` return to avoid duplicate listeners on reconnect.
 
@@ -89,16 +89,16 @@ Library for low-latency, bidirectional, event-based communication between client
 
 ```js
 // server
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 const io = new Server(httpServer);
-io.on('connection', (socket) => {
-  socket.on('message', (msg) => io.emit('message', msg));
+io.on("connection", (socket) => {
+  socket.on("message", (msg) => io.emit("message", msg));
 });
 
 // client
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 const socket = io();
-socket.emit('message', 'hello');
+socket.emit("message", "hello");
 ```
 
 **Sources:** [socket.io](https://socket.io/docs/v4/)
@@ -133,13 +133,13 @@ rg "createUser" src/
 
 Core OS components relevant to Node deployment.
 
-| Component | Role |
-|-----------|------|
-| Boot loader | starts the system |
-| Kernel | manages CPU, memory, devices |
-| Init system | starts daemons |
-| Daemons | background services |
-| Shell (CLI) | command-line interface |
+| Component   | Role                         |
+| ----------- | ---------------------------- |
+| Boot loader | starts the system            |
+| Kernel      | manages CPU, memory, devices |
+| Init system | starts daemons               |
+| Daemons     | background services          |
+| Shell (CLI) | command-line interface       |
 
 **How it works:**
 
@@ -185,25 +185,25 @@ sudo npm install -g pm2   # avoid global npm with sudo when possible
 4. Close DB pool, Redis, message consumers.
 5. `process.exit(0)` or let process exit naturally.
 
-| Signal | Source | Typical action |
-|--------|--------|----------------|
-| SIGTERM | `docker stop`, K8s pod delete | Graceful shutdown |
-| SIGINT | Ctrl+C in terminal | Same handler in dev |
-| SIGKILL | `kill -9` | Cannot catch — hard kill |
+| Signal  | Source                        | Typical action           |
+| ------- | ----------------------------- | ------------------------ |
+| SIGTERM | `docker stop`, K8s pod delete | Graceful shutdown        |
+| SIGINT  | Ctrl+C in terminal            | Same handler in dev      |
+| SIGKILL | `kill -9`                     | Cannot catch — hard kill |
 
 **When to use:** K8s rolling deploy — old pod gets SIGTERM; new pod receives traffic. PM2 `kill_timeout` configures grace period.
 
 **Pluses and minuses:**
 
-| + | − |
-|------|------|
-| No dropped requests during deploy | Must implement; default is abrupt exit |
-| Clean resource release | Long requests may need timeout + force exit |
+| +                                 | −                                           |
+| --------------------------------- | ------------------------------------------- |
+| No dropped requests during deploy | Must implement; default is abrupt exit      |
+| Clean resource release            | Long requests may need timeout + force exit |
 
 **Examples:**
 
 ```js
-import { createServer } from 'node:http';
+import { createServer } from "node:http";
 
 const server = createServer(app);
 const dbPool = await createPool();
@@ -214,18 +214,18 @@ function shutdown(signal) {
   console.log(`${signal} received — closing server`);
   server.close(async () => {
     await dbPool.end();
-    console.log('clean exit');
+    console.log("clean exit");
     process.exit(0);
   });
   // Force exit if drain takes too long
   setTimeout(() => {
-    console.error('forced shutdown');
+    console.error("forced shutdown");
     process.exit(1);
   }, 25_000).unref();
 }
 
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
 ```
 
 **Thoughts:** `server.close()` waits for existing connections — use `closeIdleConnections()` (Node 18+) or track active requests. Health check should fail when shutting down so load balancer stops sending traffic. From the shell: `kill PID` is SIGTERM; `kill -9` is SIGKILL — [Unix process management](./15_devops.md#unix-process-management).

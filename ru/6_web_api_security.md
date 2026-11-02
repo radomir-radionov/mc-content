@@ -11,6 +11,9 @@
 ### Sections
 
 - [13. Security](#13-security)
+- [HTTP security headers](#http-security-headers)
+- [Subresource Integrity (SRI)](#subresource-integrity-sri)
+- [Cross-origin requests in JavaScript](#cross-origin-requests-in-javascript)
 - [15. Integrations](#15-integrations)
 
 ---
@@ -294,6 +297,62 @@ fetch("/api/transfer", {
 
 ---
 
+</details>
+
+<a name="http-security-headers"></a>
+
+<details>
+  <summary>HTTP security headers</summary>
+
+### HTTP security headers
+
+**Definition:**
+
+HTTP-заголовки ответа, задающие браузеру более строгие правила: HTTPS, framing, MIME, скрипты, Referer.
+
+**How it works:**
+
+`Strict-Transport-Security`, `Content-Security-Policy` ([CSP](#content-security-policy-csp)), `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, COOP/COEP/CORP. Legacy XFO / X-XSS-Protection — предпочитайте CSP `frame-ancestors`.
+
+**Sources:**
+
+- https://securityheaders.com/
+</details>
+
+<a name="subresource-integrity-sri"></a>
+
+<details>
+  <summary>Subresource Integrity (SRI)</summary>
+
+### Subresource Integrity (SRI)
+
+**Definition:**
+
+Атрибут `integrity` на `<script>` / `<link rel="stylesheet">` — браузер сверяет hash файла с CDN.
+
+**How it works:**
+
+Нужны `crossorigin="anonymous"` и CORS у хоста. Не заменяет решение «доверять ли vendor». См. [Supply chain](./7_special_security.md#supply-chain-attacks).
+
+**Sources:**
+
+- [MDN — SRI](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity)
+</details>
+
+<a name="cross-origin-requests-in-javascript"></a>
+
+<details>
+  <summary>Cross-origin requests in JavaScript</summary>
+
+### Cross-origin requests in JavaScript
+
+**Definition:**
+
+Способы получить данные с другого origin: [CORS](#cors), same-origin **BFF**, `postMessage`, WebSocket; JSONP — legacy ([JSONP](#jsonp)). CORS ≠ защита от [CSRF](#csrf-cross-site-request-forgery).
+
+**Sources:**
+
+- [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
 </details>
 
 <details>

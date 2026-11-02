@@ -12,6 +12,9 @@ AuthN/AuthZ, сеансы, JWT, OAuth, файлы cookie и хранилище.
 
 - [8. Auth](#8-auth)
 - [9. Storage](#9-storage)
+- [Authentication methods](#authentication-methods)
+- [Federated authentication](#federated-authentication)
+- [Web storage security](#web-storage-security)
 
 ---
 
@@ -67,6 +70,26 @@ Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l
 
 </details>
 
+<a name="authentication-methods"></a>
+
+<details>
+  <summary>Authentication methods</summary>
+
+### Authentication methods
+
+**Definition:**
+
+Способы **доказать личность** после идентификации — по факторам и протоколам.
+
+**How it works:**
+
+Знание (пароль), владение (TOTP, WebAuthn), биометрия; HTTP Basic/Bearer; OAuth/OIDC ([Federated](#federated-authentication)); сессия в HttpOnly cookie.
+
+**Sources:**
+
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+</details>
+
 <details>
   <summary>OAuth2 & OIDC overview</summary>
 
@@ -83,11 +106,11 @@ Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l
 5. Ответ: **access_token** (вызов API), **refresh_token** (необязательно), **id_token** (OIDC — JWT с `sub`, `email`, `iss`).
 
 | Токен                     | Цель                                                         |
-| --- | --- |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
 | Токен доступа             | Учетные данные носителя для API серверов ресурсов            |
 | Обновить токен            | Получите новый токен доступа без повторного входа в систему  |
 | ID-токен (OIDC)           | Подтверждение аутентификации; JWT подписан эмитентом         |
-| Концепция | ОАут2 |
+| Концепция                 | ОАут2                                                        |
 | ------------              | ---------------------------------                            | --------------------------------                 |
 | Основная цель             | Авторизация (области действия)                               | Аутентификация (кто является пользователем)      |
 | Информация о пользователе | Через защищенную конечную точку с информацией о пользователе | `id_token` претензии + информация о пользователе |
@@ -127,6 +150,22 @@ Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l
 
 ---
 
+</details>
+
+<a name="federated-authentication"></a>
+
+<details>
+  <summary>Federated authentication</summary>
+
+### Federated authentication
+
+**Definition:**
+
+**Распределённая (федеративная) аутентификация:** приложения доверяют **IdP**; пользователь входит у IdP; приложение проверяет OIDC/SAML, **авторизацию** делает свой сервер.
+
+**Sources:**
+
+- [OAuth2 & OIDC](#oauth2--oidc-overview)
 </details>
 
 <details>
@@ -369,6 +408,26 @@ Set-Cookie: sid=abc; Secure; HttpOnly; SameSite=Lax; Max-Age=86400
 
 ---
 
+</details>
+
+<a name="web-storage-security"></a>
+
+<details>
+  <summary>Web storage security</summary>
+
+### Web storage security
+
+**Definition:**
+
+`localStorage` / `sessionStorage` доступны любому JS на странице (в т.ч. при XSS) — **не** для токенов и PII.
+
+**How it works:**
+
+Сессия — HttpOnly cookie; prefs UI — Web Storage; auth — память + refresh или BFF. См. [JS Browser — storage](./3_js_browser_extra.md#browser-storage).
+
+**Sources:**
+
+- [Secure & HttpOnly cookies](#secure--httponly-cookies)
 </details>
 
 <a name="10-protocols"></a>

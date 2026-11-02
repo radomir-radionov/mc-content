@@ -12,6 +12,9 @@ AuthN/AuthZ, sessions, JWT, OAuth, cookies, and storage.
 
 - [8. Auth](#8-auth)
 - [9. Storage](#9-storage)
+- [Authentication methods](#authentication-methods)
+- [Federated authentication](#federated-authentication)
+- [Web storage security](#web-storage-security)
 
 ---
 
@@ -65,6 +68,38 @@ Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l
 
 ---
 
+</details>
+
+<a name="authentication-methods"></a>
+
+<details>
+  <summary>Authentication methods</summary>
+
+### Authentication methods
+
+**Definition:**
+
+Ways to **prove identity** after **identification** — grouped by factor and by protocol.
+
+**How it works:**
+
+| Category               | Examples                                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| **Something you know** | Password, PIN (single factor — add MFA for sensitive apps)                                        |
+| **Something you have** | TOTP app, WebAuthn/FIDO2 security key, SMS OTP (weaker)                                           |
+| **Something you are**  | Biometrics on device (Face ID, fingerprint)                                                       |
+| **HTTP schemes**       | Basic, Bearer (JWT or opaque token)                                                               |
+| **Delegated**          | OAuth2 authorization code + OIDC ID token ([Federated authentication](#federated-authentication)) |
+| **Session**            | Opaque session ID in **HttpOnly** cookie ([Sessions & JWT](#sessions--jwt))                       |
+
+**When to use:**
+
+Public products: password + MFA or passkeys; APIs: short-lived Bearer tokens; enterprise: SSO via OIDC/SAML.
+
+**Sources:**
+
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- [OWASP Multifactor Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html)
 </details>
 
 <details>
@@ -128,6 +163,35 @@ Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l
 
 ---
 
+</details>
+
+<a name="federated-authentication"></a>
+
+<details>
+  <summary>Federated authentication</summary>
+
+### Federated authentication
+
+**Definition:**
+
+**Federated (distributed) authentication** — many applications trust one **identity provider (IdP)** for login instead of each app storing passwords. Users authenticate once at the IdP; relying apps validate **OIDC ID tokens** or **SAML assertions**.
+
+**How it works:**
+
+1. App redirects browser to IdP (authorization code + **PKCE**).
+2. User proves identity at IdP (password, MFA, passkey).
+3. App backend exchanges code for tokens; verifies **ID token** signature, `iss`, `aud`, `exp`.
+4. App creates **local session** or issues its own API token; **authorization** (what the user may do) stays in your server.
+
+Also called **SSO** when the same IdP serves many apps. See [OAuth2 & OIDC overview](#oauth2--oidc-overview) · [Web security interview — SSO](./7_special_security_interview.md).
+
+**When to use:**
+
+Multiple products under one org; consumer “Sign in with …”; avoid password reuse across apps.
+
+**Sources:**
+
+- [OWASP OAuth2 Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
 </details>
 
 <details>
@@ -371,6 +435,34 @@ Set-Cookie: sid=abc; Secure; HttpOnly; SameSite=Lax; Max-Age=86400
 
 ---
 
+</details>
+
+<a name="web-storage-security"></a>
+
+<details>
+  <summary>Web storage security</summary>
+
+### Web storage security
+
+**Definition:**
+
+**`localStorage` / `sessionStorage`** are origin-scoped and **readable by any script on the page** — including attacker script after **XSS**. They are **not** sent automatically like cookies.
+
+**How it works:**
+
+| Store               | Safe for                                     | Avoid                                                   |
+| ------------------- | -------------------------------------------- | ------------------------------------------------------- |
+| **HttpOnly cookie** | Session ID, refresh token (server-set flags) | Storing in JS-accessible storage                        |
+| **localStorage**    | Non-sensitive UI prefs (theme, draft text)   | JWT, refresh tokens, PII                                |
+| **sessionStorage**  | Tab-scoped transient UI state                | Secrets (same XSS risk as local)                        |
+| **IndexedDB**       | Offline app data (large)                     | Auth tokens unless encrypted + threat model accepts XSS |
+
+Prefer **memory** for short-lived access tokens in SPAs + **HttpOnly** refresh via [Secure BFF](./6_web_api_security.md#secure-bff-patterns). Theory: [JS Browser — storage](./3_js_browser_extra.md#browser-storage).
+
+**Sources:**
+
+- [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+- [Secure & HttpOnly cookies](#secure--httponly-cookies)
 </details>
 
 <a name="10-protocols"></a>

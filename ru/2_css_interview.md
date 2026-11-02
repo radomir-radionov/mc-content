@@ -6,7 +6,7 @@
 
 ### Related docs
 
-* [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Архитектура](./2_css_architecture.md) · [CSS — Интервью](./2_css_interview.md)
+- [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Архитектура](./2_css_architecture.md) · [CSS — Интервью](./2_css_interview.md)
 
 ### Sections
 
@@ -46,34 +46,32 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS Example</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <header>
-        <h1>Welcome to Our Site</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
+      <h1>Welcome to Our Site</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
     </header>
     <section>
-        <h2>Latest News</h2>
-        <article>
-            <h3>Breaking News: Big Event Tomorrow</h3>
-            <p>Join us for our biggest event of the year!</p>
-        </article>
+      <h2>Latest News</h2>
+      <article>
+        <h3>Breaking News: Big Event Tomorrow</h3>
+        <p>Join us for our biggest event of the year!</p>
+      </article>
     </section>
-    <footer>
-        &copy; 2022 YourSite
-    </footer>
-</body>
+    <footer>&copy; 2022 YourSite</footer>
+  </body>
 </html>
 ```
 
@@ -167,25 +165,27 @@ footer {
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="mystyle.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="mystyle.css" />
     <title>Document</title>
-</head>
-    <style>
-        h1, h2, p {
-            color: green;
-        }
-        
-        div {
-            border: 1px solid black;
-        }
-    </style>
-<body>
+  </head>
+  <style>
+    h1,
+    h2,
+    p {
+      color: green;
+    }
+
+    div {
+      border: 1px solid black;
+    }
+  </style>
+  <body>
     <h1>My Header</h1>
     <p>Hello, World!</p>
-</body>
+  </body>
 </html>
 ```
 
@@ -250,10 +250,14 @@ footer {
 
 ```css
 /* Styles applied using class selectors */
-.content { color: blue; }
+.content {
+  color: blue;
+}
 
 /* Styles applied using ID selector */
-#uniqueContent { color: red; }
+#uniqueContent {
+  color: red;
+}
 ```
 
 **Sources:**
@@ -279,7 +283,6 @@ footer {
 - **Псевдоклассы действия пользователя**: фиксируют действия пользователя, например `:checked` для выбранных элементов ввода.
 
 - **Псевдоклассы отношений**: относятся к иерархии дерева документа, например `:first-child` для элемента, который является первым дочерним у своего родителя.
-
 
 - **Языковые псевдоклассы**: для элементов, показанных на определённых языках, например `:dir()`.
 
@@ -318,15 +321,15 @@ footer {
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="styles.css" rel="stylesheet">
-  <title>Document</title>
-</head>
-<body>
-  <h1>Hello, CSS Reset!</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="styles.css" rel="stylesheet" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hello, CSS Reset!</h1>
+  </body>
 </html>
 ```
 
@@ -336,8 +339,8 @@ footer {
 /* reset.css */
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 h1 {
-    font-size: 2em;
-    margin: 0.67em 0;
+  font-size: 2em;
+  margin: 0.67em 0;
 }
 ```
 
@@ -394,7 +397,7 @@ h1 {
 
 /* Case Insensitive */
 [alt="home" i] {
-  background: url('home-icon.png');
+  background: url("home-icon.png");
 }
 ```
 
@@ -433,37 +436,30 @@ h1 {
 #### Практическое применение
 
 1. #### Обозначение внешних ссылок
-
    - **Связь**: указание на содержимое, которое открывает внешний сайт.
    - **Реализация**: визуальные или текстовые подсказки вроде стрелок или "External Link" рядом с якорными элементами.
 
 2. #### Особые цифры и буквы
-
    - **Связь**: оформление одной буквы или цифры внутри текстового блока.
    - **Реализация**: особенно полезно в дизайне, например, чтобы выделить первую букву абзаца более крупным кеглем.
 
 3. #### Адаптивные фоны
-
    - **Связь**: фоновые изображения или цвета для отдельных частей элемента при разных размерах экрана.
    - **Реализация**: медиазапросы внутри псевдоэлемента для конкретных размеров экрана.
 
 4. #### Блоки кода и цитаты
-
    - **Связь**: декоративные элементы до и после блоков кода и элементов blockquote.
    - **Реализация**: помогают выделить примеры кода или визуально отделить длинные секции blockquote.
 
 5. #### Свои радиокнопки и чекбоксы
-
    - **Связь**: переделать стандартный вид радиокнопок и чекбоксов под более индивидуальный.
    - **Реализация**: использовать ::before или ::after со свойством content, чтобы заменить стандартный вид.
 
 6. #### Сброс float
-
    - **Связь**: решить проблему, когда родительские контейнеры не учитывают высоту плавающих дочерних элементов и схлопываются.
    - **Реализация**: создать элемент через псевдоэлемент ::after, содержимое которого сбрасывает float.
 
 7. #### Хаки для старых браузеров
-
    - **Связь**: иногда, особенно в прежних версиях Internet Explorer, псевдоэлементы важны, чтобы получить нужное оформление.
    - **Реализация**: полезно применять специально подобранные стили, которые без этого приёма не работали бы как следует в старых браузерах.
 
@@ -519,11 +515,14 @@ nav li {
 ```html
 <nav>
   <ul>
-    <li>Direct Child</li> <!-- This is red -->
+    <li>Direct Child</li>
+    <!-- This is red -->
     <li>
-      Nested Child <!-- This is blue -->
+      Nested Child
+      <!-- This is blue -->
       <ul>
-        <li>Nested List Item</li> <!-- This is blue -->
+        <li>Nested List Item</li>
+        <!-- This is blue -->
       </ul>
     </li>
   </ul>
@@ -593,8 +592,8 @@ ul > li {
 ```css
 /* Remove margins, paddings on all elements within the container */
 .containers > * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 ```
 
@@ -602,11 +601,11 @@ HTML:
 
 ```html
 <div class="container">
-    <p>Paragraph 1</p>
-    <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-    </ul>
+  <p>Paragraph 1</p>
+  <ul>
+    <li>Item 1</li>
+    <li>Item 2</li>
+  </ul>
 </div>
 ```
 
@@ -617,7 +616,7 @@ HTML:
 ```css
 /* Style the direct sibling anchor tag when a list item is hovered */
 ul li:hover + a {
-    color: red;
+  color: red;
 }
 ```
 
@@ -625,9 +624,9 @@ HTML:
 
 ```html
 <ul>
-    <li>Item 1</li>
-    <li>Item 2</li>
-    <li><a href="#">Link</a></li>
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li><a href="#">Link</a></li>
 </ul>
 ```
 
@@ -645,8 +644,8 @@ HTML:
 
 ```css
 .container > * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 ```
 
@@ -654,8 +653,8 @@ HTML:
 
 ```html
 <div class="container">
-    <p>Paragraph 1</p>
-    <p>Paragraph 2</p>
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
 </div>
 ```
 
@@ -697,6 +696,7 @@ HTML:
 #### Отступы
 
 #### Автоматические margin
+
 Когда у окружающего контейнера задана ширина, горизонтальные margin со значением "auto" поровну распределяют оставшееся горизонтальное пространство по обе стороны элемента и центрируют его в контейнере.
 
 #### Взаимодействие родителя и потомка
@@ -715,12 +715,14 @@ HTML:
 #### Пример кода: блочная модель
 
 Вот HTML-код:
+
 ```html
 <div id="boxModelExample">This is an example of text within the Box Model.</div>
 ```
 
 Вот CSS-код:
-``` CSS
+
+```CSS
 #boxModelExample {
     border: 5px solid red;
     padding: 20px;
@@ -728,7 +730,7 @@ HTML:
 }
 ```
 
-``` CSS
+```CSS
 #autoMarginExample {
     width: 50%;
     margin-left: auto;
@@ -736,7 +738,7 @@ HTML:
 }
 ```
 
-``` CSS
+```CSS
 #borderBoxExample {
     box-sizing: border-box;
 }
@@ -760,8 +762,8 @@ HTML:
 
 #### Наглядное представление схлопывания margin
 
-- Схлопывание вертикального margin: 
-![Vertical Margin Collapse](https://firebasestorage.googleapis.com/v0/b/dev-stack-app.appspot.com/o/questions-images%2Fvartical-margin-collapse.jpg?alt=media&token=7a9f7961-302b-48c7-b74e-168f6780897f)
+- Схлопывание вертикального margin:
+  ![Vertical Margin Collapse](https://firebasestorage.googleapis.com/v0/b/dev-stack-app.appspot.com/o/questions-images%2Fvartical-margin-collapse.jpg?alt=media&token=7a9f7961-302b-48c7-b74e-168f6780897f)
 - Схлопывание горизонтального margin не происходит: ![Horizontal Margin Collapse](https://firebasestorage.googleapis.com/v0/b/dev-stack-app.appspot.com/o/questions-images%2Fhorizontal-margin-collapse.jpg?alt=media&token=da23e77b-72aa-4c17-a287-3f274753be9a)
 
 #### Как предотвратить схлопывание margin
@@ -789,8 +791,8 @@ HTML:
 
    ```html
    <div>
-       <p>This is paragraph 1</p>
-       <p>This is paragraph 2</p>
+     <p>This is paragraph 1</p>
+     <p>This is paragraph 2</p>
    </div>
    ```
 
@@ -853,6 +855,7 @@ HTML:
 **Examples:**
 
 #### Пример кода: автоматические margin
+
 ```css
 .container {
   width: 50%;
@@ -861,6 +864,7 @@ HTML:
 ```
 
 #### Пример кода: Flexbox
+
 ```css
 .container {
   display: flex;
@@ -869,6 +873,7 @@ HTML:
 ```
 
 #### Пример кода: Flexbox
+
 ```css
 .container {
   display: flex;
@@ -877,6 +882,7 @@ HTML:
 ```
 
 #### Пример кода: CSS Grid
+
 ```css
 .container {
   display: grid;
@@ -915,7 +921,8 @@ HTML:
 Вот CSS:
 
 ```css
-div, span {
+div,
+span {
   display: block;
   margin-bottom: 10px;
 }
@@ -1252,7 +1259,9 @@ body {
 
 ```css
 h1 {
-  font: italic bold 1.2em/1.5 "Fira Sans", sans-serif;
+  font:
+    italic bold 1.2em/1.5 "Fira Sans",
+    sans-serif;
 }
 ```
 
@@ -1517,8 +1526,7 @@ h1 {
 ```css
 .panel {
   background-image:
-    linear-gradient(rgb(0 0 0 / 40%), rgb(0 0 0 / 40%)),
-    url("photo.png");
+    linear-gradient(rgb(0 0 0 / 40%), rgb(0 0 0 / 40%)), url("photo.png");
   background-size: cover, cover;
   background-color: #222;
 }
@@ -2230,7 +2238,9 @@ Grid-элементы перекрываются, когда их диапазо
 .panel {
   opacity: 0;
   transform: translateY(1rem);
-  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms ease-out;
 }
 
 .panel.is-open {
@@ -2909,7 +2919,9 @@ button:focus-visible {
 
 ```css
 .card {
-  transition: transform 200ms ease-out, opacity 200ms ease-out;
+  transition:
+    transform 200ms ease-out,
+    opacity 200ms ease-out;
 }
 
 .card:hover {
@@ -4323,4 +4335,286 @@ article {
 
 - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/columns
 - https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Grid_lanes
+</details>
+
+### Front-end Developer Interview (H5BP)
+
+<details>
+<summary>Что такое специфичность CSS-селекторов?</summary>
+
+### Что такое специфичность CSS-селекторов?
+
+**Definition:**
+
+**Специфичность** — счёт каскада **(A, B, C)**. См. [CSS — Core](./2_css_core.md#cascade--specificity).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity
+</details>
+
+<details>
+<summary>Reset vs normalize — что выбрать?</summary>
+
+### Reset vs normalize — что выбрать?
+
+**Definition:**
+
+Обычно **normalize/reboot**; агрессивный reset — когда дизайн-система заменяет все дефолты.
+
+**Sources:**
+
+- https://necolas.github.io/normalize.css/
+</details>
+
+<details>
+<summary>Float — как работает?</summary>
+
+### Float — как работает?
+
+**Definition:**
+
+Обтекание; для сеток — Flex/Grid. Clearfix / **`flow-root`** для родителя с float-детьми.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/float
+</details>
+
+<details>
+<summary>BFC (Block Formatting Context)</summary>
+
+### BFC (Block Formatting Context)
+
+**Definition:**
+
+Изоляция float/margin; **`display: flow-root`**.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Display/Block_formatting_context
+</details>
+
+<details>
+<summary>Техники clear</summary>
+
+### Техники clear
+
+**Definition:**
+
+`clear`, clearfix, overflow, flow-root, Flex/Grid.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/clear
+</details>
+
+<details>
+<summary>Кросс-браузерные баги стилей</summary>
+
+### Кросс-браузерные баги стилей
+
+**Definition:**
+
+`@supports`, progressive enhancement, реальные браузеры для проверки.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@supports
+</details>
+
+<details>
+<summary>Слабые браузеры</summary>
+
+### Слабые браузеры
+
+**Definition:**
+
+Progressive enhancement; `@supports (display: grid)`.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement
+</details>
+
+<details>
+<summary>Скрыть визуально для a11y</summary>
+
+### Скрыть визуально для a11y
+
+**Definition:**
+
+sr-only; `aria-label`; не терять `:focus-visible`.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label
+</details>
+
+<details>
+<summary>Grid-системы</summary>
+
+### Grid-системы
+
+**Definition:**
+
+Grid/Flex или Bootstrap/Tailwind по контексту проекта.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout
+</details>
+
+<details>
+<summary>SVG стили</summary>
+
+### SVG стили
+
+**Definition:**
+
+Inline + `fill`/`currentColor`; внешний SVG как img — без CSS из документа.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/SVG
+</details>
+
+<details>
+<summary>@media не screen</summary>
+
+### @media не screen
+
+**Definition:**
+
+print, speech, prefers-\* , min-width.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@media
+</details>
+
+<details>
+<summary>Эффективный CSS — gotchas</summary>
+
+### Эффективный CSS — gotchas
+
+**Definition:**
+
+Глубокие селекторы; анимировать transform/opacity; purge CSS.
+
+**Sources:**
+
+- https://web.dev/articles/reduce-the-scope-and-complexity-of-style-calculations
+</details>
+
+<details>
+<summary>Препроцессоры CSS</summary>
+
+### Препроцессоры CSS
+
+**Definition:**
+
+Плюсы: DRY; минусы: nesting → специфичность; native CSS + `@layer`.
+
+**Sources:**
+
+- https://sass-lang.com/guide
+</details>
+
+<details>
+<summary>Web-шрифты</summary>
+
+### Web-шрифты
+
+**Definition:**
+
+@font-face, font-display, preload, fallback.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face
+</details>
+
+<details>
+<summary>Сопоставление селекторов</summary>
+
+### Сопоставление селекторов
+
+**Definition:**
+
+Style recalc на DOM; каскад.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity
+</details>
+
+<details>
+<summary>border-box на *</summary>
+
+### border-box на \*
+
+**Definition:**
+
+Padding/border внутри width/height.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/box-sizing
+</details>
+
+<details>
+<summary>Responsive vs mobile-first</summary>
+
+### Responsive vs mobile-first
+
+**Definition:**
+
+Mobile-first = база + min-width queries.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design
+</details>
+
+<details>
+<summary>Retina</summary>
+
+### Retina
+
+**Definition:**
+
+srcset, SVG, image-set().
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#using_the_srcset_attribute
+</details>
+
+<details>
+<summary>translate vs absolute</summary>
+
+### translate vs absolute
+
+**Definition:**
+
+translate — compositor; absolute — out of flow.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transform
+</details>
+
+<details>
+<summary>CSS-фреймворки</summary>
+
+### CSS-фреймворки
+
+**Definition:**
+
+Bootstrap/Tailwind; улучшать purge и a11y.
+
+**Sources:**
+
+- https://getbootstrap.com/docs/5.3/getting-started/introduction/
 </details>

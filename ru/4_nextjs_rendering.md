@@ -1491,9 +1491,11 @@ export default async function PostsPage() {
 _Темы следующие: Определение → Плюсы и минусы → Когда использовать → Пример → Примечания → Источник ([шаблон](./4_nextjs_core.md#topic-template))._
 
 <details>
-  <summary>Streaming SSR</summary>
+  <summary>Streaming SSR (progressive SSR)</summary>
 
-### Streaming SSR
+### Streaming SSR (progressive SSR)
+
+**Definition:** Сервер отдаёт HTML **частями**, пока async Server Components резолвятся. Медленные блоки не блокируют быстрые. То же, что **progressive SSR** в списках для собеседований.
 
 **Definition:** Сервер отправляет HTML частями по мере разрешения асинхронных серверных компонентов. Медленные разделы не блокируют быстрые разделы.
 

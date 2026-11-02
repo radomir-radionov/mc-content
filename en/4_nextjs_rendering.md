@@ -1490,11 +1490,11 @@ export default async function PostsPage() {
 _Topics follow: Definition → Pros / Cons → When to use → Example → Notes → Source ([template](./4_nextjs_core.md#topic-template))._
 
 <details>
-  <summary>Streaming SSR</summary>
+  <summary>Streaming SSR (progressive SSR)</summary>
 
-### Streaming SSR
+### Streaming SSR (progressive SSR)
 
-**Definition:** Server sends HTML in chunks as async Server Components resolve. Slow sections do not block fast sections.
+**Definition:** Server sends HTML in chunks as async Server Components resolve. Slow sections do not block fast sections. Same idea as **progressive SSR** in interview lists.
 
 **When to use:** Pages with independent slow/fast data regions.
 

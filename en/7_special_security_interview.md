@@ -11,6 +11,7 @@ Answers are filled for the published interview set.
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [Security — front-end checklist](#security--front-end-checklist)
 
 ---
 
@@ -3626,4 +3627,376 @@ The four questions keep the loop short: what are we working on, what can go wron
 
 - [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)
 - [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+</details>
+
+---
+
+### Security — front-end checklist
+
+Compact answers aligned with common **Security** interview lists. **Theory (canonical):** [Web security](./7_special_security.md) · [Browser security](./6_web_api_security.md) · [Auth & storage](./6_web_api_auth.md). Deeper Q&A blocks above in this file.
+
+<details>
+<summary>What is the difference between identification, authentication, and authorization?</summary>
+
+### What is the difference between identification, authentication, and authorization?
+
+**Definition:**
+
+- **Identification** — claiming an identity (username, email).
+- **Authentication** — proving that claim (password, MFA, signed token).
+- **Authorization** — deciding what that identity may do (roles, permissions).
+
+**How it works:**
+
+Ticket analogy: name on ticket = identification; passport check = authentication; boarding gate = authorization. HTTP: invalid/missing credentials → **`401`**; authenticated but forbidden → **`403`**.
+
+See [Auth — Identification, authentication, authorization](./6_web_api_auth.md#identification-authentication-authorization--http-basic) · [Authentication vs authorization](#what-is-the-difference-between-authentication-and-authorization).
+
+**Sources:**
+
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+</details>
+
+<details>
+<summary>What types of authentication exist?</summary>
+
+### What types of authentication exist?
+
+**Definition:**
+
+By **factor** and by **mechanism**.
+
+**How it works:**
+
+| Category      | Examples                                       |
+| ------------- | ---------------------------------------------- |
+| **Know**      | Password, PIN                                  |
+| **Have**      | TOTP, WebAuthn/FIDO2 hardware key              |
+| **Are**       | Biometrics (device-bound)                      |
+| **Delegated** | OAuth2/OIDC, SAML SSO                          |
+| **Token**     | Session cookie, Bearer JWT                     |
+| **Transport** | mTLS client certificate, HTTP Basic (TLS only) |
+
+Prefer **MFA** for privileged accounts. See [MFA](#can-you-describe-multi-factor-authentication-mfa-and-where-its-used).
+
+**Sources:**
+
+- [OAuth2 & OIDC](./6_web_api_auth.md#oauth2--oidc-overview)
+</details>
+
+<details>
+<summary>What is a distributed authentication system?</summary>
+
+### What is a distributed authentication system?
+
+**Definition:**
+
+**Federated authentication:** many apps trust one **identity provider (IdP)** — users authenticate once; apps validate **OIDC ID tokens** or **SAML assertions** instead of storing passwords locally.
+
+**How it works:**
+
+Redirect → IdP login → **authorization code + PKCE** → backend token exchange → local session or API JWT. Central MFA/password policy at IdP; **authorization still enforced in your app** on every request.
+
+See [SSO](#what-is-single-sign-on-sso-and-what-are-its-benefits).
+
+**Sources:**
+
+- [OpenID](#what-is-openid-and-how-does-it-relate-to-web-security)
+</details>
+
+<details>
+<summary>What are JWT tokens and how are they used for user authentication?</summary>
+
+### What are JWT tokens and how are they used for user authentication?
+
+**Definition:**
+
+Signed JSON claims (`sub`, `exp`, `iss`, `aud`) as **Bearer token** or OIDC **ID token**.
+
+**How it works:**
+
+Verify signature, **`exp`**, **`iss`/`aud`** server-side; short TTL; refresh rotation or `jti` denylist on logout. Prefer **HttpOnly cookie** or memory + BFF over `localStorage`.
+
+See [JWT interview block](#what-is-jwt-json-web-tokens-and-how-are-they-used-in-authentication).
+
+**Sources:**
+
+- [OWASP JWT Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html)
+</details>
+
+<details>
+<summary>What are Secure and HttpOnly cookies?</summary>
+
+### What are Secure and HttpOnly cookies?
+
+**Definition:**
+
+**`Secure`** — cookie only over HTTPS. **`HttpOnly`** — not readable from JS (`document.cookie`), reducing XSS session theft. Add **`SameSite`** for CSRF baseline.
+
+**How it works:**
+
+```http
+Set-Cookie: session=…; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+**Sources:**
+
+- [HTTP cookies](./6_web_api_http.md#http-cookies)
+</details>
+
+<details>
+<summary>What is Content Security Policy (CSP)?</summary>
+
+### What is Content Security Policy (CSP)?
+
+**Definition:**
+
+HTTP header listing trusted **script/style/load** origins — defense-in-depth against **XSS** and unauthorized embeds.
+
+**How it works:**
+
+Strict `script-src` with **nonces/hashes**; `frame-ancestors` for clickjacking; avoid `'unsafe-inline'`.
+
+See [CSP — browser security](./6_web_api_security.md#content-security-policy-csp) · [CSP interview](#what-is-content-security-policy-csp-and-how-does-it-improve-web-security).
+
+**Sources:**
+
+- [MDN — CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+</details>
+
+<details>
+<summary>What is CORS?</summary>
+
+### What is CORS?
+
+**Definition:**
+
+Browser opt-in so JS **reads** cross-origin responses. Not a network firewall; does **not** stop CSRF.
+
+**How it works:**
+
+Preflight `OPTIONS`; `Access-Control-Allow-Origin` (+ credentials rules). See [CORS](./6_web_api_security.md#cors).
+
+**Sources:**
+
+- [MDN — CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
+</details>
+
+<details>
+<summary>What is cross-site scripting (XSS)?</summary>
+
+### What is cross-site scripting (XSS)?
+
+**Definition:**
+
+Attacker script runs in **your origin** in the victim browser — reflected, stored, or DOM-based.
+
+**Sources:**
+
+- [XSS — browser security](./6_web_api_security.md#cross-site-scripting-xss)
+- [XSS prevention](#can-you-explain-the-cross-site-scripting-xss-attack-and-how-to-prevent-it)
+</details>
+
+<details>
+<summary>What methods improve web application security?</summary>
+
+### What methods improve web application security?
+
+**How it works:**
+
+HTTPS + HSTS; secure cookies; input validation; output encoding; parameterized SQL; server-side AuthZ; CSRF tokens / `SameSite`; CSP; security headers; patch dependencies; logging; threat modeling.
+
+See [Secure coding practices](#what-are-secure-coding-practices-and-why-are-they-needed).
+
+**Sources:**
+
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
+</details>
+
+<details>
+<summary>What is the OWASP Top 10?</summary>
+
+### What is the OWASP Top 10?
+
+**Definition:**
+
+OWASP’s prioritized list of **critical web app risks** (check [owasp.org/Top10](https://owasp.org/Top10/) for the current edition).
+
+**How it works (2021 names — verify current release):**
+
+Broken Access Control; Cryptographic Failures; Injection; Insecure Design; Security Misconfiguration; Vulnerable Components; Auth Failures; Integrity Failures; Logging/Monitoring Failures; SSRF.
+
+**Sources:**
+
+- https://owasp.org/Top10/
+</details>
+
+<details>
+<summary>What are SSL and TLS? Why use them in web development?</summary>
+
+### What are SSL and TLS? Why use them in web development?
+
+**Definition:**
+
+**TLS** encrypts HTTP and authenticates the server certificate — confidentiality and integrity in transit.
+
+**Sources:**
+
+- [SSL/TLS interview](#what-are-ssl-and-tls-and-what-role-do-they-play-in-web-security) · [HTTPS](./6_web_api_http.md#https)
+</details>
+
+<details>
+<summary>What are the main security threats on web pages?</summary>
+
+### What are the main security threats on web pages?
+
+**How it works:**
+
+XSS, CSRF, clickjacking, open redirects, sensitive data in URLs, mixed content, malicious third-party scripts, misconfigured CORS — plus server-side injection and broken access control affecting the UI.
+
+**Sources:**
+
+- [Common vulnerabilities](#what-are-some-common-web-security-vulnerabilities)
+</details>
+
+<details>
+<summary>Which HTTP security headers help protect web applications?</summary>
+
+### Which HTTP security headers help protect web applications?
+
+**How it works:**
+
+`Strict-Transport-Security`, `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, COOP/COEP/CORP where needed; prefer CSP `frame-ancestors` over legacy XFO.
+
+**Sources:**
+
+- [Security headers](#what-are-security-headers-and-why-are-they-important)
+</details>
+
+<details>
+<summary>What principles should guide a security strategy?</summary>
+
+### What principles should guide a security strategy?
+
+**How it works:**
+
+CIA triad; defense in depth; deny by default; [least privilege](#what-is-the-principle-of-least-privilege-polp); secure SDLC; validate on server; secrets management; monitoring and incident response.
+
+**Sources:**
+
+- [Threat modeling](#can-you-explain-the-concept-of-threat-modeling)
+</details>
+
+<details>
+<summary>What is the Principle of Least Privilege (POLP)?</summary>
+
+### What is the Principle of Least Privilege (POLP)?
+
+**Definition:**
+
+Grant only the **minimum** permissions required — users, services, tokens, DB roles.
+
+**Sources:**
+
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+</details>
+
+<details>
+<summary>How can you defend against DDoS attacks?</summary>
+
+### How can you defend against DDoS attacks?
+
+**How it works:**
+
+CDN/scrubbing, rate limits, WAF, caching static assets, autoscaling (with cost awareness), network-level mitigations.
+
+**Sources:**
+
+- [DDoS](#how-does-a-distributed-denial-of-service-ddos-attack-work-and-how-can-websites-be-protected-from-it)
+</details>
+
+<details>
+<summary>How can you defend against CSRF?</summary>
+
+### How can you defend against CSRF?
+
+**How it works:**
+
+`SameSite` cookies; anti-CSRF token; POST for mutations; custom headers for cookie APIs. CORS ≠ CSRF fix.
+
+**Sources:**
+
+- [CSRF](./6_web_api_security.md#csrf-cross-site-request-forgery)
+</details>
+
+<details>
+<summary>How can you defend against XSS?</summary>
+
+### How can you defend against XSS?
+
+**How it works:**
+
+Output encoding; strict CSP; HttpOnly cookies; avoid `innerHTML` with untrusted data; vetted sanitizers only when needed.
+
+**Sources:**
+
+- [XSS prevention](#can-you-explain-the-cross-site-scripting-xss-attack-and-how-to-prevent-it)
+</details>
+
+<details>
+<summary>What security measures apply to cookies on the client?</summary>
+
+### What security measures apply to cookies on the client?
+
+**How it works:**
+
+Do not copy session tokens to `localStorage`; rely on server `Secure`/`HttpOnly`/`SameSite`; server logout; minimal third-party cookie exposure.
+
+**Sources:**
+
+- [Safeguard cookies](#how-can-web-cookies-compromise-security-and-how-do-you-safeguard-against-these-risks)
+</details>
+
+<details>
+<summary>What approaches exist for cross-domain requests in JavaScript?</summary>
+
+### What approaches exist for cross-domain requests in JavaScript?
+
+**How it works:**
+
+CORS `fetch`; same-origin **BFF/proxy**; `postMessage` with origin checks; WebSocket with server auth; avoid JSONP.
+
+**Sources:**
+
+- [Same-Origin Policy](#explain-the-same-origin-policy-and-its-importance-in-web-security)
+</details>
+
+<details>
+<summary>What are best practices for web storage (localStorage, sessionStorage)?</summary>
+
+### What are best practices for web storage (localStorage, sessionStorage)?
+
+**How it works:**
+
+No secrets or session tokens (XSS-readable); OK for non-sensitive prefs; prefer HttpOnly cookies or memory + refresh for auth.
+
+**Sources:**
+
+- [Auth & storage](./6_web_api_auth.md)
+</details>
+
+<details>
+<summary>What is Subresource Integrity (SRI) and how does it improve security?</summary>
+
+### What is Subresource Integrity (SRI) and how does it improve security?
+
+**Definition:**
+
+Hash on `<script>` / `<link rel="stylesheet">` so the browser rejects tampered CDN files; needs `crossorigin="anonymous"` cross-origin.
+
+**Sources:**
+
+- [SRI interview](#can-you-explain-the-role-of-subresource-integrity-sri-in-web-security)
+- [MDN — SRI](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity)
 </details>

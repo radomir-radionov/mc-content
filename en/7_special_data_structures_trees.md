@@ -6,7 +6,7 @@ Trees, traversal, graphs, and tries.
 
 ### Related docs
 
-- [Choosing a data structure](./7_special_data_structures.md#choosing-a-data-structure) · [Linear](./7_special_data_structures_linear.md) · [Trees & graphs](./7_special_data_structures_trees.md) · [Hash & heap](./7_special_data_structures_advanced.md) · [Algorithms — Big O](./7_special_algorithms_core.md) · [JavaScript — Document](./3_js_browser.md)
+- [Choosing a data structure](./7_special_data_structures.md#choosing-a-data-structure) · [Linear](./7_special_data_structures_linear.md) · [Trees & graphs](./7_special_data_structures_trees.md) · [Hash & heap](./7_special_data_structures_advanced.md) · [Algorithms — Common](./7_special_algorithms_common.md) · [Binary tree interview](./7_ds_binary_tree_interview.md#interview-practice) · [Trees interview](./7_ds_trees_interview.md#interview-practice) · [Trie interview](./7_ds_tries_interview.md#interview-practice) · [Graph interview](./7_algo_graphs_interview.md#interview-practice) · [DSA course index](./7_ds_overview_interview.md#dsa-technical--course-index) · [JavaScript — Document](./3_js_browser.md)
 
 ### Sections
 

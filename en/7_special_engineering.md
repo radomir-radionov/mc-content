@@ -806,6 +806,27 @@ generateReport(readOnlyDb);
 
 </details>
 
+<a name="inversion-of-control"></a>
+
+<details>
+  <summary>Inversion of Control (IoC)</summary>
+
+### Inversion of Control (IoC)
+
+**Definition:**
+
+**Inversion of Control** — the **framework or composition root** controls object lifecycles and calls your code (you do not `new` every dependency inside domain logic).
+
+**How it works:**
+
+- **Dependency injection** is the common IoC style: [Constructor injection in JS](./3_js_classes.md#constructor-injection), React providers, Nest/Angular containers.
+- Pairs with [DIP](#dependency-inversion-dip): depend on abstractions; wire concretes at the edge.
+
+**Sources:**
+
+- [OOP & FP interview cheatsheet](./7_oop_interview.md#oop--fp--cheatsheet)
+</details>
+
 <details>
   <summary>Dependency Inversion (DIP)</summary>
 

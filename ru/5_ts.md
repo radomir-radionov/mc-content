@@ -4,7 +4,7 @@
 
 ### Related docs
 
-[JS — Language (JS vs ECMAScript)](./3_js_core.md#javascript-and-ecmascript) · [Interview](./5_ts_interview.md)
+[JS — Language (JS vs ECMAScript)](./3_js_core.md#javascript-and-ecmascript) · [Interview](./5_ts_interview.md#interview-practice) · [RU syllabus index](./5_ts_interview.md#typescript-interview--course-index) · [JS course TS block #50–62](./5_ts_interview.md#ru-cheatsheet-index)
 
 ### Navigation — Handbook
 
@@ -23,7 +23,7 @@ Matches the [official TypeScript Handbook](https://www.typescriptlang.org/docs/h
 | [Classes](./5_ts_classes.md)                             | Fields, visibility, inheritance, `implements`, abstract classes.                                     |
 | [Modules](./5_ts_modules.md)                             | ES modules, CommonJS, resolution, and emit targets.                                                  |
 | [Utility Types](./5_ts_utility_types.md)                 | Hub + [Object](./5_ts_utility_object.md) and [Unions & functions](./5_ts_utility_union_function.md). |
-| [Interview](./5_ts_interview.md)                         | Вопросы по TypeScript, ответы не заполнены.                                                          |
+| [Interview](./5_ts_interview.md)                         | Devinterview Q&A (~100) + блок курса JS (#50–62).                                                    |
 | [Tasks](/frontend/typescript/ts-interview-tasks)         | Type-level coding challenges.                                                                        |
 
 ### Navigation — Old (Common)

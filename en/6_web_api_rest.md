@@ -285,9 +285,35 @@ DELETE /api/orders/42    → often 204 or deleted id
 
 [Roy Fielding — REST dissertation](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) · [MDN — HTTP methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods) · [MDN — REST](https://developer.mozilla.org/en-US/docs/Glossary/REST) · [GeeksforGeeks — REST API vs RESTful API](https://www.geeksforgeeks.org/advance-java/know-the-difference-between-rest-api-and-restful-api/)
 
----
+</details>
+
+<details>
+  <summary>Richardson REST maturity model</summary>
+
+### Richardson REST maturity model
+
+**Definition:**
+
+A scale (Levels **0–3**) for how fully an API uses HTTP as a **web** protocol: many URLs → correct verbs → hypermedia controls.
+
+**How it works:**
+
+| Level | Typical pattern                                 |
+| ----- | ----------------------------------------------- |
+| **0** | Single endpoint, POST-only RPC                  |
+| **1** | Resource-specific URLs                          |
+| **2** | URLs + **GET/POST/PUT/PATCH/DELETE** semantics  |
+| **3** | **HATEOAS** — links in responses for next steps |
+
+Interview: most APIs are **Level 2**; “RESTful” in the strict sense aspires to **Level 3**. Full Q&A: [Web API interview — Richardson model](./6_web_api_interview.md).
+
+**Sources:**
+
+- https://martinfowler.com/articles/richardsonMaturityModel.html
 
 </details>
+
+---
 
 <details>
   <summary>REST versioning & pagination</summary>

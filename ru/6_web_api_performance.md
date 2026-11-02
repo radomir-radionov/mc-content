@@ -12,6 +12,7 @@
 
 - [14. Advanced topics](#14-advanced-topics)
 - [API and client performance optimization](#api-and-client-performance-optimization)
+- [Frontend performance techniques (study map)](#frontend-performance-techniques-study-map)
 
 ---
 
@@ -824,6 +825,38 @@ Workflow: **профилирование** (RUM + APM/traces + Lighthouse/DevToo
 **Thoughts:** CWV клиента и latency API связаны — медленный TTFB блокирует FCP/LCP; тяжёлый client JS бьёт по INP даже при быстром API. Полные client-playbook → [§10 Performance](./4_react_ecosystem.md#10-performance) · [Next optimizations](./4_nextjs_optimizations.md) · БД/запросы → [N+1](./9_database_orm.md#n1-problem) · [Connection pooling](./9_database_orm.md#connection-pooling) · Node → [8_nodejs interview Q29](./8_nodejs_interview.md#interview-practice).
 
 **Sources:** [web.dev — Vitals](https://web.dev/articles/vitals) · [web.dev — Optimize TTFB](https://web.dev/articles/optimize-ttfb) · [MDN — Server-Timing](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) · [web.dev — Optimize long tasks](https://web.dev/articles/optimize-long-tasks)
+
+---
+
+</details>
+
+<a name="frontend-performance-techniques-study-map"></a>
+
+<details>
+  <summary>Frontend performance techniques (study map)</summary>
+
+### Frontend performance techniques (study map)
+
+**Definition:** **Маршрутизация** по темам perf — длинные эссе в связанных заметках; используйте, когда в статье список «10 приёмов», а нужна каноническая страница conspect.
+
+**How it works:**
+
+| Topic                               | Handbook depth                                                                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Core Web Vitals (LCP, INP, CLS)** | [HTML — Performance → Core Web Vitals](./1_html_performance.md#core-web-vitals) — **FID** был Core до **мар. 2024**; заменён **INP** |
+| **CRP / порядок загрузки**          | [HTML — Rendering](./1_html_rendering.md) · [preload / prefetch](#preload-prefetch-preconnect--prerender)                            |
+| **List virtualization**             | [React ecosystem → List virtualization](./4_react_ecosystem.md#list-virtualization)                                                  |
+| **Code splitting**                  | [React ecosystem → Code splitting](./4_react_ecosystem.md#code-splitting) · [dynamic import](./3_js_dynamic_import.md)               |
+| **Tree shaking**                    | ESM + production build; [Webpack — tree shaking](https://webpack.js.org/guides/tree-shaking/)                                        |
+| **Compression**                     | [MDN — HTTP compression](https://developer.mozilla.org/en-US/docs/Web/HTTP/Compression)                                              |
+| **Images**                          | [HTML — img / picture](./1_html_media.md#img-element-and-responsive-images) · [Next optimizations](./4_nextjs_optimizations.md)      |
+| **API + client**                    | [API and client performance optimization](#api-and-client-performance-optimization)                                                  |
+
+**Thoughts:** **CLS** в sidebar при смене трека — баг **стабильности layout** (optimistic path vs sticky), не только картинки. Карьера: perf‑глубина → [Demand 2026](./0_engineering_fullstack.md#frontend-developer-demand-2026).
+
+**See also:** [Web Vitals in React](./4_react_ecosystem.md#web-vitals-in-react-apps) · [Learning timeline](./0_engineering_fullstack.md#how-long-to-learn-frontend-development)
+
+**Sources:** [web.dev — Vitals](https://web.dev/articles/vitals) · [MDN — lazy loading](https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading)
 
 ---
 

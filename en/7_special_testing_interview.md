@@ -11,6 +11,8 @@ Interview answers for every question in this set.
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [Testing — interview checklist](#testing--interview-checklist)
+- [JavaScript Core — Test Pyramid](#javascript-core--test-pyramid)
 
 ---
 
@@ -137,7 +139,7 @@ The Software Development Life Cycle (SDLC) is comprised of several distinct phas
 14. Deployment Verification: Post-deployment tests are conducted to ensure that the system functions correctly in its live environment.
 15. Regular Checks: Ongoing maintenance includes periodic checks and updates to keep the software optimized and secure.
 16. Code Example: Unit Testing
-Here is the Python code:
+    Here is the Python code:
 
 ```python
 
@@ -157,7 +159,7 @@ Here is the Python code:
 #### assert subtract(5, 2) == 3
 
 - Code Example: Integration Testing
-Here is the Python code:
+  Here is the Python code:
 
 ```python
 
@@ -282,7 +284,6 @@ Static testing and dynamic testing complement each other to deliver comprehensiv
 - Dynamic Testing: Typically performed later in the development cycle, after code integration, to assess system functionality and user interaction.
 
 #### Tools and Techniques
-
 
 #### Static Testing
 
@@ -506,12 +507,11 @@ Unit testing involves testing individual components or modules of a system to en
 - Mocha and Jasmine: For JavaScript developers.
 - PyTest and Unittest: For Python testing.
 - Code Example: JUnit 5 for Java
-Here is the Java code:
+  Here is the Java code:
 
 ```java
 
 ```
-
 
 #### import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -598,7 +598,6 @@ By testing groups of components as a unit, integration testing aims to:
 
 #### Easier to identify and rectify architectural issues early on.
 
-
 #### Useful for monitoring the overall progress of the project.
 
 1. Disadvantages:
@@ -634,12 +633,11 @@ By testing groups of components as a unit, integration testing aims to:
 - Federated: Begins with vertical slices of the application, followed by vertical and horizontal integrations.
 - Concentric: Works from the inside out or outside in, focusing on specific zones or areas of the application.
 - Code Example: Top-Down and Bottom-Up Testing
-Here is the Java code:
+  Here is the Java code:
 
 ```java
 
 ```
-
 
 #### // Top-Down Testing
 
@@ -683,7 +681,6 @@ System Testing ensures that an integrated system meets its design requirements.
 
 #### Mock objects and stubs may be employed to isolate functionality for testing.
 
-
 #### Such testing is usually automated and performed by developers.
 
 - System Testing: Broad-scope test mode.
@@ -698,7 +695,6 @@ System Testing ensures that an integrated system meets its design requirements.
 - System Testing: Uses a real-world environment.
 
 #### System Testing vs. Integration Testing
-
 
 #### Focus
 
@@ -719,7 +715,6 @@ System Testing ensures that an integrated system meets its design requirements.
 - System Testing: Conducted in an environment mirrorring real-world application use.
 
 #### System Testing vs. Acceptance Testing
-
 
 #### Focus
 
@@ -797,7 +792,6 @@ Automated testing provides numerous advantages, accelerating and enhancing the s
 **How it works:**
 
 #### Key Benefits
-
 
 #### Reliability and Consistency
 
@@ -877,7 +871,6 @@ Although automated testing is generally advantageous, there are specific scenari
 - https://devinterview.io/questions/web-and-mobile-development/testing-interview-questions/
 
 </details>
-
 
 ### Test Design Techniques
 
@@ -1151,7 +1144,6 @@ An order model `draft → paid → shipped → closed` is the MBT model. Generat
 - [ISTQB Glossary — model-based testing](https://casqb.org/uploads/downloadables/_files_0/84__files_0.pdf)
 </details>
 
-
 ### Test Management
 
 <details>
@@ -1414,10 +1406,10 @@ Use both when you have manual session plans and an automated suite.
 **Examples:**
 
 ```ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
+  reporter: [["list"], ["json", { outputFile: "test-results.json" }]],
 });
 ```
 
@@ -1488,7 +1480,6 @@ Baseline: 40 cases. Progress: 30 executed, 2 failed, 8 blocked. Statement covera
 - [ISTQB Glossary — test progress](https://casqb.org/uploads/downloadables/_files_0/84__files_0.pdf)
 </details>
 
-
 ### Automation Testing
 
 <details>
@@ -1516,7 +1507,7 @@ Automate repeatable regression and API checks. Leave exploratory sessions and on
 **Examples:**
 
 ```js
-test('two plus two is four', () => {
+test("two plus two is four", () => {
   expect(2 + 2).toBe(4);
 });
 ```
@@ -1551,15 +1542,15 @@ Use page objects when flows repeat across pages. A single short test does not ne
 **Examples:**
 
 ```ts
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from "@playwright/test";
 
 export class PlaywrightDevPage {
   readonly getStartedLink: Locator;
   constructor(public readonly page: Page) {
-    this.getStartedLink = page.locator('a', { hasText: 'Get started' });
+    this.getStartedLink = page.locator("a", { hasText: "Get started" });
   }
   async goto() {
-    await this.page.goto('https://playwright.dev');
+    await this.page.goto("https://playwright.dev");
   }
   async getStarted() {
     await this.getStartedLink.first().click();
@@ -1671,7 +1662,7 @@ Jest or pytest next to the function. Playwright when the bug only shows up in a 
 test.each([
   [1, 1, 2],
   [1, 2, 3],
-])('.add(%i, %i)', (a, b, expected) => {
+])(".add(%i, %i)", (a, b, expected) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -1800,11 +1791,11 @@ An assertion compares an actual result with an expected result and fails the tes
 **Examples:**
 
 ```js
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('status becomes submitted', async ({ page }) => {
-  await page.locator('#submit-button').click();
-  await expect(page.locator('.status')).toHaveText('Submitted');
+test("status becomes submitted", async ({ page }) => {
+  await page.locator("#submit-button").click();
+  await expect(page.locator(".status")).toHaveText("Submitted");
 });
 ```
 
@@ -1850,7 +1841,6 @@ def test_eval(test_input, expected):
 - [pytest — parametrize](https://docs.pytest.org/en/stable/how-to/parametrize.html)
 - [Jest — test.each](https://jestjs.io/docs/api)
 </details>
-
 
 ### Performance Testing
 
@@ -1940,17 +1930,17 @@ k6’s HTTP metrics are `http_req_duration` (latency) and `http_req_failed` (err
 **Examples:**
 
 ```javascript
-import http from 'k6/http';
+import http from "k6/http";
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.01'],
-    http_req_duration: ['p(95)<200'],
+    http_req_failed: ["rate<0.01"],
+    http_req_duration: ["p(95)<200"],
   },
 };
 
 export default function () {
-  http.get('https://quickpizza.grafana.com');
+  http.get("https://quickpizza.grafana.com");
 }
 ```
 
@@ -1981,29 +1971,33 @@ k6’s guide says to decide the traffic pattern first, choose the test type, the
 **Examples:**
 
 ```javascript
-import { check } from 'k6';
-import http from 'k6/http';
+import { check } from "k6";
+import http from "k6/http";
 
 export const options = {
   scenarios: {
     my_scenario1: {
-      executor: 'constant-arrival-rate',
-      duration: '30s',
+      executor: "constant-arrival-rate",
+      duration: "30s",
       preAllocatedVUs: 50,
       rate: 50,
-      timeUnit: '1s',
+      timeUnit: "1s",
     },
   },
 };
 
 export default function () {
-  const payload = JSON.stringify({ name: 'lorem', surname: 'ipsum' });
-  const headers = { 'Content-Type': 'application/json' };
-  const res = http.post('https://quickpizza.grafana.com/api/post', payload, { headers });
+  const payload = JSON.stringify({ name: "lorem", surname: "ipsum" });
+  const headers = { "Content-Type": "application/json" };
+  const res = http.post("https://quickpizza.grafana.com/api/post", payload, {
+    headers,
+  });
   check(res, {
-    'Post status is 200': (r) => res.status === 200,
-    'Post Content-Type header': (r) => res.headers['Content-Type'] === 'application/json',
-    'Post response name': (r) => res.status === 200 && res.json().name === 'lorem',
+    "Post status is 200": (r) => res.status === 200,
+    "Post Content-Type header": (r) =>
+      res.headers["Content-Type"] === "application/json",
+    "Post response name": (r) =>
+      res.status === 200 && res.json().name === "lorem",
   });
 }
 ```
@@ -2099,7 +2093,6 @@ First run: smoke, checks only. Next: average load with `p(95)<200`. Later: a spi
 
 - [Grafana k6 — API load testing](https://grafana.com/docs/k6/latest/testing-guides/api-load-testing)
 </details>
-
 
 ### Security Testing
 
@@ -2344,7 +2337,6 @@ A failed-login test also checks that the password is not in the response body an
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
 
-
 ### Mobile and Web Application Testing
 
 <details>
@@ -2371,12 +2363,12 @@ Use a mobile project when the layout, touch targets, or user agent change the be
 **Examples:**
 
 ```ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'Mobile Safari', use: { ...devices['iPhone 13'] } },
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "Mobile Safari", use: { ...devices["iPhone 13"] } },
   ],
 });
 ```
@@ -2469,11 +2461,11 @@ Responsive testing checks the same page at the viewports where layout changes. P
 **Examples:**
 
 ```ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 test.use({ viewport: { width: 1600, height: 1200 } });
 
-test('my test', async ({ page }) => {
+test("my test", async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1200 });
 });
 ```
@@ -2506,7 +2498,7 @@ The emulation guide’s difficulty is that a device profile changes several brow
 
 ```ts
 const context = await browser.newContext({
-  ...devices['Desktop Chrome'],
+  ...devices["Desktop Chrome"],
   userAgent: undefined,
 });
 ```
@@ -2542,9 +2534,9 @@ Add a second project when a bug depends on the engine or the device profile. One
 
 ```ts
 projects: [
-  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  { name: 'Mobile Safari', use: { ...devices['iPhone 13'] } },
-]
+  { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+  { name: "Mobile Safari", use: { ...devices["iPhone 13"] } },
+];
 ```
 
 **Sources:**
@@ -2581,7 +2573,6 @@ A checkout page gets a Playwright assertion on the confirmation text, an A01 che
 - [Grafana k6 — Thresholds](https://grafana.com/docs/k6/latest/using-k6/thresholds)
 </details>
 
-
 ### Test Automation Frameworks
 
 <details>
@@ -2604,10 +2595,10 @@ A test automation framework is the structure around the tests: how they are laun
 **Examples:**
 
 ```ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
+  reporter: [["list"], ["json", { outputFile: "test-results.json" }]],
 });
 ```
 
@@ -2734,7 +2725,7 @@ Playwright Test reporters record a run. The config can use more than one. The CI
 
 ```ts
 export default defineConfig({
-  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
+  reporter: [["list"], ["json", { outputFile: "test-results.json" }]],
 });
 ```
 
@@ -2743,7 +2734,6 @@ export default defineConfig({
 - [Playwright — Reporters](https://playwright.dev/docs/test-reporters)
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
-
 
 ### API Testing
 
@@ -2795,12 +2785,15 @@ Send the HTTP request with the parameters, headers, and authorization the API re
 **Examples:**
 
 ```javascript
-const payload = JSON.stringify({ name: 'lorem', surname: 'ipsum' });
-const headers = { 'Content-Type': 'application/json' };
-const res = http.post('https://quickpizza.grafana.com/api/post', payload, { headers });
+const payload = JSON.stringify({ name: "lorem", surname: "ipsum" });
+const headers = { "Content-Type": "application/json" };
+const res = http.post("https://quickpizza.grafana.com/api/post", payload, {
+  headers,
+});
 check(res, {
-  'Post status is 200': (r) => res.status === 200,
-  'Post Content-Type header': (r) => res.headers['Content-Type'] === 'application/json',
+  "Post status is 200": (r) => res.status === 200,
+  "Post Content-Type header": (r) =>
+    res.headers["Content-Type"] === "application/json",
 });
 ```
 
@@ -2928,7 +2921,6 @@ A web client that only reads `name` and `price` produces a contract for that pai
 
 - [Pact — Introduction](https://docs.pact.io/)
 </details>
-
 
 ### Quality Assurance Processes
 
@@ -3075,7 +3067,6 @@ First week: a Definition of Done that requires a failing test to be red on the p
 - [The Scrum Guide](https://scrumguides.org/scrum-guide.html)
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
-
 
 ### Advanced Testing Topics
 
@@ -3232,7 +3223,6 @@ Checkout tests call a virtual payment service while the real one is down. A sepa
 - [Playwright — Emulation](https://playwright.dev/docs/emulation)
 </details>
 
-
 ### Behavioral Testing Questions
 
 <details>
@@ -3374,7 +3364,6 @@ Checkout passed the functional suite and failed only when k6’s stress scenario
 - [Playwright — Setting up CI](https://playwright.dev/docs/ci-intro)
 </details>
 
-
 ### Situation-based Testing Questions
 
 <details>
@@ -3515,7 +3504,6 @@ An order feature calls pricing and payment. Pact covers the JSON the order servi
 - [Principles of Chaos Engineering](https://principlesofchaos.org/)
 </details>
 
-
 ### Technical Testing Questions
 
 <details>
@@ -3574,7 +3562,7 @@ test.each([
   [1, 1],
   [2, 1],
   [7, 13],
-])('fibonacci(%i)', (n, expected) => {
+])("fibonacci(%i)", (n, expected) => {
   expect(fibonacci(n)).toBe(expected);
 });
 ```
@@ -3583,4 +3571,122 @@ test.each([
 
 - [Jest — test.each](https://jestjs.io/docs/api)
 - [Jest — Using matchers](https://jestjs.io/docs/using-matchers)
+</details>
+
+### Front-end Developer Interview (H5BP)
+
+<details>
+<summary>Advantages and disadvantages of testing your code?</summary>
+
+### Advantages and disadvantages of testing your code?
+
+**Definition:**
+
+Automated tests trade **upfront time** for **fewer regressions** and safer refactors.
+
+| +                                   | −                                      |
+| ----------------------------------- | -------------------------------------- |
+| Catch bugs early; document behavior | Writing/maintaining tests costs effort |
+| Safer CI and refactors              | Flaky or slow suites erode trust       |
+| Faster feedback than manual QA      | Cannot replace UX/exploratory testing  |
+
+**Sources:**
+
+- [Testing fundamentals](./7_special_testing_fundamentals.md)
+</details>
+
+<details>
+<summary>Tools to test code functionality?</summary>
+
+### Tools to test code functionality?
+
+**Definition:**
+
+**Unit**: Jest, Vitest, pytest. **E2E**: Playwright, Cypress. **API**: Postman, supertest. **Static**: ESLint, TypeScript.
+
+**Sources:**
+
+- [Testing tooling](./7_special_testing_tooling.md)
+</details>
+
+<details>
+<summary>Unit test vs functional or integration test?</summary>
+
+### Unit test vs functional or integration test?
+
+**Definition:**
+
+**Unit**: one function/module in isolation (mocked deps). **Integration**: several units together (DB, HTTP). **Functional/E2E**: app behaves from user perspective (browser).
+
+**How it works:**
+
+Pyramid: many unit, fewer integration, few E2E. See [unit testing](#explain-unit-testing-and-which-tools-you-might-use-for-it) above.
+
+**Sources:**
+
+- [Testing layers](./7_special_testing_layers.md)
+</details>
+
+<details>
+<summary>Purpose of a code style linting tool?</summary>
+
+### Purpose of a code style linting tool?
+
+**Definition:**
+
+**Linters** (ESLint) enforce style and catch bugs (`no-undef`, unused vars, unsafe patterns) before runtime.
+
+**Sources:**
+
+- https://eslint.org/docs/latest/use/core-concepts
+</details>
+
+---
+
+<a name="javascript-core--test-pyramid"></a>
+
+<details>
+<summary>Test Pyramid (JavaScript Core course)</summary>
+
+### Test Pyramid (JavaScript Core course)
+
+**Answer:** Martin Fowler’s **test pyramid**: many **fast unit** tests (isolated functions/modules), fewer **integration** tests (modules + DB/HTTP together), fewest **E2E** tests (full app through UI). Keeps feedback fast and cost low while still covering critical paths. Complements (does not replace) **Testing Trophy** / contract tests for front-end teams.
+
+**See also:** [Testing layers](./7_special_testing_layers.md) · [Unit vs integration](#unit-test-vs-functional-or-integration-test) above · [FIRST](./7_special_testing_fundamentals.md#first-principles-for-unit-tests)
+
+</details>
+
+<a name="testing--interview-checklist"></a>
+
+### Testing — interview checklist
+
+**Theory:** [Fundamentals](./7_special_testing_fundamentals.md) · [Practices — doubles, TDD/BDD](./7_special_testing_practices.md) · [Layers](./7_special_testing_layers.md). Long-form Q&A above in this file.
+
+<details>
+<summary>Fake vs Stub vs Mock? TDD vs BDD? White/Black/Grey box?</summary>
+
+### Fake vs Stub vs Mock?
+
+**Fake** — working simplified (in-memory DB). **Stub** — canned answers, no call assertions. **Mock/Spy** — assert interactions. See [Test doubles](./7_special_testing_practices.md#test-doubles-stubs-mocks-spies).
+
+[TDD vs BDD](./7_special_testing_practices.md#tdd-test-driven-development) · [BDD](./7_special_testing_practices.md#bdd-behavior-driven-development) · [Testing approaches](./7_special_testing_fundamentals.md#testing-approaches-black-box-white-box-gray-box)
+
+</details>
+
+<details>
+<summary>Testing Trophy? FIRST? Quality gates?</summary>
+
+### Testing Trophy? FIRST?
+
+[Testing Trophy](./7_special_testing_fundamentals.md#testing-trophy) · [FIRST](./7_special_testing_fundamentals.md#first-principles-for-unit-tests). **Quality gates** — CI checks (lint, types, tests, coverage threshold) that block merge until pass.
+
+</details>
+
+<details>
+<summary>UI testing approaches? Testing tools?</summary>
+
+### UI testing?
+
+Component/integration (RTL), E2E (Playwright/Cypress). See [E2E layer](./7_special_testing_layers.md#e2e-testing) · [Tooling](./7_special_testing_tooling.md).
+
 </details>

@@ -5,11 +5,13 @@ Interview answers in this note are filled.
 
 ### Related docs
 
-- [Data Structures — Interview](./7_ds_overview_interview.md)
+- [Data Structures — hub](./7_special_data_structures.md) · [Algorithms — hub](./7_special_algorithms.md) · [Data Structures — Interview](./7_ds_overview_interview.md)
 
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
+- [DSA Technical course (#1–33)](#dsa-technical--course-index)
 
 ---
 
@@ -42,7 +44,7 @@ def reverse_array(arr):
     while start < end:
         arr[start], arr[end] = arr[end], arr[start]
         start, end = start + 1, end - 1
-        
+
 my_array = [1, 2, 3, 4, 5]
 print("Original Array:", my_array)
 reverse_array(my_array)
@@ -79,11 +81,11 @@ Memory Management
 
 Complexity Analysis
 
-| Operation | Array | Linked List |
-| --- | --- | --- |
-| Access | `O(1)` (with index) | `O(n)` |
-| Bulk Insertion | `O(n) or O(1)` | `O(1)` |
-| Deletion | `O(n) to O(1)` | `O(1)` |
+| Operation      | Array               | Linked List |
+| -------------- | ------------------- | ----------- |
+| Access         | `O(1)` (with index) | `O(n)`      |
+| Bulk Insertion | `O(n) or O(1)`      | `O(1)`      |
+| Deletion       | `O(n) to O(1)`      | `O(1)`      |
 
 **When to use:**
 
@@ -289,7 +291,7 @@ Low                             High
 ```
 
 - **Middle**: (Low + High) / 2 = 5
-This identifies the Middle number as 12.
+  This identifies the Middle number as 12.
 
 - **Comparison**: Since the Middle number is less than the target 17, we can discard the left portion of the array.
 
@@ -302,6 +304,7 @@ Low        High
 - **Updated Pointers**: We now have a reduced array to search.
 
 Middle = 7
+
 ```text
 ^      ^
 Low   High
@@ -371,7 +374,7 @@ def rotate_matrix_ccw(matrix):
 
     return matrix
 
-# Test 
+# Test
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 print(rotate_2d_clockwise(matrix))
 # Output: [[7, 4, 1], [8, 5, 2], [9, 6, 3]]
@@ -561,6 +564,7 @@ Methods of Merging Sorted Arrays
 Using Additional Space:
 
 Create a new array and add elements from both arrays using two pointers, then return the merged list.
+
 - **Time Complexity**: `O(n + m)` - where `n and m` are the number of elements in each array. This approach is simple and intuitive.
 
 Using a Min Heap:
@@ -570,13 +574,14 @@ Select the smallest element from both arrays using a min-heap and insert it into
 Time Complexity: `O((n + m)log(n + m))`
 
 - **Space Complexity**: `O(n + m)` - Heap might contain all the elements.
-This approach is useful when the arrays are too large to fit in memory.
+  This approach is useful when the arrays are too large to fit in memory.
 
 In-Place Merge:
 
 Implement a merge similar to the one used in Merge Sort, directly within the input array.
+
 - **Time Complexity**: `O(n ⋅ m)` - where `n and m` are the number of elements in each array.
-In-Place Merging becomes inefficient as the number of insertions increases.
+  In-Place Merging becomes inefficient as the number of insertions increases.
 
 Using Binary Search:
 
@@ -613,8 +618,8 @@ Quickselect Algorithm
 Time Complexity:
 
 - **Worst-case**: `O(n^2)` - This occurs when we're faced with the least optimized scenario, reducing
-n
-by only one element for each stitch step.
+  n
+  by only one element for each stitch step.
 - **Average-case**: `O(n)` - Average performance is fast, making the expected time complexity linear.
 
 Heap Method
@@ -716,7 +721,7 @@ Here is the Java code:
 
 ```java
 public class SinglyLinkedList {
-    
+
     private static class Node {
         private int data;
         private Node next;
@@ -751,7 +756,7 @@ Here is the Java code:
 
 ```java
 public class DoublyLinkedList {
-    
+
     private static class Node {
         private int data;
         private Node previous;
@@ -841,6 +846,7 @@ Time Complexity: `O(n)` where
 
 n
 is the number of nodes in the linked list, due to each pointer visiting each node only once.
+
 - **Space Complexity**: `O(1)` as the algorithm uses only a constant amount of extra space.
 
 **Examples:**
@@ -941,7 +947,7 @@ class Node:
 class SinglyLinkedList:
     def __init__(self):
         self.head = None
-    
+
     def append(self, data):  # O(n) without tail pointer
         new_node = Node(data)
         if not self.head:
@@ -951,7 +957,7 @@ class SinglyLinkedList:
         while last_node.next:
             last_node = last_node.next
         last_node.next = new_node
-    
+
     def delete(self, data):  # O(n) only if element is not at head
         current_node = self.head
         if current_node.data == data:
@@ -1012,7 +1018,7 @@ The reversal algorithm just needs to update each node's next reference so that t
 - **Initialize**: Keep track of the three key nodes: previous, current, and next.
 - **Reverse Links**: Update each node to instead point to the previous one in line.
 - **Move Pointers**: Shift previous, current, and next nodes by one position for the next iteration.
-This process proceeds iteratively until current reaches the end, i.e., NULL.
+  This process proceeds iteratively until current reaches the end, i.e., NULL.
 
 Complexity Analysis
 
@@ -2286,7 +2292,7 @@ The single-source shortest path problem asks for the minimum total weight from o
 
 **How it works:**
 
-If every edge weight is 1, BFS gives the fewest edges, O(V + E). If weights are non-negative, Dijkstra with a binary heap is O((V + E) log V) and must not be used with negative edges. If weights may be negative and there is no negative cycle, Bellman-Ford relaxes every edge V - 1 times, O(V * E), and a further successful relaxation reports a negative cycle. A DAG can be solved in O(V + E) after a topological order.
+If every edge weight is 1, BFS gives the fewest edges, O(V + E). If weights are non-negative, Dijkstra with a binary heap is O((V + E) log V) and must not be used with negative edges. If weights may be negative and there is no negative cycle, Bellman-Ford relaxes every edge V - 1 times, O(V \* E), and a further successful relaxation reports a negative cycle. A DAG can be solved in O(V + E) after a topological order.
 
 **When to use:**
 
@@ -2465,7 +2471,7 @@ while queue:
 
 **Definition:**
 
-Bellman-Ford computes single-source shortest paths when edges may be negative, and it detects a negative cycle. GeeksforGeeks gives O(V * E) time and O(V) space.
+Bellman-Ford computes single-source shortest paths when edges may be negative, and it detects a negative cycle. GeeksforGeeks gives O(V \* E) time and O(V) space.
 
 **How it works:**
 
@@ -3638,11 +3644,11 @@ scores[player] = new_score
 
 **Definition:**
 
-The road network is a weighted graph: intersections are vertices and road segments are edges with a non-negative travel cost. Dijkstra, or A* with the same relaxation rule, computes the path.
+The road network is a weighted graph: intersections are vertices and road segments are edges with a non-negative travel cost. Dijkstra, or A\* with the same relaxation rule, computes the path.
 
 **How it works:**
 
-An adjacency list matches a sparse road graph, space O(V + E). Dijkstra with a binary heap is O((V + E) log V) and is valid because travel times are not negative. GeeksforGeeks shows the min-heap of (distance, vertex) and the skip of stale heap entries. A contraction or a hierarchy can shrink the graph that Dijkstra sees, but the core step is still non-negative shortest paths. Bellman-Ford is unnecessary without negative edges and is O(V * E).
+An adjacency list matches a sparse road graph, space O(V + E). Dijkstra with a binary heap is O((V + E) log V) and is valid because travel times are not negative. GeeksforGeeks shows the min-heap of (distance, vertex) and the skip of stale heap entries. A contraction or a hierarchy can shrink the graph that Dijkstra sees, but the core step is still non-negative shortest paths. Bellman-Ford is unnecessary without negative edges and is O(V \* E).
 
 **Examples:**
 
@@ -3713,4 +3719,94 @@ top = heapq.nlargest(k, candidates, key=candidates.get)
 - [Hashing](https://www.geeksforgeeks.org/dsa/hashing-data-structure/)
 - [Graph and its representations](https://www.geeksforgeeks.org/dsa/graph-and-its-representations/)
 - [Priority Queue](https://www.geeksforgeeks.org/dsa/priority-queue-set-1-introduction/)
+</details>
+
+<a name="dsa-technical--paradigms"></a>
+
+<details>
+<summary>Algorithm paradigms — BFS, DFS, D&C, greedy, DP, backtracking (course #19–28)</summary>
+
+### Algorithm paradigms — BFS, DFS, D&C, greedy, DP, backtracking (course #19–28)
+
+**Answer:** **Sorting/search** — compare/exchange or partition until ordered; binary search needs sorted input. **Tree traversals** — preorder/inorder/postorder (DFS orderings) or level-order (**BFS** with a queue). **Graph traversals** — **BFS** for shortest unweighted paths; **DFS** for cycles, components, topological prep. **Divide & conquer** — split, solve subproblems, merge (merge sort, quicksort). **Greedy** — local optimum when proof holds (Dijkstra with non-negative weights, Huffman). **DP** — overlapping subproblems + optimal substructure (memo/tabulation). **Backtracking** — DFS with prune on constraint violation (permutations, N-queens).
+
+**See also:** [Algorithms — Common](./7_special_algorithms_common.md) · [Graph interview](./7_algo_graphs_interview.md) · [Sorting](./7_algo_sorting_interview.md) · [Searching](./7_algo_searching_interview.md)
+
+</details>
+
+<a name="dsa-technical--graph-algorithms"></a>
+
+<details>
+<summary>Classic graph algorithms (course #29–33)</summary>
+
+### Classic graph algorithms (course #29–33)
+
+**Answer:** **Quickselect** (Hoare) — average O(n) k-th element via partition. **Floyd cycle** — tortoise/hare detects cycles in linked structures or implicit graphs. **Bellman–Ford** — shortest paths with negative edges (relax V−1 times). **Dijkstra** — non-negative edge weights; priority queue over tentative distances. **Topological sort** — linear order on a DAG (Kahn BFS in-degree or DFS finish times).
+
+**See also:** [Graph Theory interview](./7_algo_graphs_interview.md) · [Trees & graphs](./7_special_data_structures_trees.md)
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+<a name="dsa-technical--course-index"></a>
+
+<details>
+<summary>RU cheatsheet — DSA Technical course (#1–33)</summary>
+
+### RU cheatsheet — question index
+
+Syllabus **Technical** (#1–33). Each row has **Theory** (concept) and **Interview** (Q&A). Canonical depth lives in theory; interview answers link back — no duplicate essays.
+
+#### Foundations (#1)
+
+| #   | RU topic       | Theory                                                          | Interview                                                                 |
+| --- | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 1   | Big O Notation | [Big O notation](./7_special_algorithms_core.md#big-o-notation) | [What is Big-O Notation?](./7_algo_big_o_interview.md#interview-practice) |
+
+#### Linear & associative structures (#2–6, #13)
+
+| #   | RU topic                     | Theory                                                           | Interview                                                                     |
+| --- | ---------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2   | Массивы                      | [Array](./7_special_data_structures_linear.md#array)             | [Arrays interview](./7_ds_arrays_interview.md#interview-practice)             |
+| 3   | Хэш-таблицы                  | [Hash table](./7_special_data_structures_advanced.md#hash-table) | [Hash Tables interview](./7_ds_hash_tables_interview.md#interview-practice)   |
+| 4–5 | Singly / doubly linked lists | [Linked list](./7_special_data_structures_linear.md#linked-list) | [Linked Lists interview](./7_ds_linked_lists_interview.md#interview-practice) |
+| 6   | Стек                         | [Stack](./7_special_data_structures_linear.md#stack)             | [Stacks interview](./7_ds_stacks_interview.md#interview-practice)             |
+| 13  | 2-D arrays / матрицы         | [Array](./7_special_data_structures_linear.md#array)             | [Arrays interview](./7_ds_arrays_interview.md#interview-practice)             |
+
+#### Trees, heaps, tries (#7–12)
+
+| #     | RU topic                     | Theory                                                              | Interview                                                                     |
+| ----- | ---------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 7–8   | Binary tree, BST             | [Tree](./7_special_data_structures_trees.md#tree)                   | [Binary Tree interview](./7_ds_binary_tree_interview.md#interview-practice)   |
+| 9     | Trie                         | [Trees & graphs](./7_special_data_structures_trees.md)              | [Trie interview](./7_ds_tries_interview.md#interview-practice)                |
+| 10    | N-ary tree                   | [Tree](./7_special_data_structures_trees.md#tree)                   | [Tree Data Structure interview](./7_ds_trees_interview.md#interview-practice) |
+| 11–12 | Min/max heap, priority queue | [Heap](./7_special_data_structures_advanced.md#heap-priority-queue) | [Heaps interview](./7_ds_heaps_maps_interview.md#interview-practice)          |
+
+#### Graphs & representation (#14–17)
+
+| #     | RU topic                | Theory                                                                           | Interview                                                                 |
+| ----- | ----------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 14    | Графы                   | [Graph](./7_special_data_structures_trees.md#graph)                              | [Graph Theory interview](./7_algo_graphs_interview.md#interview-practice) |
+| 15–16 | Adjacency list / matrix | [Graph](./7_special_data_structures_trees.md#graph)                              | [Graph interview](./7_algo_graphs_interview.md#interview-practice)        |
+| 17    | Interface design (DS)   | [Choosing a structure](./7_special_data_structures.md#choosing-a-data-structure) | [Overview interview](./7_ds_overview_interview.md#interview-practice)     |
+
+#### Recursion & paradigms (#18–28)
+
+| #     | RU topic             | Theory                                                                                              | Interview                                                                       |
+| ----- | -------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 18    | Рекурсия             | [Tree traversal](./7_special_data_structures_trees.md#tree-traversal-recursive-vs-iterative)        | [Recursion interview](./7_algo_recursion_interview.md#interview-practice)       |
+| 19    | Sorting              | [Common algorithms](./7_special_algorithms_common.md)                                               | [Sorting interview](./7_algo_sorting_interview.md#interview-practice)           |
+| 20    | Search               | [Common algorithms](./7_special_algorithms_common.md)                                               | [Searching interview](./7_algo_searching_interview.md#interview-practice)       |
+| 21–24 | Traversals, BFS, DFS | [#dsa-technical--paradigms](#dsa-technical--paradigms) · [Common](./7_special_algorithms_common.md) | [Graph interview](./7_algo_graphs_interview.md#interview-practice)              |
+| 25    | Divide & conquer     | [Common algorithms](./7_special_algorithms_common.md)                                               | [D&C interview](./7_algo_divide_conquer_interview.md#interview-practice)        |
+| 26    | Greedy               | [Common algorithms](./7_special_algorithms_common.md)                                               | [Greedy interview](./7_algo_greedy_interview.md#interview-practice)             |
+| 27    | Dynamic programming  | [Common algorithms](./7_special_algorithms_common.md)                                               | [DP interview](./7_algo_dp_interview.md#interview-practice)                     |
+| 28    | Backtracking         | [Patterns](./7_special_algorithms_patterns.md)                                                      | [Backtracking interview](./7_algo_backtracking_interview.md#interview-practice) |
+
+#### Named algorithms (#29–33)
+
+| #     | RU topic                                                           | Theory                                                                                                            | Interview                                                                 |
+| ----- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 29–33 | Quickselect, Floyd cycle, Bellman–Ford, Dijkstra, topological sort | [#dsa-technical--graph-algorithms](#dsa-technical--graph-algorithms) · [Common](./7_special_algorithms_common.md) | [Graph Theory interview](./7_algo_graphs_interview.md#interview-practice) |
+
 </details>

@@ -12,6 +12,7 @@ JavaScript interview questions. Answers are filled for the full list.
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -121,7 +122,7 @@ console.log(obj.nonExistentProperty); // undefined
 ```
 
 ```js
-let obj = { prop: 'value' };
+let obj = { prop: "value" };
 ```
 
 #### Code Example
@@ -134,28 +135,28 @@ let var2 = null;
 
 let object = {
   a: 1,
-  b: undefined
+  b: undefined,
 };
 
 function test(arg1, arg2) {
-  console.log(arg1);  // undefined: not provided
-  console.log(arg2);  // null: provided as such
+  console.log(arg1); // undefined: not provided
+  console.log(arg2); // null: provided as such
 }
 
 function clearProperty(prop) {
   delete object[prop];
 }
 
-console.log(var1);     // undefined
-console.log(var2);     // null
+console.log(var1); // undefined
+console.log(var2); // null
 console.log(object.a); // 1
 console.log(object.b); // undefined
 console.log(object.c); // undefined
 ```
 
-test();               // Both arguments are undefined test(1, null);        // arg1 is 1, arg2 is null
+test(); // Both arguments are undefined test(1, null); // arg1 is 1, arg2 is null
 
-clearProperty('b');  // Removes property 'b' from object
+clearProperty('b'); // Removes property 'b' from object
 
 ```js
 console.log(object.b); // undefined: Property 'b' was removed, not set to null
@@ -257,7 +258,7 @@ console.log(myVar); // 5
 
 console.log(sayHello()); // "Hello, World!"
 function sayHello() {
-    return "Hello, World!";
+  return "Hello, World!";
 }
 
 // The above code is equivalent to the following during the compile phase:
@@ -280,7 +281,7 @@ console.log(globalVar); // Undefined
 console.log(globalFunction()); // "Hello, Global!"
 var globalVar = "I am global Var!";
 function globalFunction() {
-    return "Hello, Global!";
+  return "Hello, Global!";
 }
 ```
 
@@ -288,18 +289,18 @@ function globalFunction() {
 
 ```js
 function hoistingInLocalScope() {
-    // These local declarations are hoisted during the compile phase:
-    // var localVar;
-    // function localFunction() {}
+  // These local declarations are hoisted during the compile phase:
+  // var localVar;
+  // function localFunction() {}
 
-    console.log(localVar); // Undefined
-    localVar = "I am a local var!";
-    console.log(localFunction()); // "Hello, Local!"
+  console.log(localVar); // Undefined
+  localVar = "I am a local var!";
+  console.log(localFunction()); // "Hello, Local!"
 
-    var localVar;
-    function localFunction() {
-        return "Hello, Local!";
-    }
+  var localVar;
+  function localFunction() {
+    return "Hello, Local!";
+  }
 }
 ```
 
@@ -357,10 +358,10 @@ Starting from ES6, JavaScript also supports block scope, where variables defined
 Here is the JavaScript code:
 
 ```js
-let globalVar = 'I am global';
+let globalVar = "I am global";
 
 function testScope() {
-    console.log(globalVar); // Output: 'I am global'
+  console.log(globalVar); // Output: 'I am global'
 }
 
 testScope();
@@ -373,8 +374,8 @@ Here is the JavaScript code:
 
 ```js
 function testScope() {
-    let localVar = 'I am local';
-    console.log(localVar); // Output: 'I am local'
+  let localVar = "I am local";
+  console.log(localVar); // Output: 'I am local'
 }
 
 // This statement will throw an error because localVar is not defined outside the function scope
@@ -387,13 +388,13 @@ Here is the JavaScript code:
 
 ```js
 function testScope() {
-    let localVar = 'I am local';
-    if (true) {
-        let blockVar = 'I am local to this block';
-        console.log(localVar, blockVar); // Both will be accessible
-    }
-    // This statement will throw an error because blockVar is not defined outside the block scope
-    // console.log(blockVar);
+  let localVar = "I am local";
+  if (true) {
+    let blockVar = "I am local to this block";
+    console.log(localVar, blockVar); // Both will be accessible
+  }
+  // This statement will throw an error because blockVar is not defined outside the block scope
+  // console.log(blockVar);
 }
 
 testScope();
@@ -451,14 +452,14 @@ Here is the JavaScript code:
 
 ```js
 // Abstract equality
-console.log('5' == 5);      // true
-console.log(null == undefined);  // true
-console.log(0 == false);    // true
+console.log("5" == 5); // true
+console.log(null == undefined); // true
+console.log(0 == false); // true
 
 // Strict equality
-console.log('5' === 5);     // false
+console.log("5" === 5); // false
 console.log(null === undefined); // false
-console.log(0 === false);   // false
+console.log(0 === false); // false
 ```
 
 **Sources:**
@@ -519,15 +520,18 @@ Here is the JavaScript code:
 
 ```js
 function generatePassword() {
-  let password = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const passwordLength = 8;
-  for(let i = 0; i < passwordLength; i++) {
-    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  for (let i = 0; i < passwordLength; i++) {
+    password += characters.charAt(
+      Math.floor(Math.random() * characters.length),
+    );
   }
 
   return function getPassword() {
-      return password;
+    return password;
   };
 }
 
@@ -583,12 +587,12 @@ Here is the JavaScript code:
 let globalVar = 10;
 
 function globalFunction() {
-    console.log('Global this: ', this.globalVar);
-    console.log('Global this in strict mode: ', this);
+  console.log("Global this: ", this.globalVar);
+  console.log("Global this in strict mode: ", this);
 }
 ```
 
-- **globalFunction();  // Output**: 10, window or undefined (in strict mode)
+- **globalFunction(); // Output**: 10, window or undefined (in strict mode)
 
 // In Node.js, it will be different, because "window" is not defined. But "this" will refer to the global object.
 
@@ -646,7 +650,7 @@ function greet(name) {
 }
 
 // Arrow Function
-const greetArrow = name => "Hello, " + name + "!";
+const greetArrow = (name) => "Hello, " + name + "!";
 ```
 
 In the code above, greet is a standard function, while greetArrow is an arrow function, showcasing the difference in syntax and required keywords.
@@ -657,13 +661,13 @@ Here is the JavaScript code:
 
 ```js
 // Using traditional functions
-document.getElementById('myButton').onclick = function() {
-  console.log('Button clicked:', this);  // Refers to the button element
+document.getElementById("myButton").onclick = function () {
+  console.log("Button clicked:", this); // Refers to the button element
 };
 
 // Using arrow functions
-document.getElementById('myButton').onclick = () => {
-  console.log('Button clicked:', this);  // Refers to the global/window object
+document.getElementById("myButton").onclick = () => {
+  console.log("Button clicked:", this); // Refers to the global/window object
 };
 ```
 
@@ -715,14 +719,15 @@ Template literals are universally supported in modern browsers and are now consi
 let name = "John";
 let message = `Hi ${name}!`;
 
-console.log(message);  // Output: "Hi John!"
+console.log(message); // Output: "Hi John!"
 ```
 
 #### Code Example: Multiline Text and String Interpolation
 
 ```js
 // Regular String
-let poem = "Roses are red,\nViolets are blue,\nSugar is sweet,\nAnd so are you.";
+let poem =
+  "Roses are red,\nViolets are blue,\nSugar is sweet,\nAnd so are you.";
 
 // Template Literal
 let poemTemplate = `
@@ -780,19 +785,19 @@ Here is the JavaScript code:
 ```js
 // Simple higher-order function
 function multiplier(factor) {
-  return function(num) {
+  return function (num) {
     return num * factor;
   };
 }
 
 // Invoke a higher-order function
 const twice = multiplier(2);
-console.log(twice(5));  // Output: 10
+console.log(twice(5)); // Output: 10
 
 // Functional programming with higher-order functions
 const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map(multiplier(2));  // [2, 4, 6, 8, 10]
-const tripled = numbers.map(multiplier(3));  // [3, 6, 9, 12, 15]
+const doubled = numbers.map(multiplier(2)); // [2, 4, 6, 8, 10]
+const tripled = numbers.map(multiplier(3)); // [3, 6, 9, 12, 15]
 ```
 
 **Sources:**
@@ -832,7 +837,7 @@ Here is the JavaScript code:
 ```js
 // Define a function
 function greet() {
-  console.log('Hello!');
+  console.log("Hello!");
 }
 
 // Assign the function to a variable
@@ -841,18 +846,18 @@ let sayHello = greet;
 // Call the function through the variable
 ```
 
-sayHello();  // Output: "Hello!"
+sayHello(); // Output: "Hello!"
 
 ```js
 // Reassign the variable to a new function
-sayHello = function() {
-  console.log('Bonjour!');
+sayHello = function () {
+  console.log("Bonjour!");
 };
 
 // Call it again to see the new behavior
 ```
 
-sayHello();  // Output: "Bonjour!"
+sayHello(); // Output: "Bonjour!"
 
 **Sources:**
 
@@ -883,11 +888,11 @@ JavaScript treats functions as first-class citizens, allowing them to be assigne
 Here is the JavaScript code:
 
 ```js
-const sayHello = () => console.log('Hello!');
+const sayHello = () => console.log("Hello!");
 const runFunction = (func) => func();
 ```
 
-runFunction(sayHello);  // Output: "Hello!"
+runFunction(sayHello); // Output: "Hello!"
 
 **Sources:**
 
@@ -946,30 +951,30 @@ When leveraging IIFEs, exercise caution while using minifiers to shrink JavaScri
 Here is the JavaScript code:
 
 ```js
-(function(){
-    var foo = 'bar';
-    console.log(foo);
+(function () {
+  var foo = "bar";
+  console.log(foo);
 })();
 ```
 
 In this example, the function is enclosed within parentheses, ensuring the enclosed function is evaluated as an expression. Subsequently, it is invoked with a trailing pair of parentheses.
 
 ```js
-(function(){
-    console.log('Invoked!');
+(function () {
+  console.log("Invoked!");
 })();
 ```
 
 ```js
-!function(){
-    console.log('Invoked!');
-}();
+!(function () {
+  console.log("Invoked!");
+})();
 ```
 
 ```js
-(function factorial(n){
-    if (n <= 1) return 1;
-    return n * factorial(n-1);
+(function factorial(n) {
+  if (n <= 1) return 1;
+  return n * factorial(n - 1);
 })(5);
 ```
 
@@ -1009,7 +1014,7 @@ The revealing module pattern enables selective exposure of private members.
 
 The IIFE pattern immediately executes and returns the object to be assigned, effectively creating a module.
 
-myModule.privateMethod();  // Throws an error because privateMethod is not exposed
+myModule.privateMethod(); // Throws an error because privateMethod is not exposed
 In this example, privateVariable and privateMethod are accessible only within the IIFE's lexical environment, thus making them private.
 
 JavaScript tools like TypeScript and Babel also offer modules such as module.export, providing additional options for encapsulation.
@@ -1020,19 +1025,19 @@ JavaScript tools like TypeScript and Babel also offer modules such as module.exp
 
 ```js
 function outerFunction() {
-    let outerVar = 'I am outer';  // This variable is in the lexical environment of outerFunction
+  let outerVar = "I am outer"; // This variable is in the lexical environment of outerFunction
 
-    function innerFunction() {
-        console.log(outerVar);  // Accesses outerVar from the lexical environment of outerFunction
-    }
+  function innerFunction() {
+    console.log(outerVar); // Accesses outerVar from the lexical environment of outerFunction
+  }
 
-    return innerFunction;
+  return innerFunction;
 }
 
 let myInnerFunction = outerFunction();
 ```
 
-- **myInnerFunction();  // Logs**: "I am outer"
+- **myInnerFunction(); // Logs**: "I am outer"
 
 Here, innerFunction retains access to outerVar.
 
@@ -1040,41 +1045,41 @@ When defining a JavaScript constructor function with function and new, closure c
 
 ```js
 function Gadget() {
-    let secret = 'top secret';
-    this.setSecret = function (value) {
-        secret = value;
-    };
-    this.getSecret = function () {
-        return secret;
-    };
+  let secret = "top secret";
+  this.setSecret = function (value) {
+    secret = value;
+  };
+  this.getSecret = function () {
+    return secret;
+  };
 }
 
 let phone = new Gadget();
-phone.setSecret('new secret');
-console.log(phone.getSecret());  // 'new secret'
+phone.setSecret("new secret");
+console.log(phone.getSecret()); // 'new secret'
 ```
 
 Here is the code:
 
 ```js
 let myModule = (function () {
-    let privateVariable = 'I am private';
+  let privateVariable = "I am private";
 
-    function privateMethod() {
-        console.log('I am a private method');
-    }
+  function privateMethod() {
+    console.log("I am a private method");
+  }
 
-    return {
-        publicMethod: function () {
-            console.log('I am a public method');
-        },
-        getPrivateVariable: function () {
-            return privateVariable;
-        }
-    };
+  return {
+    publicMethod: function () {
+      console.log("I am a public method");
+    },
+    getPrivateVariable: function () {
+      return privateVariable;
+    },
+  };
 })();
 
-console.log(myModule.getPrivateVariable());  // 'I am private'
+console.log(myModule.getPrivateVariable()); // 'I am private'
 ```
 
 **Sources:**
@@ -4085,3 +4090,838 @@ export function Hello() {
 - [React — Render and Commit](https://react.dev/learn/render-and-commit)
 - [MDN — What is a progressive web app?](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/What_is_a_progressive_web_app)
 </details>
+
+### Front-end Developer Interview (H5BP)
+
+<details>
+<summary>What do you think of AMD vs CommonJS?</summary>
+
+### What do you think of AMD vs CommonJS?
+
+**Definition:**
+
+**CommonJS** (`require`/`module.exports`) is **synchronous** — natural for **Node.js**. **AMD** (`define`/`require`) loads modules **asynchronously in the browser** (legacy RequireJS era).
+
+**How it works:**
+
+- Today browsers use native **ES modules** (`import`/`export`); bundlers map CJS ↔ ESM.
+- AMD solved browser script loading before modules; rarely chosen for greenfield apps.
+
+**Sources:**
+
+- [JS modules — ESM vs CJS](./3_js_modules.md)
+</details>
+
+<details>
+<summary>Why doesn't function foo(){ }(); work as an IIFE? How fix it?</summary>
+
+### Why doesn't function foo(){ }(); work as an IIFE? How fix it?
+
+**Definition:**
+
+The parser sees **`function foo` declaration** then **`()`** as a syntax error — not an invocation.
+
+**How it works:**
+
+Wrap in parentheses so `function` is parsed as an expression, then invoke:
+
+```js
+(function foo() {})();
+(function () {})();
+(() => {})();
+```
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/IIFE
+</details>
+
+<details>
+<summary>null vs undefined vs undeclared — how check each?</summary>
+
+### null vs undefined vs undeclared — how check each?
+
+**Definition:**
+
+**`undefined`**: missing binding or no value. **`null`**: intentional empty. **Undeclared**: no variable in scope — **`ReferenceError`** if accessed.
+
+**How it works:**
+
+- **`typeof x === "undefined"`** — safe even if undeclared (returns `"undefined"` without throwing).
+- **`x === null`** or **`x == null`** (both null and undefined).
+- Undeclared: only **`typeof`** or **`try/catch ReferenceError`**; use **`eslint no-undef`**.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined
+</details>
+
+<details>
+<summary>forEach vs map — main difference and when to pick each?</summary>
+
+### forEach vs map — main difference and when to pick each?
+
+**Definition:**
+
+**`map`** returns a **new array** of transformed values. **`forEach`** returns **`undefined`** — side effects only.
+
+**How it works:**
+
+- Use **`map`** when the result array is the goal.
+- Use **`forEach`** for side effects (or `for…of` when you need `break`).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+</details>
+
+<details>
+<summary>Typical use case for anonymous functions?</summary>
+
+### Typical use case for anonymous functions?
+
+**Definition:**
+
+Callbacks, IIFEs, inline handlers, arguments to **`map`/`then`**.
+
+**Examples:**
+
+```js
+setTimeout(() => console.log("later"), 0);
+[1, 2, 3].map((n) => n * 2);
+```
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions
+</details>
+
+<details>
+<summary>How do you organize code? Module pattern vs classical inheritance?</summary>
+
+### How do you organize code? Module pattern vs classical inheritance?
+
+**Definition:**
+
+Prefer **ES modules** and **composition**; classes when prototypes help; avoid deep inheritance.
+
+**Sources:**
+
+- [JS modules hub](./3_js_modules_hub.md)
+</details>
+
+<details>
+<summary>Host objects vs native objects?</summary>
+
+### Host objects vs native objects?
+
+**Definition:**
+
+**Native** objects follow ECMAScript; **host** objects (DOM nodes, XHR) may behave exotically.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+</details>
+
+<details>
+<summary>function Person(){}, Person(), vs new Person()?</summary>
+
+### function Person(){}, Person(), vs new Person()?
+
+**Definition:**
+
+**`new Person()`** binds **`this`** to a new object whose prototype is **`Person.prototype`**. **`Person()`** without `new` usually returns **`undefined`** unless the constructor returns an object.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new
+</details>
+
+<details>
+<summary>Difference between call, apply, and bind?</summary>
+
+### Difference between call, apply, and bind?
+
+**Definition:**
+
+**`call(thisArg, …args)`** — invoke now. **`apply(thisArg, argsArray)`**. **`bind(thisArg)`** — new function with fixed `this`.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+</details>
+
+<details>
+<summary>When would you use document.write()?</summary>
+
+### When would you use document.write()?
+
+**Definition:**
+
+**Almost never** after load — it can wipe the document. Legacy ad tags during initial parse only.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Document/write
+</details>
+
+<details>
+<summary>Feature detection vs feature inference vs UA string?</summary>
+
+### Feature detection vs feature inference vs UA string?
+
+**Definition:**
+
+Test APIs directly; do not sniff **User-Agent** for capabilities.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Cross_browser_testing/Feature_detection
+</details>
+
+<details>
+<summary>JSONP — how it works and why it is not really Ajax?</summary>
+
+### JSONP — how it works and why it is not really Ajax?
+
+**Definition:**
+
+Inject **`<script src="…?callback=cb">`**; server calls **`cb(data)`**. GET-only, XSS-sensitive; use **CORS + fetch** instead.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/JSONP
+</details>
+
+<details>
+<summary>Have you used JavaScript templating? Which libraries?</summary>
+
+### Have you used JavaScript templating? Which libraries?
+
+**Definition:**
+
+Handlebars/EJS on server; **JSX/TSX** in React/Next (MyConspect handbook).
+
+**Sources:**
+
+- https://react.dev/learn/writing-markup-with-jsx
+</details>
+
+<details>
+<summary>Difference between HTML attribute and DOM property?</summary>
+
+### Difference between HTML attribute and DOM property?
+
+**Definition:**
+
+Attributes are markup strings; properties are live typed fields on DOM nodes (`input.value`, `checked`).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/Attribute
+</details>
+
+<details>
+<summary>Why is extending built-in JavaScript objects a bad idea?</summary>
+
+### Why is extending built-in JavaScript objects a bad idea?
+
+**Definition:**
+
+Pollutes **`Array.prototype`** for all code; collides with libraries and future spec.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+</details>
+
+<details>
+<summary>load event vs DOMContentLoaded?</summary>
+
+### load event vs DOMContentLoaded?
+
+**Definition:**
+
+**DOMContentLoaded** — HTML parsed. **load** — all subresources loaded.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event
+</details>
+
+<details>
+<summary>== vs ===?</summary>
+
+### == vs ===?
+
+**Definition:**
+
+Use **`===`**; **`== null`** checks both null and undefined.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality
+</details>
+
+<details>
+<summary>Same-origin policy in JavaScript?</summary>
+
+### Same-origin policy in JavaScript?
+
+**Definition:**
+
+Scheme + host + port; cross-origin DOM reads blocked unless CORS/postMessage.
+
+**Sources:**
+
+- [JS browser extra — CORS](./3_js_browser_extra.md)
+</details>
+
+<details>
+<summary>What is use strict? Pros and cons?</summary>
+
+### What is use strict? Pros and cons?
+
+**Definition:**
+
+Catches silent errors; forbids some legacy footguns; may break old scripts.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+</details>
+
+<details>
+<summary>Why leave the global scope alone?</summary>
+
+### Why leave the global scope alone?
+
+**Definition:**
+
+Avoid name collisions; use **modules** and block scope.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+</details>
+
+<details>
+<summary>SPA and SEO-friendly approach?</summary>
+
+### SPA and SEO-friendly approach?
+
+**Definition:**
+
+**SSR/SSG**, real URLs, metadata, canonical links (Next.js pattern).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/SPA
+</details>
+
+<details>
+<summary>Promises vs callbacks — pros and cons?</summary>
+
+### Promises vs callbacks — pros and cons?
+
+**Definition:**
+
+Promises/`async` flatten control flow; callbacks simpler for one-shot events.
+
+**Sources:**
+
+- [JS async](./3_js_async.md)
+</details>
+
+<details>
+<summary>Pros and cons of languages that compile to JavaScript?</summary>
+
+### Pros and cons of languages that compile to JavaScript?
+
+**Definition:**
+
+TypeScript adds types and tooling; costs build step and source maps.
+
+**Sources:**
+
+- https://www.typescriptlang.org/docs/
+</details>
+
+<details>
+<summary>Iterate object properties and array items?</summary>
+
+### Iterate object properties and array items?
+
+**Definition:**
+
+**for…of** / **map** on arrays; **Object.entries** / **for…in** (+ own keys) on objects.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+</details>
+
+<details>
+<summary>Mutable vs immutable objects?</summary>
+
+### Mutable vs immutable objects?
+
+**Definition:**
+
+Primitives and strings immutable; **`Object.freeze`** shallow-freezes; updates via copy/spread.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+</details>
+
+<details>
+<summary>Synchronous vs asynchronous functions?</summary>
+
+### Synchronous vs asynchronous functions?
+
+**Definition:**
+
+Sync completes on stack; async schedules later (timer, promise, I/O callback).
+
+**Sources:**
+
+- https://javascript.info/event-loop
+</details>
+
+<details>
+<summary>Call stack vs task queue?</summary>
+
+### Call stack vs task queue?
+
+**Definition:**
+
+Stack runs current task; task queue holds macrotasks; microtasks run before next macrotask.
+
+**Sources:**
+
+- https://javascript.info/event-loop
+</details>
+
+<details>
+<summary>function foo() {} vs var foo = function() {}?</summary>
+
+### function foo() {} vs var foo = function() {}?
+
+**Definition:**
+
+Declaration hoisted entirely; expression hoists `var` as undefined until assignment.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/Hoisting
+</details>
+
+<details>
+<summary>let vs var vs const?</summary>
+
+### let vs var vs const?
+
+**Definition:**
+
+**var** function-scoped; **let/const** block-scoped; **const** no rebinding.
+
+**Sources:**
+
+- [JS variables](./3_js_variables.md)
+</details>
+
+<details>
+<summary>ES6 class vs ES5 function constructor?</summary>
+
+### ES6 class vs ES5 function constructor?
+
+**Definition:**
+
+**class** sugar over prototypes; must call with **new**.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+</details>
+
+<details>
+<summary>Why is it called a ternary expression?</summary>
+
+### Why is it called a ternary expression?
+
+**Definition:**
+
+Three operands: **`cond ? a : b`**.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator
+</details>
+
+<details>
+<summary>FizzBuzz loop to 100</summary>
+
+### FizzBuzz loop to 100
+
+**Examples:**
+
+```js
+for (let i = 1; i <= 100; i++) {
+  const fizz = i % 3 === 0 ? "fizz" : "";
+  const buzz = i % 5 === 0 ? "buzz" : "";
+  console.log(fizz + buzz || i);
+}
+```
+
+</details>
+
+### Coding (H5BP)
+
+<details>
+<summary>H5BP: var foo = 10 + '20';</summary>
+
+### H5BP: var foo = 10 + '20';
+
+**Definition:** **`"1020"`** (string concatenation).
+
+</details>
+
+<details>
+<summary>H5BP: console.log(0.1 + 0.2 == 0.3);</summary>
+
+### H5BP: console.log(0.1 + 0.2 == 0.3);
+
+**Definition:** **`false`** (float precision).
+
+</details>
+
+<details>
+<summary>H5BP: add(2, 5) and add(2)(5)</summary>
+
+### H5BP: add(2, 5) and add(2)(5)
+
+**Examples:**
+
+```js
+function add(a, b) {
+  if (b !== undefined) return a + b;
+  return (c) => a + c;
+}
+```
+
+</details>
+
+<details>
+<summary>H5BP: reverse "i'm a lasagna hog"</summary>
+
+### H5BP: reverse "i'm a lasagna hog"
+
+**Definition:** **`"goh angasal a m'i"`** via `split("").reverse().join("")`.
+
+</details>
+
+<details>
+<summary>H5BP: window.foo || (window.foo = "bar")</summary>
+
+### H5BP: window.foo || (window.foo = "bar")
+
+**Definition:** Sets and yields **`"bar"`** if `window.foo` was falsy.
+
+</details>
+
+<details>
+<summary>H5BP: IIFE alerts foo + bar</summary>
+
+### H5BP: IIFE alerts foo + bar
+
+**Definition:** First **`"Hello World"`**; second **`ReferenceError`** (`bar` scoped to IIFE).
+
+</details>
+
+<details>
+<summary>H5BP: foo.length after two pushes</summary>
+
+### H5BP: foo.length after two pushes
+
+**Definition:** **`2`**.
+
+</details>
+
+<details>
+<summary>H5BP: foo.x assignment chain</summary>
+
+### H5BP: foo.x assignment chain
+
+**Definition:** **`undefined`** on final `foo` (old object had `x`, `foo` reassigned to `{n:2}`).
+
+</details>
+
+<details>
+<summary>H5BP: setTimeout(0) log order</summary>
+
+### H5BP: setTimeout(0) log order
+
+**Definition:** **`one`**, **`three`**, **`two`**.
+
+</details>
+
+<details>
+<summary>H5BP: four promise .then patterns</summary>
+
+### H5BP: four promise .then patterns
+
+**Definition:** Only **`return doSomethingElse()`** forwards the inner promise; bare call returns undefined; **`then(fn)`** vs **`then(fn())`** differ in when `fn` runs.
+
+</details>
+
+<details>
+<summary>duplicate([1,2,3,4,5])</summary>
+
+### duplicate([1,2,3,4,5])
+
+**Examples:**
+
+```js
+const duplicate = (arr) => [...arr, ...arr];
+```
+
+</details>
+
+<a name="javascript-core--ru-list"></a>
+
+<details>
+<summary>Parsing, reflow, and repaint (browser pipeline)</summary>
+
+### Parsing, reflow, and repaint (browser pipeline)
+
+**Answer:** **Parsing** builds **DOM** (HTML) and **CSSOM** (CSS), then a **render tree**. **Reflow (layout)** recalculates geometry when structure or size-affecting styles change. **Repaint** redraws pixels when only visual properties change (no layout). Prefer `transform` / `opacity` for animation; batch DOM writes.
+
+**See also:** [HTML — Rendering](./1_html_rendering.md#from-url-to-pixels) · [CSS — Architecture](./2_css_architecture.md)
+
+</details>
+
+<details>
+<summary>Set, Map, WeakSet, and WeakMap</summary>
+
+### Set, Map, WeakSet, and WeakMap
+
+**Answer:** **Set** — unique values, any type. **Map** — key/value with any key type, insertion order. **WeakSet** / **WeakMap** — keys must be objects; entries do not prevent GC; no size iteration API. Use WeakMap for private metadata on DOM nodes or caches keyed by object identity.
+
+**See also:** [JS — Objects](./3_js_objects.md) · search “localStorage” for storage contrast
+
+</details>
+
+<details>
+<summary>Array flat, flatMap, includes, and Array.from</summary>
+
+### Array flat, flatMap, includes, and Array.from
+
+**Answer:** `flat(depth)` flattens nested arrays. `flatMap(fn)` is `map` then `flat(1)`. `includes` checks value presence (NaN-safe vs `indexOf`). `Array.from(iterable, mapFn?)` builds arrays from iterables or array-likes (e.g. `NodeList`, strings).
+
+**See also:** [JS — Arrays](./3_js_array.md)
+
+</details>
+
+<details>
+<summary>What is the garbage collector and why is it needed?</summary>
+
+### What is the garbage collector and why is it needed?
+
+**Answer:** The **GC** frees heap memory for objects that are no longer reachable. JavaScript relies on automatic GC so developers avoid manual `free`. Trade-off: GC pauses and retained references (closures, globals, detached DOM) can still cause leaks.
+
+**See also:** [Garbage collection](./3_js_objects.md#garbage-collection) · [V8 architecture](./3_js_core.md#v8-engine-architecture)
+
+</details>
+
+<a name="javascript-core--alert-bom"></a>
+
+<details>
+<summary>alert, prompt, and confirm</summary>
+
+### alert, prompt, and confirm
+
+**Answer:** Blocking browser dialogs on the **window** object. **`alert(msg)`** — OK only. **`prompt(msg, default?)`** — returns string or `null` if cancelled. **`confirm(msg)`** — returns boolean. Avoid in production UX; use in-page modals. In modern apps prefer `dialog` or component libraries.
+
+**See also:** [JS — Browser](./3_js_browser.md)
+
+</details>
+
+<a name="javascript-core--proto-vs-prototype"></a>
+
+<details>
+<summary>__proto__ vs prototype property</summary>
+
+### **proto** vs prototype property
+
+**Answer:** **`[[Prototype]]`** (access via `Object.getPrototypeOf`) is the **instance’s** link up the chain. **`Fn.prototype`** exists only on **constructor functions** — the object used as `[[Prototype]]` for `new Fn()`. Do not mutate `__proto__` in new code; prefer `Object.create` / classes.
+
+**See also:** [JS — Objects](./3_js_objects.md) · “prototype chain” in this file
+
+</details>
+
+<a name="javascript-core--bind-once"></a>
+
+<details>
+<summary>Binding this — can you bind twice?</summary>
+
+### Binding this — can you bind twice?
+
+**Answer:** **`bind`** returns a new function whose **`this`** is fixed to the first argument. A **second `bind` on that result does not replace** the first bound `this` (internal `boundThis` wins). Context is **lost** when passing `obj.method` as a callback — fix with `bind`, arrow wrapper, or class field arrow.
+
+**See also:** [JS — Functions](./3_js_functions.md)
+
+</details>
+
+<a name="javascript-core--null-prototype"></a>
+
+<details>
+<summary>Object.create(null) — null prototype object</summary>
+
+### Object.create(null) — null prototype object
+
+**Answer:** Creates a **dictionary** with **no** `Object.prototype` — no inherited `toString`, `hasOwnProperty`, or accidental key collisions with prototype methods. Use for map-like objects built from user input keys.
+
+```js
+const dict = Object.create(null);
+dict.key = "value";
+```
+
+**See also:** [JS — Objects](./3_js_objects.md)
+
+</details>
+
+<a name="javascript-core--inheritance-styles"></a>
+
+<details>
+<summary>Prototype inheritance vs functional (closure) inheritance</summary>
+
+### Prototype inheritance vs functional (closure) inheritance
+
+**Answer:** **Prototype** — shared methods on `Constructor.prototype`; memory-efficient, dynamic. **Functional / closure** — factory returns object with methods closing over private variables; true privacy, per-instance method copies. ES **classes** are syntax over prototypes; **`#private`** fields cover many closure use cases.
+
+**See also:** [7_oop_interview — OOP/FP](./7_oop_interview.md#oop--fp--cheatsheet)
+
+</details>
+
+<a name="javascript-core--clone"></a>
+
+<details>
+<summary>Shallow vs deep object cloning</summary>
+
+### Shallow vs deep object cloning
+
+**Answer:** **Shallow:** `{ ...obj }` or `Object.assign({}, obj)` — nested objects are **shared**. **Deep (JSON-safe):** `structuredClone(obj)` (modern) or `JSON.parse(JSON.stringify(obj))` — drops functions, `undefined`, `Date`, cycles. Libraries like **`_.cloneDeep`** for rich types.
+
+**See also:** search “immutable” in this file
+
+</details>
+
+<a name="javascript-core--promise-static"></a>
+
+<details>
+<summary>Promise.resolve, reject, all, allSettled, race, any</summary>
+
+### Promise.resolve, reject, all, allSettled, race, any
+
+**Answer:** **`resolve(v)`** / **`reject(r)`** — wrap values in settled promises. **`all`** — all fulfill or first reject. **`allSettled`** — wait for every outcome `{ status, value|reason }`. **`race`** — first settlement wins. **`any`** — first fulfillment; **`AggregateError`** if all reject.
+
+**See also:** [JS — Async](./3_js_async.md)
+
+</details>
+
+<a name="javascript-core--promise-states"></a>
+
+<details>
+<summary>Promise states and finally</summary>
+
+### Promise states and finally
+
+**Answer:** A promise is **pending**, then **fulfilled** (with a value) or **rejected** (with a reason). **`then`** / **`catch`** chain handlers; **`finally`** runs after either outcome (good for cleanup). Prefer **`async/await`** + **`try/catch`** for readability.
+
+**See also:** “Promises vs Callbacks” in this file
+
+</details>
+
+<a name="javascript-core--web-storage"></a>
+
+<details>
+<summary>localStorage, sessionStorage — set, get, clear, storage event</summary>
+
+### localStorage, sessionStorage — set, get, clear, storage event
+
+**Answer:** **`setItem(key, string)`**, **`getItem`**, **`removeItem`**, **`clear()`**. Values are **strings** — use `JSON.stringify` for objects. **`localStorage`** persists per origin across tabs; **`sessionStorage`** per tab. The **`storage`** event on `window` fires in **other** documents on the same origin when `localStorage` changes (not in the tab that wrote).
+
+**See also:** “localStorage, sessionStorage, and cookies” in this file
+
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+Use `Cmd+F` with RU or EN phrasing. Theory depth lives in linked conspect files; this file holds interview answers. Syllabus aligned with **JavaScript Core** course (JS → TS → Testing).
+
+| #   | RU topic (your list)                         | Theory                                                                                          | Search in this file / anchor                                                                                                                        |
+| --- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Парсинг, Reflow, Repaint                     | [1_html_rendering.md](./1_html_rendering.md) · [2_css_architecture.md](./2_css_architecture.md) | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 2   | Циклы while и for                            | [3_js_loops.md](./3_js_loops.md)                                                                | “loop”, “for”, “while”                                                                                                                              |
+| 3   | Условие if                                   | [3_js_operators.md](./3_js_operators.md)                                                        | “if”, conditional                                                                                                                                   |
+| 4   | Конструкция switch                           | [3_js_loops.md](./3_js_loops.md)                                                                | “switch”                                                                                                                                            |
+| 5   | Логические / условные операторы              | [3_js_operators.md](./3_js_operators.md)                                                        | “ternary”, “&&”, “logical”                                                                                                                          |
+| 6   | alert / prompt / confirm                     | [3_js_browser.md](./3_js_browser.md)                                                            | [#javascript-core--alert-bom](#javascript-core--alert-bom)                                                                                          |
+| 7   | let, const, var                              | [3_js_variables.md](./3_js_variables.md)                                                        | “let”, “const”, “var”, TDZ                                                                                                                          |
+| 8   | Виды функций, hoisting                       | [3_js_functions.md](./3_js_functions.md)                                                        | “function declaration”, “hoisting”                                                                                                                  |
+| 9   | Деструктуризация, spread                     | [3_js_operators.md](./3_js_operators.md)                                                        | “destructuring”, “spread”                                                                                                                           |
+| 10  | Optional chaining `?.`                       | [3_js_operators.md](./3_js_operators.md)                                                        | “optional chaining”                                                                                                                                 |
+| 11  | Работа с массивами (map, filter, …)          | [3_js_array.md](./3_js_array.md)                                                                | “map vs forEach”, “reduce”, “filter”                                                                                                                |
+| 12  | == vs ===                                    | [3_js_core.md](./3_js_core.md)                                                                  | “strict equality”, “==”                                                                                                                             |
+| 13  | Hoisting, TDZ                                | [3_js_variables.md](./3_js_variables.md)                                                        | “temporal dead zone”, “hoisting”                                                                                                                    |
+| 14  | Template strings                             | [3_js_core.md](./3_js_core.md)                                                                  | “template literal”                                                                                                                                  |
+| 15  | Arrow vs function                            | [3_js_functions.md](./3_js_functions.md)                                                        | “arrow function”, “this”                                                                                                                            |
+| 16  | IIFE                                         | [3_js_functions.md](./3_js_functions.md)                                                        | “IIFE”                                                                                                                                              |
+| 17  | Default params, rest `...args`               | [3_js_functions.md](./3_js_functions.md)                                                        | “default parameter”, “rest”                                                                                                                         |
+| 18  | var vs assignment without declaration        | [3_js_variables.md](./3_js_variables.md)                                                        | “implicit global”, “use strict”                                                                                                                     |
+| 19  | Lexical environment / scope chain            | [3_js_closures.md](./3_js_closures.md)                                                          | “lexical”, “scope”                                                                                                                                  |
+| 20  | Garbage collector (×2 in syllabus)           | [3_js_objects.md#garbage-collection](./3_js_objects.md#garbage-collection)                      | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 21  | Object.keys / values / entries / fromEntries | [3_js_objects.md](./3_js_objects.md)                                                            | “Object.entries”, “Object.values”                                                                                                                   |
+| 22  | flat, flatMap, includes, Array.from          | [3_js_array.md](./3_js_array.md)                                                                | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 23  | Примитивы vs объекты                         | [3_js_data_types.md](./3_js_data_types.md)                                                      | “data types”, “primitive”                                                                                                                           |
+| 24  | Set / Map / WeakSet / WeakMap                | [3_js_objects.md](./3_js_objects.md)                                                            | [#javascript-core--ru-list](#javascript-core--ru-list)                                                                                              |
+| 25  | Type coercion / conversion                   | [3_js_core.md](./3_js_core.md)                                                                  | “coercion”, “type conversion”                                                                                                                       |
+| 26  | typeof                                       | [3_js_core.md](./3_js_core.md)                                                                  | “typeof”                                                                                                                                            |
+| 27  | Prototype chain, **proto**, prototype        | [3_js_objects.md](./3_js_objects.md) · [3_js_classes.md](./3_js_classes.md)                     | [#javascript-core--proto-vs-prototype](#javascript-core--proto-vs-prototype)                                                                        |
+| 28  | Object.create, functional vs prototype       | [3_js_objects.md](./3_js_objects.md)                                                            | [#javascript-core--inheritance-styles](#javascript-core--inheritance-styles) · [#javascript-core--null-prototype](#javascript-core--null-prototype) |
+| 29  | Object.prototype methods                     | [3_js_objects.md](./3_js_objects.md)                                                            | “hasOwnProperty”, “toString”                                                                                                                        |
+| 30  | Closures                                     | [3_js_closures.md](./3_js_closures.md)                                                          | “closure”                                                                                                                                           |
+| 31  | this, bind (once?), lost context             | [3_js_functions.md](./3_js_functions.md)                                                        | [#javascript-core--bind-once](#javascript-core--bind-once)                                                                                          |
+| 32  | Classes, extends, super, #private            | [3_js_classes.md](./3_js_classes.md)                                                            | “class”, “super”, “instanceof”                                                                                                                      |
+| 33  | Blocking vs async code                       | [3_js_async.md](./3_js_async.md)                                                                | “blocking”, “async”                                                                                                                                 |
+| 34  | XMLHttpRequest                               | [3_js_async.md](./3_js_async.md)                                                                | “XMLHttpRequest”, “fetch”                                                                                                                           |
+| 35  | Promise.resolve / reject                     | [3_js_async.md](./3_js_async.md)                                                                | [#javascript-core--promise-static](#javascript-core--promise-static)                                                                                |
+| 36  | Promise.all / allSettled / race / any        | [3_js_async.md](./3_js_async.md)                                                                | [#javascript-core--promise-static](#javascript-core--promise-static)                                                                                |
+| 37  | Event loop, macro vs microtasks              | [3_js_async_event_loop.md](./3_js_async_event_loop.md)                                          | “event loop”, “microtask”, “macrotask”                                                                                                              |
+| 38  | setTimeout / setInterval, delay 0            | [3_js_async_event_loop.md](./3_js_async_event_loop.md)                                          | “setTimeout(0)”, H5BP setTimeout                                                                                                                    |
+| 39  | Object.keys, values, for...in                | [3_js_objects.md](./3_js_objects.md)                                                            | “for...in”, “Object.keys”                                                                                                                           |
+| 40  | map vs forEach; find, filter, some, includes | [3_js_array.md](./3_js_array.md)                                                                | “map vs forEach”, “filter”, “some”                                                                                                                  |
+| 41  | reduce, sort                                 | [3_js_array.md](./3_js_array.md)                                                                | “reduce”, “sort”                                                                                                                                    |
+| 42  | Клонирование объектов                        | [3_js_objects.md](./3_js_objects.md)                                                            | [#javascript-core--clone](#javascript-core--clone)                                                                                                  |
+| 43  | Promises vs callbacks; states; finally       | [3_js_async.md](./3_js_async.md)                                                                | [#javascript-core--promise-states](#javascript-core--promise-states)                                                                                |
+| 44  | DOM, selectors, events                       | [3_js_browser.md](./3_js_browser.md) · [3_js_events.md](./3_js_events.md)                       | “DOM”, “querySelector”                                                                                                                              |
+| 45  | Bubbling, capture, delegation                | [3_js_events.md](./3_js_events.md)                                                              | “bubbling”, “capturing”, “delegation”                                                                                                               |
+| 46  | Cookies                                      | [3_js_browser.md](./3_js_browser.md)                                                            | “cookie”                                                                                                                                            |
+| 47  | localStorage / sessionStorage + CRUD         | [3_js_browser.md](./3_js_browser.md)                                                            | [#javascript-core--web-storage](#javascript-core--web-storage)                                                                                      |
+| 48  | Coding tasks (palindrome, …)                 | —                                                                                               | “palindrome”, “shortest word”, “duplicate”                                                                                                          |
+| 49  | OOP / FP overlap                             | [7_oop_interview.md#oop--fp--cheatsheet](./7_oop_interview.md#oop--fp--cheatsheet)              | “prototype”, “FP”                                                                                                                                   |
+
+**TypeScript** (#50–62): [5_ts_interview.md#ru-cheatsheet-index](./5_ts_interview.md#ru-cheatsheet-index) (JS course) · [full RU syllabus](./5_ts_interview.md#typescript-interview--course-index).
+
+**Testing** (#63–65): [7_special_testing_interview.md#javascript-core--test-pyramid](./7_special_testing_interview.md#javascript-core--test-pyramid) — testing types, general testing, **Test Pyramid**.
+
+</details>
+
+### Front-end Developer Interview (H5BP)

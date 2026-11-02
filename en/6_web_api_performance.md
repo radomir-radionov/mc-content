@@ -12,6 +12,7 @@ Loading metrics, resource hints, and browser performance APIs. Core Web Vitals o
 
 - [14. Advanced topics](#14-advanced-topics)
 - [API and client performance optimization](#api-and-client-performance-optimization)
+- [Frontend performance techniques (study map)](#frontend-performance-techniques-study-map)
 
 ---
 
@@ -825,6 +826,48 @@ Workflow: **profile** (RUM + APM/traces + Lighthouse/DevTools) → find p95/p99 
 **Thoughts:** Client CWV and API latency are linked — slow TTFB blocks FCP/LCP; heavy client JS hurts INP even when the API is fast. Full React/Next/Vue client playbooks → [§10 Performance](./4_react_ecosystem.md#10-performance) · [Next optimizations](./4_nextjs_optimizations.md) · DB/query tuning → [N+1](./9_database_orm.md#n1-problem) · [Connection pooling](./9_database_orm.md#connection-pooling) · Node stack → [8_nodejs interview Q29](./8_nodejs_interview.md#interview-practice).
 
 **Sources:** [web.dev — Vitals](https://web.dev/articles/vitals) · [web.dev — Optimize TTFB](https://web.dev/articles/optimize-ttfb) · [MDN — Server-Timing](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) · [web.dev — Optimize long tasks](https://web.dev/articles/optimize-long-tasks)
+
+---
+
+</details>
+
+<a name="frontend-performance-techniques-study-map"></a>
+
+<details>
+  <summary>Frontend performance techniques (study map)</summary>
+
+### Frontend performance techniques (study map)
+
+**Definition:** A **routing table** for common performance topics — deep essays live in linked handbook pages; use this when a blog lists “10 tricks” and you need the canonical conspect entry.
+
+**How it works:**
+
+| Topic                                       | Handbook depth                                                                                                                                                                               |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Core Web Vitals (LCP, INP, CLS)**         | [HTML — Performance → Core Web Vitals](./1_html_performance.md#core-web-vitals) — **FID** was Core until **Mar 2024**; **INP** replaced it                                                   |
+| **Critical rendering path / load order**    | [HTML — Rendering](./1_html_rendering.md) · [preload / prefetch / preconnect](#preload-prefetch-preconnect--prerender)                                                                       |
+| **List virtualization**                     | [React ecosystem → List virtualization](./4_react_ecosystem.md#list-virtualization)                                                                                                          |
+| **Code / bundle splitting, lazy routes**    | [React ecosystem → Code splitting](./4_react_ecosystem.md#code-splitting) · [JS dynamic import](./3_js_dynamic_import.md)                                                                    |
+| **Tree shaking (dead code elimination)**    | ES modules + production build (`sideEffects: false` in `package.json` where safe); bundler docs — [Webpack — tree shaking](https://webpack.js.org/guides/tree-shaking/)                      |
+| **Compression (Gzip / Brotli)**             | Server + static asset headers — [MDN — HTTP compression](https://developer.mozilla.org/en-US/docs/Web/HTTP/Compression)                                                                      |
+| **Images (formats, responsive, lazy, CDN)** | [HTML — img / picture](./1_html_media.md#img-element-and-responsive-images) · [Next.js optimizations](./4_nextjs_optimizations.md) · [CDN](./6_web_api_core.md#cdn-content-delivery-network) |
+| **Prefetch vs preload**                     | [preload, prefetch, preconnect](#preload-prefetch-preconnect--prerender) · [web.dev — prefetch](https://web.dev/articles/link-prefetch)                                                      |
+| **API + client together**                   | [API and client performance optimization](#api-and-client-performance-optimization)                                                                                                          |
+
+**When to use:** Interview “how would you speed up this app?” — name **measurement** (field CWV, traces) then pick the row that matches the bottleneck.
+
+**Pluses and minuses:**
+
+| +                                    | −                                                                                                                                                                                                                          |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Avoid duplicating long metric essays | Map is not a substitute for [LCP](./1_html_performance.md#lcp-largest-contentful-paint) / [INP](./1_html_performance.md#inp-interaction-to-next-paint) / [CLS](./1_html_performance.md#cls-cumulative-layout-shift) detail |
+| Links stay current as handbook grows | Blog-specific numbers (e.g. “~40% pass CWV”) go stale — prefer [web.dev](https://web.dev/articles/vitals)                                                                                                                  |
+
+**Thoughts:** **CLS** in the sidebar during route changes is a **layout stability** bug — fix path highlighting before micro-optimizing images. Career context: perf specialists stay in demand → [Frontend demand (2026)](./0_engineering_fullstack.md#frontend-developer-demand-2026).
+
+**See also:** [Web Vitals in React apps](./4_react_ecosystem.md#web-vitals-in-react-apps) · [Career — learning timeline](./0_engineering_fullstack.md#how-long-to-learn-frontend-development)
+
+**Sources:** [web.dev — Vitals](https://web.dev/articles/vitals) · [web.dev — INP](https://web.dev/articles/inp) · [patterns.dev](https://www.patterns.dev/) · [MDN — lazy loading](https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading)
 
 ---
 

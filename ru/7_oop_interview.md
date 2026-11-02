@@ -892,7 +892,6 @@ public class FileUtility {
 
 </details>
 
-
 ### Class Relationships and Design
 
 <details>
@@ -1371,7 +1370,6 @@ public class Bicycle {
 - [Overriding and Hiding Methods](https://docs.oracle.com/javase/tutorial/java/IandI/override.html)
 </details>
 
-
 ### Advanced OOP Concepts
 
 <details>
@@ -1664,7 +1662,6 @@ class User(JsonMixin):
 - [Favoring Composition Over Inheritance In Java](https://www.geeksforgeeks.org/java/favoring-composition-over-inheritance-in-java-with-examples/)
 </details>
 
-
 ### Practical Use and Patterns
 
 <details>
@@ -1947,7 +1944,6 @@ class Order {
 - [Favoring Composition Over Inheritance In Java](https://www.geeksforgeeks.org/java/favoring-composition-over-inheritance-in-java-with-examples/)
 </details>
 
-
 ### OOP Best Practices
 
 <details>
@@ -2186,3 +2182,11 @@ GeeksforGeeks отмечает, что цепочки адаптеров и не
 - [Design Patterns and Best Practices Interview Questions](https://www.geeksforgeeks.org/interview-prep/design-patterns-best-practices-interview-questions-oops/)
 - [Difference Between Abstract Class and Interface in Java](https://www.geeksforgeeks.org/java/difference-between-abstract-class-and-interface-in-java/)
 </details>
+
+---
+
+<a name="oop--fp--cheatsheet"></a>
+
+### OOP & FP — cheatsheet (RU list)
+
+См. EN-блок с теми же якорями: [../en/7_oop_interview.md#oop--fp--cheatsheet](../en/7_oop_interview.md#oop--fp--cheatsheet). Теория: [OOP & SOLID](./7_special_engineering.md) · [MVC/MVVM](./7_special_architecture.md#mvc-family) · [GRASP](./0_system_design_grasp.md) · [GOF](./7_special_patterns.md).

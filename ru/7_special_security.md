@@ -12,6 +12,8 @@
 
 - [13. Web security](#13-web-security)
 - [14. Common web attacks](#14-common-web-attacks)
+- [OWASP Top 10](#owasp-top-10)
+- [Principle of least privilege (POLP)](#principle-of-least-privilege-polp)
 
 ---
 
@@ -48,10 +50,63 @@
 
 **Thoughts:**
 
-Безопасность постоянна, а не контрольный список. Транспортное шифрование: [Шифрование](#encryption) · [HTTPS](./6_web_api_http.md#https). Заголовки, специфичные для HTTP: [6_web_api.md](./6_web_api.md).
+Безопасность постоянна, а не контрольный список. Транспортное шифрование: [Шифрование](#encryption) · [HTTPS](./6_web_api_http.md#https). Security-заголовки HTTP: [Browser security — HTTP security headers](./6_web_api_security.md#http-security-headers). OWASP Top 10: [ниже](#owasp-top-10).
 
 ---
 
+</details>
+
+<a name="owasp-top-10"></a>
+
+<details>
+  <summary>OWASP Top 10</summary>
+
+### OWASP Top 10
+
+**Definition:**
+
+**OWASP Top 10** — периодически обновляемый список **критичных рисков** приложений; ориентир для приоритетов, не замена compliance. Сопоставляйте каждый пункт с контролями в вашем стеке.
+
+**How it works (редакция 2021 — актуальный список на [owasp.org/Top10](https://owasp.org/Top10/)):**
+
+| #   | Риск                      | Примеры для фронтенда                                                       |
+| --- | ------------------------- | --------------------------------------------------------------------------- |
+| A01 | Broken Access Control     | IDOR, нет AuthZ на сервере ([IDOR](#idor-insecure-direct-object-reference)) |
+| A02 | Cryptographic Failures    | HTTP без TLS, секреты в `localStorage`                                      |
+| A03 | Injection                 | XSS, SQLi                                                                   |
+| A04 | Insecure Design           | Нет threat model, доверие только клиенту                                    |
+| A05 | Security Misconfiguration | CORS `*`, debug в prod                                                      |
+| A06 | Vulnerable Components     | Устаревший npm ([Supply chain](#supply-chain-attacks))                      |
+| A07 | Auth Failures             | Слабые сессии, JWT ([Auth](./6_web_api_auth.md))                            |
+| A08 | Integrity Failures        | CDN — [SRI](./6_web_api_security.md#subresource-integrity-sri)              |
+| A09 | Logging Failures          | Нет аудита auth-событий                                                     |
+| A10 | SSRF                      | [SSRF](./6_web_api_security.md#ssrf-server-side-request-forgery)            |
+
+Interview: [Security checklist](./7_special_security_interview.md#security--front-end-checklist).
+
+**Sources:**
+
+- https://owasp.org/Top10/
+</details>
+
+<a name="principle-of-least-privilege-polp"></a>
+
+<details>
+  <summary>Principle of least privilege (POLP)</summary>
+
+### Principle of least privilege (POLP)
+
+**Definition:**
+
+**Принцип наименьших привилегий** — пользователь, сервис, токен и учётка БД получают только **минимум** прав для задачи.
+
+**How it works:**
+
+Проверка владения ресурсом на каждом запросе; короткоживущие токены; UI скрывает кнопки, **сервер обязан** отклонять лишнее. См. [Web application security (principles)](#13-web-security).
+
+**Sources:**
+
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
 </details>
 
 <details>

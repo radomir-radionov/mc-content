@@ -6,11 +6,12 @@ CSS interview questions, with an answer for every question.
 
 ### Related docs
 
-* [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md)
+- [CSS — Core](./2_css_core.md) · [CSS — Layout](./2_css_layout.md) · [CSS — Visual](./2_css_visual.md) · [CSS — Motion](./2_css_motion.md) · [CSS — Modern](./2_css_modern.md) · [CSS — Architecture](./2_css_architecture.md) · [CSS — Interview](./2_css_interview.md)
 
 ### Sections
 
 - [Interview Practice](#interview-practice)
+- [RU cheatsheet index](#ru-cheatsheet-index)
 
 ---
 
@@ -46,34 +47,32 @@ Here is the HTML code:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS Example</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <header>
-        <h1>Welcome to Our Site</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
+      <h1>Welcome to Our Site</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
     </header>
     <section>
-        <h2>Latest News</h2>
-        <article>
-            <h3>Breaking News: Big Event Tomorrow</h3>
-            <p>Join us for our biggest event of the year!</p>
-        </article>
+      <h2>Latest News</h2>
+      <article>
+        <h3>Breaking News: Big Event Tomorrow</h3>
+        <p>Join us for our biggest event of the year!</p>
+      </article>
     </section>
-    <footer>
-        &copy; 2022 YourSite
-    </footer>
-</body>
+    <footer>&copy; 2022 YourSite</footer>
+  </body>
 </html>
 ```
 
@@ -167,25 +166,27 @@ Here is the HTML code:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="mystyle.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="mystyle.css" />
     <title>Document</title>
-</head>
-    <style>
-        h1, h2, p {
-            color: green;
-        }
-        
-        div {
-            border: 1px solid black;
-        }
-    </style>
-<body>
+  </head>
+  <style>
+    h1,
+    h2,
+    p {
+      color: green;
+    }
+
+    div {
+      border: 1px solid black;
+    }
+  </style>
+  <body>
     <h1>My Header</h1>
     <p>Hello, World!</p>
-</body>
+  </body>
 </html>
 ```
 
@@ -250,10 +251,14 @@ Here is the CSS code:
 
 ```css
 /* Styles applied using class selectors */
-.content { color: blue; }
+.content {
+  color: blue;
+}
 
 /* Styles applied using ID selector */
-#uniqueContent { color: red; }
+#uniqueContent {
+  color: red;
+}
 ```
 
 **Sources:**
@@ -279,7 +284,6 @@ Here is the CSS code:
 - **User-action Pseudo-classes**: These capture actions taken by the user, such as `:checked` for input elements that are selected.
 
 - **Relationship Pseudo-classes**: These pertain to the document tree's hierarchical structure, like `:first-child` for an element that's the first child within its parent.
-
 
 - **Language Pseudo-Classes**: These cater to elements displayed in specific languages, for example `:dir()`.
 
@@ -318,15 +322,15 @@ For HTML:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="styles.css" rel="stylesheet">
-  <title>Document</title>
-</head>
-<body>
-  <h1>Hello, CSS Reset!</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="styles.css" rel="stylesheet" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hello, CSS Reset!</h1>
+  </body>
 </html>
 ```
 
@@ -336,8 +340,8 @@ And for CSS, here is a simple **normalize.css**-based reset:
 /* reset.css */
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 h1 {
-    font-size: 2em;
-    margin: 0.67em 0;
+  font-size: 2em;
+  margin: 0.67em 0;
 }
 ```
 
@@ -394,7 +398,7 @@ Here is the CSS code snippet:
 
 /* Case Insensitive */
 [alt="home" i] {
-  background: url('home-icon.png');
+  background: url("home-icon.png");
 }
 ```
 
@@ -433,37 +437,30 @@ Commonly used `pseudo-elements` include `::before` and `::after` which let devel
 #### Practical Applications
 
 1. #### Indicating External Links
-
    - **Link**: Indicating content that opens an external website.
    - **Implementation**: Visual or textual cues like arrows or "External Link" next to anchor elements.
 
 2. #### Specialized Numbers and Letters
-
    - **Link**: Styling a single letter or number within a text block.
    - **Implementation**: Especially useful in design, for instance, highlighting the first letter of a paragraph with a larger font size.
 
 3. #### Responsive Backgrounds
-
    - **Link**: Apply background images or colors specific to certain parts of an element for various screen sizes.
    - **Implementation**: Use media queries within the pseudo-element for specific screen sizes.
 
 4. #### Code Blocks and Blockquotes
-
    - **Link**: Add decorative elements preceding and following code blocks and blockquote elements.
    - **Implementation**: Help highlight code samples or visually delineate long blockquote sections.
 
 5. #### Custom Radio Buttons and Checkboxes
-
    - **Link**: Rework default styling for radio buttons and checkboxes for a more customized look.
    - **Implementation**: Use ::before or ::after with content property to replace default appearance.
 
 6. #### Clear Floats
-
    - **Link**: Overcome challenges in parent containers not respecting the height of floated child elements and collapsing.
    - **Implementation**: Create an element with ::after pseudo-element where the content clears the floats.
 
 7. #### Hacks for Older Browsers
-
    - **Link**: Sometimes, especially with prior versions of Internet Explorer, using pseudo-elements proves crucial for achieving desired stylings.
    - **Implementation**: Useful for applying specifically crafted styles that wouldn't work properly on older browsers without this technique.
 
@@ -519,11 +516,14 @@ Here is the HTML:
 ```html
 <nav>
   <ul>
-    <li>Direct Child</li> <!-- This is red -->
+    <li>Direct Child</li>
+    <!-- This is red -->
     <li>
-      Nested Child <!-- This is blue -->
+      Nested Child
+      <!-- This is blue -->
       <ul>
-        <li>Nested List Item</li> <!-- This is blue -->
+        <li>Nested List Item</li>
+        <!-- This is blue -->
       </ul>
     </li>
   </ul>
@@ -593,8 +593,8 @@ Here is the CSS:
 ```css
 /* Remove margins, paddings on all elements within the container */
 .containers > * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 ```
 
@@ -602,11 +602,11 @@ The HTML:
 
 ```html
 <div class="container">
-    <p>Paragraph 1</p>
-    <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-    </ul>
+  <p>Paragraph 1</p>
+  <ul>
+    <li>Item 1</li>
+    <li>Item 2</li>
+  </ul>
 </div>
 ```
 
@@ -617,7 +617,7 @@ Here is the CSS:
 ```css
 /* Style the direct sibling anchor tag when a list item is hovered */
 ul li:hover + a {
-    color: red;
+  color: red;
 }
 ```
 
@@ -625,9 +625,9 @@ The HTML:
 
 ```html
 <ul>
-    <li>Item 1</li>
-    <li>Item 2</li>
-    <li><a href="#">Link</a></li>
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li><a href="#">Link</a></li>
 </ul>
 ```
 
@@ -645,8 +645,8 @@ Here is the CSS:
 
 ```css
 .container > * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 ```
 
@@ -654,8 +654,8 @@ The HTML:
 
 ```html
 <div class="container">
-    <p>Paragraph 1</p>
-    <p>Paragraph 2</p>
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
 </div>
 ```
 
@@ -697,6 +697,7 @@ The **Box Model** is the foundational concept in CSS that describes the structur
 #### Margins
 
 #### Auto Margins
+
 When the surrounding container has a defined width, horizontal margins set to "auto" equally distribute the remaining horizontal space on both sides of the element, centering it within the container.
 
 #### Parent and Child Element Interplay
@@ -715,12 +716,14 @@ This distinction aids in layout control and ensures uniformity.
 #### Code Example: Box Model
 
 Here is the HTML code:
+
 ```html
 <div id="boxModelExample">This is an example of text within the Box Model.</div>
 ```
 
 Here is the CSS code:
-``` CSS
+
+```CSS
 #boxModelExample {
     border: 5px solid red;
     padding: 20px;
@@ -728,7 +731,7 @@ Here is the CSS code:
 }
 ```
 
-``` CSS
+```CSS
 #autoMarginExample {
     width: 50%;
     margin-left: auto;
@@ -736,7 +739,7 @@ Here is the CSS code:
 }
 ```
 
-``` CSS
+```CSS
 #borderBoxExample {
     box-sizing: border-box;
 }
@@ -760,19 +763,19 @@ Here is the CSS code:
 
 #### Visual Representation of Margin Collapsing
 
-- Vertical margin collapse: 
-![Vertical Margin Collapse](https://firebasestorage.googleapis.com/v0/b/dev-stack-app.appspot.com/o/questions-images%2Fvartical-margin-collapse.jpg?alt=media&token=7a9f7961-302b-48c7-b74e-168f6780897f)
+- Vertical margin collapse:
+  ![Vertical Margin Collapse](https://firebasestorage.googleapis.com/v0/b/dev-stack-app.appspot.com/o/questions-images%2Fvartical-margin-collapse.jpg?alt=media&token=7a9f7961-302b-48c7-b74e-168f6780897f)
 - Horizontal margin collapse does not occur: ![Horizontal Margin Collapse](https://firebasestorage.googleapis.com/v0/b/dev-stack-app.appspot.com/o/questions-images%2Fhorizontal-margin-collapse.jpg?alt=media&token=da23e77b-72aa-4c17-a287-3f274753be9a)
 
 #### Preventing Margin Collapsing
 
-1. **Padding or Borders**: Introduce padding or borders to disrupt the margin collapsing behavior when required.  
+1. **Padding or Borders**: Introduce padding or borders to disrupt the margin collapsing behavior when required.
 2. **Inline-Block or Floats**: Transform adjacent elements into `inline-block` or use `float` property.
 3. **Clearfix**: Employ a clearing technique for floated elements, which separates subsequent elements in the flow, ultimately preventing margin collapse.
 
 #### CSS Rules and Margin Collapsing
 
-1. **Marginal vs. Calculated Total**: 
+1. **Marginal vs. Calculated Total**:
    - If margins are set, every other margin is respected.
    - If margins are calculated to be a non-zero value, margins can be collapsed.
    - Margins from both the top and the bottom end of the elements are considered.
@@ -789,8 +792,8 @@ While margin collapsing can simplify layout management under specific conditions
 
    ```html
    <div>
-       <p>This is paragraph 1</p>
-       <p>This is paragraph 2</p>
+     <p>This is paragraph 1</p>
+     <p>This is paragraph 2</p>
    </div>
    ```
 
@@ -853,6 +856,7 @@ To vertically center a block, modern techniques such as Flexbox and Grid layout 
 **Examples:**
 
 #### Code Example: Auto Margins
+
 ```css
 .container {
   width: 50%;
@@ -861,6 +865,7 @@ To vertically center a block, modern techniques such as Flexbox and Grid layout 
 ```
 
 #### Code Example: Flexbox
+
 ```css
 .container {
   display: flex;
@@ -869,6 +874,7 @@ To vertically center a block, modern techniques such as Flexbox and Grid layout 
 ```
 
 #### Code Example: Flexbox
+
 ```css
 .container {
   display: flex;
@@ -877,6 +883,7 @@ To vertically center a block, modern techniques such as Flexbox and Grid layout 
 ```
 
 #### Code Example: CSS Grid
+
 ```css
 .container {
   display: grid;
@@ -915,7 +922,8 @@ Here is the HTML:
 Here is the CSS:
 
 ```css
-div, span {
+div,
+span {
   display: block;
   margin-bottom: 10px;
 }
@@ -1252,7 +1260,9 @@ Use the `font` shorthand when one declaration should set the family together wit
 
 ```css
 h1 {
-  font: italic bold 1.2em/1.5 "Fira Sans", sans-serif;
+  font:
+    italic bold 1.2em/1.5 "Fira Sans",
+    sans-serif;
 }
 ```
 
@@ -1517,8 +1527,7 @@ Give `background-image` or `background` a comma-separated list. The first image 
 ```css
 .panel {
   background-image:
-    linear-gradient(rgb(0 0 0 / 40%), rgb(0 0 0 / 40%)),
-    url("photo.png");
+    linear-gradient(rgb(0 0 0 / 40%), rgb(0 0 0 / 40%)), url("photo.png");
   background-size: cover, cover;
   background-color: #222;
 }
@@ -2230,7 +2239,9 @@ Animate the entrance with `@keyframes` or a transition from a hidden state, usua
 .panel {
   opacity: 0;
   transform: translateY(1rem);
-  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms ease-out;
 }
 
 .panel.is-open {
@@ -2909,7 +2920,9 @@ The expensive work is layout and paint on a large tree, not a long selector. Ani
 
 ```css
 .card {
-  transition: transform 200ms ease-out, opacity 200ms ease-out;
+  transition:
+    transform 200ms ease-out,
+    opacity 200ms ease-out;
 }
 
 .card:hover {
@@ -4323,4 +4336,410 @@ For a widely supported column flow, set `columns` to an ideal column width. The 
 
 - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/columns
 - https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Grid_lanes
+</details>
+
+### Front-end Developer Interview (H5BP)
+
+<details>
+<summary>What is CSS selector specificity and how does it work?</summary>
+
+### What is CSS selector specificity and how does it work?
+
+**Definition:**
+
+**Specificity** is the score the cascade uses to pick one declaration when several rules match the same element.
+
+**How it works:**
+
+- Compare **(A, B, C)**: **A** = inline `style` or `#id`; **B** = classes, attributes, pseudo-classes; **C** = type selectors and pseudo-elements. Higher tuple wins; tied → later source order.
+- **`!important`** beats normal declarations; `@layer` can reorder author styles regardless of specificity.
+- Universal `*` and combinators add **0**.
+
+More examples: [CSS — Core — Cascade & specificity](./2_css_core.md#cascade--specificity).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity
+</details>
+
+<details>
+<summary>What's the difference between resetting and normalizing CSS? Which would you choose?</summary>
+
+### What's the difference between resetting and normalizing CSS? Which would you choose?
+
+**Definition:**
+
+**Reset** strips default margins/padding/list styles so you style from a blank slate. **Normalize** keeps useful defaults but fixes cross-browser inconsistencies.
+
+**How it works:**
+
+|                 | **Reset**                                      | **Normalize**                      |
+| --------------- | ---------------------------------------------- | ---------------------------------- |
+| Goal            | Zero-ish baseline                              | Consistent readable baseline       |
+| Lists, headings | Often unstyled                                 | Sensible defaults preserved        |
+| Risk            | More boilerplate to restore semantics visually | Smaller diff from browser defaults |
+
+**When to use:**
+
+Choose **normalize.css** (or modern **reboot**-style sheets) for most products — less surprise for accessibility and typography. Use an aggressive **reset** only when the design system replaces almost all defaults anyway.
+
+**Sources:**
+
+- https://necolas.github.io/normalize.css/
+- https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Cascade_and_inheritance
+</details>
+
+<details>
+<summary>Describe floats and how they work.</summary>
+
+### Describe floats and how they work.
+
+**Definition:**
+
+**Float** (`float: left | right`) takes a block out of normal flow and places it beside inline content; siblings wrap around its margin box.
+
+**How it works:**
+
+- Floated boxes still affect line boxes; following blocks shrink horizontally unless cleared.
+- Parent **height collapse** is common when only children float — use **clearfix**, `overflow: hidden`, or prefer **Flexbox/Grid** for layout today.
+- Floats remain valid for **text wrap around images**, not for whole-page grids.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/float
+</details>
+
+<details>
+<summary>Describe BFC (Block Formatting Context) and how it works.</summary>
+
+### Describe BFC (Block Formatting Context) and how it works.
+
+**Definition:**
+
+A **BFC** is an isolated layout region: floats and margins inside do not interact with outside the same way.
+
+**How it works:**
+
+- **Creates BFC**: `overflow` other than `visible`, `display: flow-root`, `float`, absolute/fixed positioning, flex/grid containers, etc.
+- **Contains floats** — parent wraps floated children.
+- **Prevents margin collapse** with adjacent outside blocks in some cases.
+- **Contains** absolutely positioned descendants for clipping when combined with `overflow: hidden`.
+
+Prefer **`display: flow-root`** over hacky `overflow: hidden` when you only need a BFC.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Display/Block_formatting_context
+</details>
+
+<details>
+<summary>What are clearing techniques and when to use each?</summary>
+
+### What are clearing techniques and when to use each?
+
+**Definition:**
+
+**Clear** stops elements from wrapping beside floats.
+
+**How it works:**
+
+| Technique                                                             | Use                                          |
+| --------------------------------------------------------------------- | -------------------------------------------- |
+| **`clear: both`** on element after floats                             | Simple footer below floats                   |
+| **Clearfix** (`::after { clear: both; display: block; content: "" }`) | Collapsing parent with only floated children |
+| **`overflow: auto/hidden`** on parent                                 | Creates BFC; side effect: may clip shadows   |
+| **`display: flow-root`** on parent                                    | Modern BFC without clipping surprises        |
+| **Flex/Grid** parent                                                  | Replace float layouts entirely               |
+
+**When to use:**
+
+New layouts: **Flexbox/Grid**. Legacy float columns: clearfix or `flow-root`.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/clear
+</details>
+
+<details>
+<summary>How do you fix browser-specific styling issues?</summary>
+
+### How do you fix browser-specific styling issues?
+
+**Definition:**
+
+Start with **standards-first CSS**, reproduce in target browsers, then apply the **smallest scoped fix**.
+
+**How it works:**
+
+- Reproduce on real devices or BrowserStack; DevTools emulation is a first pass only.
+- Check MDN **browser compatibility** and caniuse.
+- Fixes: `@supports`, progressive enhancement, documented design-system exceptions.
+- Avoid **UA sniffing** in CSS.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@supports
+</details>
+
+<details>
+<summary>How do you serve pages for feature-constrained browsers?</summary>
+
+### How do you serve pages for feature-constrained browsers?
+
+**Definition:**
+
+**Progressive enhancement**: core HTML works; CSS/JS enhancements apply when supported.
+
+**How it works:**
+
+- Baseline layout without Grid if required; enhance with `@supports (display: grid)`.
+- Polyfills only when measured need; prefer CSS `@supports` over cut-the-mustard scripts when possible.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement
+</details>
+
+<details>
+<summary>How do you visually hide content but keep it for screen readers?</summary>
+
+### How do you visually hide content but keep it for screen readers?
+
+**Definition:**
+
+**Visually hidden** text stays available to assistive tech unlike `display: none`.
+
+**How it works:**
+
+- **sr-only / visually-hidden** clip pattern; **`aria-label`** on icon-only controls.
+- Keep **`:focus-visible`** styles when hiding native controls behind styled labels.
+
+**Examples:**
+
+```css
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+```
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label
+</details>
+
+<details>
+<summary>Have you used a grid system? What do you prefer?</summary>
+
+### Have you used a grid system? What do you prefer?
+
+**Definition:**
+
+Reusable column layout: Bootstrap grid, Tailwind, or native **CSS Grid**.
+
+**How it works:**
+
+- Prefer **CSS Grid** for page regions, **Flexbox** for rows; utility frameworks for delivery speed.
+- Name production experience, then trade-offs (bundle vs velocity).
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout
+</details>
+
+<details>
+<summary>Are you familiar with styling SVG?</summary>
+
+### Are you familiar with styling SVG?
+
+**Definition:**
+
+Inline SVG styles with CSS; external SVG as `<img>` is not styled from parent CSS.
+
+**How it works:**
+
+- Use **`fill`**, **`stroke`**, **`currentColor`** inline; `vector-effect: non-scaling-stroke` when scaling.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/SVG
+</details>
+
+<details>
+<summary>Give an @media property other than screen.</summary>
+
+### Give an @media property other than screen.
+
+**Definition:**
+
+Examples: **`print`**, **`speech`**, **`(prefers-reduced-motion: reduce)`**, **`(prefers-color-scheme: dark)`**, **`(min-width: …)`**.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@media
+</details>
+
+<details>
+<summary>What are gotchas for writing efficient CSS?</summary>
+
+### What are gotchas for writing efficient CSS?
+
+**Definition:**
+
+Avoid deep selectors, `@import` chains, layout-thrashing animations, and huge unused frameworks.
+
+**How it works:**
+
+- Animate **`transform`/`opacity`**, not **`width`/`top`**; purge unused CSS; limit **`will-change`**.
+
+**Sources:**
+
+- https://web.dev/articles/reduce-the-scope-and-complexity-of-style-calculations
+</details>
+
+<details>
+<summary>Advantages and disadvantages of CSS preprocessors? What do you like or dislike?</summary>
+
+### Advantages and disadvantages of CSS preprocessors? What do you like or dislike?
+
+**Definition:**
+
+Sass/Less add variables, mixins, nesting at build time; native CSS now covers much of this.
+
+| +                     | −                                               |
+| --------------------- | ----------------------------------------------- |
+| DRY tokens and mixins | Build step; specificity bloat from deep nesting |
+
+**Thoughts:**
+
+Like shared tokens; dislike unmaintainable nesting — prefer **`@layer`** and custom properties today when possible.
+
+**Sources:**
+
+- https://sass-lang.com/guide
+</details>
+
+<details>
+<summary>How implement a comp with non-standard fonts?</summary>
+
+### How implement a comp with non-standard fonts?
+
+**Definition:**
+
+`@font-face` or hosted fonts, **`font-display: swap`**, preload critical weights, sensible fallback stack.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face
+</details>
+
+<details>
+<summary>How does a browser determine which elements match a CSS selector?</summary>
+
+### How does a browser determine which elements match a CSS selector?
+
+**Definition:**
+
+Engine matches rules to DOM nodes during style recalc; cascade picks winners.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity
+</details>
+
+<details>
+<summary>What does * { box-sizing: border-box; } do? Advantages?</summary>
+
+### What does \* { box-sizing: border-box; } do? Advantages?
+
+**Definition:**
+
+Padding and border count inside declared **`width`/`height`** — predictable sizing in grids and forms.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/box-sizing
+</details>
+
+<details>
+<summary>Responsive design vs mobile-first strategy?</summary>
+
+### Responsive design vs mobile-first strategy?
+
+**Definition:**
+
+**Responsive** adapts to viewport; **mobile-first** writes small-screen base CSS and adds **`min-width`** enhancements.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design
+</details>
+
+<details>
+<summary>Have you worked with retina graphics? What techniques?</summary>
+
+### Have you worked with retina graphics? What techniques?
+
+**Definition:**
+
+**`srcset`** / **`image-set()`**, SVG icons, or higher-resolution rasters for DPR > 1.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#using_the_srcset_attribute
+</details>
+
+<details>
+<summary>translate() vs absolute positioning — when and why?</summary>
+
+### translate() vs absolute positioning — when and why?
+
+**Definition:**
+
+**`transform: translate()`** often compositor-friendly; **`top`/`left`** trigger layout. Use absolute for flow removal; translate for animation nudges.
+
+**Sources:**
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transform
+</details>
+
+<details>
+<summary>What CSS frameworks have you used? How would you improve them?</summary>
+
+### What CSS frameworks have you used? How would you improve them?
+
+**Definition:**
+
+Name Bootstrap/Tailwind/custom systems; improve via purge, a11y defaults, Grid/Flex docs, fewer overrides.
+
+**Sources:**
+
+- https://getbootstrap.com/docs/5.3/getting-started/introduction/
+</details>
+
+<a name="ru-cheatsheet-index"></a>
+
+<details>
+<summary>RU cheatsheet — question index</summary>
+
+### RU cheatsheet — question index
+
+| RU CSS list                              | Section / theory                                                                                                       |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| CSS, правило, подключение                | [CSS Basics](#css-basics) · [2_css_core.md](./2_css_core.md)                                                           |
+| Селекторы, специфичность                 | [Selectors](#selectors-and-combinators) · [specificity (H5BP)](#what-is-css-selector-specificity-and-how-does-it-work) |
+| Box model, margin/padding, collapse      | [Box Model](#box-model-and-layout)                                                                                     |
+| position, z-index, stacking              | [Positioning](#positioning-and-stacking-contexts)                                                                      |
+| Flexbox, Grid, container queries, :has() | [Flexbox](#flexbox) · [Grid](#css-grid) · [2_css_modern.md](./2_css_modern.md)                                         |
+| Reset vs normalize, floats, BFC          | [H5BP block](#front-end-developer-interview-h5bp)                                                                      |
+| BEM, препроцессоры, CSS-in-JS            | [Scalable CSS](#scalable-and-maintainable-css) · [2_css_architecture.md](./2_css_architecture.md)                      |
+| cross-browser, @supports                 | [Layout Debugging](#layout-debugging-and-troubleshooting) · [H5BP](#how-do-you-fix-browser-specific-styling-issues)    |
+
 </details>

@@ -6,7 +6,7 @@ tsconfig, declaration files, and a short intro for JavaScript programmers.
 
 ### Related docs
 
-- [TypeScript — hub](./5_ts.md) · [API contracts](./5_ts_api_contracts.md) · [Compiler fundamentals](./5_ts_compiler_fundamentals.md) · [Variable Declaration](./5_ts_variable_declaration.md) · [Interview](./5_ts_interview.md)
+- [TypeScript — hub](./5_ts.md) · [API contracts](./5_ts_api_contracts.md) · [Compiler fundamentals](./5_ts_compiler_fundamentals.md) · [Variable Declaration](./5_ts_variable_declaration.md) · [Interview](./5_ts_interview.md#interview-practice) · [Course index (RU syllabus)](./5_ts_interview.md#typescript-interview--course-index)
 
 ### Sections
 

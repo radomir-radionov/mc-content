@@ -13,6 +13,8 @@ AAA, the test pyramid, testing approaches, and common test purposes.
 - [Fundamentals](#fundamentals)
 - [Tests and AAA](#tests-and-aaa)
 - [Test pyramid](#test-pyramid)
+- [Testing Trophy](#testing-trophy)
+- [FIRST principles for unit tests](#first-principles-for-unit-tests)
 - [Testing approaches (black-box, white-box, gray-box)](#testing-approaches-black-box-white-box-gray-box)
 - [Tests by purpose (smoke, sanity, regression)](#tests-by-purpose-smoke-sanity-regression)
 
@@ -147,6 +149,49 @@ Contract tests between services sit between integration and E2E. Snapshot tests 
 
 </details>
 
+<details>
+  <summary>Testing Trophy</summary>
+
+### Testing Trophy
+
+**Definition:** **Testing Trophy** Кента Доддса — больше **интеграционных** тестов в середине пирамиды: статика (типы, lint), unit, **integration**, тонкий слой E2E.
+
+**How it works:**
+
+| Слой            | Роль                                             |
+| --------------- | ------------------------------------------------ |
+| **Static**      | TypeScript, ESLint — дешёвая обратная связь в CI |
+| **Unit**        | Чистая логика, reducers                          |
+| **Integration** | RTL + MSW, API + seed БД                         |
+| **E2E**         | Только критичные сценарии                        |
+
+**See also:** [Test pyramid](#test-pyramid) · [Test doubles](./7_special_testing_practices.md#test-doubles-stubs-mocks-spies)
+
+**Sources:** [Kent C. Dodds — Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
+
+---
+
+</details>
+
+<details>
+  <summary>FIRST principles for unit tests</summary>
+
+### FIRST principles for unit tests
+
+**Definition:** **FIRST** — качества хороших unit-тестов.
+
+| Буква | Значение            | Практика                                                                                     |
+| ----- | ------------------- | -------------------------------------------------------------------------------------------- |
+| **F** | **Fast**            | Без сети/БД в unit-слое                                                                      |
+| **I** | **Independent**     | Порядок не важен                                                                             |
+| **R** | **Repeatable**      | Одинаково локально и в CI                                                                    |
+| **S** | **Self-validating** | Pass/fail без ручной проверки                                                                |
+| **T** | **Timely**          | Пишутся вместе с кодом ([TDD](./7_special_testing_practices.md#tdd-test-driven-development)) |
+
+---
+
+</details>
+
 <a name="testing-approaches-black-box-white-box-gray-box"></a>
 
 <details>
@@ -158,11 +203,11 @@ Contract tests between services sit between integration and E2E. Snapshot tests 
 
 **How it works:**
 
-| Approach       | Tester knows                         | Typical focus                                      | Common in dev work                                      |
-| -------------- | ------------------------------------ | -------------------------------------------------- | ------------------------------------------------------- |
-| **Black-box**  | Specs / API / UI only                | Inputs → observable outputs; requirements coverage | RTL by role/label; API contract tests; manual UAT       |
-| **White-box**  | Code structure, branches, data flow  | Paths, conditions, error handling                  | Unit tests with mocks; coverage tools; branch-aware cases |
-| **Gray-box**   | Partial internals (schema, logs, DB) | Integration seams with limited visibility          | MSW + real reducer; test DB with known seed; API + OpenAPI |
+| Approach      | Tester knows                         | Typical focus                                      | Common in dev work                                         |
+| ------------- | ------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| **Black-box** | Specs / API / UI only                | Inputs → observable outputs; requirements coverage | RTL by role/label; API contract tests; manual UAT          |
+| **White-box** | Code structure, branches, data flow  | Paths, conditions, error handling                  | Unit tests with mocks; coverage tools; branch-aware cases  |
+| **Gray-box**  | Partial internals (schema, logs, DB) | Integration seams with limited visibility          | MSW + real reducer; test DB with known seed; API + OpenAPI |
 
 **Static vs dynamic** (another QA axis):
 
@@ -187,7 +232,7 @@ Contract tests between services sit between integration and E2E. Snapshot tests 
 
 | +                                      | −                                           |
 | -------------------------------------- | ------------------------------------------- |
-| Shared vocabulary with QA / university | Easy to confuse with pyramid “levels”     |
+| Shared vocabulary with QA / university | Easy to confuse with pyramid “levels”       |
 | Picks the right technique per risk     | Gray-box needs discipline (no over-mocking) |
 
 **Thoughts:** In practice you mix approaches: white-box unit tests under a black-box E2E journey. Design black-box cases systematically — [Black-box test design techniques](./7_special_testing_practices.md#black-box-test-design-techniques).
@@ -211,12 +256,12 @@ Contract tests between services sit between integration and E2E. Snapshot tests 
 
 **How it works:**
 
-| Purpose        | Question answered                                      | Scope / timing                                      |
-| -------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| **Smoke**      | “Is the build testable at all?”                        | Tiny critical path after deploy/build; fail fast     |
-| **Sanity**     | “Did this change break the area we touched?”           | Narrow checks around a fix or feature slice         |
-| **Regression** | “Did we break something that used to work?”           | Re-run known-good suite (often all automated tests) |
-| **Acceptance** | “Does the product meet agreed requirements?”           | Often manual UAT or sign-off scenarios; see [pyramid](./7_special_testing_fundamentals.md#test-pyramid) |
+| Purpose        | Question answered                            | Scope / timing                                                                                          |
+| -------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Smoke**      | “Is the build testable at all?”              | Tiny critical path after deploy/build; fail fast                                                        |
+| **Sanity**     | “Did this change break the area we touched?” | Narrow checks around a fix or feature slice                                                             |
+| **Regression** | “Did we break something that used to work?”  | Re-run known-good suite (often all automated tests)                                                     |
+| **Acceptance** | “Does the product meet agreed requirements?” | Often manual UAT or sign-off scenarios; see [pyramid](./7_special_testing_fundamentals.md#test-pyramid) |
 
 Typical CI shape: **smoke** (or tagged `@smoke`) on every PR → full **regression** on `main` / nightly → optional manual **acceptance** before release. **Sanity** is common after hotfixes (“login + checkout still work”).
 
@@ -234,10 +279,10 @@ Typical CI shape: **smoke** (or tagged `@smoke`) on every PR → full **regressi
 
 **Pluses and minuses:**
 
-| +                              | −                                      |
-| ------------------------------ | -------------------------------------- |
+| +                               | −                                               |
+| ------------------------------- | ----------------------------------------------- |
 | Clear release and CI vocabulary | Teams define smoke differently — document yours |
-| Faster feedback loops          | Over-tagging tests blurs categories    |
+| Faster feedback loops           | Over-tagging tests blurs categories             |
 
 **Thoughts:** Tag tests (`@smoke`, `@regression`) in Playwright/Jest so one codebase serves multiple purposes.
 
